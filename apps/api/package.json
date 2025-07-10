@@ -6,7 +6,6 @@
   "scripts": {
     "start": "bun ./src/server.ts",
     "dev": "bun --watch run ./src/server.ts",
-    "build": "bun run build ./src/server.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "bun run lint",
     "lint:fix": "bun run lint --fix"

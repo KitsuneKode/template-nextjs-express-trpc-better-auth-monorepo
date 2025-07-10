@@ -2,8 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": ["dist/**"],
-      "script": "bun run build"
+      "outputs": ["dist/**"]
     }
   }
 }
