@@ -1,0 +1,33 @@
+{
+  "name": "ototabi",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "db:generate": "turbo run generate --filter @template/store",
+    "db:migrate": "turbo run migrate --filter packages/store",
+    "db:seed": "turbo run seed --filter packages/store",
+    "db:studio": "turbo run studio --filter packages/store",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "preinstall": "npx only-allow bun"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^6.0.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-sort-imports": "^1.8.8",
+    "turbo": "^2.5.4",
+    "typescript": "5.8.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.2.15",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tooling/*",
+    "tests/*"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@template/store",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "generate": "bunx prisma generate",
+    "migrate": "bunx prisma migrate",
+    "seed": "bun run src/scripts/seed.ts",
+    "studio": "bunx prisma studio"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@template/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "prisma": "^6.11.1"
+  }
+}

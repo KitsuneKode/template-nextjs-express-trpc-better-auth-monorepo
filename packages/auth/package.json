@@ -1,0 +1,21 @@
+{
+  "name": "@template/auth",
+  "module": "src/app.ts",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./server": "./src/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "devDependencies": {
+    "@template/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@template/store": "*",
+    "better-auth": "^1.2.12"
+  }
+}

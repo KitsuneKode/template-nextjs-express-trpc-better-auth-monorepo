@@ -1,0 +1,24 @@
+{
+  "name": "@template/trpc",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./simp": "./src/simple.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@template/typescript-config": "*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@template/auth": "*",
+    "@template/store": "*",
+    "@trpc/server": "^11.4.3",
+    "superjson": "^2.2.2",
+    "zod": "^3.25.76"
+  }
+}

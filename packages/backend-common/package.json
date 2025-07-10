@@ -1,0 +1,27 @@
+{
+  "name": "@template/backend-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@template/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "@template/common": "*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

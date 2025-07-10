@@ -1,0 +1,7 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "sortingMethod": "lineLength",
+  "sortingOrder": "ascending",
+  "plugins": ["prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"]
+}
