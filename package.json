@@ -1,17 +1,14 @@
 {
-  "name": "ototabi",
+  "name": "template",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "db:generate": "turbo run generate --filter @template/store",
-    "db:migrate": "turbo run migrate --filter packages/store",
-    "db:seed": "turbo run seed --filter packages/store",
-    "db:studio": "turbo run studio --filter packages/store",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "preinstall": "npx only-allow bun"
+    "preinstall": "npx only-allow bun",
+    "postinstall": "turbo run db:generate"
   },
   "devDependencies": {
     "@types/minimatch": "^6.0.0",
