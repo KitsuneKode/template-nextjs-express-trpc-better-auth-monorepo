@@ -1,7 +1,7 @@
-import { z } from 'zod'
-import { prisma } from '@template/store'
+import { protectedProcedure, publicProcedure } from '../trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
-import { protectedProcedure, publicProcedure } from '@/trpc'
+import { prisma } from '@template/store'
+import { z } from 'zod'
 
 export const userRouter = {
   getUser: publicProcedure.query(() => {
@@ -11,11 +11,13 @@ export const userRouter = {
     return prisma.user.findMany()
   }),
   createUser: protectedProcedure
-    .input(z.object({ name: z.string().min(5) }))
+    .input(z.object({ email: z.string().email(), name: z.string().min(5) }))
     .mutation(async (opts) => {
       // use your ORM of classhoice
-      return prisma.user.create({
-        data: opts.input,
+      return prisma.user.findMany({
+        where: {
+          email: opts.input.email,
+        },
       })
     }),
 } satisfies TRPCRouterRecord

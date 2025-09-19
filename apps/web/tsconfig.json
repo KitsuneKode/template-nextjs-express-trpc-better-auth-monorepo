@@ -4,7 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@template/ui": ["../../packages/ui/src/*"]
+      "@template/ui": ["../../packages/ui/src/*"],
+      "@template/store/*": ["../../packages/store/src/*"],
+      "@template/auth/*": ["../../packages/auth/src/*"],
+      "@template/trpc/*": ["../../packages/trpc/src/*"],
+      "@template/common/*": ["../../packages/common/src/*"]
     },
     "plugins": [
       {

@@ -7,15 +7,19 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo db:push",
+    "db:studio": "turbo db:studio",
+    "db:generate": "turbo db:generate",
+    "db:migrate:dev": "turbo db:migrate:dev",
     "preinstall": "npx only-allow bun",
     "postinstall": "turbo run db:generate"
   },
   "devDependencies": {
-    "@types/minimatch": "^6.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
-    "turbo": "^2.5.4",
-    "typescript": "5.8.2"
+    "turbo": "^2.5.4"
   },
   "engines": {
     "node": ">=18"

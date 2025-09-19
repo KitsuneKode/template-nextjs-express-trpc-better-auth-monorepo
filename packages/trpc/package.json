@@ -4,8 +4,14 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.ts",
-    "./simp": "./src/simple.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./simp": {
+      "types": "./src/simple.ts",
+      "import": "./src/simple.ts"
+    }
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -17,6 +23,7 @@
   "dependencies": {
     "@template/auth": "*",
     "@template/store": "*",
+    "@template/backend-common": "*",
     "@trpc/server": "^11.4.3",
     "superjson": "^2.2.2",
     "zod": "^3.25.76"

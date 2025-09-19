@@ -4,11 +4,13 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "db:generate": "bunx prisma generate",
-    "db:migrate": "bunx prisma migrate",
+    "db:generate": " prisma generate",
+    "db:migrate": " prisma migrate",
     "db:seed": "bun run src/scripts/seed.ts",
-    "db:studio": "bunx prisma studio",
-    "db:deploy": "bunx prisma deploy"
+    "db:studio": " prisma studio",
+    "db:migrate:dev": "prisma migrate dev",
+    
+    "db:deploy": " prisma deploy"
   },
   "exports": {
     ".": "./src/index.ts"

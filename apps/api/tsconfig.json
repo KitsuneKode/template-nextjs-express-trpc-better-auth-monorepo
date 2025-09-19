@@ -1,9 +1,0 @@
-{
-  "extends": "@template/typescript-config/backend.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
-}

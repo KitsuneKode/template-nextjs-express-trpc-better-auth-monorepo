@@ -1,9 +1,7 @@
 {
   "extends": "@template/typescript-config/backend.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
+    "types": ["bun"]
+  },
+  "exclude": ["node_modules"]
 }

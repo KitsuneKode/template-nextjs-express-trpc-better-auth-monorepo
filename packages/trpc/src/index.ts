@@ -1,14 +1,15 @@
-import { appRouter } from '@/routers'
-import { createTRPCContext } from '@/trpc'
-import type { AppRouter } from '@/routers'
-import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
-
+import { createExpressMiddleware } from '@trpc/server/adapters/express'
+import { config } from '@template/backend-common/config'
+import type { AppRouter } from './routers/_app'
+import { createCallerFactory } from './trpc'
+import { appRouter } from './routers/_app'
+import { createTRPCContext } from './trpc'
 /**
- * Inference helpers for output types
+ * Inference helpers for input types
  * @example
- * type AllPostsOutput = RouterOutputs['post']['all']
- *      ^? Post[]
+ * type PostByIdInput = RouterInputs['post']['byId']
+ *      ^? { id: number }
  **/
 type RouterInputs = inferRouterInputs<AppRouter>
 
@@ -23,7 +24,15 @@ type RouterOutputs = inferRouterOutputs<AppRouter>
 const expressMiddleWare = createExpressMiddleware({
   router: appRouter,
   createContext: createTRPCContext,
+  onError:
+    config.getConfig('environment') === 'development'
+      ? ({ path, error }) => {
+          console.error(`[TRPC]❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`)
+        }
+      : undefined,
 })
 
-export { expressMiddleWare, appRouter, createTRPCContext }
+const createCaller = createCallerFactory(appRouter)
+
+export { appRouter, expressMiddleWare, createTRPCContext, createCaller }
 export type { AppRouter, RouterInputs, RouterOutputs }

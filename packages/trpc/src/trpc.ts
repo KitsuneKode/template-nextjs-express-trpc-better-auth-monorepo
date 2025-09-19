@@ -1,15 +1,12 @@
-import superjson from 'superjson'
-import { z, ZodError } from 'zod/v4'
-import { prisma as db } from '@template/store'
-import { initTRPC, TRPCError } from '@trpc/server'
 import { auth, fromNodeHeaders } from '@template/auth/server'
+import { initTRPC, TRPCError } from '@trpc/server'
+import { prisma as db } from '@template/store'
+import { z, ZodError } from 'zod/v4'
+import superjson from 'superjson'
 
 import * as trpcExpress from '@trpc/server/adapters/express'
 
-export const createTRPCContext = async ({
-  req,
-  res,
-}: trpcExpress.CreateExpressContextOptions) => {
+export const createTRPCContext = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
   const headers = fromNodeHeaders(req.headers)
 
   const session = await auth.api.getSession({
@@ -38,6 +35,7 @@ const t = initTRPC.context<Context>().create({
 })
 
 export const createTRPCRouter = t.router
+export const createCallerFactory = t.createCallerFactory
 
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now()
@@ -58,16 +56,14 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 
 export const publicProcedure = t.procedure.use(timingMiddleware)
 
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' })
-    }
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    })
+export const protectedProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' })
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
   })
+})

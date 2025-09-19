@@ -1,5 +1,5 @@
 {
-  "name": "@template/client",
+  "name": "web",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -12,12 +12,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@template/store": "*",
-    "@template/common": "*",
+    "@tanstack/react-query": "^5.82.0",
     "@template/auth": "*",
+    "@template/common": "*",
+    "@template/store": "*",
     "@template/trpc": "*",
     "@template/ui": "*",
-    "@tanstack/react-query": "^5.82.0",
     "@trpc/client": "^11.4.3",
     "@trpc/server": "^11.4.3",
     "@trpc/tanstack-react-query": "^11.4.3",
