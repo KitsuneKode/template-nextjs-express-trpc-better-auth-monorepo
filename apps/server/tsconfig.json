@@ -4,11 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@template/store": ["../../packages/store/src/*"],
-      "@template/auth": ["../../packages/auth/src/*"],
-      "@template/trpc": ["../../packages/trpc/src/*"],
-      "@template/backend-common": ["../../packages/trpc/backend-common/*"]
-    }
-    ,"outDir": "dist"
+      "@template/store/*": ["../../packages/store/src/*"],
+      "@template/auth/*": ["../../packages/auth/src/*"],
+      "@template/trpc/*": ["../../packages/trpc/src/*"],
+      "@template/backend-common/*": ["../../packages/trpc/backend-common/*"]
+    },
+    "outDir": "dist"
   }
 }
