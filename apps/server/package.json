@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@template/server",
   "module": "./src/server.ts",
   "type": "module",
   "private": true,
