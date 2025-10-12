@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./src/index.ts",
+  "type": "module",
   "private": true,
   "exports": {
     ".": "./src/index.ts",
