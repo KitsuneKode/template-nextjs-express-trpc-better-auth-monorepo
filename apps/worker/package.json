@@ -4,16 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "tsdown src/index.ts",
-    "check-types": "tsc -b",
-    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "check-types": "tsc -noEmit",
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun --minify --sourcemap",
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js",
+    "start": "bun run dist/server.js",
     "lint": "bun run lint"
   },
   "devDependencies": {
     "@template/typescript-config": "*",
-    "tsdown": "^0.15.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
