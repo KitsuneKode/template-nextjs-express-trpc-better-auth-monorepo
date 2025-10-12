@@ -1,2 +1,1 @@
-export { backendConfig as config } from '@template/common/config-loader'
-
+export { backendConfig as config } from '@template/backend-common/config'

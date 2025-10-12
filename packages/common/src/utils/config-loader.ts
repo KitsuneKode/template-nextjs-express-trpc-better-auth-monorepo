@@ -1,23 +1,27 @@
-import { backendLogger } from './logger'
+import { clientLogger, type LoggerType } from './client-logger'
 
-class ConfigLoader<T extends Record<string, any>> {
+export class ConfigLoader<T extends Record<string, any>> {
   private static instanceMap = new Map<string, ConfigLoader<any>>()
   private config: T
+  private logger: LoggerType
 
-  private constructor(schema: { [K in keyof T]: () => T[K] }) {
+  private constructor(schema: { [K in keyof T]: () => T[K] }, logger: LoggerType) {
     this.config = Object.keys(schema).reduce((acc, key) => {
       acc[key as keyof T] = schema[key as keyof T]()
       return acc
     }, {} as T)
+    this.logger = logger
   }
 
   public static getInstance<T extends Record<string, any>>(
     schema: { [K in keyof T]: () => T[K] },
     key: string = 'default', // optional identifier for multi-config support
+    logger: LoggerType,
   ): ConfigLoader<T> {
     if (!ConfigLoader.instanceMap.has(key)) {
-      ConfigLoader.instanceMap.set(key, new ConfigLoader(schema))
+      ConfigLoader.instanceMap.set(key, new ConfigLoader(schema, logger))
     }
+
     return ConfigLoader.instanceMap.get(key) as ConfigLoader<T>
   }
 
@@ -36,9 +40,8 @@ class ConfigLoader<T extends Record<string, any>> {
     if (errors.length > 0) {
       const notAvailableENVs = errors.reduce((prev, curr) => (prev = `${prev} \n ${curr}`), '')
 
-      backendLogger.error(
-        `Configuration validation failed:\n Configuration keys ${notAvailableENVs}`,
-      )
+      this.logger.error(`Configuration validation failed:\n Configuration keys ${notAvailableENVs}`)
+
       process.exit(1)
     }
   }
@@ -52,32 +55,10 @@ class ConfigLoader<T extends Record<string, any>> {
   }
 }
 
-const workerConfigSchema = {
-  jwtSecret: () => process.env.JWT_SECRET,
-  databaseUrl: () => process.env.DATABASE_URL,
-  nodeEnv: () => process.env.NODE_ENV || 'development',
-  redisUrl: () => process.env.REDIS_URL,
-}
-
-const backendConfigSchema = {
-  jwtSecret: () => process.env.JWT_SECRET,
-  port: () => Number(process.env.PORT),
-  frontendUrl: () => process.env.FRONTEND_URL,
-  databaseUrl: () => process.env.DATABASE_URL,
-  nodeEnv: () => process.env.NODE_ENV || 'development',
-  redisUrl: () => process.env.REDIS_URL,
-  betterAuthUrl: () => process.env.BETTER_AUTH_URL,
-  betterAuthSecret: () => process.env.BETTER_AUTH_SECRET,
-}
-
 const clientConfigSchema = {
   appUrl: () => process.env.NEXT_PUBLIC_APP_URL,
   apiBaseUrl: () => process.env.NEXT_PUBLIC_API_URL,
-  jwtSecret: () => process.env.JWT_SECRET,
-  databaseUrl: () => process.env.DATABASE_URL,
   nodeEnv: () => process.env.NODE_ENV || 'development',
 }
 
-export const backendConfig = ConfigLoader.getInstance(backendConfigSchema, 'server')
-export const workerConfig = ConfigLoader.getInstance(workerConfigSchema, 'worker')
-export const clientConfig = ConfigLoader.getInstance(clientConfigSchema, 'client')
+export const clientConfig = ConfigLoader.getInstance(clientConfigSchema, 'client', clientLogger)

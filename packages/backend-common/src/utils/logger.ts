@@ -1,10 +1,6 @@
-import path from 'path'
+import { createLogger as winstonCreateLogger, format, transports } from 'winston'
 import { format as dateFormat, parseISO } from 'date-fns'
-import {
-  createLogger as winstonCreateLogger,
-  format,
-  transports,
-} from 'winston'
+import path from 'path'
 
 const { splat, combine, errors, timestamp, printf, align, colorize } = format
 const colorizer = colorize({
@@ -28,9 +24,7 @@ const baseFormat = printf((info) => {
   const lvl = info.level
   const msg = info.message
   const stack = info.stack ? `, error: ${info.stack}` : ''
-  const payload = info.payload
-    ? `, payload: ${JSON.stringify(info.payload, null, 2)}`
-    : ''
+  const payload = info.payload ? `, payload: ${JSON.stringify(info.payload, null, 2)}` : ''
   return `([${colorizer(info.level, ts)}]) [${lvl}] [${info.service}] ${msg}${stack}${payload}`
 })
 
@@ -87,4 +81,4 @@ export function createLogger(serviceName: string) {
 // logger.info("Logger initialized", { payload });
 
 export const backendLogger = createLogger('template-server')
-export const clientActionLogger = createLogger('template-client-server-action')
+export const workerLogger = createLogger('template-worker')

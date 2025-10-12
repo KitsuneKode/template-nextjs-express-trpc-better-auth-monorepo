@@ -6,7 +6,9 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./redis": "./src/redis/index.ts"
+    "./redis": "./src/redis/index.ts",
+    "./logger": "./src/utils/logger.ts",
+    "./config": "./src/utils/config.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,10 +18,13 @@
   "license": "ISC",
   "devDependencies": {
     "@template/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/winston": "^2.4.4"
   },
   "dependencies": {
-    "@template/common": "*"
+    "@template/common": "*",
+    "date-fns": "^4.1.0",
+    "winston": "^3.17.0"
   },
   "peerDependencies": {
     "typescript": "^5"

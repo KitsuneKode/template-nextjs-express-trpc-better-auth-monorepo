@@ -1,2 +1,2 @@
-export {backendLogger as logger} from '@template/common/logger'
+export {backendLogger as logger} from '@template/backend-common/logger'
 
