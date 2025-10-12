@@ -17,6 +17,23 @@
 
 ---
 
+## 🧪 Use this template
+
+```sh
+bun create turbo@latest --example https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo
+cd my-app
+bun install
+bun dev
+```
+
+> Requires Bun: [Bun](https://bun.sh)
+
+## 🔗 Repository
+
+- GitHub: [KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo](https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo)
+
+---
+
 ## 🚀 Features
 
 - **Full-Stack Ready:** Next.js frontend, Express backend, tRPC for typesafe APIs.
