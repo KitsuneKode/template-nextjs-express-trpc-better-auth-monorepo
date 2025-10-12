@@ -1,3 +1,4 @@
-import { createLogger } from '@template/common/logger'
+//only used for nodejs/server actions
 
-export const logger = createLogger('template-client')
+export  { clientActionLogger as logger } from '@template/common/logger'
+

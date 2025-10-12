@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import { logger } from '@/utils/logger'
-import config from '@/utils/config'
+import { config } from '@/utils/config'
 
 export const timingMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now()

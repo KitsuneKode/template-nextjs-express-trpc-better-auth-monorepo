@@ -3,7 +3,7 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import { prisma as db } from '@template/store'
 import { z, ZodError } from 'zod/v4'
 import superjson from 'superjson'
-
+import {logger} from "./utils/logger"
 import * as trpcExpress from '@trpc/server/adapters/express'
 
 export const createTRPCContext = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
@@ -49,7 +49,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   const result = await next()
 
   const end = Date.now()
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`)
+  logger.info(`[TRPC] ${path} took ${end - start}ms to execute`)
 
   return result
 })

@@ -85,3 +85,6 @@ export function createLogger(serviceName: string) {
 // logger.info("Hello there. How are you?");
 //
 // logger.info("Logger initialized", { payload });
+
+export const backendLogger = createLogger('template-server')
+export const clientActionLogger = createLogger('template-client-server-action')

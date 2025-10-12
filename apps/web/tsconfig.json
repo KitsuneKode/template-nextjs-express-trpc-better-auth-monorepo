@@ -3,24 +3,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@template/ui/*": [
-        "../../packages/ui/src/*"
-      ],
-      "@template/store/*": [
-        "../../packages/store/src/*"
-      ],
-      "@template/auth/*": [
-        "../../packages/auth/src/*"
-      ],
-      "@template/trpc/*": [
-        "../../packages/trpc/src/*"
-      ],
-      "@template/common/*": [
-        "../../packages/common/src/*"
-      ]
+      "@/*": ["./*"],
+      "@template/ui/*": ["../../packages/ui/*"],
+      "@template/store/*": ["../../packages/store/src/*"],
+      "@template/auth/*": ["../../packages/auth/src/*"],
+      "@template/trpc/*": ["../../packages/trpc/src/*"],
+      "@template/common/*": ["../../packages/common/src/*"]
     },
     "plugins": [
       {
@@ -35,7 +23,5 @@
     "next.config.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

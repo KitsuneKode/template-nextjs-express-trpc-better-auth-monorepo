@@ -1,10 +1,10 @@
 {
   "name": "@template/server",
-  "module": "./src/server.ts",
+  "module": "src/server.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown src/server.ts",
     "check-types": "tsc -b",
     "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/server.ts",
