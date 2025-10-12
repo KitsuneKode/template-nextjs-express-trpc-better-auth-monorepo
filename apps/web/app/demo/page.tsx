@@ -41,7 +41,7 @@ const Demo = () => {
   const [signInState, setSignInState] = useState(false)
   const [signOutState, setSignOutState] = useState(false)
   const [state, dispatch] = useReducer(reducer, defaultFormValue)
-  const data = useQuery(trpc.hello.queryOptions({ text: 'hi' }))
+  const data = useQuery(trpc.hello.queryOptions({ name: 'John Doe' }))
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

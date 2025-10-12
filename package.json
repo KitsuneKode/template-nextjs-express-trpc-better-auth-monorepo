@@ -30,6 +30,6 @@
     "apps/*",
     "packages/*",
     "tooling/*",
-    "tests/*"
+    "tests"
   ]
 }

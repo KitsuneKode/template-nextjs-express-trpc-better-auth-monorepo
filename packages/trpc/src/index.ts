@@ -1,10 +1,11 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { config } from '@template/backend-common/config'
 import type { AppRouter } from './routers/_app'
 import { createCallerFactory } from './trpc'
 import { appRouter } from './routers/_app'
 import { createTRPCContext } from './trpc'
+import { logger } from './utils/logger'
+import { config } from './utils/config'
 /**
  * Inference helpers for input types
  * @example
@@ -25,9 +26,9 @@ const expressMiddleWare = createExpressMiddleware({
   router: appRouter,
   createContext: createTRPCContext,
   onError:
-    config.getConfig('environment') === 'development'
+    config.getConfig('nodeEnv') === 'development'
       ? ({ path, error }) => {
-          console.error(`[TRPC]❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`)
+          logger.error(`[TRPC]❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`, error)
         }
       : undefined,
 })

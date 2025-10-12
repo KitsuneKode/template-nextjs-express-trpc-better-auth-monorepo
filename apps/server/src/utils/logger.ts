@@ -1,3 +1,2 @@
-import { createLogger } from '@template/common/logger'
+export {backendLogger as logger} from '@template/common/logger'
 
-export const logger = createLogger('template-api')

@@ -11,7 +11,7 @@ export const userRouter = {
     return prisma.user.findMany()
   }),
   createUser: protectedProcedure
-    .input(z.object({ email: z.string().email(), name: z.string().min(5) }))
+    .input(z.object({ email: z.email(), name: z.string().min(5) }))
     .mutation(async (opts) => {
       // use your ORM of classhoice
       return prisma.user.findMany({

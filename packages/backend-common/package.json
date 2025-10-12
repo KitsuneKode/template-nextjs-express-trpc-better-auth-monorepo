@@ -6,7 +6,7 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./config": "./src/config.ts"
+    "./redis": "./src/redis/index.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
