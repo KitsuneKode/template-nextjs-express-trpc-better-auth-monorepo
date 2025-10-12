@@ -9,6 +9,7 @@
     "check-types": "turbo run check-types",
     "dev:web": "turbo -F @template/web dev",
     "dev:server": "turbo -F @template/server dev",
+    "dev:worker": "turbo -F @template/worker dev",
     "db:push": "turbo db:push",
     "db:studio": "turbo db:studio",
     "db:generate": "turbo db:generate",
@@ -31,5 +32,8 @@
     "packages/*",
     "tooling/*",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "@types/minimatch": "^6.0.0"
+  }
 }

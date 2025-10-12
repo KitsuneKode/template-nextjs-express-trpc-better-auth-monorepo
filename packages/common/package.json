@@ -8,7 +8,9 @@
     ".": "./src/index.ts",
     "./types": "./src/types/zod-schema.ts",
     "./config-loader": "./src/utils/config-loader.ts",
-    "./logger": "./src/utils/logger.ts"
+    "./logger": {
+      "default": "./src/utils/client-logger.ts"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,12 +20,9 @@
   "license": "ISC",
   "devDependencies": {
     "@template/typescript-config": "*",
-    "@types/bun": "latest",
-    "@types/winston": "^2.4.4"
+    "@types/bun": "latest"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
-    "winston": "^3.17.0",
     "zod": "^4.0.0"
   },
   "peerDependencies": {

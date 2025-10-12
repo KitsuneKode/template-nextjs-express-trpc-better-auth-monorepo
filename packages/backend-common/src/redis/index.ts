@@ -1,4 +1,4 @@
-import { backendConfig, workerConfig } from '@template/common/config-loader'
+import { backendConfig, workerConfig } from '../utils/config'
 import { RedisClient } from 'bun'
 
 type ServiceType = 'server' | 'worker'
@@ -11,7 +11,7 @@ const getEnvironment = (service: ServiceType) => {
   }
 }
 
-export const redis = (service: ServiceType) => {
+export const redisClient = (service: ServiceType) => {
   const url = getEnvironment(service)
   return new RedisClient(url)
 }
