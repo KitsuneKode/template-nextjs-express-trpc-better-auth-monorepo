@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+# Project Structure Guide
+
+This monorepo hosts multiple apps and shared packages. Start here to navigate key entry points and shared utilities.
+
+## Apps
+
+- Server (Express): entry at [apps/server/src/server.ts](mdc:apps/server/src/server.ts); app bootstrap in [apps/server/src/app.ts](mdc:apps/server/src/app.ts)
+- Web (Next.js App Router): root layout at [apps/web/app/layout.tsx](mdc:apps/web/app/layout.tsx); home page at [apps/web/app/page.tsx](mdc:apps/web/app/page.tsx)
+- Worker (Background jobs): entry at [apps/worker/src/index.ts](mdc:apps/worker/src/index.ts)
+
+## Shared Packages
+
+- TRPC router and helpers: [packages/trpc/src/index.ts](mdc:packages/trpc/src/index.ts)
+- Prisma store/client: [packages/store/src/index.ts](mdc:packages/store/src/index.ts) with schema at [packages/store/prisma/schema.prisma](mdc:packages/store/prisma/schema.prisma)
+- Common utilities/types: [packages/common/src/index.ts](mdc:packages/common/src/index.ts)
+- Backend common (config/logger/redis): [packages/backend-common/src/index.ts](mdc:packages/backend-common/src/index.ts)
+- Auth package: [packages/auth/src/index.ts](mdc:packages/auth/src/index.ts)
+
+## Config and Tooling
+
+- Turborepo: [turbo.json](mdc:turbo.json)
+- TypeScript base configs: [tooling/typescript-config](mdc:tooling/typescript-config)
+- ESLint base configs: [tooling/eslint-config](mdc:tooling/eslint-config)
+- Workspace package manifest: [package.json](mdc:package.json)
+
+## Logs and Builds
+
+- Server build output: [apps/server/dist/server.js](mdc:apps/server/dist/server.js)
+- Worker build output: [apps/worker/dist/index.js](mdc:apps/worker/dist/index.js)
+- App logs: [apps/server/logs](mdc:apps/server/logs), [apps/worker/logs](mdc:apps/worker/logs)
+
+## Conventions
+
+- Use shared config and logger utilities from `packages/backend-common` or `packages/common` where applicable.
+- Web app should call TRPC via `apps/web/trpc/*` and never import server-only modules.
+

@@ -1,0 +1,31 @@
+---
+globs: *.ts,*.tsx
+description: TypeScript and React coding conventions across the monorepo
+---
+# TypeScript/React Conventions
+
+- Prefer explicit return types for exported functions and public APIs.
+- Use descriptive variable and function names; avoid abbreviations.
+- Avoid `any`. Use `unknown` + narrowing when needed.
+- Favor early returns over deep nesting.
+- Do not catch errors without handling; log with shared logger where available.
+- Keep components pure; lift side-effects to hooks or server actions.
+- In Next.js App Router, prefer Server Components by default; use Client Components only when needed and annotate with `"use client"`.
+
+## Imports
+
+- Import shared utilities from packages rather than duplicating code:
+  - Backend: [packages/backend-common/src/utils](mdc:packages/backend-common/src/utils)
+  - Common/browser: [packages/common/src/utils](mdc:packages/common/src/utils)
+
+## Logging
+
+- Server/Worker: use [packages/backend-common/src/utils/logger.ts](mdc:packages/backend-common/src/utils/logger.ts)
+- Web (client): use [packages/common/src/utils/client-logger.ts](mdc:packages/common/src/utils/client-logger.ts)
+
+## Configuration
+
+- Load config via:
+  - Backend: [packages/backend-common/src/utils/config.ts](mdc:packages/backend-common/src/utils/config.ts)
+  - Web: [apps/web/utils/config.ts](mdc:apps/web/utils/config.ts)
+
