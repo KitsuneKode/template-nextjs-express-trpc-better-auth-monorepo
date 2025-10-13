@@ -1,3 +1,7 @@
 {
-  "extends": "@template/typescript-config/backend.json"
+  "extends": "@template/typescript-config/backend.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler"
+  }
 }
