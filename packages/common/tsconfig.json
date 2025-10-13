@@ -2,6 +2,7 @@
   "extends": "@template/typescript-config/backend.json",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": false
   }
 }
