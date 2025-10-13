@@ -1,0 +1,39 @@
+
+---
+globs: apps/web/**/*.ts,apps/web/**/*.tsx
+description: Prefer shadcn/ui components; don’t duplicate components that already exist
+---
+
+# Shadcn UI Usage Policy
+
+- **Preference**: Always use existing shadcn/ui components and their related libraries whenever possible.
+- **No duplication**: **Do not** create a new UI component if an equivalent already exists.
+- **Scope**: This applies to all TypeScript and TSX files under `apps/web`.
+
+## Where to look first
+- Existing shared/UI components may live in:
+  - `apps/web/src/components`
+  - `packages/ui/src/components`
+- Shadcn configuration for the web app: [apps/web/components.json](mdc:apps/web/components.json)
+
+## Adding shadcn components (Bun)
+Run these from the `apps/web` directory:
+
+```bash
+cd apps/web
+bunx --bun shadcn@latest add <component-name>
+```
+
+If shadcn hasn’t been initialized yet, initialize first (non-interactive):
+
+```bash
+cd apps/web
+bunx --bun shadcn@latest init -y
+```
+
+## Guidance
+- Prefer shadcn/ui primitives (and related libraries such as `@radix-ui/*`, `class-variance-authority`, or `tailwind-variants`) over custom implementations.
+- Before introducing a new component, search for an existing one with the same purpose and reuse/extend it.
+- [Shadcn UI Components](https://ui.shadcn.com/docs/components)
+- Use shadcn mcp server to search for components
+
