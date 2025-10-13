@@ -1,0 +1,20 @@
+---
+description: Frontend architecture overview for Next.js App Router and TRPC client
+---
+# Frontend Architecture (Next.js App Router)
+
+- Root layout: [apps/web/app/layout.tsx](mdc:apps/web/app/layout.tsx)
+- Home page: [apps/web/app/page.tsx](mdc:apps/web/app/page.tsx)
+- Example routes: [apps/web/app/demo/page.tsx](mdc:apps/web/app/demo/page.tsx), [apps/web/app/chat/[roomId]/page.tsx](mdc:apps/web/app/chat/[roomId]/page.tsx)
+- Providers: [apps/web/components/providers.tsx](mdc:apps/web/components/providers.tsx)
+- TRPC client: [apps/web/trpc/client.tsx](mdc:apps/web/trpc/client.tsx), [apps/web/trpc/query-client.ts](mdc:apps/web/trpc/query-client.ts)
+- TRPC server helpers: [apps/web/trpc/server.tsx](mdc:apps/web/trpc/server.tsx)
+
+## Guidelines
+
+- Favor Server Components; use Client Components only when necessary.
+- Use TRPC hooks from the generated client; do not fetch server endpoints directly.
+- Use shared UI components from [packages/ui/src](mdc:packages/ui/src).
+- For client logging, use [packages/common/src/utils/client-logger.ts](mdc:packages/common/src/utils/client-logger.ts).
+- Keep environment access within server components or server utilities; avoid leaking secrets to the client.
+

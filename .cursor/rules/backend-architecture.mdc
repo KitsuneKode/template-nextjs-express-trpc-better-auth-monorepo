@@ -1,0 +1,39 @@
+---
+description: Backend architecture overview for server, worker, store, and trpc
+---
+# Backend Architecture
+
+## Server (Express)
+
+- Entry: [apps/server/src/server.ts](mdc:apps/server/src/server.ts)
+- App setup: [apps/server/src/app.ts](mdc:apps/server/src/app.ts)
+- Middlewares: [apps/server/src/middlewares](mdc:apps/server/src/middlewares)
+- Routes/controllers/services live under [apps/server/src](mdc:apps/server/src)
+- Redis utils: [apps/server/src/lib/redis/index.ts](mdc:apps/server/src/lib/redis/index.ts)
+
+Use the shared logger and config from [packages/backend-common](mdc:packages/backend-common/src/index.ts).
+
+## Worker
+
+- Entry: [apps/worker/src/index.ts](mdc:apps/worker/src/index.ts)
+- Redis helpers: [apps/worker/src/redis/index.ts](mdc:apps/worker/src/redis/index.ts)
+- Logger: [apps/worker/src/utils/logger.ts](mdc:apps/worker/src/utils/logger.ts)
+
+## Store (Prisma)
+
+- Schema: [packages/store/prisma/schema.prisma](mdc:packages/store/prisma/schema.prisma)
+- Programmatic access: [packages/store/src/index.ts](mdc:packages/store/src/index.ts)
+- Migrations: [packages/store/prisma/migrations](mdc:packages/store/prisma/migrations)
+
+## TRPC
+
+- Server routers: [packages/trpc/src/routers/_app.ts](mdc:packages/trpc/src/routers/_app.ts)
+- Auth/user routers: [packages/trpc/src/routers](mdc:packages/trpc/src/routers)
+- TRPC server setup helpers: [packages/trpc/src/trpc.ts](mdc:packages/trpc/src/trpc.ts)
+
+## Guidelines
+
+- Keep business logic in services and packages; keep route handlers thin.
+- Validate inputs at TRPC boundary using Zod schemas in [packages/common/src/types/zod-schema.ts](mdc:packages/common/src/types/zod-schema.ts).
+- Centralize config and logging via shared packages.
+
