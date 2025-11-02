@@ -23,8 +23,8 @@
     "@trpc/server": "^11.6.0",
     "@trpc/tanstack-react-query": "^11.6.0",
     "client-only": "^0.0.1",
-    "lucide-react": "^0.544.0",
-    "next": "^15.5.4",
+    "lucide-react": "^0.552.0",
+    "next": "^16.0.1",
     "next-themes": "^0.4.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -36,12 +36,12 @@
     "@template/eslint-config": "*",
     "@template/typescript-config": "*",
     "@types/node": "^24.5.2",
-    "@types/react": "19.1.15",
-    "@types/react-dom": "19.1.9",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
     "eslint": "^9.36.0",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "typescript": "^5.9.2"
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "typescript": "^5.9.3"
   }
 }

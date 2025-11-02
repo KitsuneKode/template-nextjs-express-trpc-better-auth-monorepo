@@ -18,10 +18,11 @@
     "postinstall": "turbo run db:generate"
   },
   "devDependencies": {
+    "@types/minimatch": "^6.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
-    "turbo": "^2.5.4",
-    "typescript": "5.9.2"
+    "turbo": "^2.6.0",
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=18"
@@ -31,9 +32,6 @@
     "apps/*",
     "packages/*",
     "tooling/*",
-    "tests"
-  ],
-  "dependencies": {
-    "@types/minimatch": "^6.0.0"
-  }
+    "tests/"
+  ]
 }

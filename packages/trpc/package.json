@@ -18,7 +18,7 @@
     "@template/typescript-config": "*"
   },
   "peerDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@template/auth": "*",
