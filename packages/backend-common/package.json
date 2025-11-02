@@ -28,6 +28,6 @@
     "winston": "^3.17.0"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }
