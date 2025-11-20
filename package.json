@@ -11,19 +11,26 @@
     "dev:web": "turbo -F @template/web dev",
     "dev:server": "turbo -F @template/server dev",
     "dev:worker": "turbo -F @template/worker dev",
-    "db:push": "turbo db:push",
+    "db:seed": "turbo db:seed",
     "db:studio": "turbo db:studio",
     "db:generate": "turbo db:generate",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,yml}\"",
     "db:migrate": "turbo db:migrate",
+    "rename-scope": "bun tooling/scripts/rename-scope.ts",
+    "rename-scope:dry": "bun tooling/scripts/rename-scope.ts --dry-run",
+    "rename-scope:verbose": "bun tooling/scripts/rename-scope.ts --verbose",
     "preinstall": "npx only-allow bun"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
+    "prettier-plugin-tailwindcss": "^0.7.1",
     "turbo": "^2.6.0",
-    "typescript": "5.9.3"
+    "eslint": "^9.30.0",
+    "typescript": "5.9.3",
+    "@template/eslint-config": "*",
+    "@template/typescript-config": "*"
   },
   "engines": {
     "node": ">=18"

@@ -1,1 +1,1 @@
-{ "extends": "@buzz8n/typescript-config/base.json" }
+{ "extends": "@template/typescript-config/base.json" }

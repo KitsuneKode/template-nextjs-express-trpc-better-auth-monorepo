@@ -18,12 +18,12 @@
     ".": "./src/index.ts"
   },
   "devDependencies": {
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*",
     "@types/bun": "latest",
     "@types/pg": "^8.15.6",
     "eslint": "^9.36.0",
-    "prisma": "^7.0.0"
+    "prisma": "^7.0.0",
+    "@template/eslint-config": "*",
+    "@template/typescript-config": "*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

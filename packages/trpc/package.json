@@ -19,21 +19,21 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@template/eslint-config": "*",
     "@types/bun": "latest",
-    "@template/typescript-config": "*",
-    "eslint": "^9.36.0"
+    "eslint": "^9.36.0",
+    "@template/eslint-config": "*",
+    "@template/typescript-config": "*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@trpc/server": "^11.6.0",
+    "superjson": "^2.2.2",
+    "zod": "^4.1.11",
     "@template/auth": "*",
     "@template/store": "*",
     "@template/common": "*",
-    "@template/backend-common": "*",
-    "@trpc/server": "^11.6.0",
-    "superjson": "^2.2.2",
-    "zod": "^4.1.11"
+    "@template/backend-common": "*"
   }
 }

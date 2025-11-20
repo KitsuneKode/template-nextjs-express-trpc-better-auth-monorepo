@@ -1,8 +1,8 @@
 import { prisma } from '@template/store'
 import { betterAuth } from 'better-auth'
 export { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
-import { nextCookies } from 'better-auth/next-js'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
+import { nextCookies } from 'better-auth/next-js'
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
