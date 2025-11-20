@@ -4,8 +4,8 @@ import * as trpcExpress from '@trpc/server/adapters/express'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 
 const createTRPCContext = async ({
-  req,
-  res,
+  req: _req,
+  res: _res,
 }: trpcExpress.CreateExpressContextOptions) => {
   return { userId: 'user_123' }
 }
@@ -24,7 +24,6 @@ const t = initTRPC.context<Context>().create({
 })
 // Base router and procedure helpers
 const createTRPCRouter = t.router
-const createCallerFactory = t.createCallerFactory
 const baseProcedure = t.procedure
 
 const appRouter = createTRPCRouter({

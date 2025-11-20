@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "./src/index.ts",
+  "type": "module",
   "private": true,
   "exports": {
     ".": "./src/index.ts",
@@ -13,14 +14,19 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^9.36.0"
   },
   "dependencies": {
     "zod": "^4.0.0"

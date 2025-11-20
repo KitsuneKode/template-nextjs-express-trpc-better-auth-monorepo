@@ -8,11 +8,14 @@
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --minify --sourcemap",
     "dev": "bun run --hot src/index.ts",
     "start": "bun run dist/server.js",
-    "lint": "bun run lint"
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^9.36.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

@@ -1,7 +1,7 @@
 import { clientLogger, type LoggerType } from './client-logger'
 
-export class ConfigLoader<T extends Record<string, any>> {
-  private static instanceMap = new Map<string, ConfigLoader<any>>()
+export class ConfigLoader<T extends Record<string, unknown>> {
+  private static instanceMap = new Map<string, ConfigLoader<Record<string, unknown>>>()
   private config: T
   private logger: LoggerType
 
@@ -13,7 +13,7 @@ export class ConfigLoader<T extends Record<string, any>> {
     this.logger = logger
   }
 
-  public static getInstance<T extends Record<string, any>>(
+  public static getInstance<T extends Record<string, unknown>>(
     schema: { [K in keyof T]: () => T[K] },
     key: string = 'default', // optional identifier for multi-config support
     logger: LoggerType,

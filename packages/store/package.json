@@ -4,25 +4,33 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "db:generate": " prisma generate",
-    "db:migrate": " prisma migrate",
+    "db:generate": "bunx --bun prisma generate",
+    "db:migrate": "bunx --bun prisma migrate dev",
     "db:seed": "bun run src/scripts/seed.ts",
-    "db:studio": " prisma studio",
-    "db:migrate:dev": "prisma migrate dev",
-    "db:deploy": " prisma deploy"
+    "db:studio": "prisma studio",
+    "db:deploy": "prisma deploy",
+    "db:reset": "prisma migrate reset",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
   },
   "exports": {
     ".": "./src/index.ts"
   },
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.6",
+    "eslint": "^9.36.0",
+    "prisma": "^7.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.18.0",
-    "prisma": "^6.18.0"
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "pg": "^8.16.3"
   }
 }

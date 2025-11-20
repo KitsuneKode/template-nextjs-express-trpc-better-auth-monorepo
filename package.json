@@ -5,7 +5,8 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint:fix": "turbo run lint:fix",
+    "clean": "find . -name node_modules -o -name .next -o -name .turbo -o -name dist -type d -prune | xargs rm -rf",
     "check-types": "turbo run check-types",
     "dev:web": "turbo -F @template/web dev",
     "dev:server": "turbo -F @template/server dev",
@@ -13,12 +14,12 @@
     "db:push": "turbo db:push",
     "db:studio": "turbo db:studio",
     "db:generate": "turbo db:generate",
-    "db:migrate:dev": "turbo db:migrate:dev",
-    "preinstall": "npx only-allow bun",
-    "postinstall": "turbo run db:generate"
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,yml}\"",
+    "db:migrate": "turbo db:migrate",
+    "preinstall": "npx only-allow bun"
   },
   "devDependencies": {
-    "@types/minimatch": "^6.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
     "turbo": "^2.6.0",
@@ -27,11 +28,11 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "bun@1.2.15",
+  "packageManager": "bun@1.3.1",
   "workspaces": [
     "apps/*",
     "packages/*",
     "tooling/*",
-    "tests/"
+    "tests/*"
   ]
 }

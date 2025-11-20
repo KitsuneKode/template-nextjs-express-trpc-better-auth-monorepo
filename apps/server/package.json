@@ -6,15 +6,18 @@
   "scripts": {
     "check-types": "tsc -noEmit",
     "build": "bun build ./src/server.ts --outdir ./dist --target bun --minify --sourcemap",
-    "dev": "bun run --hot src/server.ts",
+    "dev": "bun run --watch src/server.ts",
     "start": "bun run dist/index.js",
-    "lint": "bun run lint"
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3"
+    "@types/express": "^5.0.3",
+    "eslint": "^9.36.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

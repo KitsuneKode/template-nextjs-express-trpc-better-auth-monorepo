@@ -7,9 +7,16 @@
     "./server": "./src/index.ts",
     "./client": "./src/client.ts"
   },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
+  },
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^9.36.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
