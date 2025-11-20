@@ -13,17 +13,17 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*",
     "@types/bun": "latest",
-    "eslint": "^9.36.0"
+    "eslint": "^9.36.0",
+    "@template/eslint-config": "*",
+    "@template/typescript-config": "*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "better-auth": "^1.2.12",
     "@template/store": "*",
-    "@template/common": "*",
-    "better-auth": "^1.2.12"
+    "@template/common": "*"
   }
 }

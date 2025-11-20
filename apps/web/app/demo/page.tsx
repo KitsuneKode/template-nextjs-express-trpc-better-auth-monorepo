@@ -1,169 +1,75 @@
 'use client'
-import { useTRPC } from '@/trpc/client'
-import { useQuery } from '@tanstack/react-query'
-import { authClient } from '@template/auth/client'
-import React, { useReducer, useState } from 'react'
-import { Input } from '@template/ui/components/input'
-import { Label } from '@template/ui/components/label'
-import { Button } from '@template/ui/components/button'
 
-const defaultFormValue = {
-  email: '',
-  name: '',
-  password: '',
-}
+import React from 'react'
+import Link from 'next/link'
+import { motion } from 'motion/react'
+import { Lock, MessageSquare, FileText, ArrowLeft } from 'lucide-react'
 
-enum ActionKind {
-  EMAIL = 'email',
-  NAME = 'name',
-  PASSWORD = 'password',
-}
-interface Action {
-  type: ActionKind
-  value: string
-}
+const demos = [
+  {
+    title: 'Authentication',
+    description: 'Secure sign-in and sign-up flows with Better Auth.',
+    icon: <Lock className="h-8 w-8 text-emerald-400" />,
+    href: '/demo/auth',
+    color:
+      'bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-500/50',
+  },
+  {
+    title: 'Real-time Chat',
+    description: 'Live chat functionality powered by Upstash Redis.',
+    icon: <MessageSquare className="h-8 w-8 text-blue-400" />,
+    href: '/demo/chat',
+    color: 'bg-blue-500/10 border-blue-500/20 hover:border-blue-500/50',
+  },
+  {
+    title: 'Blog & CMS',
+    description: 'Dynamic content management with Markdown support.',
+    icon: <FileText className="h-8 w-8 text-purple-400" />,
+    href: '/demo/blog',
+    color: 'bg-purple-500/10 border-purple-500/20 hover:border-purple-500/50',
+  },
+]
 
-function reducer(state: typeof defaultFormValue, action: Action) {
-  switch (action.type) {
-    case 'email':
-      return { ...state, email: action.value }
-    case 'name':
-      return { ...state, name: action.value }
-    case 'password':
-      return { ...state, password: action.value }
-    default:
-      throw new Error('Invalid action type')
-  }
-}
-
-const Demo = () => {
-  const trpc = useTRPC()
-  const [signInState, setSignInState] = useState(false)
-  const [signOutState, setSignOutState] = useState(false)
-  const [state, dispatch] = useReducer(reducer, defaultFormValue)
-  const data = useQuery(trpc.hello.queryOptions({ name: 'John Doe' }))
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(state)
-    const { data, error } = await authClient.signUp.email({
-      email: state.email,
-      name: state.name,
-      password: state.password,
-    })
-    console.log(data, error)
-    if (data?.user) {
-      setSignInState(true)
-    }
-  }
-
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(state)
-    const { data, error } = await authClient.signIn.email({
-      email: state.email,
-      password: state.password,
-    })
-    console.log(data, error)
-    if (data?.user) {
-      setSignInState(false)
-      setSignOutState(true)
-    }
-  }
-
-  const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(state)
-    const { data, error } = await authClient.signOut()
-    console.log(data, error)
-    if (data) {
-      setSignOutState(false)
-    }
-  }
-
+export default function DemoPage() {
   return (
-    <>
-      <div className="mb-10 flex items-center justify-center">
-        <h1>{data.isLoading && 'Loading...'}</h1>
-        {data.data && <p>{JSON.stringify(data.data, null, 2)}</p>}
-      </div>
+    <div className="min-h-screen bg-neutral-950 p-8 text-white">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12">
+          <Link
+            href="/"
+            className="mb-8 inline-flex items-center text-neutral-400 transition-colors hover:text-white"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <h1 className="mb-4 text-4xl font-bold md:text-6xl">
+            Template Demos
+          </h1>
+          <p className="max-w-2xl text-xl text-neutral-400">
+            Explore the capabilities of this starter template. Each demo
+            showcases a specific feature implementation.
+          </p>
+        </div>
 
-      {!signInState && !signOutState && (
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col items-center justify-center gap-4 space-y-4"
-        >
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={state.email}
-            onChange={(e) =>
-              dispatch({ type: ActionKind.EMAIL, value: e.target.value })
-            }
-          />
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Name"
-            value={state.name}
-            onChange={(e) =>
-              dispatch({ type: ActionKind.NAME, value: e.target.value })
-            }
-          />
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Password"
-            value={state.password}
-            onChange={(e) =>
-              dispatch({ type: ActionKind.PASSWORD, value: e.target.value })
-            }
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      )}
-      {signInState && !signOutState && (
-        <form
-          onSubmit={handleSignIn}
-          className="flex flex-col items-center justify-center gap-4 space-y-4"
-        >
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            value={state.email}
-            onChange={(e) =>
-              dispatch({ type: ActionKind.EMAIL, value: e.target.value })
-            }
-          />
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Password"
-            value={state.password}
-            onChange={(e) =>
-              dispatch({ type: ActionKind.PASSWORD, value: e.target.value })
-            }
-          />
-          <Button type="submit">Submit</Button>
-        </form>
-      )}
-      {signOutState && (
-        <form
-          onSubmit={handleSignOut}
-          className="flex flex-col items-center justify-center gap-4 space-y-4"
-        >
-          <Button type="submit">SignOut</Button>
-        </form>
-      )}
-    </>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {demos.map((demo, index) => (
+            <Link key={index} href={demo.href}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`h-full rounded-2xl border p-8 transition-all duration-300 hover:scale-[1.02] ${demo.color}`}
+              >
+                <div className="mb-6 w-fit rounded-xl bg-neutral-900/50 p-4">
+                  {demo.icon}
+                </div>
+                <h2 className="mb-3 text-2xl font-bold">{demo.title}</h2>
+                <p className="text-neutral-400">{demo.description}</p>
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
-
-export default Demo

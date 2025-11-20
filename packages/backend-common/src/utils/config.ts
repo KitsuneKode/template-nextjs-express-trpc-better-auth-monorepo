@@ -2,14 +2,12 @@ import { ConfigLoader } from '@template/common/config-loader'
 import { backendLogger, workerLogger } from './logger'
 
 const workerConfigSchema = {
-  jwtSecret: () => process.env.JWT_SECRET,
   databaseUrl: () => process.env.DATABASE_URL,
   nodeEnv: () => process.env.NODE_ENV || 'development',
   redisUrl: () => process.env.REDIS_URL,
 }
 
 const backendConfigSchema = {
-  jwtSecret: () => process.env.JWT_SECRET,
   port: () => Number(process.env.PORT),
   frontendUrl: () => process.env.FRONTEND_URL,
   databaseUrl: () => process.env.DATABASE_URL,

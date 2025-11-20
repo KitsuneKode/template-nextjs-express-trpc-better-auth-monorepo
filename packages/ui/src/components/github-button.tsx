@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { Star } from 'lucide-react';
-import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'motion/react';
-import { cn } from '@template/ui/lib/utils';
+import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'motion/react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import React, { useCallback, useEffect, useState } from 'react'
+import { cn } from '@template/ui/lib/utils'
+import { Star } from 'lucide-react'
 
 const githubButtonVariants = cva(
   'cursor-pointer relative overflow-hidden will-change-transform backface-visibility-hidden transform-gpu transition-transform duration-200 ease-out hover:scale-105 group whitespace-nowrap focus-visible:outline-hidden inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background disabled:pointer-events-none disabled:opacity-60 [&_svg]:shrink-0',
@@ -26,45 +26,47 @@ const githubButtonVariants = cva(
       size: 'default',
     },
   },
-);
+)
 
-interface GithubButtonProps extends React.ComponentProps<'button'>, VariantProps<typeof githubButtonVariants> {
+interface GithubButtonProps
+  extends React.ComponentProps<'button'>,
+    VariantProps<typeof githubButtonVariants> {
   /** Whether to round stars */
-  roundStars?: boolean;
+  roundStars?: boolean
   /** Whether to show Github icon */
-  fixedWidth?: boolean;
+  fixedWidth?: boolean
   /** Initial number of stars */
-  initialStars?: number;
+  initialStars?: number
   /** Class for stars */
-  starsClass?: string;
+  starsClass?: string
   /** Target number of stars to animate to */
-  targetStars?: number;
+  targetStars?: number
   /** Animation duration in seconds */
-  animationDuration?: number;
+  animationDuration?: number
   /** Animation delay in seconds */
-  animationDelay?: number;
+  animationDelay?: number
   /** Whether to start animation automatically */
-  autoAnimate?: boolean;
+  autoAnimate?: boolean
   /** Callback when animation completes */
-  onAnimationComplete?: () => void;
+  onAnimationComplete?: () => void
   /** Whether to show Github icon */
-  showGithubIcon?: boolean;
+  showGithubIcon?: boolean
   /** Whether to show star icon */
-  showStarIcon?: boolean;
+  showStarIcon?: boolean
   /** Whether to show separator */
-  separator?: boolean;
+  separator?: boolean
   /** Whether stars should be filled */
-  filled?: boolean;
+  filled?: boolean
   /** Repository URL for actual Github integration */
-  repoUrl?: string;
+  repoUrl?: string
   /** Button text label */
-  label?: string;
+  label?: string
   /** Use in-view detection to trigger animation */
-  useInViewTrigger?: boolean;
+  useInViewTrigger?: boolean
   /** In-view options */
-  inViewOptions?: UseInViewOptions;
+  inViewOptions?: UseInViewOptions
   /** Spring transition options */
-  transition?: SpringOptions;
+  transition?: SpringOptions
 }
 
 function GithubButton({
@@ -91,145 +93,145 @@ function GithubButton({
   transition,
   ...props
 }: GithubButtonProps) {
-  const [currentStars, setCurrentStars] = useState(initialStars);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [starProgress, setStarProgress] = useState(filled ? 100 : 0);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [currentStars, setCurrentStars] = useState(initialStars)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [starProgress, setStarProgress] = useState(filled ? 100 : 0)
+  const [hasAnimated, setHasAnimated] = useState(false)
 
   // Format number with units
   const formatNumber = (num: number) => {
-    const units = ['k', 'M', 'B', 'T'];
+    const units = ['k', 'M', 'B', 'T']
 
     if (roundStars && num >= 1000) {
-      let unitIndex = -1;
-      let value = num;
+      let unitIndex = -1
+      let value = num
 
       while (value >= 1000 && unitIndex < units.length - 1) {
-        value /= 1000;
-        unitIndex++;
+        value /= 1000
+        unitIndex++
       }
 
       // Format to 1 decimal place if needed, otherwise show whole number
-      const formatted = value % 1 === 0 ? value.toString() : value.toFixed(1);
-      return `${formatted}${units[unitIndex]}`;
+      const formatted = value % 1 === 0 ? value.toString() : value.toFixed(1)
+      return `${formatted}${units[unitIndex]}`
     }
 
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
 
   // Start animation
   const startAnimation = useCallback(() => {
-    if (isAnimating || hasAnimated) return;
+    if (isAnimating || hasAnimated) return
 
-    setIsAnimating(true);
-    const startTime = Date.now();
-    const startValue = 0; // Always start from 0 for number animation
-    const endValue = targetStars;
-    const duration = animationDuration * 1000;
+    setIsAnimating(true)
+    const startTime = Date.now()
+    const startValue = 0 // Always start from 0 for number animation
+    const endValue = targetStars
+    const duration = animationDuration * 1000
 
     const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
 
       // Easing function for smooth animation
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
 
       // Update star count from 0 to target with more frequent updates
-      const newStars = Math.round(startValue + (endValue - startValue) * easeOutQuart);
-      setCurrentStars(newStars);
+      const newStars = Math.round(startValue + (endValue - startValue) * easeOutQuart)
+      setCurrentStars(newStars)
 
       // Update star fill progress (0 to 100)
-      setStarProgress(progress * 100);
+      setStarProgress(progress * 100)
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animate)
       } else {
-        setCurrentStars(endValue);
-        setStarProgress(100);
-        setIsAnimating(false);
-        setHasAnimated(true);
+        setCurrentStars(endValue)
+        setStarProgress(100)
+        setIsAnimating(false)
+        setHasAnimated(true)
       }
-    };
+    }
 
     setTimeout(() => {
-      requestAnimationFrame(animate);
-    }, animationDelay * 1000);
-  }, [isAnimating, hasAnimated, targetStars, animationDuration, animationDelay]);
+      requestAnimationFrame(animate)
+    }, animationDelay * 1000)
+  }, [isAnimating, hasAnimated, targetStars, animationDuration, animationDelay])
 
   // Use in-view detection if enabled
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, inViewOptions);
+  const ref = React.useRef(null)
+  const isInView = useInView(ref, inViewOptions)
 
   // Reset animation state when targetStars changes
   useEffect(() => {
-    setHasAnimated(false);
-    setCurrentStars(initialStars);
-  }, [targetStars, initialStars]);
+    setHasAnimated(false)
+    setCurrentStars(initialStars)
+  }, [targetStars, initialStars])
 
   // Auto-start animation or use in-view trigger
   useEffect(() => {
     if (useInViewTrigger) {
       if (isInView && !hasAnimated) {
-        startAnimation();
+        startAnimation()
       }
     } else if (autoAnimate && !hasAnimated) {
-      startAnimation();
+      startAnimation()
     }
-  }, [autoAnimate, useInViewTrigger, isInView, hasAnimated, startAnimation]);
+  }, [autoAnimate, useInViewTrigger, isInView, hasAnimated, startAnimation])
 
   const navigateToRepo = () => {
     if (!repoUrl) {
-      return;
+      return
     }
 
     // Next.js compatible navigation approach
     try {
       // Create a temporary anchor element for reliable navigation
-      const link = document.createElement('a');
-      link.href = repoUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
+      const link = document.createElement('a')
+      link.href = repoUrl
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
 
       // Temporarily add to DOM and click
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     } catch {
       // Fallback to window.open
       try {
-        window.open(repoUrl, '_blank', 'noopener,noreferrer');
+        window.open(repoUrl, '_blank', 'noopener,noreferrer')
       } catch {
         // Final fallback
-        window.location.href = repoUrl;
+        window.location.href = repoUrl
       }
     }
-  };
+  }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (onClick) {
-      onClick(event);
-      return;
+      onClick(event)
+      return
     }
 
     if (repoUrl) {
-      navigateToRepo();
+      navigateToRepo()
     } else if (!hasAnimated) {
-      startAnimation();
+      startAnimation()
     }
-  };
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     // Handle Enter and Space key presses for accessibility
     if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
+      event.preventDefault()
 
       if (repoUrl) {
-        navigateToRepo();
+        navigateToRepo()
       } else if (!hasAnimated) {
-        startAnimation();
+        startAnimation()
       }
     }
-  };
+  }
 
   return (
     <button
@@ -286,11 +288,15 @@ function GithubButton({
         >
           <span>{currentStars > 0 && formatNumber(currentStars)}</span>
         </motion.div>
-        {fixedWidth && <span className="opacity-0 h-0 overflow-hidden tabular-nums">{formatNumber(targetStars)}</span>}
+        {fixedWidth && (
+          <span className="opacity-0 h-0 overflow-hidden tabular-nums">
+            {formatNumber(targetStars)}
+          </span>
+        )}
       </div>
     </button>
-  );
+  )
 }
 
-export { GithubButton, githubButtonVariants };
-export type { GithubButtonProps };
+export { GithubButton, githubButtonVariants }
+export type { GithubButtonProps }

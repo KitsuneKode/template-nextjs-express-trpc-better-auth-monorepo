@@ -1,5 +1,9 @@
+generated
 node_modules
 .github
-logs/**
+logs
+.husky
+.claude
+
 
 

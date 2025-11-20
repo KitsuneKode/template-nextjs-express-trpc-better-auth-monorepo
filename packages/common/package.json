@@ -23,10 +23,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*",
     "@types/bun": "latest",
-    "eslint": "^9.36.0"
+    "eslint": "^9.36.0",
+    "@template/eslint-config": "*",
+    "@template/typescript-config": "*"
   },
   "dependencies": {
     "zod": "^4.0.0"

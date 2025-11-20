@@ -1,8 +1,8 @@
-import { z } from 'zod';
-import type { SafeParseReturnType, ZodSchema } from 'zod';
+import type { SafeParseReturnType, ZodSchema } from 'zod'
+import { z } from 'zod'
 
 export function validate<T>(schema: ZodSchema<T>, data: T) {
-  return schema.safeParse(data);
+  return schema.safeParse(data)
 }
 
 export const getValidationErrors = <T>(result: SafeParseReturnType<T, T>) => {
@@ -11,8 +11,8 @@ export const getValidationErrors = <T>(result: SafeParseReturnType<T, T>) => {
       path: issue.path.join('.'),
       message: issue.message,
     })) || []
-  );
-};
+  )
+}
 
 export const passwordSchema = z
   .string()
@@ -21,10 +21,7 @@ export const passwordSchema = z
   .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
   .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
   .regex(/[0-9]/, 'Password must contain at least one number')
-  .regex(
-    /[^a-zA-Z0-9]/,
-    'Password must contain at least one special character'
-  );
+  .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character')
 
 export const signUpObject = z.object({
   username: z
@@ -35,9 +32,9 @@ export const signUpObject = z.object({
     .regex(/^[a-zA-Z0-9]+$/),
   email: z.string().email().toLowerCase().trim(),
   password: passwordSchema,
-});
+})
 
 export const signInObject = z.object({
   email: z.string().email().toLowerCase().trim(),
   password: passwordSchema,
-});
+})
