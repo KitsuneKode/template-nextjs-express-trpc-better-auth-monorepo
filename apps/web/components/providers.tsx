@@ -13,7 +13,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
       enableColorScheme
     >
-      <TRPCReactProvider>{children}</TRPCReactProvider>
+      <React.Suspense>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+      </React.Suspense>
     </NextThemesProvider>
   )
 }
