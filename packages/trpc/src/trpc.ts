@@ -6,7 +6,7 @@ import superjson from 'superjson'
 import {logger} from "./utils/logger"
 import * as trpcExpress from '@trpc/server/adapters/express'
 
-export const createTRPCContext = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
+export const createTRPCContext = async ({ req, res: _res }: trpcExpress.CreateExpressContextOptions) => {
   const headers = fromNodeHeaders(req.headers)
 
   const session = await auth.api.getSession({

@@ -50,6 +50,11 @@ export const nextJsConfig = [
       ...pluginReactHooks.configs.recommended.rules,
       // React scope no longer necessary with new JSX transform.
       'react/react-in-jsx-scope': 'off',
+      // Disable set-state-in-effect rule as it's too strict for real-world use cases
+      'react-hooks/set-state-in-effect': 'off',
     },
+  },
+  {
+    ignores: ['.next/**', 'out/**', 'build/**'],
   },
 ]

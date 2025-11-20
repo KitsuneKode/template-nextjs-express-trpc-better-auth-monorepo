@@ -1,5 +1,4 @@
 import { timingMiddleWare } from '@/middlewares/timing-middleware'
-import { expressMiddleWareSimple } from '@template/trpc/simp'
 import { toNodeHandler, auth } from '@template/auth/server'
 import { expressMiddleWare } from '@template/trpc'
 import { config } from '@/utils/config'

@@ -13,9 +13,16 @@
       "import": "./src/simple.ts"
     }
   },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
+  },
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@types/bun": "latest",
-    "@template/typescript-config": "*"
+    "@template/typescript-config": "*",
+    "eslint": "^9.36.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

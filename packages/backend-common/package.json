@@ -12,15 +12,20 @@
     "./config": "./src/utils/config.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@template/eslint-config": "*",
     "@template/typescript-config": "*",
     "@types/bun": "latest",
-    "@types/winston": "^2.4.4"
+    "@types/winston": "^2.4.4",
+    "eslint": "^9.36.0"
   },
   "dependencies": {
     "@template/common": "*",

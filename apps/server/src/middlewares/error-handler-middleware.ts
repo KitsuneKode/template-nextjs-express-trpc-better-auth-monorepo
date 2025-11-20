@@ -5,7 +5,7 @@ export const errorHandlerMiddleware = async (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   const errorDetails = {
     message: error.message,

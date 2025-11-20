@@ -186,9 +186,9 @@ export default function Home() {
           variants={itemVariants}
         >
           <div className="group border-border bg-card relative rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-lg">
-            <div className="from-primary via-accent to-secondary absolute -inset-0.5 rounded-xl bg-gradient-to-r opacity-0 blur transition duration-500 group-hover:opacity-20"></div>
+            <div className="from-primary via-accent to-secondary absolute -inset-0.5 rounded-xl bg-linear-to-r opacity-0 blur transition duration-500 group-hover:opacity-20"></div>
             <div className="relative">
-              <h2 className="text-card-foreground text-xl font-semibold">
+              <h2 className="bg-gre text-card-foreground text-xl font-semibold">
                 Quick Start
               </h2>
               <p className="text-muted-foreground mb-4 text-sm">
