@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { cacheLife } from 'next/cache'
 import { Streamdown } from 'streamdown'
 import { prisma } from '@template/store'
 import { notFound } from 'next/navigation'
@@ -19,6 +20,9 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  'use cache'
+  cacheLife('hours')
+
   const slug = (await params).slug
   if (!slug) {
     return { title: 'Post Not Found' }
@@ -37,6 +41,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
+  'use cache'
+  cacheLife('days')
+
   const slug = (await params).slug
   const post = await prisma.post.findUnique({
     where: { slug },

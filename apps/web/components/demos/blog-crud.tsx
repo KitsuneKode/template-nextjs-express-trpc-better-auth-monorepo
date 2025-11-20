@@ -1,40 +1,82 @@
 'use client'
 
 import React, { useState } from 'react'
-import { CodeBlock } from '@/components/ui/code-block'
+import { useTRPC } from '@/trpc/client'
 import { motion, AnimatePresence } from 'motion/react'
+import { CodeBlock } from '@/components/ui/code-block'
 import { Plus, Trash2, Edit2, Save, X, Loader2 } from 'lucide-react'
-import { useTRPC} from '@/trpc/client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-export const BlogCrud = () => {
+export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [isCreating, setIsCreating] = useState(false)
   const [newTitle, setNewTitle] = useState('')
   const [newContent, setNewContent] = useState('')
 
-  const trpc = useTRPC()
+  // Mock Data
+  const [mockPosts, setMockPosts] = useState([
+    {
+      id: '1',
+      title: 'Getting Started with Next.js',
+      content: 'Next.js is awesome...',
+      author: { name: 'Demo User' },
+    },
+    {
+      id: '2',
+      title: 'Why Monorepos?',
+      content: 'Monorepos help scale...',
+      author: { name: 'Demo User' },
+    },
+  ])
 
+  const trpc = useTRPC()
   const queryClient = useQueryClient()
 
-  const { data: posts, isLoading } = useQuery( trpc.post.list.queryOptions()
-)
-  const createPost =useMutation( trpc.post.create.mutationOptions({
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: trpc.post.list.queryKey()})
-      setNewTitle('')
-      setNewContent('')
-      setIsCreating(false)
-    },
-  }))
+  // Real Data
+  const { data: realPosts, isLoading: isRealLoading } = useQuery({
+    ...trpc.post.list.queryOptions(),
+    enabled: mode === 'real',
+  })
 
-  const deletePost = useMutation(trpc.post.delete.mutationOptions({
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: trpc.post.list.queryKey()})
-    },
-  }))
+  const createPost = useMutation(
+    trpc.post.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.post.list.queryKey() })
+        setNewTitle('')
+        setNewContent('')
+        setIsCreating(false)
+      },
+    }),
+  )
+
+  const deletePost = useMutation(
+    trpc.post.delete.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.post.list.queryKey() })
+      },
+    }),
+  )
+
+  const posts = mode === 'mock' ? mockPosts : realPosts
+  const isLoading = mode === 'real' ? isRealLoading : false
 
   const handleCreate = () => {
     if (!newTitle.trim() || !newContent.trim()) return
+
+    if (mode === 'mock') {
+      const newPost = {
+        id: Date.now().toString(),
+        title: newTitle,
+        content: newContent,
+        createdAt: new Date(),
+        author: { name: 'You' },
+      }
+      setMockPosts((prev) => [newPost, ...prev])
+      setNewTitle('')
+      setNewContent('')
+      setIsCreating(false)
+      return
+    }
+
     createPost.mutate({
       title: newTitle,
       content: newContent,
@@ -43,11 +85,26 @@ export const BlogCrud = () => {
     })
   }
 
+  const handleDelete = (id: string) => {
+    if (mode === 'mock') {
+      setMockPosts((prev) => prev.filter((p) => p.id !== id))
+      return
+    }
+    deletePost.mutate({ id })
+  }
+
   return (
     <div className="grid h-[500px] gap-8 lg:grid-cols-2">
       <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
         <div className="flex items-center justify-between border-b border-white/10 p-6">
-          <h3 className="text-xl font-bold text-white">Posts</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-bold text-white">Posts</h3>
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs ${mode === 'real' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}
+            >
+              {mode === 'real' ? 'Real DB' : 'Mock Data'}
+            </span>
+          </div>
           <button
             onClick={() => setIsCreating(true)}
             className="rounded-lg bg-[var(--solar-orange)] p-2 text-white transition-opacity hover:opacity-90"
@@ -132,7 +189,7 @@ export const BlogCrud = () => {
                   </div>
                   <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
-                      onClick={() => deletePost.mutate({ id: post.id })}
+                      onClick={() => handleDelete(post.id)}
                       disabled={deletePost.isPending}
                       className="rounded-lg p-2 text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
                     >

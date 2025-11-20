@@ -7,10 +7,10 @@ import { Menu, X, Github, ArrowRight } from "lucide-react";
 import { cn } from "@template/ui/lib/utils";
 
 const NAV_LINKS = [
+  { href: "/blog", label: "Blog" },
+  { href: "/demo", label: "Demos" },
   { href: "#features", label: "Features" },
-  { href: "#demos", label: "Live Demos" },
   { href: "#architecture", label: "Architecture" },
-  { href: "#quick-start", label: "Quick Start" },
 ];
 
 export const Navbar = () => {
@@ -50,13 +50,13 @@ export const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 className="text-neutral-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.querySelector(link.href);
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
+                // onClick={(e) => {
+                //   e.preventDefault();
+                //   const element = document.querySelector(link.href);
+                //   if (element) {
+                //     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                //   }
+                // }}
               >
                 {link.label}
               </a>
@@ -78,7 +78,7 @@ export const Navbar = () => {
               href="#quick-start"
               className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--solar-orange)] text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
             >
-              Get Started
+              Use Template
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -105,23 +105,23 @@ export const Navbar = () => {
           >
             <div className="container mx-auto px-4 py-6 space-y-4">
               {NAV_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  onClick={(e) => {
+                    onClick={(e) => {
                     e.preventDefault();
                     setIsMobileMenuOpen(false);
-                    setTimeout(() => {
-                      const element = document.querySelector(link.href);
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }
-                    }, 300);
+                  //   setTimeout(() => {
+                  //     const element = document.querySelector(link.href);
+                  //     if (element) {
+                  //       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  //     }
+                  //   }, 300);
                   }}
                   className="block text-neutral-300 hover:text-white transition-colors py-2"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
                 <Link

@@ -1,10 +1,10 @@
-import { Hero } from "../components/sections/hero";
-import { Features } from "../components/sections/features";
-import { LiveDemos } from "../components/sections/live-demos";
-import { Architecture } from "../components/sections/architecture";
-import { Metrics } from "../components/sections/metrics";
-import { QuickStart } from "../components/sections/quick-start";
-import { Footer } from "../components/landing/Footer";
+import { Hero } from "@/components/sections/hero";
+import { Features } from "@/components/sections/features";
+import { LiveDemos } from "@/components/sections/live-demos";
+import { Architecture } from "@/components/sections/architecture";
+import { Metrics } from "@/components/sections/metrics";
+import { QuickStart } from "@/components/sections/quick-start";
+import { Footer } from "@/components/landing/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function Page() {
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-[var(--solar-orange)] selection:text-white">
       <Hero />
       <Features />
-      <LiveDemos />
+      <LiveDemos mode="mock" />
       <Architecture />
       <Metrics />
       <QuickStart />

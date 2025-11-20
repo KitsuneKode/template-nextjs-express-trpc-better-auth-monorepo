@@ -7,14 +7,32 @@ import { CodeBlock } from "../ui/code-block";
 import confetti from "canvas-confetti";
 import { authClient } from "@template/auth/client";
 
-export const AuthFlow = () => {
+export const AuthFlow = ({ mode = "real" }: { mode?: "mock" | "real" }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: session } = authClient.useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mockSession, setMockSession] = useState<{ user: { name: string } } | null>(null);
+
+  const currentSession = mode === "mock" ? mockSession : session;
 
   const handleLogin = async () => {
     setIsLoading(true);
+    
+    if (mode === "mock") {
+      setTimeout(() => {
+        setMockSession({ user: { name: "Demo User" } });
+        setIsLoading(false);
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#FF6B6B", "#4ECDC4", "#45B7D1"]
+        });
+      }, 1000);
+      return;
+    }
+
     await authClient.signIn.email({
       email,
       password,
@@ -36,13 +54,17 @@ export const AuthFlow = () => {
   };
 
   const handleSignOut = async () => {
+    if (mode === "mock") {
+      setMockSession(null);
+      return;
+    }
     await authClient.signOut();
   };
 
   return (
     <div className="grid lg:grid-cols-2 gap-8 h-[500px]">
       <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-neutral-900/50 p-8">
-        {session ? (
+        {currentSession ? (
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -51,7 +73,7 @@ export const AuthFlow = () => {
             <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-green-500" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">Welcome, {session.user.name}!</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">Welcome, {currentSession.user.name}!</h3>
             <p className="text-neutral-400 mb-6">You are securely authenticated.</p>
             <button 
               onClick={handleSignOut}
@@ -115,7 +137,7 @@ export const AuthFlow = () => {
             </div>
 
             <button 
-              onClick={() => authClient.signIn.social({ provider: "github" })}
+              onClick={() => mode === "mock" ? handleLogin() : authClient.signIn.social({ provider: "github" })}
               className="w-full h-12 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
             >
               <Github size={20} />

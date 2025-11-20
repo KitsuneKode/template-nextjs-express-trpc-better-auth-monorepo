@@ -1,53 +1,61 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { prisma } from "@template/store";
-import { SectionWrapper } from "@/components/ui/section-wrapper";
-import { AnimatedGradient } from "@/components/ui/animated-gradient";
-import { motion } from "motion/react";
-import { ArrowRight, Calendar, Clock, User } from "lucide-react";
+import Link from 'next/link'
+import { Metadata } from 'next'
+import { cacheLife } from 'next/cache'
+import { prisma } from '@template/store'
+import { ArrowRight, Calendar, Clock, User } from 'lucide-react'
+import { SectionWrapper } from '@/components/ui/section-wrapper'
+import { AnimatedGradient } from '@/components/ui/animated-gradient'
 
 export const metadata: Metadata = {
-  title: "Blog | Template",
-  description: "Insights, tutorials, and updates from the team.",
-};
+  title: 'Blog | Template',
+  description: 'Insights, tutorials, and updates from the team.',
+}
 
 export default async function BlogIndexPage() {
+  'use cache'
+  cacheLife('days')
+
   const posts = await prisma.post.findMany({
     where: { published: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     include: { author: true },
-  });
+  })
 
   return (
     <main className="min-h-screen bg-neutral-950 text-white selection:bg-[var(--solar-purple)] selection:text-white">
-      <div className="fixed inset-0 z-0 opacity-30 pointer-events-none">
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-30">
         <AnimatedGradient />
       </div>
 
-      <SectionWrapper className="pt-32 pb-20 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+      <SectionWrapper className="relative z-10 pt-32 pb-20">
+        <div className="mx-auto mb-16 max-w-4xl text-center">
+          <h1 className="mb-6 bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
             Engineering Blog
           </h1>
-          <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-            Deep dives into modern web development, monorepo architectures, and building scalable systems.
+          <p className="mx-auto max-w-2xl text-xl text-neutral-400">
+            Deep dives into modern web development, monorepo architectures, and
+            building scalable systems.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2">
           {posts.map((post) => (
-            <Link 
-              key={post.id} 
+            <Link
+              key={post.id}
               href={`/blog/${post.slug}`}
-              className="group relative flex flex-col bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-[var(--solar-purple)] transition-colors duration-300"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-colors duration-300 hover:border-[var(--solar-purple)]"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[var(--solar-purple)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <div className="p-8 flex flex-col h-full relative z-10">
-                <div className="flex items-center gap-4 text-sm text-neutral-400 mb-4">
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--solar-purple)]/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+              <div className="relative z-10 flex h-full flex-col p-8">
+                <div className="mb-4 flex items-center gap-4 text-sm text-neutral-400">
                   <span className="flex items-center gap-1">
                     <Calendar size={14} />
-                    {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {new Date(post.createdAt).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock size={14} />
@@ -55,24 +63,24 @@ export default async function BlogIndexPage() {
                   </span>
                 </div>
 
-                <h2 className="text-2xl font-bold mb-3 group-hover:text-[var(--solar-teal)] transition-colors">
+                <h2 className="mb-3 text-2xl font-bold transition-colors group-hover:text-[var(--solar-teal)]">
                   {post.title}
                 </h2>
-                
-                <p className="text-neutral-400 line-clamp-3 mb-6 flex-1">
+
+                <p className="mb-6 line-clamp-3 flex-1 text-neutral-400">
                   {post.content.substring(0, 150)}...
                 </p>
 
-                <div className="flex items-center justify-between mt-auto pt-6 border-t border-white/5">
+                <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-6">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--solar-orange)] to-[var(--solar-magenta)] flex items-center justify-center text-xs font-bold">
-                      {post.author.name?.[0] || "A"}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--solar-orange)] to-[var(--solar-magenta)] text-xs font-bold">
+                      {post.author.name?.[0] || 'A'}
                     </div>
                     <span className="text-sm font-medium text-neutral-300">
-                      {post.author.name || "Anonymous"}
+                      {post.author.name || 'Anonymous'}
                     </span>
                   </div>
-                  <span className="flex items-center gap-1 text-[var(--solar-teal)] text-sm font-medium group-hover:translate-x-1 transition-transform">
+                  <span className="flex items-center gap-1 text-sm font-medium text-[var(--solar-teal)] transition-transform group-hover:translate-x-1">
                     Read Article <ArrowRight size={16} />
                   </span>
                 </div>
@@ -82,12 +90,16 @@ export default async function BlogIndexPage() {
         </div>
 
         {posts.length === 0 && (
-          <div className="text-center py-20 border border-dashed border-neutral-800 rounded-2xl bg-neutral-900/50">
-            <h3 className="text-xl font-semibold text-neutral-300 mb-2">No posts found</h3>
-            <p className="text-neutral-500">Check back later for new content.</p>
+          <div className="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/50 py-20 text-center">
+            <h3 className="mb-2 text-xl font-semibold text-neutral-300">
+              No posts found
+            </h3>
+            <p className="text-neutral-500">
+              Check back later for new content.
+            </p>
           </div>
         )}
       </SectionWrapper>
     </main>
-  );
+  )
 }

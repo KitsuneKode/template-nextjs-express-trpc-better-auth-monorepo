@@ -1,32 +1,58 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { SectionWrapper } from "../ui/section-wrapper";
 import { motion } from "motion/react";
 
 // Placeholder imports for demo components - will implement next
-import { RealtimeChat } from "../demos/realtime-chat";
-import { AuthFlow } from "../demos/auth-flow";
-import { BlogCrud } from "../demos/blog-crud";
-import { DatabasePlayground } from "../demos/database-playground";
+import { RealtimeChat } from "@/components/demos/realtime-chat";
+import { AuthFlow } from "@/components/demos/auth-flow";
+import { BlogCrud } from "@/components/demos/blog-crud";
+import { DatabasePlayground } from "@/components/demos/database-playground";
+import { Database, FileText, MessageSquare } from "lucide-react";
 
 const DEMO_TABS = [
-  { id: "chat", label: "Real-time Chat" },
-  { id: "auth", label: "Authentication" },
-  { id: "blog", label: "Blog CRUD" },
-  { id: "db", label: "DB Playground" },
+  {
+    id: "auth",
+    label: "Authentication",
+    icon: Lock,
+    component: AuthFlow,
+    description: "Secure email & social auth with Better Auth",
+  },
+  {
+    id: "chat",
+    label: "Real-time Chat",
+    icon: MessageSquare,
+    component: RealtimeChat,
+    description: "Live messaging powered by tRPC & Redis",
+  },
+  {
+    id: "blog",
+    label: "Blog CMS",
+    icon: FileText,
+    component: BlogCrud,
+    description: "Full CRUD operations with Prisma ORM",
+  },
+  {
+    id: "db",
+    label: "Database",
+    icon: Database,
+    component: DatabasePlayground,
+    description: "Direct database interaction & visualization",
+  },
 ];
 
-export const LiveDemos = () => {
+export const LiveDemos = ({ mode = "real" }: { mode?: "mock" | "real" }) => {
+
   return (
-    <SectionWrapper id="demos">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-          Experience the Power
+    <SectionWrapper id="demos" className="py-24 relative overflow-hidden">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+          Interactive Demos
         </h2>
-        <p className="text-lg text-neutral-400">
-          Interact with live demos powered by the template's core technologies.
+        <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+          Experience the power of the stack. Try out the live demos below.
         </p>
       </div>
 
@@ -45,13 +71,13 @@ export const LiveDemos = () => {
 
         <div className="w-full max-w-5xl min-h-[600px] relative">
           <Tabs.Content value="chat" className="w-full focus:outline-none">
-            <RealtimeChat />
+            <RealtimeChat mode={mode} />
           </Tabs.Content>
           <Tabs.Content value="auth" className="w-full focus:outline-none">
-            <AuthFlow />
+            <AuthFlow mode={mode} />
           </Tabs.Content>
           <Tabs.Content value="blog" className="w-full focus:outline-none">
-            <BlogCrud />
+            <BlogCrud mode={mode} />
           </Tabs.Content>
           <Tabs.Content value="db" className="w-full focus:outline-none">
             <DatabasePlayground />
