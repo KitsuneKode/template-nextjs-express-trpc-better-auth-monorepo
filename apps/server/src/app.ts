@@ -17,17 +17,16 @@ app.use(
 
 app.all('/api/auth/*splat', timingMiddleWare, toNodeHandler(auth))
 
+app.use(express.json())
 app.use('/api/trpc', expressMiddleWare)
 
-app.use(express.json())
-
-app.use('/', (req, res) => {
+app.use('/health', (req, res) => {
   res.json({
-    message: 'yohh!!!',
+    status: 'OK',
   })
 })
 
-app.all('/*splat', (req, res) => {
+app.all('/{*splat}', (req, res) => {
   res.status(404).json({
     message: 'Not Found',
   })
