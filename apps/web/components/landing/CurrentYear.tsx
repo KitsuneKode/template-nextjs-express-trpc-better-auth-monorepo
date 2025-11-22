@@ -1,9 +1,5 @@
 'use client'
 
 export const CurrentYear = () => {
-    return (
-        <>
-            {new Date().getFullYear()}
-        </>
-    )
+  return <>{new Date().getFullYear()}</>
 }

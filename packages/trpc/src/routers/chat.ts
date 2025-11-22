@@ -1,15 +1,15 @@
-import { z } from "zod";
-import { protectedProcedure, publicProcedure } from "../trpc";
-import { prisma } from "@template/store";
-import type { TRPCRouterRecord } from "@trpc/server";
+import { protectedProcedure, publicProcedure } from '../trpc'
+import type { TRPCRouterRecord } from '@trpc/server'
+import { prisma } from '@template/store'
+import { z } from 'zod'
 
 export const chatRouter = {
   list: publicProcedure.query(async () => {
     return prisma.message.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: 'asc' },
       take: 50,
       include: { sender: true },
-    });
+    })
   }),
 
   send: protectedProcedure
@@ -21,6 +21,6 @@ export const chatRouter = {
           senderId: ctx.session.user.id,
         },
         include: { sender: true },
-      });
+      })
     }),
-} satisfies TRPCRouterRecord;
+} satisfies TRPCRouterRecord

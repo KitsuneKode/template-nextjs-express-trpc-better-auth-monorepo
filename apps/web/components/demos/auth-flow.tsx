@@ -1,130 +1,141 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { motion } from "motion/react";
-import { Mail, Lock, Github, CheckCircle, LogOut } from "lucide-react";
-import { CodeBlock } from "../ui/code-block";
-import confetti from "canvas-confetti";
-import { authClient } from "@template/auth/client";
+import { motion } from 'motion/react'
+import confetti from 'canvas-confetti'
+import React, { useState } from 'react'
+import { CodeBlock } from '../ui/code-block'
+import { authClient } from '@template/auth/client'
+import { Mail, Lock, Github, CheckCircle, LogOut } from 'lucide-react'
 
-export const AuthFlow = ({ mode = "real" }: { mode?: "mock" | "real" }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = authClient.useSession();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [mockSession, setMockSession] = useState<{ user: { name: string } } | null>(null);
+export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const { data: session } = authClient.useSession()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [mockSession, setMockSession] = useState<{
+    user: { name: string }
+  } | null>(null)
 
-  const currentSession = mode === "mock" ? mockSession : session;
+  const currentSession = mode === 'mock' ? mockSession : session
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    
-    if (mode === "mock") {
+    setIsLoading(true)
+
+    if (mode === 'mock') {
       setTimeout(() => {
-        setMockSession({ user: { name: "Demo User" } });
-        setIsLoading(false);
+        setMockSession({ user: { name: 'Demo User' } })
+        setIsLoading(false)
         confetti({
           particleCount: 100,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ["#FF6B6B", "#4ECDC4", "#45B7D1"]
-        });
-      }, 1000);
-      return;
+          colors: ['#FF6B6B', '#4ECDC4', '#45B7D1'],
+        })
+      }, 1000)
+      return
     }
 
-    await authClient.signIn.email({
-      email,
-      password,
-    }, {
-      onSuccess: () => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#FF6B6B", "#4ECDC4", "#45B7D1"]
-        });
-        setIsLoading(false);
+    await authClient.signIn.email(
+      {
+        email,
+        password,
       },
-      onError: (ctx) => {
-        alert(ctx.error.message);
-        setIsLoading(false);
-      }
-    });
-  };
+      {
+        onSuccess: () => {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#FF6B6B', '#4ECDC4', '#45B7D1'],
+          })
+          setIsLoading(false)
+        },
+        onError: (ctx) => {
+          alert(ctx.error.message)
+          setIsLoading(false)
+        },
+      },
+    )
+  }
 
   const handleSignOut = async () => {
-    if (mode === "mock") {
-      setMockSession(null);
-      return;
+    if (mode === 'mock') {
+      setMockSession(null)
+      return
     }
-    await authClient.signOut();
-  };
+    await authClient.signOut()
+  }
 
   return (
-    <div className="grid lg:grid-cols-2 gap-8 h-[500px]">
+    <div className="grid h-[500px] gap-8 lg:grid-cols-2">
       <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-neutral-900/50 p-8">
         {currentSession ? (
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="text-center"
           >
-            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-500" />
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/20">
+              <CheckCircle className="h-10 w-10 text-green-500" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">Welcome, {currentSession.user.name}!</h3>
-            <p className="text-neutral-400 mb-6">You are securely authenticated.</p>
-            <button 
+            <h3 className="mb-2 text-2xl font-bold text-white">
+              Welcome, {currentSession.user.name}!
+            </h3>
+            <p className="mb-6 text-neutral-400">
+              You are securely authenticated.
+            </p>
+            <button
               onClick={handleSignOut}
-              className="flex items-center gap-2 mx-auto px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors"
+              className="mx-auto flex items-center gap-2 rounded-lg bg-white/5 px-4 py-2 text-white transition-colors hover:bg-white/10"
             >
               <LogOut size={16} />
               Sign out
             </button>
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="w-full max-w-sm space-y-4"
           >
-            <div className="text-center mb-8">
+            <div className="mb-8 text-center">
               <h3 className="text-2xl font-bold text-white">Welcome Back</h3>
               <p className="text-neutral-400">Sign in to your account</p>
             </div>
 
             <div className="space-y-4">
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 w-5 h-5" />
-                <input 
-                  type="email" 
+                <Mail className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-neutral-500" />
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="demo@example.com"
-                  className="w-full h-12 bg-neutral-950 border border-white/10 rounded-lg pl-10 pr-4 text-white focus:border-[var(--solar-teal)] focus:outline-none transition-colors"
+                  className="h-12 w-full rounded-lg border border-white/10 bg-neutral-950 pr-4 pl-10 text-white transition-colors focus:border-[var(--solar-teal)] focus:outline-none"
                 />
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 w-5 h-5" />
-                <input 
-                  type="password" 
+                <Lock className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-neutral-500" />
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full h-12 bg-neutral-950 border border-white/10 rounded-lg pl-10 pr-4 text-white focus:border-[var(--solar-teal)] focus:outline-none transition-colors"
+                  className="h-12 w-full rounded-lg border border-white/10 bg-neutral-950 pr-4 pl-10 text-white transition-colors focus:border-[var(--solar-teal)] focus:outline-none"
                 />
               </div>
             </div>
 
-            <button 
+            <button
               onClick={handleLogin}
               disabled={isLoading}
-              className="w-full h-12 bg-[var(--solar-teal)] text-neutral-900 font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center"
+              className="flex h-12 w-full items-center justify-center rounded-lg bg-[var(--solar-teal)] font-bold text-neutral-900 transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-neutral-900 border-t-transparent rounded-full animate-spin" />
-              ) : "Sign In"}
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-900 border-t-transparent" />
+              ) : (
+                'Sign In'
+              )}
             </button>
 
             <div className="relative my-6">
@@ -132,13 +143,19 @@ export const AuthFlow = ({ mode = "real" }: { mode?: "mock" | "real" }) => {
                 <div className="w-full border-t border-white/10"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-neutral-900 text-neutral-500">Or continue with</span>
+                <span className="bg-neutral-900 px-2 text-neutral-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 
-            <button 
-              onClick={() => mode === "mock" ? handleLogin() : authClient.signIn.social({ provider: "github" })}
-              className="w-full h-12 bg-white text-black font-medium rounded-lg hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2"
+            <button
+              onClick={() =>
+                mode === 'mock'
+                  ? handleLogin()
+                  : authClient.signIn.social({ provider: 'github' })
+              }
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-white font-medium text-black transition-colors hover:bg-neutral-200"
             >
               <Github size={20} />
               GitHub
@@ -168,5 +185,5 @@ const signIn = async () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
