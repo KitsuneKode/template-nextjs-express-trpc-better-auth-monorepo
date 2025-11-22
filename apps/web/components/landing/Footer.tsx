@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react'
 import Link from 'next/link'
-import { Github, Twitter, Linkedin, Heart } from 'lucide-react'
+import React, { Suspense } from 'react'
 import { CurrentYear } from './CurrentYear'
+import { Github, Twitter, Linkedin, Heart } from 'lucide-react'
 
 export const Footer = () => {
   return (
@@ -82,8 +82,7 @@ export const Footer = () => {
         <div className="flex flex-col items-center justify-between gap-4 border-t border-neutral-800 pt-8 md:flex-row">
           <div className="flex items-center gap-1 text-sm text-neutral-500">
             <Suspense>
-
-            © <CurrentYear/> Template. Made with{' '}
+              © <CurrentYear /> Template. Made with{' '}
             </Suspense>
             <Heart className="h-4 w-4 fill-red-500 text-red-500" /> by
             KitsuneKode.

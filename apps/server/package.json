@@ -1,14 +1,14 @@
 {
   "name": "@template/server",
-  "module": "src/index.ts",
+  "module": "src/server.ts",
   "type": "module",
   "private": true,
   "scripts": {
     "check-types": "tsc -noEmit",
     "build": "bun build ./src/server.ts --outdir ./dist --target bun --minify --sourcemap",
-    "build:vercel": "bun build ./src/index.ts --outdir ./dist --target node --minify --sourcemap",
+    "build:vercel": "bun build ./src/app.ts --outdir ./dist --target node --minify --sourcemap",
     "dev": "bun run --watch src/server.ts",
-    "start": "bun run dist/index.js",
+    "start": "bun run dist/server.js",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix"
   },

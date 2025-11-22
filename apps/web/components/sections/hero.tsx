@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { CodeBlock } from '@/components/ui/code-block'
 import { ArrowRight, Github } from 'lucide-react'
 import React, { useState, useEffect } from 'react'
+import { CodeBlock } from '@/components/ui/code-block'
 import { AnimatedGradient } from '../ui/animated-gradient'
 import { fadeInUp, staggerChildren } from '../../lib/animations'
 
