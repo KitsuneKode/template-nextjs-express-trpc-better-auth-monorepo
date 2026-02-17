@@ -12,21 +12,21 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@types/bun": "1.3.3",
+    "@types/bun": "1.3.9",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "eslint": "^9.36.0",
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*"
+    "@types/express": "^5.0.6",
+    "eslint": "^10.0.0",
+    "@template/eslint-config": "workspace:*",
+    "@template/typescript-config": "workspace:*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "@template/backend-common": "*",
-    "@template/auth": "*",
-    "@template/trpc": "*"
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "@template/backend-common": "workspace:*",
+    "@template/auth": "workspace:*",
+    "@template/trpc": "workspace:*"
   }
 }

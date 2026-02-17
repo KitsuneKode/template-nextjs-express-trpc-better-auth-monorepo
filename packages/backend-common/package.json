@@ -21,16 +21,16 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/bun": "1.3.3",
+    "@types/bun": "1.3.9",
     "@types/winston": "^2.4.4",
-    "eslint": "^9.36.0",
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*"
+    "eslint": "^10.0.0",
+    "@template/eslint-config": "workspace:*",
+    "@template/typescript-config": "workspace:*"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
-    "winston": "^3.17.0",
-    "@template/common": "*"
+    "winston": "^3.19.0",
+    "@template/common": "workspace:*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

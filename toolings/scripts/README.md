@@ -12,7 +12,7 @@ Automatically renames the package scope from `@template` to match your root pack
 # Dry run (preview changes without modifying files)
 bun run rename-scope:dry
 # or
-bun tooling/scripts/rename-scope.ts --dry-run
+bun toolings/scripts/rename-scope.ts --dry-run
 
 # Apply changes
 bun run rename-scope
@@ -21,10 +21,10 @@ bun run rename-scope
 bun run rename-scope:verbose
 
 # Quiet mode (minimal output)
-bun tooling/scripts/rename-scope.ts --quiet
+bun toolings/scripts/rename-scope.ts --quiet
 
 # Show help
-bun tooling/scripts/rename-scope.ts --help
+bun toolings/scripts/rename-scope.ts --help
 ```
 
 ### Options
@@ -104,8 +104,8 @@ Combine flags for different output levels:
 
 ```bash
 # Dry run with verbose output
-bun tooling/scripts/rename-scope.ts --dry-run --verbose
+bun toolings/scripts/rename-scope.ts --dry-run --verbose
 
 # Apply changes quietly
-bun tooling/scripts/rename-scope.ts --quiet
+bun toolings/scripts/rename-scope.ts --quiet
 ```
