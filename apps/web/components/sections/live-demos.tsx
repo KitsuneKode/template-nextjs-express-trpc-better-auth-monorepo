@@ -1,8 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import * as Tabs from '@radix-ui/react-tabs'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
+import {
+  Tabs,
+  TabsContent,
+  TabsTrigger,
+  TabsList,
+} from '@template/ui/components/tabs'
 
 // Placeholder imports for demo components - will implement next
 import { AuthFlow } from '@/components/demos/auth-flow'
@@ -54,34 +59,34 @@ export const LiveDemos = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
         </p>
       </div>
 
-      <Tabs.Root defaultValue="chat" className="flex flex-col items-center">
-        <Tabs.List className="mb-12 flex flex-wrap justify-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
+      <Tabs defaultValue="chat" className="flex flex-col items-center">
+        <TabsList className="mb-12 flex flex-wrap justify-center gap-2 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
           {DEMO_TABS.map((tab) => (
-            <Tabs.Trigger
+            <TabsTrigger
               key={tab.id}
               value={tab.id}
               className="rounded-full px-6 py-2.5 text-sm font-medium text-neutral-400 transition-all hover:text-white focus:outline-none data-[state=active]:bg-[var(--solar-orange)] data-[state=active]:text-white data-[state=active]:shadow-lg"
             >
               {tab.label}
-            </Tabs.Trigger>
+            </TabsTrigger>
           ))}
-        </Tabs.List>
+        </TabsList>
 
         <div className="relative min-h-[600px] w-full max-w-5xl">
-          <Tabs.Content value="chat" className="w-full focus:outline-none">
+          <TabsContent value="chat" className="w-full focus:outline-none">
             <RealtimeChat mode={mode} />
-          </Tabs.Content>
-          <Tabs.Content value="auth" className="w-full focus:outline-none">
+          </TabsContent>
+          <TabsContent value="auth" className="w-full focus:outline-none">
             <AuthFlow mode={mode} />
-          </Tabs.Content>
-          <Tabs.Content value="blog" className="w-full focus:outline-none">
+          </TabsContent>
+          <TabsContent value="blog" className="w-full focus:outline-none">
             <BlogCrud mode={mode} />
-          </Tabs.Content>
-          <Tabs.Content value="db" className="w-full focus:outline-none">
+          </TabsContent>
+          <TabsContent value="db" className="w-full focus:outline-none">
             <DatabasePlayground />
-          </Tabs.Content>
+          </TabsContent>
         </div>
-      </Tabs.Root>
+      </Tabs>
     </SectionWrapper>
   )
 }
