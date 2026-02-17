@@ -76,8 +76,14 @@ packages/
    ```
 
 3. **Build everything:**
+
    ```sh
    bun run build
+   ```
+
+4. Add shadcn component to your app
+   ```sh
+   bunx --bun shadcn@latest add <component-name> --c apps/web
    ```
 
 ---

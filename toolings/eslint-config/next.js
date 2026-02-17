@@ -1,13 +1,13 @@
-import js from '@eslint/js'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import tseslint from 'typescript-eslint'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
-import pluginReact from 'eslint-plugin-react'
-import globals from 'globals'
+import turboConfig from 'eslint-config-turbo/flat'
 import pluginNext from '@next/eslint-plugin-next'
 import { config as baseConfig } from './base.js'
 import turboPlugin from 'eslint-plugin-turbo'
-import turboConfig from 'eslint-config-turbo/flat'
+import pluginReact from 'eslint-plugin-react'
+import tseslint from 'typescript-eslint'
+import globals from 'globals'
+import js from '@eslint/js'
 
 /**
  * A custom ESLint configuration for libraries that use Next.js.
@@ -55,6 +55,6 @@ export const nextJsConfig = [
     },
   },
   {
-    ignores: ['.next/**', 'out/**', 'build/**'],
+    ignores: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
 ]
