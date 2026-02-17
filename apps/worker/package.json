@@ -12,18 +12,18 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@types/bun": "1.3.3",
-    "eslint": "^9.36.0",
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*"
+    "@types/bun": "1.3.9",
+    "eslint": "^10.0.0",
+    "@template/eslint-config": "workspace:*",
+    "@template/typescript-config": "workspace:*"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@template/backend-common": "*",
-    "@template/common": "*",
-    "@template/auth": "*",
-    "@template/store": "*"
+    "@template/backend-common": "workspace:*",
+    "@template/common": "workspace:*",
+    "@template/auth": "workspace:*",
+    "@template/store": "workspace:*"
   }
 }
