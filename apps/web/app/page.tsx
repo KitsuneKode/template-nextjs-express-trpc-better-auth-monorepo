@@ -10,7 +10,7 @@ import { Architecture } from '@/components/sections/architecture'
 export const metadata: Metadata = {
   title: 'Next.js Monorepo Template | Better Auth + Prisma + tRPC',
   description:
-    'Production-ready full-stack monorepo template with Better Auth, Prisma ORM, tRPC, Next.js 15, and Upstash Redis. Type-safe, scalable, and developer-friendly.',
+    'Production-ready full-stack monorepo template with Better Auth, Prisma ORM, tRPC, Next.js 16, and Upstash Redis. Type-safe, scalable, and developer-friendly.',
   keywords: [
     'Next.js',
     'Monorepo',
@@ -40,13 +40,15 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-neutral-950 text-white selection:bg-[var(--solar-orange)] selection:text-white">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#090d12] text-[#f8f0e5] selection:bg-[#d9ab72] selection:text-[#1d1812]">
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_12%_12%,rgba(217,171,114,0.14),transparent_34%),radial-gradient(circle_at_86%_4%,rgba(70,178,182,0.1),transparent_38%),radial-gradient(circle_at_50%_100%,rgba(231,133,98,0.09),transparent_42%)]" />
+
       <Hero />
+      <Metrics />
       <Features />
       <LiveDemos mode="mock" />
-      <Architecture />
-      <Metrics />
       <QuickStart />
+      <Architecture />
       <Footer />
     </main>
   )

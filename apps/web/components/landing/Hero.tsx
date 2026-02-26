@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowRight, Sparkles } from '@template/ui/components/icons'
 import { motion, useScroll, useTransform } from 'motion/react'
 
 export const Hero = () => {

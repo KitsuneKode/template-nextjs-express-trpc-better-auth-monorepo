@@ -1,4 +1,12 @@
-import { Zap, Shield, Globe, Database, Layout, Code2 } from 'lucide-react'
+import {
+  Zap,
+  Shield,
+  Globe,
+  Database,
+  Layout,
+  Code2,
+  Lock,
+} from '@template/ui/components/icons'
 
 export const features = [
   {
@@ -67,8 +75,6 @@ packages/
   },
 ]
 
-import { Lock } from 'lucide-react'
-
 export const terminalSteps = [
   {
     command:
@@ -90,6 +96,11 @@ export const terminalSteps = [
     command: 'bun run rename-scope',
     output: 'Renaming @template to @myapp across all packages...',
     description: 'Rename the package scope to your project name',
+  },
+  {
+    command: 'bunx shadcn@latest add button card dialog dropdown-menu',
+    output: 'Adding components to packages/ui...',
+    description: 'Install reusable shadcn components into the shared UI package',
   },
   {
     command: 'bun dev',

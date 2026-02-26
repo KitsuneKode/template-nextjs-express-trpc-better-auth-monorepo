@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { cn } from '@template/ui/lib/utils'
-import { Zap, Shield, Globe, Database, Layout, Code2 } from 'lucide-react'
+import { Zap, Shield, Globe, Database, Layout, Code2 } from '@template/ui/components/icons'
 
 const features = [
   {

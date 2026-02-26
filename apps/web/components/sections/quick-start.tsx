@@ -1,76 +1,96 @@
 'use client'
 
 import React from 'react'
+import { motion } from 'motion/react'
+import { ArrowRight, Check } from '@template/ui/components/icons'
 import { terminalSteps } from '@/lib/demo-data'
 import { CodeBlock } from '@/components/ui/code-block'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
+const SHADCN_COMMAND = 'bunx shadcn@latest add button card dialog dropdown-menu'
+
+const COMMAND_BUNDLE = `# 1) Scaffold the repo\nbun create-turbo@latest --example https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo my-app\n\n# 2) Install + rename package scope\ncd my-app && bun install\nbun run rename-scope\n\n# 3) Add new shadcn components into packages/ui\n${SHADCN_COMMAND}\n\n# 4) Start everything\nbun dev`
+
 export const QuickStart = () => {
   return (
-    <SectionWrapper id="quick-start">
-      <div className="grid items-center gap-12 lg:grid-cols-2">
+    <SectionWrapper id="quick-start" className="pb-18">
+      <div className="grid items-start gap-10 xl:grid-cols-[0.95fr_1.05fr]">
         <div>
-          <h2 className="mb-6 text-3xl font-bold text-white md:text-5xl">
-            Start Building in Minutes
+          <p className="mb-3 text-xs tracking-[0.2em] text-[#ccb392] uppercase">
+            Quick Start
+          </p>
+          <h2 className="font-serif text-3xl leading-tight text-[#f8f0e5] md:text-5xl">
+            Copy, run, ship.
           </h2>
-          <p className="mb-8 text-lg text-neutral-400">
-            Get up and running with a single command. The template comes
-            pre-configured with everything you need.
+          <p className="mt-4 max-w-xl text-base text-[#d2c2ae] md:text-lg">
+            This flow mirrors how teams actually onboard the template: scaffold,
+            personalize scope, add UI primitives, then start building features.
           </p>
 
-          <div className="space-y-6">
+          <div className="mt-8 space-y-4">
             {terminalSteps.map((step, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="flex flex-shrink-0 flex-col items-center">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[var(--solar-dark)] text-sm font-bold text-white">
+              <motion.div
+                key={step.command}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.4, delay: index * 0.07 }}
+                className="rounded-2xl border border-white/12 bg-[#10161e]/85 p-4"
+              >
+                <div className="mb-2 flex items-center gap-2 text-xs tracking-[0.13em] text-[#dfceba] uppercase">
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#d9ab72] text-[11px] font-semibold text-[#1f1711]">
                     {index + 1}
-                  </div>
-                  {index < terminalSteps.length - 1 && (
-                    <div className="my-2 w-px flex-1 bg-white/10" />
-                  )}
+                  </span>
+                  {step.description}
                 </div>
-                <div className="flex-1 pb-8">
-                  <h3 className="mb-1 font-medium text-white">
-                    {step.description}
-                  </h3>
-                  <div className="overflow-x-auto rounded-lg border border-white/5 bg-neutral-900 p-3 font-mono text-xs text-neutral-300 md:text-sm">
-                    <span className="text-[var(--solar-teal)]">$</span>{' '}
-                    {step.command}
-                  </div>
-                </div>
-              </div>
+                <code className="block overflow-x-auto whitespace-nowrap rounded-lg border border-white/8 bg-[#0b0f14] px-3 py-2 font-mono text-xs text-[#d7cab8]">
+                  <span className="mr-2 text-[#5fd1c4]">$</span>
+                  {step.command}
+                </code>
+              </motion.div>
             ))}
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-[#5fd1c4]/25 bg-[#5fd1c4]/10 p-4 text-sm text-[#d6e9e5]">
+            <div className="mb-2 flex items-center gap-2 font-medium text-[#e5f6f3]">
+              <Check className="h-4 w-4" /> shadcn workflow included
+            </div>
+            Add new components directly into `packages/ui` and consume them in
+            both the app and feature demos.
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[var(--solar-orange)] to-[var(--solar-purple)] opacity-20 blur-2xl" />
-          <CodeBlock
-            filename="terminal"
-            language="bash"
-            code={`$bun create-turbo@latest --example https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo my-app
-Cloning into 'my-app'...
-Done.
+        <div className="space-y-5">
+          <div className="rounded-3xl border border-white/12 bg-[#10161d]/85 p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs tracking-[0.17em] text-[#ccb392] uppercase">
+                Command Recipe
+              </p>
+              <span className="inline-flex items-center gap-1 rounded-full border border-white/15 px-3 py-1 text-[11px] text-[#e8dbc9]">
+                CLI + shadcn <ArrowRight className="h-3 w-3" /> ready
+              </span>
+            </div>
+            <CodeBlock filename="bootstrap.sh" language="bash" code={COMMAND_BUNDLE} />
+          </div>
 
-$ cd my-app && bun install
-Installing dependencies...
-+ 847 packages installed [12.43s]
-
-$ bun run rename-scope:dry
-Preview: Renaming @template → @myapp
-Found 23 files to update
-
-$ bun run rename-scope
-✓ Renamed @template to @myapp across all packages
-✓ Updated 23 files
-
-$ bun dev
-> turbo run dev
-@myapp/web:dev: ready on http://localhost:3000
-@myapp/server:dev: Server listening on :8080
-@myapp/worker:dev: Worker started
-`}
-          />
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/12 bg-[#0f151c]/84 p-4">
+              <p className="mb-2 text-xs tracking-[0.15em] text-[#ceb89a] uppercase">
+                Add Components
+              </p>
+              <code className="block overflow-x-auto whitespace-nowrap rounded-lg bg-black/25 px-3 py-2 font-mono text-xs text-[#e8dccd]">
+                $ {SHADCN_COMMAND}
+              </code>
+            </div>
+            <div className="rounded-2xl border border-white/12 bg-[#0f151c]/84 p-4">
+              <p className="mb-2 text-xs tracking-[0.15em] text-[#ceb89a] uppercase">
+                Generate New UI
+              </p>
+              <code className="block overflow-x-auto whitespace-nowrap rounded-lg bg-black/25 px-3 py-2 font-mono text-xs text-[#e8dccd]">
+                $ bun run generate:component
+              </code>
+            </div>
+          </div>
         </div>
       </div>
     </SectionWrapper>

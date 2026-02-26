@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Play, Database, Table } from 'lucide-react'
+import { Play, Database, Table } from '@template/ui/components/icons'
 import { CodeBlock } from '@/components/ui/code-block'
 
 export const DatabasePlayground = () => {

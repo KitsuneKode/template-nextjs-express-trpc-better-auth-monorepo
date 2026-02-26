@@ -3,7 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { Lock, MessageSquare, FileText, ArrowLeft } from 'lucide-react'
+import { Lock, MessageSquare, FileText, ArrowLeft } from '@template/ui/components/icons'
 
 const demos = [
   {

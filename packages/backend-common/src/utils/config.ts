@@ -1,21 +1,35 @@
-import { ConfigLoader } from '@template/common/config-loader'
+import {
+  ConfigLoader,
+  readEnvEnum,
+  readEnvNumber,
+  readEnvString,
+  readEnvUrl,
+} from '@template/common/config-loader'
 import { backendLogger, workerLogger } from './logger'
 
+const NODE_ENVS = ['development', 'test', 'production'] as const
+
 const workerConfigSchema = {
-  databaseUrl: () => process.env.DATABASE_URL,
-  nodeEnv: () => process.env.NODE_ENV || 'development',
-  redisUrl: () => process.env.REDIS_URL,
+  databaseUrl: () => readEnvString('DATABASE_URL'),
+  nodeEnv: () => readEnvEnum('NODE_ENV', NODE_ENVS, { defaultValue: 'development' }),
+  redisUrl: () => readEnvUrl('REDIS_URL'),
 }
 
 const backendConfigSchema = {
-  port: () => Number(process.env.PORT),
-  frontendUrl: () => process.env.FRONTEND_URL,
-  databaseUrl: () => process.env.DATABASE_URL,
-  nodeEnv: () => process.env.NODE_ENV || 'development',
-  redisUrl: () => process.env.REDIS_URL,
-  betterAuthUrl: () => process.env.BETTER_AUTH_URL,
-  betterAuthSecret: () => process.env.BETTER_AUTH_SECRET,
+  port: () => readEnvNumber('PORT', { defaultValue: 8080, integer: true, min: 1, max: 65535 }),
+  frontendUrl: () => readEnvUrl('FRONTEND_URL'),
+  databaseUrl: () => readEnvString('DATABASE_URL'),
+  nodeEnv: () => readEnvEnum('NODE_ENV', NODE_ENVS, { defaultValue: 'development' }),
+  redisUrl: () => readEnvUrl('REDIS_URL'),
+  betterAuthUrl: () => readEnvUrl('BETTER_AUTH_URL'),
+  betterAuthSecret: () => readEnvString('BETTER_AUTH_SECRET'),
 }
 
-export const backendConfig = ConfigLoader.getInstance(backendConfigSchema, 'server', backendLogger)
-export const workerConfig = ConfigLoader.getInstance(workerConfigSchema, 'worker', workerLogger)
+export const backendConfig = ConfigLoader.getInstance(backendConfigSchema, {
+  key: 'server',
+  logger: backendLogger,
+})
+export const workerConfig = ConfigLoader.getInstance(workerConfigSchema, {
+  key: 'worker',
+  logger: workerLogger,
+})

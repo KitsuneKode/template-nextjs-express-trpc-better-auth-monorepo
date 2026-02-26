@@ -13,7 +13,7 @@ import {
   Share2,
   Twitter,
   Linkedin,
-} from 'lucide-react'
+} from '@template/ui/components/icons'
 
 interface Props {
   params: Promise<{ slug: string }>

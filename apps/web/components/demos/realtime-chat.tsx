@@ -5,7 +5,7 @@ import { authClient } from '@template/auth/client'
 import { motion, AnimatePresence } from 'motion/react'
 import { CodeBlock } from '@/components/ui/code-block'
 import React, { useState, useEffect, useRef } from 'react'
-import { Send, User, Bot, Wifi, Loader2 } from 'lucide-react'
+import { Send, User, Bot, Wifi, Loader2 } from '@template/ui/components/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {

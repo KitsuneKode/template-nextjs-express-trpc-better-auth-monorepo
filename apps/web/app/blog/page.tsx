@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import { cacheLife } from 'next/cache'
 import { prisma } from '@template/store'
-import { ArrowRight, Calendar, Clock, User } from 'lucide-react'
+import { ArrowRight, Calendar, Clock, User } from '@template/ui/components/icons'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 import { AnimatedGradient } from '@/components/ui/animated-gradient'
 

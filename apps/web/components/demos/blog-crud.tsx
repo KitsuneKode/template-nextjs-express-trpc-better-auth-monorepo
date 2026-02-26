@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useTRPC } from '@/trpc/client'
 import { motion, AnimatePresence } from 'motion/react'
 import { CodeBlock } from '@/components/ui/code-block'
-import { Plus, Trash2, Edit2, Save, X, Loader2 } from 'lucide-react'
+import { Plus, Trash2, Edit2, Save, X, Loader2 } from '@template/ui/components/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
