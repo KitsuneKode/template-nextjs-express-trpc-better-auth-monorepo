@@ -1,7 +1,8 @@
+import { Toaster } from 'sonner'
 import '@template/ui/globals.css'
 import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
-import { Navbar } from '@/components/landing/Navbar'
+import { NavbarSwitcher } from '@/components/shell/navbar-switcher'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://template.kitsunekode.com'),
@@ -22,9 +23,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
         <Providers>
-          <Navbar />
+          <NavbarSwitcher />
           {children}
         </Providers>
+        <Toaster theme="dark" position="bottom-right" className="font-sans" />
       </body>
     </html>
   )

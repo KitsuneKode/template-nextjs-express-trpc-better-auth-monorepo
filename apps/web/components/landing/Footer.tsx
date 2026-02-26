@@ -12,18 +12,18 @@ const FOOTER_LINKS = [
 
 export const Footer = () => {
   return (
-    <footer className="relative mt-8 border-t border-white/12 bg-[#0a0e13] py-14">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#d9ab72]/50 to-transparent" />
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-xl">
-            <p className="text-xs tracking-[0.2em] text-[#ccb392] uppercase">
+    <footer className="relative mt-20 border-t border-white/10 bg-[#0A0A0A] py-16 sm:py-24">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-md">
+            <div className="inline-flex items-center gap-2 text-sm tracking-[0.24em] text-[#FAFAFA] uppercase">
+              <span className="h-2 w-2 rounded-full bg-[#D9AB72] shadow-[0_0_12px_#D9AB72]" />
               Kitsune Stack
-            </p>
-            <p className="mt-3 font-serif text-2xl leading-snug text-[#f6eee3] md:text-3xl">
+            </div>
+            <p className="mt-6 font-serif text-2xl font-medium tracking-tight text-[#FAFAFA] sm:text-3xl">
               Build product features, not monorepo plumbing.
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-[#c8b9a6]">
+            <p className="mt-4 text-sm leading-relaxed text-[#A1A1AA]">
               Built for teams who want type safety, coherent architecture, and
               polished UX from the first commit.
             </p>
@@ -34,7 +34,7 @@ export const Footer = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-full border border-white/12 bg-white/4 px-4 py-2 text-xs tracking-[0.14em] text-[#ddcfbc] uppercase transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-full border border-white/10 bg-white/[0.02] px-5 py-2.5 text-xs font-medium tracking-wide text-[#A1A1AA] uppercase transition-colors hover:bg-white/[0.05] hover:text-[#FAFAFA]"
               >
                 {link.label}
               </Link>
@@ -43,19 +43,24 @@ export const Footer = () => {
               href="https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/4 px-4 py-2 text-xs tracking-[0.14em] text-[#ddcfbc] uppercase transition-colors hover:bg-white/10 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-5 py-2.5 text-xs font-medium tracking-wide text-[#A1A1AA] uppercase transition-colors hover:bg-white/[0.05] hover:text-[#FAFAFA]"
             >
               <Github className="h-4 w-4" /> GitHub
             </Link>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-white/10 pt-6 text-sm text-[#af9f8c]">
-          <Suspense>
-            © <CurrentYear /> KitsuneKode. Made with{' '}
-          </Suspense>
-          <Heart className="mx-1 inline-block h-4 w-4 fill-[#d9ab72] text-[#d9ab72]" />
-          for serious builders.
+        <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
+          <div className="text-xs text-[#71717A]">
+            <Suspense>
+              © <CurrentYear /> KitsuneKode. All rights reserved.
+            </Suspense>
+          </div>
+          <div className="text-xs text-[#71717A]">
+            Made with{' '}
+            <Heart className="mx-1 mb-0.5 inline-block h-3 w-3 fill-[#D9AB72] text-[#D9AB72]" />
+            for serious builders.
+          </div>
         </div>
       </div>
     </footer>

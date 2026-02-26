@@ -55,7 +55,7 @@ export const Testimonials = () => {
             Loved by Developers
           </h2>
           <p className="text-lg text-neutral-400">
-            Don't just take our word for it.
+            Don&apos;t just take our word for it.
           </p>
         </div>
 
@@ -75,7 +75,7 @@ export const Testimonials = () => {
                 className="flex flex-col items-center text-center"
               >
                 <p className="mb-8 text-xl leading-relaxed font-medium text-neutral-200 md:text-2xl">
-                  "{testimonials?.[current]?.quote}"
+                  &ldquo;{testimonials?.[current]?.quote}&rdquo;
                 </p>
 
                 <div className="flex items-center gap-4">
@@ -98,12 +98,14 @@ export const Testimonials = () => {
 
             <div className="mt-8 flex justify-center gap-4">
               <button
+                type="button"
                 onClick={prev}
                 className="rounded-full bg-neutral-800 p-2 text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-white"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
+                type="button"
                 onClick={next}
                 className="rounded-full bg-neutral-800 p-2 text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-white"
               >

@@ -1,17 +1,27 @@
-import type { SafeParseReturnType, ZodSchema } from 'zod'
 import { z } from 'zod'
 
-export function validate<T>(schema: ZodSchema<T>, data: T) {
+type ValidationError = {
+  path: string
+  message: string
+}
+
+type SafeParseResult<TSchema extends z.ZodTypeAny> = ReturnType<TSchema['safeParse']>
+
+export function validate<TSchema extends z.ZodTypeAny>(schema: TSchema, data: unknown) {
   return schema.safeParse(data)
 }
 
-export const getValidationErrors = <T>(result: SafeParseReturnType<T, T>) => {
-  return (
-    result.error?.issues.map((issue) => ({
-      path: issue.path.join('.'),
-      message: issue.message,
-    })) || []
-  )
+export const getValidationErrors = <TSchema extends z.ZodTypeAny>(
+  result: SafeParseResult<TSchema>,
+): ValidationError[] => {
+  if (result.success) {
+    return []
+  }
+
+  return result.error.issues.map((issue) => ({
+    path: issue.path.join('.'),
+    message: issue.message,
+  }))
 }
 
 export const passwordSchema = z
@@ -30,11 +40,11 @@ export const signUpObject = z.object({
     .toLowerCase()
     .trim()
     .regex(/^[a-zA-Z0-9]+$/),
-  email: z.string().email().toLowerCase().trim(),
+  email: z.email().toLowerCase().trim(),
   password: passwordSchema,
 })
 
 export const signInObject = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z.email().toLowerCase().trim(),
   password: passwordSchema,
 })

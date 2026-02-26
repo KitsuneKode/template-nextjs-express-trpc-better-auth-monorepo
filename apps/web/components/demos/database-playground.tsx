@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Play, Database, Table } from '@template/ui/components/icons'
 import { CodeBlock } from '@/components/ui/code-block'
+import { Play, Database, Table } from '@template/ui/components/icons'
 
 export const DatabasePlayground = () => {
   const [query, setQuery] = useState(`await prisma.user.findMany({
@@ -42,15 +42,16 @@ export const DatabasePlayground = () => {
   }
 
   return (
-    <div className="grid h-[500px] gap-8 lg:grid-cols-2">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
+    <div className="grid h-auto gap-8 lg:h-[500px] lg:grid-cols-2">
+      <div className="flex h-[400px] flex-col gap-4 lg:h-auto">
+        <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A] ring-1 ring-white/5">
           <div className="flex items-center justify-between border-b border-white/10 bg-white/5 p-4">
             <div className="flex items-center gap-2 font-medium text-white">
               <Database size={18} className="text-[var(--solar-purple)]" />
               <span>Prisma Query</span>
             </div>
             <button
+              type="button"
               onClick={runQuery}
               disabled={isLoading}
               className="flex items-center gap-2 rounded-lg bg-[var(--solar-purple)] px-4 py-1.5 font-bold text-neutral-900 transition-opacity hover:opacity-90 disabled:opacity-50"
@@ -69,7 +70,7 @@ export const DatabasePlayground = () => {
           </div>
         </div>
 
-        <div className="flex h-48 flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
+        <div className="flex h-48 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A] ring-1 ring-white/5">
           <div className="flex items-center gap-2 border-b border-white/10 bg-white/5 p-3 text-sm font-medium text-white">
             <Table size={16} className="text-neutral-400" />
             <span>Result</span>
@@ -81,7 +82,7 @@ export const DatabasePlayground = () => {
               <pre>{result}</pre>
             ) : (
               <span className="text-neutral-600">
-                // Results will appear here
+                {'// Results will appear here'}
               </span>
             )}
           </div>

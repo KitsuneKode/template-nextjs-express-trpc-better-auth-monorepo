@@ -5,7 +5,13 @@ import confetti from 'canvas-confetti'
 import React, { useState } from 'react'
 import { CodeBlock } from '../ui/code-block'
 import { authClient } from '@template/auth/client'
-import { Mail, Lock, Github, CheckCircle, LogOut } from '@template/ui/components/icons'
+import {
+  Mail,
+  Lock,
+  Github,
+  CheckCircle,
+  LogOut,
+} from '@template/ui/components/icons'
 
 export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -67,8 +73,8 @@ export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   }
 
   return (
-    <div className="grid h-[500px] gap-8 lg:grid-cols-2">
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-neutral-900/50 p-8">
+    <div className="grid h-auto gap-8 lg:h-[500px] lg:grid-cols-2">
+      <div className="flex h-[400px] items-center justify-center rounded-2xl border border-white/10 bg-[#0A0A0A] p-8 ring-1 ring-white/5 lg:h-auto">
         {currentSession ? (
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}

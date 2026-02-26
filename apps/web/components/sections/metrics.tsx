@@ -29,24 +29,28 @@ const metrics = [
 
 export const Metrics = () => {
   return (
-    <SectionWrapper id="metrics" className="py-16">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <SectionWrapper id="metrics" className="py-20">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
         {metrics.map((metric, index) => (
           <motion.article
             key={metric.label}
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-120px' }}
-            transition={{ duration: 0.4, delay: index * 0.07 }}
-            className="rounded-3xl border border-white/12 bg-[#10161d]/84 p-5"
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-6 text-center transition-colors hover:bg-white/[0.04] sm:p-8 sm:text-left"
           >
-            <p className="text-xs tracking-[0.16em] text-[#ceb89a] uppercase">
+            <p className="text-xs font-medium tracking-widest text-[#A1A1AA] uppercase">
               {metric.label}
             </p>
-            <p className="mt-3 font-serif text-4xl text-[#f7ede1]">
-              {metric.value}
-            </p>
-            <p className="mt-2 text-sm text-[#cbbba7]">{metric.detail}</p>
+            <div className="mt-6">
+              <p className="font-serif text-4xl font-medium tracking-tight text-[#FAFAFA] sm:text-5xl">
+                {metric.value}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-[#71717A] sm:text-sm">
+                {metric.detail}
+              </p>
+            </div>
           </motion.article>
         ))}
       </div>

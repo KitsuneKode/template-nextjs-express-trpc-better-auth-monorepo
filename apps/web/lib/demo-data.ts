@@ -1,7 +1,6 @@
 import {
   Zap,
   Shield,
-  Globe,
   Database,
   Layout,
   Code2,
