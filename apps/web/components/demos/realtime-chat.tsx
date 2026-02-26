@@ -4,9 +4,16 @@ import { useTRPC } from '@/trpc/client'
 import { authClient } from '@template/auth/client'
 import { motion, AnimatePresence } from 'motion/react'
 import { CodeBlock } from '@/components/ui/code-block'
-import React, { useState, useEffect, useRef } from 'react'
-import { Send, User, Bot, Wifi, Loader2 } from '@template/ui/components/icons'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Send, Wifi, Loader2 } from '@template/ui/components/icons'
+
+type ChatMessage = {
+  id: string
+  content: string
+  senderId: string
+  sender: { name: string | null }
+}
 
 export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [input, setInput] = useState('')
@@ -14,7 +21,7 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const { data: session } = authClient.useSession()
 
   // Mock State
-  const [mockMessages, setMockMessages] = useState([
+  const [mockMessages, setMockMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       content: 'Welcome to the chat!',
@@ -48,7 +55,10 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
     }),
   )
 
-  const messages = mode === 'mock' ? mockMessages : realMessages
+  const messages = useMemo<ChatMessage[]>(
+    () => (mode === 'mock' ? mockMessages : (realMessages ?? [])),
+    [mode, mockMessages, realMessages],
+  )
   const isLoading = mode === 'real' ? isRealLoading : false
 
   useEffect(() => {
@@ -90,8 +100,8 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   }
 
   return (
-    <div className="grid h-[500px] gap-8 lg:grid-cols-2">
-      <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
+    <div className="grid h-auto gap-8 lg:h-[500px] lg:grid-cols-2">
+      <div className="flex h-[400px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A] ring-1 ring-white/5 lg:h-auto">
         <div className="flex items-center justify-between border-b border-white/10 bg-white/5 p-4">
           <div className="flex items-center gap-3">
             <div
@@ -114,7 +124,7 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
             </div>
           ) : (
             <AnimatePresence mode="popLayout">
-              {messages?.map((msg: any) => (
+              {messages?.map((msg) => (
                 <motion.div
                   key={msg.id}
                   initial={{ opacity: 0, y: 10, scale: 0.9 }}
@@ -130,7 +140,7 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                     }`}
                   >
                     <div className="mb-1 text-xs opacity-50">
-                      {msg.sender.name}
+                      {msg.sender?.name ?? 'Anonymous'}
                     </div>
                     {msg.content}
                   </div>

@@ -1,14 +1,12 @@
 'use client'
 
-import Link from 'next/link'
 import React from 'react'
+import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
   ArrowRight,
   Check,
-  Code2,
   Database,
-  Layout,
   Lock,
   Zap,
 } from '@template/ui/components/icons'
@@ -37,149 +35,135 @@ const HERO_COMMANDS = [
 
 export const Hero = () => {
   return (
-    <section className="relative isolate overflow-hidden pt-28 pb-16 md:pt-32 md:pb-24">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(216,166,110,0.34),transparent_42%),radial-gradient(circle_at_84%_16%,rgba(66,168,175,0.22),transparent_38%),radial-gradient(circle_at_52%_88%,rgba(228,127,98,0.18),transparent_46%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:42px_42px]" />
+    <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-32">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(217,171,114,0.05),transparent_50%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[url('/noise.png')] opacity-[0.015] mix-blend-overlay" />
 
-      <div className="container mx-auto grid gap-12 px-4 md:px-6 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="container mx-auto grid min-w-0 gap-16 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-3xl"
         >
-          <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-[#d9ab72]/40 bg-[#d9ab72]/10 px-4 py-2 text-xs tracking-[0.18em] text-[#f0ddc3] uppercase">
+          <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-xs font-medium tracking-wide text-[#A1A1AA] backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#D9AB72] opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#D9AB72]"></span>
+            </span>
             Production Monorepo Foundation
           </div>
 
-          <h1 className="font-serif text-4xl leading-[1.08] font-semibold text-[#fbf5ec] sm:text-5xl lg:text-7xl">
+          <h1 className="font-serif text-5xl font-medium tracking-tight text-[#FAFAFA] sm:text-6xl lg:text-7xl lg:leading-[1.1]">
             Ship product logic,
-            <span className="block text-[#d9ab72]">not setup scripts.</span>
+            <span className="block text-[#D9AB72] italic">
+              not setup scripts.
+            </span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#d9ccb9] md:text-xl">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#A1A1AA] sm:text-xl">
             A full-stack starter built for teams that want real momentum: shared
-            UI, typed APIs, auth wired in, database ready, and live demos you can
-            trust on day one.
+            UI, typed APIs, auth wired in, database ready, and live demos you
+            can trust on day one.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-10 flex flex-wrap items-center gap-4">
             <Link
               href="#quick-start"
-              className="group inline-flex items-center gap-2 rounded-full bg-[#d9ab72] px-6 py-3 text-xs font-semibold tracking-[0.14em] text-[#1f1810] uppercase transition-all hover:-translate-y-0.5 hover:brightness-110"
+              className="group inline-flex items-center gap-2 rounded-full bg-[#D9AB72] px-6 py-3.5 text-sm font-semibold text-[#0A0A0A] transition-all hover:bg-[#E5BE8C] active:scale-95"
             >
               Scaffold In 5 Minutes
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               href="#demos"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-xs font-semibold tracking-[0.14em] text-[#efe2cf] uppercase transition-colors hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-transparent px-6 py-3.5 text-sm font-medium text-[#FAFAFA] transition-colors hover:bg-white/5"
             >
-              View Live Capabilities
+              View Live Demos
             </Link>
           </div>
 
-          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          <div className="mt-12 grid gap-4 sm:grid-cols-3">
             {KEY_POINTS.map((point, index) => (
               <motion.div
                 key={point}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.2 + index * 0.08 }}
-                className="rounded-2xl border border-white/10 bg-[#12171d]/65 px-4 py-4"
+                transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                className="flex flex-col border-l border-white/10 pl-4"
               >
-                <span className="mb-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#5fd1c4]/18 text-[#5fd1c4]">
-                  <Check className="h-4 w-4" />
-                </span>
-                <p className="text-sm leading-relaxed text-[#e4d9c8]">{point}</p>
+                <Check className="mb-2 h-4 w-4 text-[#5FD1C4]" />
+                <p className="text-sm font-medium text-[#D4D4D8]">{point}</p>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className="relative"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative mx-auto w-full max-w-[600px] lg:mx-0 lg:ml-auto"
         >
-          <div className="absolute -inset-0.5 rounded-[28px] bg-[linear-gradient(145deg,rgba(217,171,114,0.45),rgba(66,168,175,0.2),rgba(255,255,255,0.08))] blur-sm" />
-          <div className="relative overflow-hidden rounded-[28px] border border-white/14 bg-[#0e1319]/90 p-5 md:p-6">
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-xs tracking-[0.18em] text-[#cab79f] uppercase">
-                Launch Panel
-              </p>
-              <span className="rounded-full border border-[#5fd1c4]/35 bg-[#5fd1c4]/10 px-3 py-1 text-[11px] text-[#5fd1c4]">
-                Ready-to-run
-              </span>
+          {/* Decorative glow */}
+          <div className="absolute -inset-1 -z-10 rounded-3xl bg-gradient-to-br from-[#D9AB72]/20 via-transparent to-[#5FD1C4]/20 blur-xl" />
+
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A]/90 shadow-2xl backdrop-blur-xl">
+            {/* Window Header */}
+            <div className="flex items-center border-b border-white/5 bg-white/[0.02] px-4 py-3">
+              <div className="flex gap-1.5">
+                <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]/50" />
+                <div className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]/50" />
+                <div className="h-2.5 w-2.5 rounded-full bg-[#27C93F]/50" />
+              </div>
+              <p className="ml-4 font-mono text-xs text-[#71717A]">terminal</p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#090d12] p-4">
-              <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
-                Terminal Recipe
-              </p>
-              <div className="space-y-2 font-mono text-xs text-[#dbccbb] md:text-sm">
+            <div className="p-5 sm:p-6">
+              <div className="space-y-3 font-mono text-xs sm:text-sm">
                 {HERO_COMMANDS.map((line) => (
-                  <p
-                    key={line}
-                    className="overflow-x-auto whitespace-nowrap rounded-md bg-white/3 px-3 py-2"
-                  >
-                    <span className="mr-2 text-[#5fd1c4]">$</span>
-                    {line}
-                  </p>
+                  <div key={line} className="flex min-w-0 gap-3">
+                    <span className="text-[#5FD1C4] select-none">$</span>
+                    <span className="min-w-0 flex-1 break-all whitespace-pre-wrap text-[#D4D4D8]">
+                      {line}
+                    </span>
+                  </div>
                 ))}
               </div>
-            </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
-                <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
-                  Stack
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {STACK.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-white/12 bg-[#131921] px-2.5 py-1 text-xs text-[#ecdfce]"
-                    >
-                      {item}
-                    </span>
-                  ))}
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+                  <p className="mb-3 text-xs font-medium text-[#71717A]">
+                    Core Stack
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {STACK.slice(0, 4).map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-md bg-white/5 px-2 py-1 text-xs font-medium text-[#A1A1AA]"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
-                <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
-                  Included Flows
-                </p>
-                <ul className="space-y-2 text-sm text-[#e5d8c6]">
-                  <li className="flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-[#d9ab72]" /> Auth
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-[#5fd1c4]" /> Real-time demo
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Database className="h-4 w-4 text-[#85d8e3]" /> Prisma data
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Layout className="h-4 w-4 text-[#e79b78]" /> Shared UI package
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-[#d9ab72]/22 bg-[#d9ab72]/8 p-4">
-              <p className="mb-2 text-[11px] tracking-[0.16em] text-[#e4cda8] uppercase">
-                Why teams pick this
-              </p>
-              <p className="text-sm leading-relaxed text-[#efe4d6]">
-                Replace boilerplate week with product week. You start from
-                aligned conventions, production defaults, and a stack that scales
-                without rewrites.
-              </p>
-              <div className="mt-3 inline-flex items-center gap-2 text-xs text-[#f4e6d1]">
-                <Code2 className="h-4 w-4" /> Crafted for shipping, not demos.
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+                  <p className="mb-3 text-xs font-medium text-[#71717A]">
+                    Features
+                  </p>
+                  <ul className="space-y-2.5 text-xs text-[#A1A1AA]">
+                    <li className="flex items-center gap-2">
+                      <Lock className="h-3.5 w-3.5 text-[#D9AB72]" /> Auth
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Zap className="h-3.5 w-3.5 text-[#5FD1C4]" /> Real-time
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Database className="h-3.5 w-3.5 text-[#D9AB72]" /> Prisma
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

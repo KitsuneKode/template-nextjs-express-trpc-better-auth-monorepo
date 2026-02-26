@@ -4,8 +4,20 @@ import React, { useState } from 'react'
 import { useTRPC } from '@/trpc/client'
 import { motion, AnimatePresence } from 'motion/react'
 import { CodeBlock } from '@/components/ui/code-block'
-import { Plus, Trash2, Edit2, Save, X, Loader2 } from '@template/ui/components/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  Plus,
+  Trash2,
+  Loader2,
+} from '@template/ui/components/icons'
+
+type DemoPost = {
+  id: string
+  title: string
+  content: string
+  createdAt: Date | string
+  author: { name: string | null }
+}
 
 export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [isCreating, setIsCreating] = useState(false)
@@ -13,17 +25,19 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [newContent, setNewContent] = useState('')
 
   // Mock Data
-  const [mockPosts, setMockPosts] = useState([
+  const [mockPosts, setMockPosts] = useState<DemoPost[]>([
     {
       id: '1',
       title: 'Getting Started with Next.js',
       content: 'Next.js is awesome...',
+      createdAt: new Date('2026-01-10T10:00:00.000Z'),
       author: { name: 'Demo User' },
     },
     {
       id: '2',
       title: 'Why Monorepos?',
       content: 'Monorepos help scale...',
+      createdAt: new Date('2026-01-12T12:00:00.000Z'),
       author: { name: 'Demo User' },
     },
   ])
@@ -56,7 +70,7 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
     }),
   )
 
-  const posts = mode === 'mock' ? mockPosts : realPosts
+  const posts = mode === 'mock' ? mockPosts : (realPosts ?? [])
   const isLoading = mode === 'real' ? isRealLoading : false
 
   const handleCreate = () => {
@@ -94,8 +108,8 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   }
 
   return (
-    <div className="grid h-[500px] gap-8 lg:grid-cols-2">
-      <div className="flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
+    <div className="grid h-auto gap-8 lg:h-[500px] lg:grid-cols-2">
+      <div className="flex h-[400px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0A0A0A] ring-1 ring-white/5 lg:h-auto">
         <div className="flex items-center justify-between border-b border-white/10 p-6">
           <div className="flex items-center gap-2">
             <h3 className="text-xl font-bold text-white">Posts</h3>
@@ -106,6 +120,7 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
             </span>
           </div>
           <button
+            type="button"
             onClick={() => setIsCreating(true)}
             className="rounded-lg bg-[var(--solar-orange)] p-2 text-white transition-opacity hover:opacity-90"
           >
@@ -138,12 +153,14 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                 />
                 <div className="flex justify-end gap-2">
                   <button
+                    type="button"
                     onClick={() => setIsCreating(false)}
                     className="px-3 py-1.5 text-sm text-neutral-400 hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handleCreate}
                     disabled={createPost.isPending}
                     className="flex items-center gap-2 rounded-lg bg-[var(--solar-green)] px-3 py-1.5 text-sm font-medium text-neutral-900"
@@ -166,7 +183,7 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                 No posts yet. Create one!
               </div>
             ) : (
-              posts?.map((post: any) => (
+              posts?.map((post) => (
                 <motion.div
                   key={post.id}
                   layout
@@ -184,11 +201,12 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                         {new Date(post.createdAt).toLocaleDateString()}
                       </span>
                       <span>•</span>
-                      <span>{post.author.name || 'Anonymous'}</span>
+                      <span>{post.author?.name || 'Anonymous'}</span>
                     </div>
                   </div>
                   <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
+                      type="button"
                       onClick={() => handleDelete(post.id)}
                       disabled={deletePost.isPending}
                       className="rounded-lg p-2 text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"

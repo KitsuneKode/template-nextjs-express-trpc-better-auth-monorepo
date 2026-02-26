@@ -40,19 +40,16 @@ export const AnimatedGradient = () => {
         }
       }
 
-      // Create a moving gradient background
-      const gradient = ctx.createLinearGradient(0, 0, width, height)
       const c1 = colors[Math.floor(time % colors.length)]
       const c2 = colors[Math.floor((time + 1) % colors.length)]
 
       if (!c1 || !c2) return
 
-      // Interpolate colors (simplified)
-      const r = Math.round(c1.r + (c2.r - c1.r) * (time % 1))
-      const g = Math.round(c1.g + (c2.g - c1.g) * (time % 1))
-      const b = Math.round(c1.b + (c2.b - c1.b) * (time % 1))
-
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.05)`
+      // Create a moving gradient background
+      const gradient = ctx.createLinearGradient(0, 0, width, height)
+      gradient.addColorStop(0, `rgba(${c1.r}, ${c1.g}, ${c1.b}, 0.05)`)
+      gradient.addColorStop(1, `rgba(${c2.r}, ${c2.g}, ${c2.b}, 0.05)`)
+      ctx.fillStyle = gradient
       ctx.fillRect(0, 0, width, height)
 
       requestAnimationFrame(animate)

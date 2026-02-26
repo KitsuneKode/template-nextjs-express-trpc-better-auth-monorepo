@@ -27,7 +27,7 @@
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
-    "eslint": "^10.0.2",
+    "eslint": "^9.0.0",
     "prettier": "^3.8.1",
     "prettier-plugin-sort-imports": "^1.8.11",
     "prettier-plugin-tailwindcss": "^0.7.2",
