@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'motion/react'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight } from '@template/ui/components/icons'
 import { cn } from '@template/ui/lib/utils'
 
 interface FeatureCardProps {

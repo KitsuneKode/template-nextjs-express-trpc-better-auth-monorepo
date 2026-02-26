@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from '@template/ui/components/icons'
 import { AuthFlow } from '@/components/demos/auth-flow'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 

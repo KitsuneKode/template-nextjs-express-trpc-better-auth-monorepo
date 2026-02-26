@@ -2,7 +2,7 @@
 
 import { codeToHtml } from 'shiki'
 import { motion } from 'motion/react'
-import { Check, Copy } from 'lucide-react'
+import { Check, Copy } from '@template/ui/components/icons'
 import React, { useEffect, useState } from 'react'
 
 interface CodeBlockProps {

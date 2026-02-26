@@ -4,7 +4,7 @@ import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'mo
 import { cva, type VariantProps } from 'class-variance-authority'
 import React, { useCallback, useEffect, useState } from 'react'
 import { cn } from '@template/ui/lib/utils'
-import { Star } from 'lucide-react'
+import { Star } from './icons'
 
 const githubButtonVariants = cva(
   'cursor-pointer relative overflow-hidden will-change-transform backface-visibility-hidden transform-gpu transition-transform duration-200 ease-out hover:scale-105 group whitespace-nowrap focus-visible:outline-hidden inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background disabled:pointer-events-none disabled:opacity-60 [&_svg]:shrink-0',
@@ -29,8 +29,7 @@ const githubButtonVariants = cva(
 )
 
 interface GithubButtonProps
-  extends React.ComponentProps<'button'>,
-    VariantProps<typeof githubButtonVariants> {
+  extends React.ComponentProps<'button'>, VariantProps<typeof githubButtonVariants> {
   /** Whether to round stars */
   roundStars?: boolean
   /** Whether to show Github icon */

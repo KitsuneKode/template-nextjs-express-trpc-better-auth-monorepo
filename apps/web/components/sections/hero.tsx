@@ -1,149 +1,188 @@
 'use client'
 
 import Link from 'next/link'
+import React from 'react'
 import { motion } from 'motion/react'
-import { ArrowRight, Github } from 'lucide-react'
-import React, { useState, useEffect } from 'react'
-import { CodeBlock } from '@/components/ui/code-block'
-import { AnimatedGradient } from '../ui/animated-gradient'
-import { fadeInUp, staggerChildren } from '../../lib/animations'
+import {
+  ArrowRight,
+  Check,
+  Code2,
+  Database,
+  Layout,
+  Lock,
+  Zap,
+} from '@template/ui/components/icons'
 
-const TYPING_TEXTS = [
-  'Better Auth',
-  'Prisma ORM',
-  'tRPC API',
+const STACK = [
   'Next.js 16',
+  'tRPC',
+  'Prisma',
+  'Better Auth',
   'Upstash Redis',
+  'Turborepo',
+]
+
+const KEY_POINTS = [
+  'Typed end-to-end from DB to UI',
+  'Web + server + worker in one repo',
+  'Reusable shadcn-based UI package',
+]
+
+const HERO_COMMANDS = [
+  'bun create-turbo@latest --example https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo my-app',
+  'cd my-app && bun install',
+  'bunx shadcn@latest add button card dialog',
+  'bun dev',
 ]
 
 export const Hero = () => {
-  const [textIndex, setTextIndex] = useState(0)
-  const [displayText, setDisplayText] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  useEffect(() => {
-    const currentText = TYPING_TEXTS[textIndex] || ''
-    const speed = isDeleting ? 50 : 100
-
-    const timer = setTimeout(() => {
-      if (!isDeleting && displayText === currentText) {
-        setTimeout(() => setIsDeleting(true), 2000)
-      } else if (isDeleting && displayText === '') {
-        setIsDeleting(false)
-        setTextIndex((prev) => (prev + 1) % TYPING_TEXTS.length)
-      } else {
-        setDisplayText(
-          currentText.substring(0, displayText.length + (isDeleting ? -1 : 1)),
-        )
-      }
-    }, speed)
-
-    return () => clearTimeout(timer)
-  }, [displayText, isDeleting, textIndex])
-
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      <AnimatedGradient />
+    <section className="relative isolate overflow-hidden pt-28 pb-16 md:pt-32 md:pb-24">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(216,166,110,0.34),transparent_42%),radial-gradient(circle_at_84%_16%,rgba(66,168,175,0.22),transparent_38%),radial-gradient(circle_at_52%_88%,rgba(228,127,98,0.18),transparent_46%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:42px_42px]" />
 
-      <div className="relative z-10 container mx-auto grid items-center gap-12 px-4 md:px-6 lg:grid-cols-2">
+      <div className="container mx-auto grid gap-12 px-4 md:px-6 lg:grid-cols-[1.05fr_0.95fr]">
         <motion.div
-          variants={staggerChildren}
-          initial="hidden"
-          animate="visible"
-          className="text-center lg:text-left"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl"
         >
-          <motion.div
-            variants={fadeInUp}
-            className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-sm"
-          >
-            <span className="text-sm font-medium text-[var(--solar-teal)]">
-              v2.0 Now Available
-            </span>
-          </motion.div>
+          <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-[#d9ab72]/40 bg-[#d9ab72]/10 px-4 py-2 text-xs tracking-[0.18em] text-[#f0ddc3] uppercase">
+            Production Monorepo Foundation
+          </div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="mb-6 text-4xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl"
-          >
-            The Full-Stack <br />
-            <span className="bg-gradient-to-r from-[var(--solar-orange)] to-[var(--solar-purple)] bg-clip-text text-transparent">
-              Monorepo Template
-            </span>
-          </motion.h1>
+          <h1 className="font-serif text-4xl leading-[1.08] font-semibold text-[#fbf5ec] sm:text-5xl lg:text-7xl">
+            Ship product logic,
+            <span className="block text-[#d9ab72]">not setup scripts.</span>
+          </h1>
 
-          <motion.div
-            variants={fadeInUp}
-            className="mb-6 h-8 font-mono text-xl text-neutral-300 md:text-2xl"
-          >
-            Built with{' '}
-            <span className="text-[var(--solar-green)]">{displayText}</span>
-            <span className="animate-pulse">|</span>
-          </motion.div>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#d9ccb9] md:text-xl">
+            A full-stack starter built for teams that want real momentum: shared
+            UI, typed APIs, auth wired in, database ready, and live demos you can
+            trust on day one.
+          </p>
 
-          <motion.p
-            variants={fadeInUp}
-            className="mx-auto mb-8 max-w-xl text-lg text-neutral-400 lg:mx-0"
-          >
-            Production-ready architecture with Better Auth, Prisma, tRPC, and
-            Next.js. Stop configuring and start shipping your next big idea.
-          </motion.p>
-
-          <motion.div
-            variants={fadeInUp}
-            className="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start"
-          >
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              href="#demos"
-              className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-lg bg-[var(--solar-orange)] px-8 font-medium text-white transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,107,107,0.5)]"
+              href="#quick-start"
+              className="group inline-flex items-center gap-2 rounded-full bg-[#d9ab72] px-6 py-3 text-xs font-semibold tracking-[0.14em] text-[#1f1810] uppercase transition-all hover:-translate-y-0.5 hover:brightness-110"
             >
-              <span className="mr-2">View Live Demos</span>
+              Scaffold In 5 Minutes
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-
             <Link
-              href="https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo"
-              target="_blank"
-              className="inline-flex h-12 items-center justify-center rounded-lg border border-white/10 bg-white/5 px-8 font-medium text-white transition-all hover:scale-105 hover:bg-white/10"
+              href="#demos"
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-xs font-semibold tracking-[0.14em] text-[#efe2cf] uppercase transition-colors hover:bg-white/10"
             >
-              <Github className="mr-2 h-5 w-5" />
-              Star on GitHub
+              View Live Capabilities
             </Link>
-          </motion.div>
+          </div>
+
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            {KEY_POINTS.map((point, index) => (
+              <motion.div
+                key={point}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.2 + index * 0.08 }}
+                className="rounded-2xl border border-white/10 bg-[#12171d]/65 px-4 py-4"
+              >
+                <span className="mb-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#5fd1c4]/18 text-[#5fd1c4]">
+                  <Check className="h-4 w-4" />
+                </span>
+                <p className="text-sm leading-relaxed text-[#e4d9c8]">{point}</p>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="relative hidden lg:block"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="relative"
         >
-          <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative z-10"
-          >
-            <CodeBlock
-              filename="apps/web/app/page.tsx"
-              code={`import { auth } from "@template/auth";
-import { trpc } from "@template/trpc";
+          <div className="absolute -inset-0.5 rounded-[28px] bg-[linear-gradient(145deg,rgba(217,171,114,0.45),rgba(66,168,175,0.2),rgba(255,255,255,0.08))] blur-sm" />
+          <div className="relative overflow-hidden rounded-[28px] border border-white/14 bg-[#0e1319]/90 p-5 md:p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <p className="text-xs tracking-[0.18em] text-[#cab79f] uppercase">
+                Launch Panel
+              </p>
+              <span className="rounded-full border border-[#5fd1c4]/35 bg-[#5fd1c4]/10 px-3 py-1 text-[11px] text-[#5fd1c4]">
+                Ready-to-run
+              </span>
+            </div>
 
-export default async function Page() {
-  const session = await auth();
-  const data = await trpc.hello.query();
+            <div className="rounded-2xl border border-white/10 bg-[#090d12] p-4">
+              <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
+                Terminal Recipe
+              </p>
+              <div className="space-y-2 font-mono text-xs text-[#dbccbb] md:text-sm">
+                {HERO_COMMANDS.map((line) => (
+                  <p
+                    key={line}
+                    className="overflow-x-auto whitespace-nowrap rounded-md bg-white/3 px-3 py-2"
+                  >
+                    <span className="mr-2 text-[#5fd1c4]">$</span>
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
 
-  return (
-    <main>
-      <h1>Welcome {session.user.name}</h1>
-      <p>{data.message}</p>
-    </main>
-  );
-}`}
-            />
-          </motion.div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
+                <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
+                  Stack
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {STACK.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full border border-white/12 bg-[#131921] px-2.5 py-1 text-xs text-[#ecdfce]"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
 
-          {/* Decorative elements */}
-          <div className="absolute -top-20 -right-20 h-96 w-96 animate-pulse rounded-full bg-[var(--solar-purple)] opacity-20 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-96 w-96 animate-pulse rounded-full bg-[var(--solar-orange)] opacity-20 blur-3xl" />
+              <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
+                <p className="mb-3 text-[11px] tracking-[0.16em] text-[#8fa1b2] uppercase">
+                  Included Flows
+                </p>
+                <ul className="space-y-2 text-sm text-[#e5d8c6]">
+                  <li className="flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-[#d9ab72]" /> Auth
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-[#5fd1c4]" /> Real-time demo
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Database className="h-4 w-4 text-[#85d8e3]" /> Prisma data
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Layout className="h-4 w-4 text-[#e79b78]" /> Shared UI package
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-[#d9ab72]/22 bg-[#d9ab72]/8 p-4">
+              <p className="mb-2 text-[11px] tracking-[0.16em] text-[#e4cda8] uppercase">
+                Why teams pick this
+              </p>
+              <p className="text-sm leading-relaxed text-[#efe4d6]">
+                Replace boilerplate week with product week. You start from
+                aligned conventions, production defaults, and a stack that scales
+                without rewrites.
+              </p>
+              <div className="mt-3 inline-flex items-center gap-2 text-xs text-[#f4e6d1]">
+                <Code2 className="h-4 w-4" /> Crafted for shipping, not demos.
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>

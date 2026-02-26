@@ -1,160 +1,95 @@
 'use client'
 
-import React, { useCallback } from 'react'
+import React from 'react'
+import { motion } from 'motion/react'
+import {
+  ArrowRight,
+  Code2,
+  Database,
+  Layout,
+  Lock,
+  MessageSquare,
+  Zap,
+} from '@template/ui/components/icons'
 import { SectionWrapper } from '../ui/section-wrapper'
-import ReactFlow, {
-  Background,
-  Controls,
-  useNodesState,
-  useEdgesState,
-  Position,
-  MarkerType,
-} from 'react-flow-renderer'
 
-const initialNodes = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'Turborepo Root' },
-    position: { x: 250, y: 0 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #4ECDC4',
-    },
-  },
-  {
-    id: '2',
-    data: { label: 'apps/web (Next.js)' },
-    position: { x: 100, y: 100 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #FF6B6B',
-    },
-  },
-  {
-    id: '3',
-    data: { label: 'apps/server (Express)' },
-    position: { x: 400, y: 100 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #FF6B6B',
-    },
-  },
-  {
-    id: '4',
-    data: { label: 'packages/ui' },
-    position: { x: 0, y: 200 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #96CEB4',
-    },
-  },
-  {
-    id: '5',
-    data: { label: 'packages/db (Prisma)' },
-    position: { x: 200, y: 200 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #96CEB4',
-    },
-  },
-  {
-    id: '6',
-    data: { label: 'packages/trpc' },
-    position: { x: 400, y: 200 },
-    style: {
-      background: '#2C3E50',
-      color: '#fff',
-      border: '1px solid #96CEB4',
-    },
-  },
+const PACKAGES = [
+  { name: 'apps/web', role: 'Next.js UI + app router', icon: Layout },
+  { name: 'apps/server', role: 'Express + tRPC handlers', icon: Zap },
+  { name: 'apps/worker', role: 'Background jobs + queues', icon: MessageSquare },
+  { name: 'packages/ui', role: 'shadcn-based shared design system', icon: Code2 },
+  { name: 'packages/store', role: 'Prisma client + schema', icon: Database },
+  { name: 'packages/auth', role: 'Better Auth config + client', icon: Lock },
 ]
 
-const initialEdges = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    animated: true,
-    style: { stroke: '#fff' },
-  },
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    animated: true,
-    style: { stroke: '#fff' },
-  },
-  {
-    id: 'e2-4',
-    source: '2',
-    target: '4',
-    animated: true,
-    style: { stroke: '#4ECDC4' },
-  },
-  {
-    id: 'e2-5',
-    source: '2',
-    target: '5',
-    animated: true,
-    style: { stroke: '#4ECDC4' },
-  },
-  {
-    id: 'e2-6',
-    source: '2',
-    target: '6',
-    animated: true,
-    style: { stroke: '#4ECDC4' },
-  },
-  {
-    id: 'e3-5',
-    source: '3',
-    target: '5',
-    animated: true,
-    style: { stroke: '#4ECDC4' },
-  },
-  {
-    id: 'e3-6',
-    source: '3',
-    target: '6',
-    animated: true,
-    style: { stroke: '#4ECDC4' },
-  },
+const FLOW = [
+  'User interacts with web app components from packages/ui.',
+  'Typed procedures call server routers through tRPC.',
+  'Server reads/writes via Prisma and shared store package.',
+  'Realtime updates and async jobs fan out through worker + Redis.',
 ]
 
 export const Architecture = () => {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes)
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges)
-
   return (
-    <SectionWrapper id="architecture">
-      <div className="mb-12 text-center">
-        <h2 className="mb-4 text-3xl font-bold text-white md:text-5xl">
-          Monorepo Architecture
-        </h2>
-        <p className="text-lg text-neutral-400">
-          Visualize how the apps and packages connect in this scalable
-          structure.
+    <SectionWrapper id="architecture" className="pt-10 pb-20">
+      <div className="mb-10 max-w-3xl">
+        <p className="mb-3 text-xs tracking-[0.2em] text-[#ccb392] uppercase">
+          Architecture
         </p>
+        <h2 className="font-serif text-3xl leading-tight text-[#f7efe3] md:text-5xl">
+          A monorepo layout your team can reason about quickly.
+        </h2>
       </div>
 
-      <div className="h-[500px] w-full overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/50">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          fitView
-          attributionPosition="bottom-right"
-        >
-          <Background color="#4ECDC4" gap={16} size={1} />
-          <Controls />
-        </ReactFlow>
+      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="rounded-3xl border border-white/12 bg-[#10161d]/84 p-6">
+          <p className="mb-4 text-xs tracking-[0.16em] text-[#ccb392] uppercase">
+            Workspace Map
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {PACKAGES.map((item, index) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.35, delay: index * 0.05 }}
+                className="rounded-2xl border border-white/10 bg-[#0d1218] p-4"
+              >
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-[#f4eadc]">
+                  <item.icon className="h-4 w-4 text-[#d9ab72]" />
+                  {item.name}
+                </div>
+                <p className="text-sm leading-relaxed text-[#c8b8a4]">{item.role}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-white/12 bg-[#10161d]/84 p-6">
+          <p className="mb-4 text-xs tracking-[0.16em] text-[#ccb392] uppercase">
+            Request Flow
+          </p>
+          <ol className="space-y-3">
+            {FLOW.map((step, index) => (
+              <li
+                key={step}
+                className="rounded-2xl border border-white/10 bg-[#0d1218] p-4"
+              >
+                <div className="mb-2 flex items-center gap-2 text-xs tracking-[0.14em] text-[#d9ab72] uppercase">
+                  Step {index + 1}
+                  {index < FLOW.length - 1 && <ArrowRight className="h-3 w-3" />}
+                </div>
+                <p className="text-sm leading-relaxed text-[#d6c7b5]">{step}</p>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-4 rounded-2xl border border-[#5fd1c4]/25 bg-[#5fd1c4]/10 p-4 text-sm text-[#d6e9e5]">
+            One repo, shared types, and consistent conventions means onboarding
+            new developers is predictable instead of tribal.
+          </div>
+        </div>
       </div>
     </SectionWrapper>
   )

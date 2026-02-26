@@ -45,8 +45,6 @@ function getUrl() {
   return `${base}/api/trpc`
 }
 
-console.log(getUrl())
-
 /**
  * Provides tRPC and React Query contexts to descendant components.
  *

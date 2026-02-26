@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti'
 import React, { useState } from 'react'
 import { CodeBlock } from '../ui/code-block'
 import { authClient } from '@template/auth/client'
-import { Mail, Lock, Github, CheckCircle, LogOut } from 'lucide-react'
+import { Mail, Lock, Github, CheckCircle, LogOut } from '@template/ui/components/icons'
 
 export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [isLoading, setIsLoading] = useState(false)

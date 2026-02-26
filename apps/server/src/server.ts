@@ -4,7 +4,12 @@ import cluster from 'cluster'
 import app from '@/app'
 import os from 'os'
 
-config.validateAll()
+try {
+  config.validateAll()
+} catch (error) {
+  logger.error('Server configuration validation failed. Startup aborted.', error)
+  process.exit(1)
+}
 
 const port = config.getConfig('port')
 

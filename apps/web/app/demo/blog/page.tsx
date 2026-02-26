@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from '@template/ui/components/icons'
 import { BlogCrud } from '@/components/demos/blog-crud'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
