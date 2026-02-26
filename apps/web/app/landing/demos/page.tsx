@@ -4,7 +4,8 @@ import { SectionShell } from '@/components/landing-premium/primitives/section-sh
 
 export const metadata: Metadata = {
   title: 'Functional Demos | Kitsune Stack Premium',
-  description: 'Interactive demos showcasing auth, realtime, blog, and database flows.',
+  description:
+    'Interactive demos showcasing auth, realtime, blog, and database flows.',
 }
 
 export default function LandingDemosPage() {

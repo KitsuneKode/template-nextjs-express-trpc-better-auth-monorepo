@@ -2,8 +2,8 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles } from '@template/ui/components/icons'
 import { motion, useScroll, useTransform } from 'motion/react'
+import { ArrowRight, Sparkles } from '@template/ui/components/icons'
 
 export const Hero = () => {
   const { scrollY } = useScroll()

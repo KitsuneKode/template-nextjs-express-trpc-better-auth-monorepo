@@ -31,12 +31,15 @@ export function PremiumFooter({ namespace = 'landing' }: PremiumFooterProps) {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <p className="text-xs font-semibold tracking-[0.2em] text-[#cfaf87] uppercase">Kitsune Stack Premium</p>
+            <p className="text-xs font-semibold tracking-[0.2em] text-[#cfaf87] uppercase">
+              Kitsune Stack Premium
+            </p>
             <p className="mt-3 font-serif text-2xl leading-tight text-[#f5ede3] sm:text-3xl">
               Premium baseline for teams shipping real software.
             </p>
             <p className="mt-3 text-sm text-[#b9a68d]">
-              Architecture, UI system, and developer workflows aligned from day one.
+              Architecture, UI system, and developer workflows aligned from day
+              one.
             </p>
           </div>
           <Link

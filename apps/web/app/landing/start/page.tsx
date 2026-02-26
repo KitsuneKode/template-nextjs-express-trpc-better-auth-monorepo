@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
+import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
 
 export const metadata: Metadata = {
   title: 'Quick Start | Kitsune Stack Premium',

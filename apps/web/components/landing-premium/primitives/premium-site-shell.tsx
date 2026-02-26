@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { cn } from '@template/ui/lib/utils'
 import { NoiseOverlay } from './noise-overlay'
-import { PremiumFooter } from '@/components/landing-premium/footer/premium-footer'
 import type { SiteDesignNamespace } from '@/lib/site-design'
+import { PremiumFooter } from '@/components/landing-premium/footer/premium-footer'
 
 interface PremiumSiteShellProps {
   children: ReactNode

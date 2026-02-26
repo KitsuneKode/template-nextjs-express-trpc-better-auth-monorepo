@@ -16,8 +16,12 @@ export function PremiumMetrics() {
             transition={{ duration: 0.35, delay: index * 0.05 }}
             className="rounded-2xl border border-white/10 bg-[#0e1319]/80 p-5"
           >
-            <p className="text-xs font-semibold tracking-[0.16em] text-[#c8ad8d] uppercase">{item.label}</p>
-            <p className="mt-3 font-serif text-4xl text-[#f6eee3]">{item.value}</p>
+            <p className="text-xs font-semibold tracking-[0.16em] text-[#c8ad8d] uppercase">
+              {item.label}
+            </p>
+            <p className="mt-3 font-serif text-4xl text-[#f6eee3]">
+              {item.value}
+            </p>
             <p className="mt-2 text-sm text-[#b7a48d]">{item.note}</p>
           </motion.article>
         ))}

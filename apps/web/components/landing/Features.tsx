@@ -2,7 +2,14 @@
 
 import React from 'react'
 import { motion } from 'motion/react'
-import { Zap, Shield, Globe, Database, Layout, Code2 } from '@template/ui/components/icons'
+import {
+  Zap,
+  Shield,
+  Globe,
+  Database,
+  Layout,
+  Code2,
+} from '@template/ui/components/icons'
 
 const features = [
   {
