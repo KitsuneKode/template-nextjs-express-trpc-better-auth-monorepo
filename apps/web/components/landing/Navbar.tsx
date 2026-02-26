@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@template/ui/lib/utils'
 import React, { useEffect, useState } from 'react'
 import type { SiteDesign } from '@/lib/site-design'
 import { motion, AnimatePresence } from 'motion/react'
 import { DesignToggle } from '@/components/shell/design-toggle'
 import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
+import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
 
 const NAV_LINKS = [
   { href: '#stack', label: 'Stack' },
@@ -45,7 +47,14 @@ export const Navbar = ({ design }: NavbarProps) => {
             href="/"
             className="inline-flex items-center gap-2.5 text-sm font-semibold tracking-widest text-[#FAFAFA] uppercase"
           >
-            <span className="h-2 w-2 rounded-full bg-[#D9AB72] shadow-[0_0_12px_#D9AB72]" />
+            <Image
+              src="/brand/template-mark.svg"
+              alt="Kitsune Stack logo"
+              width={22}
+              height={22}
+              className="rounded-md"
+              priority
+            />
             Kitsune Stack
           </Link>
 
@@ -56,7 +65,10 @@ export const Navbar = ({ design }: NavbarProps) => {
                 href={link.href}
                 className="text-xs font-medium tracking-wide text-[#A1A1AA] uppercase transition-colors hover:text-[#FAFAFA]"
               >
-                {link.label}
+                <span className="inline-flex items-center">
+                  {link.label}
+                  <LinkPendingIndicator />
+                </span>
               </Link>
             ))}
           </div>
@@ -112,7 +124,10 @@ export const Navbar = ({ design }: NavbarProps) => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block rounded-xl px-4 py-3 text-sm font-medium text-[#A1A1AA] transition-colors hover:bg-white/5 hover:text-[#FAFAFA]"
                 >
-                  {link.label}
+                  <span className="inline-flex items-center">
+                    {link.label}
+                    <LinkPendingIndicator />
+                  </span>
                 </Link>
               ))}
               <div className="pt-2">

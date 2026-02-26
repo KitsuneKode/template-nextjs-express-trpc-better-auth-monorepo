@@ -6,6 +6,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Github } from '@template/ui/components/icons'
 import { DesignToggle } from '@/components/shell/design-toggle'
+import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
 
 interface PremiumMobileMenuProps {
   design: SiteDesign
@@ -40,7 +41,10 @@ export function PremiumMobileMenu({
                 onClick={() => setIsOpen(false)}
                 className="block rounded-xl px-3 py-3 text-sm font-medium text-[#c8b7a3] transition-colors hover:bg-white/5 hover:text-[#faf5ed]"
               >
-                {link.label}
+                <span className="inline-flex items-center">
+                  {link.label}
+                  <LinkPendingIndicator tone="premium" />
+                </span>
               </Link>
             ))}
             <div className="pt-3">
