@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kitsune Stack mark">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f151d" />
+      <stop offset="1" stop-color="#080c11" />
+    </linearGradient>
+    <linearGradient id="slash" x1="30" y1="49" x2="36" y2="14" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d7ae7f" />
+      <stop offset="1" stop-color="#67c8ba" />
+    </linearGradient>
+    <radialGradient id="glowWarm" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(22 19) rotate(65) scale(25)">
+      <stop offset="0" stop-color="#d7ae7f" stop-opacity="0.35" />
+      <stop offset="1" stop-color="#d7ae7f" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowCool" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(44 45) rotate(240) scale(24)">
+      <stop offset="0" stop-color="#67c8ba" stop-opacity="0.33" />
+      <stop offset="1" stop-color="#67c8ba" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#bg)" />
+  <rect x="4.5" y="4.5" width="55" height="55" rx="13.5" fill="none" stroke="rgba(255,255,255,0.14)" />
+
+  <circle cx="22" cy="19" r="17" fill="url(#glowWarm)" />
+  <circle cx="44" cy="45" r="17" fill="url(#glowCool)" />
+
+  <path d="M24 18 L14 32 L24 46" fill="none" stroke="#d7ae7f" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M40 18 L50 32 L40 46" fill="none" stroke="#67c8ba" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M29.5 49 L34.5 14" fill="none" stroke="url(#slash)" stroke-width="4.6" stroke-linecap="round" />
+
+  <circle cx="31.2" cy="31.5" r="1.7" fill="#f5e9db" fill-opacity="0.9" />
+</svg>

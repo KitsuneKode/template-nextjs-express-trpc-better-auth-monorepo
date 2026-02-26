@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@template/ui/lib/utils'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -8,6 +9,7 @@ import { PremiumMobileMenu } from './premium-mobile-menu'
 import { DesignToggle } from '@/components/shell/design-toggle'
 import type { SiteDesign, SiteDesignNamespace } from '@/lib/site-design'
 import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
+import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
 
 interface PremiumNavbarProps {
   design: SiteDesign
@@ -73,7 +75,14 @@ export function PremiumNavbar({ design, namespace }: PremiumNavbarProps) {
           href={homeHref}
           className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.22em] text-[#f0e4d6] uppercase"
         >
-          <span className="h-2 w-2 rounded-full bg-[#d7ae7f] shadow-[0_0_14px_#d7ae7f]" />
+          <Image
+            src="/brand/template-mark.svg"
+            alt="Kitsune Stack Premium logo"
+            width={20}
+            height={20}
+            className="rounded-md"
+            priority
+          />
           Kitsune Stack Premium
         </Link>
 
@@ -84,7 +93,10 @@ export function PremiumNavbar({ design, namespace }: PremiumNavbarProps) {
               href={link.href}
               className="text-xs font-medium tracking-[0.14em] text-[#b8a48b] uppercase transition-colors hover:text-[#f6eee4]"
             >
-              {link.label}
+              <span className="inline-flex items-center">
+                {link.label}
+                <LinkPendingIndicator tone="premium" />
+              </span>
             </Link>
           ))}
         </nav>

@@ -6,6 +6,10 @@
   <img src="https://www.prisma.io/favicon.ico" alt="Prisma" width="32" />
 </p>
 
+<p align="center">
+  <img src="./apps/web/public/brand/template-logo.svg" alt="Kitsune Stack Template logo" width="560" />
+</p>
+
 <h1 align="center">Next.js × Express × tRPC × Bun × Better Auth × Prisma × Turborepo Template</h1>
 
 <p align="center">
