@@ -26,8 +26,12 @@ export function PremiumBlogList({
   if (posts.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.02] p-10 text-center">
-        <p className="text-lg font-semibold text-[#f4eadc]">No posts published yet.</p>
-        <p className="mt-2 text-sm text-[#b9a68f]">Publish your first article to populate this feed.</p>
+        <p className="text-lg font-semibold text-[#f4eadc]">
+          No posts published yet.
+        </p>
+        <p className="mt-2 text-sm text-[#b9a68f]">
+          Publish your first article to populate this feed.
+        </p>
       </div>
     )
   }
@@ -55,13 +59,20 @@ export function PremiumBlogList({
             </span>
           </div>
 
-          <h3 className="line-clamp-2 text-2xl leading-tight font-semibold text-[#f5ede1]">{post.title}</h3>
-          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#baa68d]">{post.content}</p>
+          <h3 className="line-clamp-2 text-2xl leading-tight font-semibold text-[#f5ede1]">
+            {post.title}
+          </h3>
+          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#baa68d]">
+            {post.content}
+          </p>
 
           <div className="mt-5 flex items-center justify-between border-t border-white/8 pt-4 text-sm">
-            <span className="text-[#d8c8b6]">{post.author.name ?? 'Anonymous'}</span>
+            <span className="text-[#d8c8b6]">
+              {post.author.name ?? 'Anonymous'}
+            </span>
             <span className="inline-flex items-center gap-1.5 text-[#d7ae7f]">
-              Read article <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              Read article{' '}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>
         </Link>

@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { ArrowRight, Check } from '@template/ui/components/icons'
 import { CommandRecipePanel } from './command-recipe-panel'
+import { ArrowRight, Check } from '@template/ui/components/icons'
 
 const keyPoints = [
   'Typed API contract from router to UI',
@@ -29,11 +29,14 @@ export function PremiumHero({
 
           <h1 className="font-serif text-4xl leading-[0.95] text-[#f7f1e8] sm:text-5xl lg:text-7xl">
             Ship product logic,
-            <span className="mt-1 block text-[#d7ae7f]">not setup scripts.</span>
+            <span className="mt-1 block text-[#d7ae7f]">
+              not setup scripts.
+            </span>
           </h1>
 
           <p className="mt-6 max-w-[34ch] text-base leading-relaxed text-[#c4b09a] sm:text-lg">
-            A full-stack template for teams who care about architecture, delivery speed, and long-term maintainability.
+            A full-stack template for teams who care about architecture,
+            delivery speed, and long-term maintainability.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -61,7 +64,9 @@ export function PremiumHero({
                 <div className="mb-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#67c8ba]/14 text-[#67c8ba]">
                   <Check className="h-4 w-4" />
                 </div>
-                <p className="text-sm leading-relaxed text-[#ccb9a3]">{point}</p>
+                <p className="text-sm leading-relaxed text-[#ccb9a3]">
+                  {point}
+                </p>
               </article>
             ))}
           </div>

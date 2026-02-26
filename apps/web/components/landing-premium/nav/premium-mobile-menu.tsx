@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { AnimatePresence, motion } from 'motion/react'
+import type { SiteDesign } from '@/lib/site-design'
 import type { Dispatch, SetStateAction } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Github } from '@template/ui/components/icons'
 import { DesignToggle } from '@/components/shell/design-toggle'
-import type { SiteDesign } from '@/lib/site-design'
 
 interface PremiumMobileMenuProps {
   design: SiteDesign

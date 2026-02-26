@@ -58,7 +58,7 @@ The script provides detailed metrics:
 
 ### Example Output
 
-```
+```text
 ════════════════════════════════════════════════════════════
 📊 Change Summary
 ════════════════════════════════════════════════════════════
@@ -84,7 +84,7 @@ The script provides detailed metrics:
 
 If your project already uses the correct scope, you'll see:
 
-```
+```text
 ✅ Scope already correct: "@myproject"
 ℹ️  No changes needed. Your project is already configured correctly.
 ```

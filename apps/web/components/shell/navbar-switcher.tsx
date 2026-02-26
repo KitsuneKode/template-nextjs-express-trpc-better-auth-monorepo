@@ -1,13 +1,10 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { Navbar } from '@/components/landing/Navbar'
 import { PremiumNavbar } from '@/components/landing-premium/nav/premium-navbar'
-import {
-  parseDesignFromCookieString,
-  type SiteDesign,
-} from '@/lib/site-design'
+import { parseDesignFromCookieString, type SiteDesign } from '@/lib/site-design'
 
 export function NavbarSwitcher() {
   const pathname = usePathname()

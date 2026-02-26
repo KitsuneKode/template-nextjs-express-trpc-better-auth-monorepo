@@ -1,21 +1,33 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@template/ui/components/tabs'
-import { Database, FileText, Lock, MessageSquare } from '@template/ui/components/icons'
+import dynamic from 'next/dynamic'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@template/ui/components/tabs'
+import {
+  Database,
+  FileText,
+  Lock,
+  MessageSquare,
+} from '@template/ui/components/icons'
 
-const AuthFlow = dynamic(
-  () => import('@/components/demos/auth-flow').then((m) => m.AuthFlow),
+const AuthFlow = dynamic(() =>
+  import('@/components/demos/auth-flow').then((m) => m.AuthFlow),
 )
-const RealtimeChat = dynamic(
-  () => import('@/components/demos/realtime-chat').then((m) => m.RealtimeChat),
+const RealtimeChat = dynamic(() =>
+  import('@/components/demos/realtime-chat').then((m) => m.RealtimeChat),
 )
-const BlogCrud = dynamic(
-  () => import('@/components/demos/blog-crud').then((m) => m.BlogCrud),
+const BlogCrud = dynamic(() =>
+  import('@/components/demos/blog-crud').then((m) => m.BlogCrud),
 )
-const DatabasePlayground = dynamic(
-  () => import('@/components/demos/database-playground').then((m) => m.DatabasePlayground),
+const DatabasePlayground = dynamic(() =>
+  import('@/components/demos/database-playground').then(
+    (m) => m.DatabasePlayground,
+  ),
 )
 
 const tabs = [

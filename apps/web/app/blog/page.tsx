@@ -5,15 +5,11 @@ import { cookies } from 'next/headers'
 import { prisma } from '@template/store'
 import { Footer } from '@/components/landing/Footer'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
+import { ArrowRight, Calendar, Clock } from '@template/ui/components/icons'
+import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
 import { PremiumBlogList } from '@/components/landing-premium/sections/premium-blog-list'
 import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
-import {
-  ArrowRight,
-  Calendar,
-  Clock,
-} from '@template/ui/components/icons'
-import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
 
 export const metadata: Metadata = {
   title: 'Blog | Template',
@@ -32,8 +28,13 @@ async function getPublishedPosts() {
 }
 
 export default async function BlogIndexPage() {
-  const [cookieStore, posts] = await Promise.all([cookies(), getPublishedPosts()])
-  const design = resolveSiteDesign(cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value)
+  const [cookieStore, posts] = await Promise.all([
+    cookies(),
+    getPublishedPosts(),
+  ])
+  const design = resolveSiteDesign(
+    cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value,
+  )
 
   if (design === 'design2') {
     return (

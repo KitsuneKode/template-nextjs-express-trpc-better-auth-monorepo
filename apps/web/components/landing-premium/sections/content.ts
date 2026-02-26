@@ -13,8 +13,16 @@ import {
 
 export const premiumMetrics = [
   { value: '4', label: 'Production Flows', note: 'auth, data, realtime, cms' },
-  { value: '<10m', label: 'Bootstrap Time', note: 'from clone to running stack' },
-  { value: '100%', label: 'Typed Boundary', note: 'api, client, database alignment' },
+  {
+    value: '<10m',
+    label: 'Bootstrap Time',
+    note: 'from clone to running stack',
+  },
+  {
+    value: '100%',
+    label: 'Typed Boundary',
+    note: 'api, client, database alignment',
+  },
   { value: '1', label: 'Monorepo Truth', note: 'shared ui + shared contracts' },
 ] as const
 
@@ -99,15 +107,31 @@ export const architectureGroups = [
     items: [
       { name: 'apps/web', role: 'Next.js app router + UI', icon: Globe },
       { name: 'apps/server', role: 'Express + tRPC handlers', icon: Zap },
-      { name: 'apps/worker', role: 'Async jobs + queue processing', icon: Sparkles },
+      {
+        name: 'apps/worker',
+        role: 'Async jobs + queue processing',
+        icon: Sparkles,
+      },
     ],
   },
   {
     column: 'Shared Packages',
     items: [
-      { name: 'packages/ui', role: 'shadcn-based shared component system', icon: Layout },
-      { name: 'packages/trpc', role: 'router contracts and type-safe client links', icon: Shield },
-      { name: 'packages/store', role: 'Prisma schema + generated client', icon: Table },
+      {
+        name: 'packages/ui',
+        role: 'shadcn-based shared component system',
+        icon: Layout,
+      },
+      {
+        name: 'packages/trpc',
+        role: 'router contracts and type-safe client links',
+        icon: Shield,
+      },
+      {
+        name: 'packages/store',
+        role: 'Prisma schema + generated client',
+        icon: Table,
+      },
     ],
   },
 ] as const

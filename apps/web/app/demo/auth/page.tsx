@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft } from '@template/ui/components/icons'
 import { AuthFlow } from '@/components/demos/auth-flow'
+import { ArrowLeft } from '@template/ui/components/icons'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
 export default function AuthDemoPage() {

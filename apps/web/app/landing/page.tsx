@@ -1,13 +1,13 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { ArrowRight } from '@template/ui/components/icons'
 import { PremiumHero } from '@/components/landing-premium/hero/premium-hero'
-import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
-import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
-import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
-import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
+import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
+import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
+import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
+import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
 
 export const metadata: Metadata = {
   title: 'Premium Landing | Kitsune Stack',

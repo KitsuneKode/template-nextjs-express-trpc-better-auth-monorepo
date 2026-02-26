@@ -46,7 +46,7 @@ bun dev
 
 ## 🗂️ Project Structure
 
-```
+```text
 apps/
   api/        # Express backend (tRPC, Auth, Prisma)
   client/     # Next.js frontend (tRPC client, UI)
@@ -82,6 +82,7 @@ packages/
    ```
 
 4. Add shadcn component to your app
+
    ```sh
    bunx --bun shadcn@latest add <component-name> --c apps/web
    ```

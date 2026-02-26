@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { NoiseOverlay } from '@/components/landing-premium/primitives/noise-overlay'
 import { PremiumFooter } from '@/components/landing-premium/footer/premium-footer'
+import { NoiseOverlay } from '@/components/landing-premium/primitives/noise-overlay'
 
 export default function LandingLayout({ children }: { children: ReactNode }) {
   return (

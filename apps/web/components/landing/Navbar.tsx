@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { cn } from '@template/ui/lib/utils'
 import React, { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
-import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
-import { DesignToggle } from '@/components/shell/design-toggle'
 import type { SiteDesign } from '@/lib/site-design'
+import { motion, AnimatePresence } from 'motion/react'
+import { DesignToggle } from '@/components/shell/design-toggle'
+import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
 
 const NAV_LINKS = [
   { href: '#stack', label: 'Stack' },

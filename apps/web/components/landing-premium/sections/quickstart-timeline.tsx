@@ -1,20 +1,25 @@
 'use client'
 
-import { Check, Copy } from '@template/ui/components/icons'
-import { useState } from 'react'
 import { toast } from 'sonner'
+import { useState } from 'react'
 import { quickStartSteps } from './content'
+import { Check, Copy } from '@template/ui/components/icons'
 
 export function QuickStartTimeline() {
   const [copiedLine, setCopiedLine] = useState<string | null>(null)
   const [bundleCopied, setBundleCopied] = useState(false)
-  const bundleCommands = quickStartSteps.map((step) => `$ ${step.command}`).join('\n\n')
+  const bundleCommands = quickStartSteps
+    .map((step) => `$ ${step.command}`)
+    .join('\n\n')
 
   const copyText = async (text: string, key: string) => {
     await navigator.clipboard.writeText(text)
     toast.success('Command copied to clipboard')
     setCopiedLine(key)
-    setTimeout(() => setCopiedLine((prev) => (prev === key ? null : prev)), 1600)
+    setTimeout(
+      () => setCopiedLine((prev) => (prev === key ? null : prev)),
+      1600,
+    )
   }
 
   const copyBundle = async () => {
@@ -40,8 +45,8 @@ export function QuickStartTimeline() {
                 {step.title}
               </h3>
             </div>
-            <div className="relative rounded-lg border border-white/8 bg-[#080c10] pl-3 pr-10 py-2">
-              <code className="block whitespace-pre-wrap break-all font-mono text-xs text-[#d2c2ad]">
+            <div className="relative rounded-lg border border-white/8 bg-[#080c10] py-2 pr-10 pl-3">
+              <code className="block font-mono text-xs break-all whitespace-pre-wrap text-[#d2c2ad]">
                 <span className="mr-2 text-[#69cdbf]">$</span>
                 {step.command}
               </code>
@@ -65,24 +70,34 @@ export function QuickStartTimeline() {
       <aside className="min-w-0 space-y-4">
         <article className="rounded-2xl border border-white/10 bg-[#0e1319]/85 p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold tracking-[0.14em] text-[#d0b089] uppercase">Command bundle</p>
+            <p className="text-xs font-semibold tracking-[0.14em] text-[#d0b089] uppercase">
+              Command bundle
+            </p>
             <button
               type="button"
               onClick={copyBundle}
               aria-label="Copy command bundle"
               className="inline-flex h-7 items-center gap-1.5 rounded-md border border-white/10 bg-[#0b1016] px-2 text-xs text-[#9faab8] transition-colors hover:text-[#f2e7d9]"
             >
-              {bundleCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+              {bundleCopied ? (
+                <Check className="h-3.5 w-3.5" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               {bundleCopied ? 'Copied' : 'Copy'}
             </button>
           </div>
           <pre className="overflow-hidden rounded-xl border border-white/8 bg-[#080c10] p-3 text-xs text-[#9fb3c3]">
-            <code className="whitespace-pre-wrap break-all">{bundleCommands}</code>
+            <code className="break-all whitespace-pre-wrap">
+              {bundleCommands}
+            </code>
           </pre>
         </article>
 
         <article className="rounded-2xl border border-[#67c8ba]/25 bg-[#67c8ba]/10 p-4 text-sm leading-relaxed text-[#d8ebe7]">
-          Add shared shadcn components directly into <code className="font-mono">packages/ui</code> so both current and future apps consume the same design primitives.
+          Add shared shadcn components directly into{' '}
+          <code className="font-mono">packages/ui</code> so both current and
+          future apps consume the same design primitives.
         </article>
       </aside>
     </div>

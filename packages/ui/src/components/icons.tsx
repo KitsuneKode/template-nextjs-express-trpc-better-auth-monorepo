@@ -44,10 +44,7 @@ import {
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import React from 'react'
 
-export type IconProps = Omit<
-  React.ComponentPropsWithoutRef<typeof HugeiconsIcon>,
-  'icon'
->
+export type IconProps = Omit<React.ComponentPropsWithoutRef<typeof HugeiconsIcon>, 'icon'>
 
 function createIcon(icon: IconSvgElement, displayName: string) {
   const Icon = React.forwardRef<SVGSVGElement, IconProps>((props, ref) => (

@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 import { cn } from '@template/ui/lib/utils'
+import { useEffect, useState, useTransition } from 'react'
 import {
   SITE_DESIGN_COOKIE_NAME,
   SiteDesign,

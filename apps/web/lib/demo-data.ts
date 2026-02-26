@@ -99,7 +99,8 @@ export const terminalSteps = [
   {
     command: 'bunx shadcn@latest add button card dialog dropdown-menu',
     output: 'Adding components to packages/ui...',
-    description: 'Install reusable shadcn components into the shared UI package',
+    description:
+      'Install reusable shadcn components into the shared UI package',
   },
   {
     command: 'bun dev',

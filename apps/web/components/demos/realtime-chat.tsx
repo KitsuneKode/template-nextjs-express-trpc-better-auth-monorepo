@@ -5,8 +5,8 @@ import { authClient } from '@template/auth/client'
 import { motion, AnimatePresence } from 'motion/react'
 import { CodeBlock } from '@/components/ui/code-block'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Send, Wifi, Loader2 } from '@template/ui/components/icons'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 type ChatMessage = {
   id: string
