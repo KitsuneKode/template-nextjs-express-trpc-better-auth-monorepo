@@ -20,6 +20,7 @@ question.
 - Shared UI and shadcn setup: `packages/ui`
 - Client env/config loading: `packages/common`
 - Server and worker env/logger/redis: `packages/backend-common`
+- Bootstrap CLI: `apps/cli`
 - Next.js app shell and providers: `apps/web`
 - Express bootstrap and route mounts: `apps/server`
 - Background jobs: `apps/worker`
@@ -29,6 +30,7 @@ question.
 ## Repo Reality
 
 - `apps/web` contains real app wiring and template marketing/demo surfaces.
+- `apps/cli` bootstraps a cleaned project from this template.
 - `apps/server` mounts Better Auth at `/api/auth/*splat` and tRPC at
   `/api/trpc`.
 - `apps/worker` is mostly a stub today.

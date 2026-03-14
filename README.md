@@ -30,6 +30,18 @@ bun dev
 
 > Requires Bun: [Bun](https://bun.sh)
 
+## 🛠️ Bootstrap CLI
+
+This repo now includes a purpose-built bootstrap CLI called
+`create-kitsu-stack`.
+
+```sh
+bun run dev:cli -- my-app
+```
+
+See `docs/bootstrap-cli.md` for the current local workflow and generated
+features.
+
 ## 🔗 Repository
 
 - GitHub: [KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo](https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo)
