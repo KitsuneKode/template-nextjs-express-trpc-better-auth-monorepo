@@ -30,34 +30,66 @@ full-stack TypeScript monorepos from this template.
 ```text
 apps/cli/
 ├── src/
-│   ├── index.ts          # Entry, --help/--version, prompts
+│   ├── index.ts              # Entry, --help/--version, prompts
 │   ├── lib/
-│   │   ├── scaffold.ts   # Template copy, cleanup, generation
-│   │   └── spawn.ts      # Node.js compatible subprocess
+│   │   ├── scaffold.ts       # Orchestrator: copy, transform, generate
+│   │   ├── spawn.ts          # Node.js compatible subprocess
+│   │   └── generators/
+│   │       ├── index.ts      # Barrel export
+│   │       ├── backend.ts    # Backend transforms (Hono, future Go/Rust)
+│   │       ├── database.ts   # Database transforms (SQLite, future Mongo)
+│   │       ├── docker.ts     # Config-aware Docker Compose
+│   │       ├── env.ts        # Config-aware .env files
+│   │       ├── ci.ts         # Config-aware GitHub Actions CI
+│   │       └── deployment.ts # Config-aware deployment guide
 │   └── types/
-│       └── schemas.ts    # Extensible Zod schemas
-├── tests/                # Bun test files
-├── dist/                 # Built output (Node.js compatible)
-├── package.json          # @kitsu/create package
+│       └── schemas.ts        # Zod schemas, compatibility checks
+├── tests/
+│   ├── scaffold.test.ts      # Scaffold + file-generation tests
+│   ├── schemas.test.ts       # Schema validation + compatibility tests
+│   ├── backend.test.ts       # Backend transform tests (fs-based)
+│   ├── database.test.ts      # Database transform tests (fs-based)
+│   └── spawn.test.ts         # Spawn utility tests
+├── dist/                     # Built output (Node.js compatible)
+├── package.json              # @kitsu/create package
 └── tsconfig.json
 ```
+
+## Scaffold Pipeline Order
+
+1. Copy template to destination
+2. Update root package.json name
+3. Apply backend transform (rewrites server/tRPC for non-Express backends)
+4. Apply database transform (rewrites store/auth/schema for non-Postgres DBs)
+5. Rename scope (`@template` -> `@project-name`)
+6. Template cleanup (remove showcase, worker, etc.)
+7. Generate env, Docker, CI, deployment files
+8. Git init + bun install
+
+Backend and database transforms write `@template/` scope references so the
+rename-scope script catches them in step 5.
 
 ## Owns
 
 - CLI prompts and argument parsing
 - Template copy and customization flow
+- Backend transforms: Hono on Bun (express-bun is default, no transform)
+- Database transforms: SQLite via Prisma (postgres is default, no transform)
 - Generated files: Docker, CI, env examples, deployment docs
-- Zod schemas for all CLI options
+- Zod schemas and compatibility validation for all CLI options
 
 ## Common Tasks
 
-| Task                   | Location                                   |
-| ---------------------- | ------------------------------------------ |
-| Add new CLI option     | `src/types/schemas.ts` then `src/index.ts` |
-| Change prompts/UX      | `src/index.ts`                             |
-| Change file generation | `src/lib/scaffold.ts`                      |
-| Add new generator      | `src/lib/generators/*.ts` (future)         |
-| Add tests              | `tests/*.test.ts`                          |
+| Task                   | Location                                         |
+| ---------------------- | ------------------------------------------------ |
+| Add new CLI option     | `src/types/schemas.ts` then `src/index.ts`       |
+| Change prompts/UX      | `src/index.ts`                                   |
+| Change scaffold flow   | `src/lib/scaffold.ts`                            |
+| Add new backend        | `src/lib/generators/backend.ts`                  |
+| Add new database       | `src/lib/generators/database.ts`                 |
+| Add new file generator | `src/lib/generators/*.ts` + export from index.ts |
+| Add compatibility rule | `src/types/schemas.ts` → `checkCompatibility()`  |
+| Add tests              | `tests/*.test.ts`                                |
 
 ## Local Development
 

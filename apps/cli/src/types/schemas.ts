@@ -1,18 +1,19 @@
 /**
  * CLI Type Schemas
  *
- * This file defines all CLI option types using Zod schemas.
- * Designed for extensibility to support future features:
- * - Additional databases (MongoDB, vector DBs)
- * - Additional backends (Go, Rust, Python)
- * - Additional addons (WebSocket, object storage)
- * - Example templates (todo, chat, game)
+ * All CLI option types defined as Zod schemas.
+ * Extended for polyglot backend and database support:
+ * - Backends: Express (default), Hono, future Go/Rust/Python
+ * - Databases: PostgreSQL (default), SQLite, future MongoDB
+ * - ORMs: Prisma (default), Drizzle, Mongoose, none
+ * - Addons: WebSocket, worker, S3, email, payments (future)
+ * - Examples: todo, chat, game, AI (future)
  *
  * When adding new options:
  * 1. Add the schema here
- * 2. Update BootstrapOptions in scaffold.ts
+ * 2. Add compatibility rules to checkCompatibility()
  * 3. Add prompts in index.ts
- * 4. Implement generation logic
+ * 4. Implement generator in src/lib/generators/
  */
 
 import { z } from 'zod'
@@ -38,7 +39,7 @@ export const CleanupTargetSchema = z
 export type CleanupTarget = z.infer<typeof CleanupTargetSchema>
 
 // =============================================================================
-// Future: Database Schemas (Phase 2)
+// Database Schemas
 // =============================================================================
 
 /** Primary database options */
@@ -74,7 +75,7 @@ export const ORMSchema = z
 export type ORMType = z.infer<typeof ORMSchema>
 
 // =============================================================================
-// Future: Backend Schemas (Phase 2+)
+// Backend Schemas
 // =============================================================================
 
 /** Backend framework options */
@@ -102,7 +103,7 @@ export const RuntimeSchema = z
 export type RuntimeType = z.infer<typeof RuntimeSchema>
 
 // =============================================================================
-// Future: Addon Schemas (Phase 2)
+// Addon Schemas
 // =============================================================================
 
 /** Optional addons that can be included */
@@ -120,7 +121,7 @@ export const AddonSchema = z
 export type AddonType = z.infer<typeof AddonSchema>
 
 // =============================================================================
-// Future: Example Templates (Phase 2)
+// Example Templates
 // =============================================================================
 
 /** Pre-built example applications */
@@ -142,6 +143,7 @@ export type ExampleType = z.infer<typeof ExampleSchema>
 /** Full project configuration */
 export const ProjectConfigSchema = z.object({
   projectName: z.string().min(1),
+  destinationDir: z.string().min(1),
   database: DatabaseSchema.default('postgres'),
   vectorDatabase: VectorDatabaseSchema.default('none'),
   orm: ORMSchema.default('prisma'),
@@ -151,6 +153,8 @@ export const ProjectConfigSchema = z.object({
   example: ExampleSchema.default('none'),
   testing: TestingSchema.default('bun'),
   deployment: DeploymentSchema.default('vercel-railway'),
+  includeShowcase: z.boolean().default(false),
+  includeWorker: z.boolean().default(false),
   includeDocker: z.boolean().default(true),
   includeCi: z.boolean().default(true),
   initializeGit: z.boolean().default(true),
@@ -158,13 +162,13 @@ export const ProjectConfigSchema = z.object({
 })
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>
 
-/** CLI input arguments */
+/** CLI input arguments (parsed from process.argv) */
 export const CLIArgsSchema = z.object({
   projectName: z.string().optional(),
   yes: z.boolean().default(false),
   help: z.boolean().default(false),
   version: z.boolean().default(false),
-  // Current options
+  // Project structure
   install: z.boolean().optional(),
   git: z.boolean().optional(),
   includeShowcase: z.boolean().optional(),
@@ -173,8 +177,9 @@ export const CLIArgsSchema = z.object({
   includeDocker: z.boolean().optional(),
   includeCi: z.boolean().optional(),
   deployment: DeploymentSchema.optional(),
-  // Future options (not yet implemented)
+  // Stack selection
   database: DatabaseSchema.optional(),
+  orm: ORMSchema.optional(),
   backend: BackendSchema.optional(),
   example: ExampleSchema.optional(),
 })
@@ -204,24 +209,57 @@ export function validateProjectName(name: string): { valid: boolean; error?: str
   return { valid: true }
 }
 
-/** Check compatibility between options */
-export function checkCompatibility(config: Partial<ProjectConfig>): string[] {
+/** Check compatibility between options. Returns warnings (non-blocking) and errors (blocking). */
+export function checkCompatibility(config: Partial<ProjectConfig>): {
+  warnings: string[]
+  errors: string[]
+} {
   const warnings: string[] = []
+  const errors: string[] = []
 
-  // MongoDB requires mongoose ORM
-  if (config.database === 'mongodb' && config.orm !== 'mongoose' && config.orm !== 'none') {
-    warnings.push('MongoDB works best with Mongoose ORM')
+  // MongoDB requires mongoose ORM (or none), not Prisma/Drizzle
+  if (config.database === 'mongodb' && config.orm === 'drizzle') {
+    errors.push('Drizzle does not support MongoDB. Use Mongoose or Prisma.')
+  }
+
+  // Mongoose only makes sense with MongoDB
+  if (config.orm === 'mongoose' && config.database !== 'mongodb') {
+    errors.push('Mongoose ORM requires MongoDB as the database.')
   }
 
   // Vector DB requires a primary database
   if (config.vectorDatabase === 'pgvector' && config.database !== 'postgres') {
-    warnings.push('pgvector requires PostgreSQL as the primary database')
+    errors.push('pgvector requires PostgreSQL as the primary database.')
+  }
+
+  // No database + non-none ORM is contradictory
+  if (config.database === 'none' && config.orm && config.orm !== 'none') {
+    errors.push(`ORM "${config.orm}" requires a database. Set database or use orm=none.`)
+  }
+
+  // No backend + worker doesn't make sense
+  if (config.backend === 'none' && config.includeWorker) {
+    warnings.push('Worker without a backend server may not be useful.')
+  }
+
+  // MongoDB works best with Mongoose
+  if (config.database === 'mongodb' && config.orm === 'prisma') {
+    warnings.push(
+      'MongoDB with Prisma has limitations. Consider Mongoose for full MongoDB support.',
+    )
   }
 
   // WebSocket addon pairs well with chat example
   if (config.example === 'chat' && config.addons && !config.addons.includes('websocket')) {
-    warnings.push('Chat example works best with WebSocket addon')
+    warnings.push('Chat example works best with WebSocket addon.')
   }
 
-  return warnings
+  // SQLite + Docker is odd (no container needed for file-based DB)
+  if (config.database === 'sqlite' && config.includeDocker) {
+    warnings.push(
+      'SQLite is file-based and does not need a Docker container. Docker will only include Redis.',
+    )
+  }
+
+  return { warnings, errors }
 }
