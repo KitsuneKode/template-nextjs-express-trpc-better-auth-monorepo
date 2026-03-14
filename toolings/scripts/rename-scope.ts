@@ -4,7 +4,7 @@ import { join } from 'path'
 // --- CONFIGURATION ---
 const CONFIG = {
   oldScope: '@template',
-  extensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx', 'json'],
+  extensions: ['ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'md', 'mdx', 'json'],
   ignore: ['node_modules', '.git', '.turbo', 'dist', '.next', 'build', 'out'],
   dryRun: process.argv.includes('--dry-run') || process.argv.includes('-d'),
   verbose: process.argv.includes('--verbose') || process.argv.includes('-v'),
