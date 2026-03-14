@@ -29,36 +29,61 @@ describe('validateProjectName', () => {
 })
 
 describe('checkCompatibility', () => {
-  it('returns no warnings for default config', () => {
-    const warnings = checkCompatibility({
+  it('returns no warnings or errors for default config', () => {
+    const result = checkCompatibility({
       database: 'postgres',
       orm: 'prisma',
     })
-    expect(warnings).toEqual([])
+    expect(result.warnings).toEqual([])
+    expect(result.errors).toEqual([])
   })
 
-  it('warns when MongoDB is used without mongoose', () => {
-    const warnings = checkCompatibility({
+  it('warns when MongoDB is used with Prisma', () => {
+    const result = checkCompatibility({
       database: 'mongodb',
       orm: 'prisma',
     })
-    expect(warnings.some((w: string) => w.includes('MongoDB'))).toBe(true)
+    expect(result.warnings.some((w: string) => w.includes('MongoDB'))).toBe(true)
   })
 
-  it('warns when pgvector is used without postgres', () => {
-    const warnings = checkCompatibility({
+  it('errors when pgvector is used without postgres', () => {
+    const result = checkCompatibility({
       database: 'mongodb',
       vectorDatabase: 'pgvector',
     })
-    expect(warnings.some((w: string) => w.includes('pgvector'))).toBe(true)
+    expect(result.errors.some((e: string) => e.includes('pgvector'))).toBe(true)
   })
 
   it('warns when chat example is used without websocket addon', () => {
-    const warnings = checkCompatibility({
+    const result = checkCompatibility({
       example: 'chat',
       addons: [],
     })
-    expect(warnings.some((w: string) => w.includes('WebSocket'))).toBe(true)
+    expect(result.warnings.some((w: string) => w.includes('WebSocket'))).toBe(true)
+  })
+
+  it('errors when Drizzle is used with MongoDB', () => {
+    const result = checkCompatibility({
+      database: 'mongodb',
+      orm: 'drizzle',
+    })
+    expect(result.errors.some((e: string) => e.includes('Drizzle'))).toBe(true)
+  })
+
+  it('errors when Mongoose is used without MongoDB', () => {
+    const result = checkCompatibility({
+      database: 'postgres',
+      orm: 'mongoose',
+    })
+    expect(result.errors.some((e: string) => e.includes('Mongoose'))).toBe(true)
+  })
+
+  it('errors when ORM is set but database is none', () => {
+    const result = checkCompatibility({
+      database: 'none',
+      orm: 'prisma',
+    })
+    expect(result.errors.some((e: string) => e.includes('requires a database'))).toBe(true)
   })
 })
 
@@ -117,6 +142,7 @@ describe('Zod schemas', () => {
     it('applies defaults correctly', () => {
       const result = ProjectConfigSchema.parse({
         projectName: 'test-app',
+        destinationDir: '/tmp/test-app',
       })
       expect(result.database).toBe('postgres')
       expect(result.orm).toBe('prisma')
@@ -124,6 +150,8 @@ describe('Zod schemas', () => {
       expect(result.runtime).toBe('bun')
       expect(result.testing).toBe('bun')
       expect(result.deployment).toBe('vercel-railway')
+      expect(result.includeShowcase).toBe(false)
+      expect(result.includeWorker).toBe(false)
       expect(result.includeDocker).toBe(true)
       expect(result.includeCi).toBe(true)
       expect(result.initializeGit).toBe(true)
