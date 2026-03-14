@@ -28,6 +28,10 @@ Start here before searching the repo.
   Express service. `src/app.ts` mounts Better Auth, JSON middleware, tRPC, and
   `/health`. `src/server.ts` handles process startup and clustering.
 
+- `apps/cli`
+  Bun-native bootstrap CLI for generating a cleaned project from this template.
+  Generation logic lives in `src/lib/scaffold.ts`.
+
 - `apps/worker`
   Worker scaffold. Logging and Redis helpers exist, but `src/index.ts` is still
   placeholder logic.
@@ -86,6 +90,8 @@ Start here before searching the repo.
   `docs/start-fresh.md` and `apps/web/AGENTS.md`
 - Tooling changes:
   `toolings/*` and the local `AGENTS.md` there
+- Bootstrap flow changes:
+  `apps/cli`, `docs/bootstrap-cli.md`, `toolings/scripts/*`
 
 ## Common Commands
 

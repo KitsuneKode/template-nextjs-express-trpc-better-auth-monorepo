@@ -5,6 +5,8 @@
     "build": "turbo run build",
     "build:vercel": "turbo run build:vercel",
     "dev": "turbo run dev",
+    "dev:cli": "turbo -F create-kitsu-stack dev --",
+    "build:cli": "turbo -F create-kitsu-stack build",
     "repo:doctor": "bun toolings/scripts/repo-doctor.ts",
     "repo:doctor:strict": "bun toolings/scripts/repo-doctor.ts --strict",
     "template:clean:dry": "bun toolings/scripts/template-cleanup.ts --dry-run",
