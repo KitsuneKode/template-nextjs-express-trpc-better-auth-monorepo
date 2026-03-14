@@ -200,6 +200,7 @@ async function main(): Promise<void> {
           options: [
             { label: 'PostgreSQL', value: 'postgres', hint: 'recommended for production' },
             { label: 'SQLite', value: 'sqlite', hint: 'zero-config, file-based' },
+            { label: 'MongoDB', value: 'mongodb', hint: 'document database' },
             { label: 'None', value: 'none', hint: 'API-only or external DB' },
           ],
         })
@@ -217,11 +218,20 @@ async function main(): Promise<void> {
         const ormOptions =
           database === 'none'
             ? [{ label: 'None', value: 'none' as const, hint: 'no database selected' }]
-            : [
-                { label: 'Prisma', value: 'prisma' as const, hint: 'type-safe, migration support' },
-                { label: 'Drizzle', value: 'drizzle' as const, hint: 'lightweight, SQL-first' },
-                { label: 'None', value: 'none' as const, hint: 'raw queries' },
-              ]
+            : database === 'mongodb'
+              ? [
+                  { label: 'Prisma', value: 'prisma' as const, hint: 'type-safe, MongoDB support' },
+                  { label: 'None', value: 'none' as const, hint: 'raw queries' },
+                ]
+              : [
+                  {
+                    label: 'Prisma',
+                    value: 'prisma' as const,
+                    hint: 'type-safe, migration support',
+                  },
+                  { label: 'Drizzle', value: 'drizzle' as const, hint: 'lightweight, SQL-first' },
+                  { label: 'None', value: 'none' as const, hint: 'raw queries' },
+                ]
 
         const value = await select({
           message: 'ORM',
@@ -289,7 +299,9 @@ async function main(): Promise<void> {
         const dockerHint =
           database === 'postgres'
             ? 'Generate a local Docker Compose file for PostgreSQL and Redis?'
-            : 'Generate a local Docker Compose file for Redis?'
+            : database === 'mongodb'
+              ? 'Generate a local Docker Compose file for MongoDB and Redis?'
+              : 'Generate a local Docker Compose file for Redis?'
         const value = await confirm({
           message: dockerHint,
           initialValue: true,

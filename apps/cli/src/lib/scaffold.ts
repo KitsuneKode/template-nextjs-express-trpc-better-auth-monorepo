@@ -6,6 +6,7 @@ import {
   renderDeploymentGuide,
   applyBackendTransform,
   applyDatabaseTransform,
+  applyOrmTransform,
 } from './generators'
 import { access, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import type { ProjectConfig, CleanupTarget } from '../types/schemas'
@@ -161,10 +162,11 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
   await copyTemplate(destinationDir)
   await updateRootPackageJson(destinationDir, packageName)
 
-  // Apply backend/database transforms BEFORE rename-scope so generated files
+  // Apply backend/database/ORM transforms BEFORE rename-scope so generated files
   // use @template/ imports and get renamed along with everything else.
   await applyBackendTransform(destinationDir, options)
   await applyDatabaseTransform(destinationDir, options)
+  await applyOrmTransform(destinationDir, options)
 
   runCommand(['bun', 'toolings/scripts/rename-scope.ts', '--quiet'], { cwd: destinationDir })
 
