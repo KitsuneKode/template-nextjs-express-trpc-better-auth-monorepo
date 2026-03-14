@@ -1,15 +1,7 @@
-# trpc
+# tRPC Package
 
-To install dependencies:
+This package contains the shared API contract for the repo.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Use `src/trpc.ts` for context and procedures.
+- Use `src/routers/_app.ts` for router composition.

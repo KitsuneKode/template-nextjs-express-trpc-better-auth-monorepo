@@ -91,6 +91,17 @@ packages/
    bunx --bun shadcn@latest add <component-name> --c apps/web
    ```
 
+5. Audit and clean the starter when you begin product work
+
+   ```sh
+   bun run repo:doctor
+   bun run template:clean:dry
+   ```
+
+6. Commit with the enforced Conventional Commit format
+
+   Example: `feat(auth): add google provider`
+
 ---
 
 ## 🛠️ Why Use This Template?
@@ -100,6 +111,15 @@ packages/
 - **Scalable & Maintainable:** Modular structure for growing teams and projects.
 - **Modern Stack:** Stay up-to-date with the latest best practices.
 - **Ready for Production:** Sensible defaults and extensible configuration.
+
+## 🧹 Starter Hygiene
+
+- `bun run repo:doctor` audits stale scaffolding, broken package exports,
+  placeholder files, and doc drift.
+- `bun run template:clean:dry` previews the opinionated cleanup plan for teams
+  that want to strip demo and template baggage quickly.
+- `bun run template:clean` applies that cleanup plan.
+- `bun run commit:check` validates the latest commit message.
 
 ---
 

@@ -1,15 +1,7 @@
-# api
+# Server Workspace
 
-To install dependencies:
+This workspace hosts the Express service for the repo.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder for the fast path.
+- Use `src/app.ts` for route mounts and `src/server.ts` for process startup.
+- Use `../../docs/architecture.md` for cross-workspace flow.

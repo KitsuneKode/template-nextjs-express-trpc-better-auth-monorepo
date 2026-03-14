@@ -1,15 +1,7 @@
-# @template/backend-common
+# Backend Common Package
 
-To install dependencies:
+This package holds shared backend utilities for the server and worker.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.js
-```
-
-This project was created using `bun init` in bun v1.2.5. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Use `src/utils/config.ts` for env validation.
+- Use `src/utils/logger.ts` and `src/redis/index.ts` for shared runtime utilities.

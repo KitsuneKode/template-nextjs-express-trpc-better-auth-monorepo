@@ -1,15 +1,7 @@
-# store
+# Store Package
 
-To install dependencies:
+This package owns Prisma schema, migrations, and seed data.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Use `prisma/schema.prisma` for data model changes.
+- Use `src/scripts/seed.ts` for seeded content.

@@ -1,15 +1,6 @@
-# @template/common
+# Common Package
 
-To install dependencies:
+This package holds small shared helpers, especially config loading.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.js
-```
-
-This project was created using `bun init` in bun v1.2.5. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Use `src/utils/config-loader.ts` for env parsing and client config access.

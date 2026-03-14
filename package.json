@@ -5,6 +5,11 @@
     "build": "turbo run build",
     "build:vercel": "turbo run build:vercel",
     "dev": "turbo run dev",
+    "repo:doctor": "bun toolings/scripts/repo-doctor.ts",
+    "repo:doctor:strict": "bun toolings/scripts/repo-doctor.ts --strict",
+    "template:clean:dry": "bun toolings/scripts/template-cleanup.ts --dry-run",
+    "template:clean": "bun toolings/scripts/template-cleanup.ts --yes",
+    "commit:check": "commitlint --last --verbose",
     "lint": "turbo run lint && bun run lint:md",
     "lint:fix": "turbo run lint:fix && bun run lint:md:fix",
     "clean": "find . -name node_modules -o -name .next -o -name .turbo -o -name dist -type d -prune | xargs rm -rf",
@@ -29,6 +34,8 @@
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
     "eslint": "^9.0.0",
