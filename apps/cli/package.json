@@ -1,35 +1,70 @@
 {
-  "name": "create-kitsu-stack",
+  "name": "@kitsu/create",
   "version": "0.1.0",
-  "description": "Bootstrap a Kitsu Stack project from the monorepo template",
+  "description": "Bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
+  "author": "kitsunekode <bhuyanmanash2002@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo#readme",
+  "bugs": {
+    "url": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo/issues"
+  },
+  "keywords": [
+    "cli",
+    "scaffold",
+    "boilerplate",
+    "typescript",
+    "nextjs",
+    "express",
+    "trpc",
+    "better-auth",
+    "prisma",
+    "monorepo",
+    "turborepo",
+    "fullstack",
+    "starter",
+    "template"
+  ],
   "type": "module",
   "bin": {
-    "create-kitsu-stack": "dist/index.js"
+    "create-kitsu-stack": "dist/index.js",
+    "@kitsu/create": "dist/index.js"
   },
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "bun build ./src/index.ts --outfile ./dist/index.js --target bun",
+    "build": "bun build ./src/index.ts --outfile ./dist/index.js --target node --minify",
+    "build:dev": "bun build ./src/index.ts --outfile ./dist/index.js --target node",
     "dev": "bun run ./src/index.ts",
+    "link": "bun run build && bun link",
+    "unlink": "bun unlink",
+    "test": "bun test",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "@clack/prompts": "^1.0.0",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
-    "@types/bun": "1.3.9",
-    "eslint": "^9.0.0"
-  },
-  "peerDependencies": {
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
     "typescript": "^5.9.3"
   }
 }

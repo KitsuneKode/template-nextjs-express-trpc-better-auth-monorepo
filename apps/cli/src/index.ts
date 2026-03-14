@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import {
   cancel,
   confirm,
@@ -11,8 +11,12 @@ import {
   text,
 } from '@clack/prompts'
 import { scaffoldProject, sanitizeProjectName, type BootstrapOptions } from './lib/scaffold'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import pc from 'picocolors'
+
+// Package info (keep in sync with package.json)
+const PKG_NAME = '@kitsu/create'
+const PKG_VERSION = '0.1.0'
 
 interface ParsedArgs {
   projectName?: string
@@ -25,17 +29,76 @@ interface ParsedArgs {
   includeDocker?: boolean
   includeCi?: boolean
   deployment?: 'vercel-railway' | 'none'
+  help: boolean
+  version: boolean
+}
+
+function printHelp(): void {
+  console.log(`
+${pc.cyan(PKG_NAME)} v${PKG_VERSION}
+
+${pc.bold('Usage:')}
+  npx ${PKG_NAME} [project-name] [options]
+  bunx ${PKG_NAME} [project-name] [options]
+
+${pc.bold('Options:')}
+  --yes              Skip prompts, use defaults
+  --git              Initialize git repository (default: yes)
+  --no-git           Skip git initialization
+  --install          Run bun install (default: yes)
+  --no-install       Skip dependency installation
+  --showcase         Keep landing/demo content (default: no)
+  --no-showcase      Strip showcase content
+  --worker           Keep background worker workspace (default: no)
+  --no-worker        Remove worker workspace
+  --docker           Generate docker-compose.yml (default: yes)
+  --no-docker        Skip Docker file generation
+  --ci               Generate GitHub Actions workflow (default: yes)
+  --no-ci            Skip CI generation
+  --tests=<mode>     Testing setup: bun, none (default: bun)
+  --deployment=<m>   Deployment guide: vercel-railway, none (default: vercel-railway)
+  -v, --version      Show version number
+  -h, --help         Show this help message
+
+${pc.bold('Examples:')}
+  ${pc.dim('# Interactive mode')}
+  npx ${PKG_NAME} my-app
+
+  ${pc.dim('# Non-interactive with defaults')}
+  npx ${PKG_NAME} my-app --yes
+
+  ${pc.dim('# Skip Docker and CI')}
+  npx ${PKG_NAME} my-app --no-docker --no-ci
+
+  ${pc.dim('# Keep showcase and worker')}
+  npx ${PKG_NAME} my-app --showcase --worker
+
+${pc.bold('Documentation:')}
+  https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo
+`)
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-  const parsed: ParsedArgs = { yes: false }
+  const parsed: ParsedArgs = { yes: false, help: false, version: false }
 
   for (const arg of argv) {
+    // Help and version flags
+    if (arg === '--help' || arg === '-h') {
+      parsed.help = true
+      continue
+    }
+    if (arg === '--version' || arg === '-v') {
+      parsed.version = true
+      continue
+    }
+
+    // Project name (first non-flag argument)
     if (!arg.startsWith('-') && !parsed.projectName) {
       parsed.projectName = arg
       continue
     }
 
+    // Boolean flags
     if (arg === '--yes') parsed.yes = true
     if (arg === '--install') parsed.install = true
     if (arg === '--no-install') parsed.install = false
@@ -49,6 +112,8 @@ function parseArgs(argv: string[]): ParsedArgs {
     if (arg === '--no-docker') parsed.includeDocker = false
     if (arg === '--ci') parsed.includeCi = true
     if (arg === '--no-ci') parsed.includeCi = false
+
+    // Value flags
     if (arg.startsWith('--tests=')) parsed.testing = arg.slice('--tests='.length) as 'bun' | 'none'
     if (arg.startsWith('--deployment=')) {
       parsed.deployment = arg.slice('--deployment='.length) as 'vercel-railway' | 'none'
@@ -66,7 +131,19 @@ async function promptIfNeeded<T>(value: T | undefined, prompt: () => Promise<T>)
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2))
 
-  intro(pc.cyan('create-kitsu-stack'))
+  // Handle --version
+  if (args.version) {
+    console.log(PKG_VERSION)
+    process.exit(0)
+  }
+
+  // Handle --help
+  if (args.help) {
+    printHelp()
+    process.exit(0)
+  }
+
+  intro(pc.cyan(PKG_NAME))
 
   const rawProjectName = await promptIfNeeded(args.projectName, async () => {
     const value = await text({
@@ -259,4 +336,7 @@ async function main(): Promise<void> {
   }
 }
 
-await main()
+main().catch((error) => {
+  console.error(pc.red('Fatal error:'), error)
+  process.exit(1)
+})
