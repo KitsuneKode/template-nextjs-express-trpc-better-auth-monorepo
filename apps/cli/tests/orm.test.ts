@@ -1,0 +1,328 @@
+import { readFile, mkdir, writeFile, access, rm } from 'node:fs/promises'
+import { describe, expect, it, beforeEach, afterEach } from 'bun:test'
+import { applyOrmTransform } from '../src/lib/generators/orm'
+import type { ProjectConfig } from '../src/types/schemas'
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+
+/** Helper to build a minimal ProjectConfig for testing generators */
+function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
+  return {
+    projectName: 'test-app',
+    destinationDir: '/tmp/test-app',
+    database: 'postgres',
+    vectorDatabase: 'none',
+    orm: 'prisma',
+    backend: 'express-bun',
+    runtime: 'bun',
+    addons: [],
+    example: 'none',
+    testing: 'bun',
+    deployment: 'vercel-railway',
+    includeShowcase: false,
+    includeWorker: false,
+    includeDocker: true,
+    includeCi: true,
+    initializeGit: true,
+    installDependencies: true,
+    ...overrides,
+  }
+}
+
+async function pathExists(path: string): Promise<boolean> {
+  try {
+    await access(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
+describe('applyOrmTransform', () => {
+  let tempDir: string
+
+  beforeEach(async () => {
+    tempDir = join(tmpdir(), `cli-orm-test-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+    await mkdir(tempDir, { recursive: true })
+
+    // Create mock template files that would exist after database transform
+    await mkdir(join(tempDir, 'packages/store/prisma/migrations'), { recursive: true })
+    await mkdir(join(tempDir, 'packages/store/src/generated'), { recursive: true })
+    await mkdir(join(tempDir, 'packages/auth/src'), { recursive: true })
+    await mkdir(join(tempDir, 'packages/trpc/src/routers'), { recursive: true })
+
+    // Mock files
+    await writeFile(
+      join(tempDir, 'packages/store/prisma/schema.prisma'),
+      'datasource db {\n  provider = "postgresql"\n}\n',
+    )
+    await writeFile(
+      join(tempDir, 'packages/store/prisma.config.ts'),
+      'import { defineConfig } from "prisma/config"\n',
+    )
+    await writeFile(
+      join(tempDir, 'packages/store/src/index.ts'),
+      'import { PrismaClient } from "./generated/client"\nexport { prisma }\n',
+    )
+    await writeFile(
+      join(tempDir, 'packages/store/src/generated/client.ts'),
+      'export class PrismaClient {}\n',
+    )
+    await writeFile(
+      join(tempDir, 'packages/store/package.json'),
+      JSON.stringify(
+        {
+          name: '@test/store',
+          scripts: {
+            'db:generate': 'bunx --bun prisma generate',
+            'db:migrate': 'bunx --bun prisma migrate dev',
+            'db:seed': 'bun run src/scripts/seed.ts',
+            'db:studio': 'prisma studio',
+          },
+          dependencies: {
+            '@prisma/adapter-pg': '^7.0.0',
+            '@prisma/client': '^7.0.0',
+            pg: '^8.19.0',
+          },
+          devDependencies: {
+            prisma: '^7.0.0',
+            '@types/pg': '^8.16.0',
+          },
+        },
+        null,
+        2,
+      ),
+    )
+    await writeFile(
+      join(tempDir, 'packages/auth/src/index.ts'),
+      "import { prismaAdapter } from 'better-auth/adapters/prisma'\nprovider: 'postgresql'\n",
+    )
+    await writeFile(
+      join(tempDir, 'packages/trpc/src/trpc.ts'),
+      "import { prisma as db } from '@template/store'\n",
+    )
+    await writeFile(
+      join(tempDir, 'packages/trpc/src/index.ts'),
+      "export { expressMiddleWare } from './trpc'\n",
+    )
+    await writeFile(
+      join(tempDir, 'packages/trpc/src/routers/post.ts'),
+      "import { prisma } from '@template/store'\nprisma.post.findMany()\n",
+    )
+    await writeFile(
+      join(tempDir, 'packages/trpc/src/routers/chat.ts'),
+      "import { prisma } from '@template/store'\nprisma.message.findMany()\n",
+    )
+    await writeFile(
+      join(tempDir, 'packages/trpc/src/routers/user.ts'),
+      "import { prisma } from '@template/store'\nprisma.user.findMany()\n",
+    )
+  })
+
+  afterEach(async () => {
+    await rm(tempDir, { recursive: true, force: true })
+  })
+
+  it('does nothing for orm=prisma (default)', async () => {
+    const originalIndex = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+    await applyOrmTransform(tempDir, makeConfig({ orm: 'prisma' }))
+    const afterIndex = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+    expect(afterIndex).toBe(originalIndex)
+  })
+
+  it('does nothing for orm=none', async () => {
+    const originalIndex = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+    await applyOrmTransform(tempDir, makeConfig({ orm: 'none' }))
+    const afterIndex = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+    expect(afterIndex).toBe(originalIndex)
+  })
+
+  describe('drizzle + postgres', () => {
+    const config = makeConfig({ orm: 'drizzle', database: 'postgres' })
+
+    it('creates Drizzle schema with pgTable', async () => {
+      await applyOrmTransform(tempDir, config)
+      const schema = await readFile(join(tempDir, 'packages/store/src/schema.ts'), 'utf8')
+      expect(schema).toContain('pgTable')
+      expect(schema).toContain("from 'drizzle-orm/pg-core'")
+      expect(schema).not.toContain('sqliteTable')
+    })
+
+    it('schema includes all models and relations', async () => {
+      await applyOrmTransform(tempDir, config)
+      const schema = await readFile(join(tempDir, 'packages/store/src/schema.ts'), 'utf8')
+      expect(schema).toContain('export const user')
+      expect(schema).toContain('export const session')
+      expect(schema).toContain('export const account')
+      expect(schema).toContain('export const verification')
+      expect(schema).toContain('export const post')
+      expect(schema).toContain('export const message')
+      expect(schema).toContain('export const userRelations')
+      expect(schema).toContain('export const postRelations')
+    })
+
+    it('creates Drizzle store index with node-postgres driver', async () => {
+      await applyOrmTransform(tempDir, config)
+      const index = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+      expect(index).toContain("from 'drizzle-orm/node-postgres'")
+      expect(index).toContain('export { db }')
+      expect(index).toContain("export * from './schema'")
+      expect(index).not.toContain('PrismaClient')
+    })
+
+    it('creates drizzle.config.ts for postgres', async () => {
+      await applyOrmTransform(tempDir, config)
+      const drizzleConfig = await readFile(
+        join(tempDir, 'packages/store/drizzle.config.ts'),
+        'utf8',
+      )
+      expect(drizzleConfig).toContain("dialect: 'postgresql'")
+      expect(drizzleConfig).toContain("from 'drizzle-kit'")
+      expect(drizzleConfig).toContain("schema: './src/schema.ts'")
+    })
+
+    it('removes prisma directory and generated files', async () => {
+      expect(await pathExists(join(tempDir, 'packages/store/prisma'))).toBe(true)
+      expect(await pathExists(join(tempDir, 'packages/store/src/generated'))).toBe(true)
+      await applyOrmTransform(tempDir, config)
+      expect(await pathExists(join(tempDir, 'packages/store/prisma'))).toBe(false)
+      expect(await pathExists(join(tempDir, 'packages/store/src/generated'))).toBe(false)
+    })
+
+    it('removes prisma.config.ts', async () => {
+      expect(await pathExists(join(tempDir, 'packages/store/prisma.config.ts'))).toBe(true)
+      await applyOrmTransform(tempDir, config)
+      expect(await pathExists(join(tempDir, 'packages/store/prisma.config.ts'))).toBe(false)
+    })
+
+    it('patches store package.json (swaps Prisma for Drizzle)', async () => {
+      await applyOrmTransform(tempDir, config)
+      const pkg = JSON.parse(await readFile(join(tempDir, 'packages/store/package.json'), 'utf8'))
+      // Removed Prisma deps
+      expect(pkg.dependencies['@prisma/adapter-pg']).toBeUndefined()
+      expect(pkg.dependencies['@prisma/client']).toBeUndefined()
+      // Added Drizzle deps
+      expect(pkg.dependencies['drizzle-orm']).toBeDefined()
+      expect(pkg.dependencies.pg).toBeDefined() // pg kept for node-postgres driver
+      // Added Drizzle dev deps
+      expect(pkg.devDependencies['drizzle-kit']).toBeDefined()
+      expect(pkg.devDependencies.prisma).toBeUndefined()
+      // Updated scripts
+      expect(pkg.scripts['db:generate']).toContain('drizzle-kit generate')
+      expect(pkg.scripts['db:migrate']).toContain('drizzle-kit migrate')
+    })
+
+    it('rewrites auth with drizzleAdapter', async () => {
+      await applyOrmTransform(tempDir, config)
+      const auth = await readFile(join(tempDir, 'packages/auth/src/index.ts'), 'utf8')
+      expect(auth).toContain('drizzleAdapter')
+      expect(auth).toContain("from '@template/store'")
+      expect(auth).toContain("provider: 'pg'")
+      expect(auth).not.toContain('prismaAdapter')
+    })
+
+    it('rewrites tRPC context for Express + Drizzle', async () => {
+      await applyOrmTransform(tempDir, config)
+      const trpc = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      expect(trpc).toContain("import { db } from '@template/store'")
+      expect(trpc).toContain("from '@trpc/server/adapters/express'")
+      expect(trpc).not.toContain('prisma')
+    })
+
+    it('rewrites tRPC routers with Drizzle query API', async () => {
+      await applyOrmTransform(tempDir, config)
+
+      const postRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/post.ts'), 'utf8')
+      expect(postRouter).toContain("from '@template/store'")
+      expect(postRouter).toContain('db.query.post')
+      expect(postRouter).toContain('db.insert(post)')
+      expect(postRouter).toContain('db.update(post)')
+      expect(postRouter).toContain('db.delete(post)')
+      expect(postRouter).not.toContain('prisma')
+
+      const chatRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/chat.ts'), 'utf8')
+      expect(chatRouter).toContain('db.query.message')
+      expect(chatRouter).toContain('db.insert(message)')
+      expect(chatRouter).not.toContain('prisma')
+
+      const userRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/user.ts'), 'utf8')
+      expect(userRouter).toContain('db.query.user')
+      expect(userRouter).not.toContain('prisma')
+    })
+  })
+
+  describe('drizzle + sqlite', () => {
+    const config = makeConfig({ orm: 'drizzle', database: 'sqlite' })
+
+    it('creates Drizzle schema with sqliteTable', async () => {
+      await applyOrmTransform(tempDir, config)
+      const schema = await readFile(join(tempDir, 'packages/store/src/schema.ts'), 'utf8')
+      expect(schema).toContain('sqliteTable')
+      expect(schema).toContain("from 'drizzle-orm/sqlite-core'")
+      expect(schema).not.toContain('pgTable')
+    })
+
+    it('creates Drizzle store index with bun-sqlite driver', async () => {
+      await applyOrmTransform(tempDir, config)
+      const index = await readFile(join(tempDir, 'packages/store/src/index.ts'), 'utf8')
+      expect(index).toContain("from 'drizzle-orm/bun-sqlite'")
+      expect(index).toContain("from 'bun:sqlite'")
+      expect(index).not.toContain('node-postgres')
+    })
+
+    it('creates drizzle.config.ts for sqlite', async () => {
+      await applyOrmTransform(tempDir, config)
+      const drizzleConfig = await readFile(
+        join(tempDir, 'packages/store/drizzle.config.ts'),
+        'utf8',
+      )
+      expect(drizzleConfig).toContain("dialect: 'sqlite'")
+    })
+
+    it('patches store package.json (no pg dep for sqlite)', async () => {
+      await applyOrmTransform(tempDir, config)
+      const pkg = JSON.parse(await readFile(join(tempDir, 'packages/store/package.json'), 'utf8'))
+      expect(pkg.dependencies.pg).toBeUndefined()
+      expect(pkg.dependencies['drizzle-orm']).toBeDefined()
+    })
+
+    it('rewrites auth with drizzleAdapter for sqlite', async () => {
+      await applyOrmTransform(tempDir, config)
+      const auth = await readFile(join(tempDir, 'packages/auth/src/index.ts'), 'utf8')
+      expect(auth).toContain("provider: 'sqlite'")
+      expect(auth).toContain('drizzleAdapter')
+    })
+  })
+
+  describe('drizzle + hono backend', () => {
+    const config = makeConfig({ orm: 'drizzle', database: 'postgres', backend: 'hono-bun' })
+
+    it('rewrites tRPC context for fetch-based backend', async () => {
+      await applyOrmTransform(tempDir, config)
+      const trpc = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      expect(trpc).toContain("import { db } from '@template/store'")
+      expect(trpc).toContain('{ headers }: { headers: Headers }')
+      expect(trpc).not.toContain('@trpc/server/adapters/express')
+      expect(trpc).not.toContain('prisma')
+    })
+
+    it('rewrites tRPC index for fetch-based backend', async () => {
+      await applyOrmTransform(tempDir, config)
+      const index = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
+      expect(index).not.toContain('expressMiddleWare')
+      expect(index).toContain('createTRPCContext')
+      expect(index).toContain('createCallerFactory')
+    })
+  })
+
+  describe('drizzle + express backend', () => {
+    const config = makeConfig({ orm: 'drizzle', database: 'postgres', backend: 'express-bun' })
+
+    it('rewrites tRPC index with Express middleware export', async () => {
+      await applyOrmTransform(tempDir, config)
+      const index = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
+      expect(index).toContain('expressMiddleWare')
+      expect(index).toContain('createExpressMiddleware')
+    })
+  })
+})

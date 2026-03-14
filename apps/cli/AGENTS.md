@@ -37,7 +37,8 @@ apps/cli/
 │   │   └── generators/
 │   │       ├── index.ts      # Barrel export
 │   │       ├── backend.ts    # Backend transforms (Hono, future Go/Rust)
-│   │       ├── database.ts   # Database transforms (SQLite, future Mongo)
+│   │       ├── database.ts   # Database transforms (SQLite, MongoDB)
+│   │       ├── orm.ts        # ORM transforms (Drizzle: schema, routers, auth)
 │   │       ├── docker.ts     # Config-aware Docker Compose
 │   │       ├── env.ts        # Config-aware .env files
 │   │       ├── ci.ts         # Config-aware GitHub Actions CI
@@ -49,6 +50,7 @@ apps/cli/
 │   ├── schemas.test.ts       # Schema validation + compatibility tests
 │   ├── backend.test.ts       # Backend transform tests (fs-based)
 │   ├── database.test.ts      # Database transform tests (fs-based)
+│   ├── orm.test.ts           # ORM transform tests (Drizzle, fs-based)
 │   └── spawn.test.ts         # Spawn utility tests
 ├── dist/                     # Built output (Node.js compatible)
 ├── package.json              # @kitsu/create package
@@ -61,22 +63,49 @@ apps/cli/
 2. Update root package.json name
 3. Apply backend transform (rewrites server/tRPC for non-Express backends)
 4. Apply database transform (rewrites store/auth/schema for non-Postgres DBs)
-5. Rename scope (`@template` -> `@project-name`)
-6. Template cleanup (remove showcase, worker, etc.)
-7. Generate env, Docker, CI, deployment files
-8. Git init + bun install
+5. Apply ORM transform (rewrites store/auth/tRPC routers for non-Prisma ORMs)
+6. Rename scope (`@template` -> `@project-name`)
+7. Template cleanup (remove showcase, worker, etc.)
+8. Generate env, Docker, CI, deployment files
+9. Git init + bun install
 
-Backend and database transforms write `@template/` scope references so the
-rename-scope script catches them in step 5.
+Backend, database, and ORM transforms write `@template/` scope references so
+the rename-scope script catches them in step 6.
 
 ## Owns
 
 - CLI prompts and argument parsing
 - Template copy and customization flow
 - Backend transforms: Hono on Bun (express-bun is default, no transform)
-- Database transforms: SQLite via Prisma (postgres is default, no transform)
+- Database transforms: SQLite, MongoDB via Prisma (postgres is default)
+- ORM transforms: Drizzle with postgres/sqlite (Prisma is default)
 - Generated files: Docker, CI, env examples, deployment docs
 - Zod schemas and compatibility validation for all CLI options
+
+## Supported Combos (E2E-verified)
+
+| Backend     | Database | ORM     | Status  |
+| ----------- | -------- | ------- | ------- |
+| express-bun | postgres | prisma  | default |
+| express-bun | sqlite   | prisma  | tested  |
+| express-bun | mongodb  | prisma  | tested  |
+| express-bun | postgres | drizzle | tested  |
+| express-bun | sqlite   | drizzle | tested  |
+| express-bun | none     | none    | tested  |
+| hono-bun    | postgres | prisma  | tested  |
+| hono-bun    | sqlite   | prisma  | tested  |
+| hono-bun    | mongodb  | prisma  | tested  |
+| hono-bun    | postgres | drizzle | tested  |
+| hono-bun    | sqlite   | drizzle | tested  |
+| none        | postgres | prisma  | tested  |
+| none        | sqlite   | prisma  | tested  |
+
+### Blocked combos (compatibility errors)
+
+- `mongodb` + `drizzle` (Drizzle has no MongoDB support)
+- `mongoose` + anything except `mongodb`
+- Any ORM + `database=none`
+- `pgvector` + non-postgres database
 
 ## Common Tasks
 
@@ -87,8 +116,9 @@ rename-scope script catches them in step 5.
 | Change scaffold flow   | `src/lib/scaffold.ts`                            |
 | Add new backend        | `src/lib/generators/backend.ts`                  |
 | Add new database       | `src/lib/generators/database.ts`                 |
+| Add new ORM            | `src/lib/generators/orm.ts`                      |
 | Add new file generator | `src/lib/generators/*.ts` + export from index.ts |
-| Add compatibility rule | `src/types/schemas.ts` → `checkCompatibility()`  |
+| Add compatibility rule | `src/types/schemas.ts` -> `checkCompatibility()` |
 | Add tests              | `tests/*.test.ts`                                |
 
 ## Local Development
