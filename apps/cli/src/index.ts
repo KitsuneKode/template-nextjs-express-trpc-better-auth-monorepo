@@ -149,6 +149,7 @@ async function main(): Promise<void> {
     const value = await text({
       message: 'Project name',
       placeholder: 'my-kitsu-app',
+      defaultValue: 'my-kitsu-app',
       validate: (input) => {
         try {
           sanitizeProjectName(input ?? '')
