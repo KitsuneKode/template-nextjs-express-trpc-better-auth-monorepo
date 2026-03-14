@@ -1,15 +1,6 @@
-# tests
+# Tests Workspace
 
-To install dependencies:
+This workspace is for real repo-level tests and script checks.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Current coverage starts with the tooling scripts under `src/toolings`.

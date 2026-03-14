@@ -1,15 +1,7 @@
-# auth
+# Auth Package
 
-To install dependencies:
+This package wraps Better Auth for server and client usage.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.15. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- Start with `AGENTS.md` in this folder.
+- Use `src/index.ts` for server auth setup.
+- Use `src/client.ts` for the frontend auth client.
