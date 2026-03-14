@@ -309,6 +309,7 @@ export async function scaffoldProject(options: BootstrapOptions): Promise<Scaffo
 
   const generatedFiles: string[] = []
 
+  // Generate .env.example files (for reference/documentation)
   await writeGeneratedFile(
     destinationDir,
     'apps/server/.env.example',
@@ -318,6 +319,13 @@ export async function scaffoldProject(options: BootstrapOptions): Promise<Scaffo
 
   await writeGeneratedFile(destinationDir, 'apps/web/.env.example', buildWebEnvExample())
   generatedFiles.push('apps/web/.env.example')
+
+  // Generate .env files (for immediate local development)
+  await writeGeneratedFile(destinationDir, 'apps/server/.env', buildServerEnvExample(packageName))
+  generatedFiles.push('apps/server/.env')
+
+  await writeGeneratedFile(destinationDir, 'apps/web/.env', buildWebEnvExample())
+  generatedFiles.push('apps/web/.env')
 
   if (options.includeDocker) {
     await writeGeneratedFile(destinationDir, 'docker-compose.yml', renderDockerCompose(packageName))
