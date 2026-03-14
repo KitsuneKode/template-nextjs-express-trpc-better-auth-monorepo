@@ -41,7 +41,12 @@ const EXCLUDED_SEGMENTS = new Set([
 // Node.js compatible path resolution (works in both Node and Bun)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const ROOT_DIR = resolve(__dirname, '../../../..')
+
+// Detect if running from bundled dist or source
+// Source: apps/cli/src/lib/scaffold.ts (4 levels to root)
+// Bundled: apps/cli/dist/index.js (3 levels to root)
+const isBundled = __dirname.includes('/dist') || !__dirname.includes('/src/')
+const ROOT_DIR = resolve(__dirname, isBundled ? '../../..' : '../../../..')
 
 function slugify(value: string): string {
   return value
