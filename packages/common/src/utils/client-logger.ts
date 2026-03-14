@@ -1,4 +1,4 @@
-const clientTag = '[template-client]'
+const clientTag = '[client]'
 
 type LogLevel = 'error' | 'warn' | 'info' | 'debug'
 

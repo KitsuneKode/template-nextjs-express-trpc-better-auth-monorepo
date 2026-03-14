@@ -104,6 +104,18 @@ async function updatePackageJsonFiles(
       }
     }
 
+    // 3. Replace scope references inside script values (e.g. turbo -F @template/web)
+    const scripts = json.scripts
+    if (scripts && typeof scripts === 'object') {
+      const scriptsObj = scripts as Record<string, string>
+      for (const [key, value] of Object.entries(scriptsObj)) {
+        if (typeof value === 'string' && value.includes(oldScope)) {
+          scriptsObj[key] = value.replaceAll(oldScope, newScope)
+          isModified = true
+        }
+      }
+    }
+
     if (isModified) {
       if (!CONFIG.dryRun) {
         await writeJson(filePath, json)

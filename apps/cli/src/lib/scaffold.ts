@@ -38,6 +38,9 @@ const EXCLUDED_SEGMENTS = new Set([
   'logs',
 ])
 
+// Files that should not appear in scaffolded output
+const EXCLUDED_FILES = new Set(['bun.lock', 'docs/cli-development.md', 'docs/bootstrap-cli.md'])
+
 // Node.js compatible path resolution (works in both Node and Bun)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -250,6 +253,7 @@ function shouldCopyPath(relativePath: string): boolean {
   const segments = relativePath.split('/').filter(Boolean)
   if (segments[0] === 'apps' && segments[1] === 'cli') return false
   if (segments.some((segment) => EXCLUDED_SEGMENTS.has(segment))) return false
+  if (EXCLUDED_FILES.has(relativePath)) return false
 
   const fileName = segments.at(-1) ?? ''
   if (fileName.startsWith('.env') && !fileName.endsWith('.example')) return false
@@ -267,10 +271,22 @@ async function copyTemplate(destinationDir: string): Promise<void> {
   })
 }
 
-async function updateRootPackageName(destinationDir: string, packageName: string): Promise<void> {
+// Scripts that reference the CLI workspace and should not appear in scaffolded output
+const CLI_SCRIPTS = new Set(['dev:cli', 'build:cli'])
+
+async function updateRootPackageJson(destinationDir: string, packageName: string): Promise<void> {
   const packageJsonPath = join(destinationDir, 'package.json')
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as Record<string, unknown>
   packageJson.name = packageName
+
+  // Strip CLI-only scripts that reference the excluded CLI workspace
+  if (packageJson.scripts && typeof packageJson.scripts === 'object') {
+    const scripts = packageJson.scripts as Record<string, unknown>
+    for (const key of CLI_SCRIPTS) {
+      delete scripts[key]
+    }
+  }
+
   await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n')
 }
 
@@ -290,7 +306,7 @@ export async function scaffoldProject(options: BootstrapOptions): Promise<Scaffo
 
   await ensureDestinationAvailable(destinationDir)
   await copyTemplate(destinationDir)
-  await updateRootPackageName(destinationDir, packageName)
+  await updateRootPackageJson(destinationDir, packageName)
 
   runCommand(['bun', 'toolings/scripts/rename-scope.ts', '--quiet'], { cwd: destinationDir })
 
