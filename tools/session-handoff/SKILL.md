@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-version: 0.1.0
+version: 0.2.0
 description: Manage session continuity by writing and reading compressed handoff state between AI coding sessions. Use this skill whenever a session is starting and .context/handoff.md exists, whenever a session is ending or the user says goodbye or wraps up, when context is getting heavy and compaction would help, when the user asks to save progress or checkpoint, when switching between unrelated tasks mid-session, or when the user invokes /session-handoff. Even if the user doesn't explicitly mention handoff — if a session is ending and work was done, this skill should activate.
 ---
 
@@ -37,10 +37,14 @@ manually), use it as your primary orientation:
    about authentication), ask: "I have a handoff from a previous session on
    [session_name]. Is this related to what you're working on, or should I
    start fresh?" This avoids wasting context on irrelevant prior state.
-4. If aligned, start working from the "Next" checklist — do NOT re-explore
-   files already documented in "Key Files" unless the handoff indicates
-   uncertainty.
-5. If the handoff is stale (branch doesn't match, files have changed
+4. **Verify files exist** before trusting the handoff. Spot-check 1-2 files
+   from "Key Files" to confirm they're present on disk. If they're missing
+   (e.g., branch mismatch, uncommitted work from another worktree), tell the
+   user and either switch branches or rebuild from the handoff's descriptions.
+5. If files are present and aligned, start working from the "Next" checklist —
+   do NOT re-explore files already documented in "Key Files" unless the handoff
+   indicates uncertainty.
+6. If the handoff is stale (branch doesn't match, files have changed
    significantly since `updated` timestamp), mention this to the user and
    do targeted re-discovery only on changed areas.
 
@@ -70,10 +74,10 @@ Write a handoff document with these sections:
 
 ```markdown
 ---
-updated: [ISO 8601 timestamp]
-branch: [current branch]
+updated: [current ISO 8601 timestamp — use the real time, not a placeholder]
+branch: [current branch from git branch --show-current]
 session_name: '[brief label for this work]'
-context_used_pct: [estimate 0-100]
+context_pressure: [low | medium | high]
 ---
 
 ## Done
@@ -127,6 +131,10 @@ teammate's sticky note: just enough to get you going, nothing more.
 
 - Full file contents — the files are on disk, just reference them. Copying
   content into the handoff wastes the very tokens we're trying to save.
+- Code snippets — do NOT paste code into the handoff. Reference by
+  `file:line` instead. A 50-line code block in a handoff defeats the purpose
+  of compaction. The one exception: a one-line type signature or API shape
+  that the next session needs to know without reading the file.
 - Tool call transcripts — the handoff replaces the need for these
 - Exploratory dead ends — unless they're gotchas worth warning about
 - Verbose error output — summarize the error and what fixed it
