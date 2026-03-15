@@ -1,0 +1,8 @@
+# Context Handoff Configuration
+# Copy to .context/config.yaml and customize.
+
+handoff:
+  mode: ask              # yolo | ask — yolo writes automatically, ask shows draft first
+  auto_trigger: true     # true: activate on session end. false: only on /session-handoff
+  include_git_diff: true # include git diff --stat summary in handoff
+  max_key_files: 20      # maximum number of key files to list

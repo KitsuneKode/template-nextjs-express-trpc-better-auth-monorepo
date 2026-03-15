@@ -1,0 +1,7 @@
+# Workspace artifacts (created during eval/iteration)
+*-workspace/
+evals/
+
+# Don't track actual handoff state in the skill repo
+.context/handoff.md
+.context/config.yaml

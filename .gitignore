@@ -39,4 +39,5 @@ yarn-error.log*
 
 
 # Logs
-logs/
+logs/tools/session-handoff/.git
+tools/session-handoff/.git
