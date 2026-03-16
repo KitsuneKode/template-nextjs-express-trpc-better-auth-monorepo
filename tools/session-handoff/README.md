@@ -8,11 +8,16 @@ read it at session start. No re-discovery, no wasted tokens.
 ### Install as a Claude Code skill
 
 ```bash
-# Copy into your project
-cp -r tools/session-handoff/.  .claude/skills/session-handoff/
+# Option 1: Install globally (available in all projects)
+mkdir -p ~/.agents/skills/session-handoff
+cp SKILL.md README.md ~/.agents/skills/session-handoff/
 
-# Or install globally
-cp -r tools/session-handoff/.  ~/.agents/skills/session-handoff/
+# Option 2: Install per-project
+mkdir -p .claude/skills/session-handoff
+cp SKILL.md README.md .claude/skills/session-handoff/
+
+# Option 3: From within the template monorepo
+cp -r tools/session-handoff/. ~/.agents/skills/session-handoff/
 ```
 
 ### Add the SessionStart hook
@@ -83,7 +88,7 @@ Switch to `yolo` once you trust the output.
 updated: 2026-03-15T14:30:00Z
 branch: feat/my-feature
 session_name: 'feature work'
-context_used_pct: 58
+context_pressure: medium
 ---
 
 ## Done

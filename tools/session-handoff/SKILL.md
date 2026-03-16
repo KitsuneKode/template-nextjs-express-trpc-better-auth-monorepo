@@ -1,7 +1,7 @@
 ---
 name: session-handoff
 version: 0.2.0
-description: Manage session continuity by writing and reading compressed handoff state between AI coding sessions. Use this skill whenever a session is starting and .context/handoff.md exists, whenever a session is ending or the user says goodbye or wraps up, when context is getting heavy and compaction would help, when the user asks to save progress or checkpoint, when switching between unrelated tasks mid-session, or when the user invokes /session-handoff. Even if the user doesn't explicitly mention handoff — if a session is ending and work was done, this skill should activate.
+description: Use when the user is wrapping up, done for the day, stopping to pick up later, saying goodbye, or asking you to save/checkpoint/write down progress before ending. Use when starting a new session and the user asks what happened before or if there's prior context. Use when the user wants to switch tasks and preserve current work, or asks you to remember/record decisions and state so nothing is lost between sessions. Activate for any variant of "save where we are", "write down what we did", "I'll pick this up tomorrow", "don't lose this context", or /session-handoff. Do NOT use for normal coding tasks, refactoring, testing, or questions about code — only when preserving or restoring cross-session continuity is the goal.
 ---
 
 # Context Handoff
