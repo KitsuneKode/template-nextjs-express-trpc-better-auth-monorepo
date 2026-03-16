@@ -2,15 +2,7 @@
 
 This repository is both a working full-stack baseline and a template showcase.
 Do not start with a repo-wide search unless the local docs fail to answer the
-question.
-
-## Read Order
-
-1. Open the nearest local `AGENTS.md` in the workspace you are touching.
-2. Use `docs/README.md` for the global map and command/env overview.
-3. Use `docs/architecture.md` for cross-workspace flow.
-4. Use `docs/start-fresh.md` when stripping template/demo content.
-5. Use `docs/context-maintenance.md` when updating these docs.
+question. See `docs/README.md` for commands, env vars, and workspace details.
 
 ## Fast Routing
 

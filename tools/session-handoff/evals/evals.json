@@ -1,0 +1,45 @@
+{
+  "skill_name": "session-handoff",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've been working on adding a new tRPC router for user preferences in packages/trpc/src/routers/preferences.ts. I also updated the app router in _app.ts and added a Prisma model. I'm done for today — save my progress so I can pick up tomorrow.",
+      "expected_output": "A .context/handoff.md file with Done section listing the files touched with line references, a Next section with remaining work, and a Key Files section. Should be 30-80 lines, under 1k tokens.",
+      "files": [],
+      "expectations": [
+        "Creates .context/handoff.md",
+        "Handoff has YAML frontmatter with updated, branch, session_name fields",
+        "Done section references specific files with line numbers",
+        "Next section contains actionable checklist items",
+        "Key Files section lists all relevant files",
+        "Total handoff is under 80 lines"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Continue from where I left off. I want to keep working on the preferences feature.",
+      "expected_output": "Agent reads .context/handoff.md, identifies the task, and starts working from the Next checklist without re-exploring files already documented in Key Files. Should NOT run broad codebase searches.",
+      "files": [".context/handoff.md"],
+      "expectations": [
+        "Reads .context/handoff.md as first action",
+        "References the session_name from the handoff",
+        "Starts from the Next checklist items",
+        "Does NOT run broad grep/glob searches for files already in Key Files",
+        "Mentions the branch from the handoff"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I've been debugging a memory leak in the Redis connection pool for the last hour. Hit a wall — the leak only reproduces under load and I can't figure out the connection lifecycle. I need to stop and come back to this later with fresh eyes. Save where I am.",
+      "expected_output": "A handoff that captures the debugging state: what was tried, what didn't work (as gotchas), the specific files involved, and clear next steps for resuming the investigation.",
+      "files": [],
+      "expectations": [
+        "Creates .context/handoff.md",
+        "Blocked section describes the reproduction issue",
+        "Decisions section captures debugging approaches tried",
+        "Key Files section includes Redis-related files",
+        "Next section has specific investigation steps, not vague 'continue debugging'"
+      ]
+    }
+  ]
+}

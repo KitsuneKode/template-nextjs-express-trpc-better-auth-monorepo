@@ -5,6 +5,9 @@ node_modules
 .pnp
 .pnp.js
 
+# Session handoff state (per-developer, not committed)
+.context/
+
 # Local env files
 .env
 .env.local
