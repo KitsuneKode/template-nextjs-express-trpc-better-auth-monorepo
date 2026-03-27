@@ -30,9 +30,10 @@
 - change exported middleware or types:
   `src/index.ts`
 
-## Notes
+## Cleanup Notes
 
 - Routers currently call Prisma directly through `@template/store`.
+- This package contains the real API contract, not template code.
 
 ## Update When
 

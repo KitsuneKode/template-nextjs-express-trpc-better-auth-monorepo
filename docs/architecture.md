@@ -48,18 +48,8 @@ guessing from folder names alone.
 
 ## Template-Only Surfaces
 
-These are present for template evaluation, not because the product runtime
-needs them:
-
-- `apps/web/app/demo`
-- `apps/web/app/landing`
-- `apps/web/components/demos`
-- `apps/web/components/landing`
-- `apps/web/components/landing-premium`
-- `apps/web/components/sections`
-- `apps/web/lib/demo-data.ts`
-- `apps/web/public/brand`
-- large chunks of seeded post content in `packages/store/src/scripts/seed.ts`
+See `docs/start-fresh.md` for the full list of template-only surfaces that can
+be removed when turning this template into a product.
 
 ## Current Scaffold Status
 

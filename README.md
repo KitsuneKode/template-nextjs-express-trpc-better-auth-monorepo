@@ -64,10 +64,12 @@ features.
 
 ```text
 apps/
-  api/        # Express backend (tRPC, Auth, Prisma)
-  client/     # Next.js frontend (tRPC client, UI)
+  server/     # Express backend (tRPC, Auth, Prisma)
+  web/        # Next.js frontend (tRPC client, UI)
+  cli/        # Bootstrap CLI (scaffolds new projects)
+  worker/     # Background job runner
 packages/
-  auth/       # Authentication logic(better-auth)
+  auth/       # Authentication logic (better-auth)
   store/      # Prisma schema & DB access
   trpc/       # tRPC routers & helpers
   ui/         # Shared UI components

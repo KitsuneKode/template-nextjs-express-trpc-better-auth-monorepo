@@ -49,3 +49,21 @@ question. See `docs/README.md` for commands, env vars, and workspace details.
   Preview the opinionated start-fresh cleanup plan.
 - `bun run template:clean`
   Apply the recommended cleanup to a cloned project.
+
+## Task Routing
+
+- Auth changes: `packages/auth`, `packages/trpc/src/trpc.ts`, `apps/server/src/app.ts`
+- API/router changes: `packages/trpc`, `apps/server/src/app.ts`
+- Database/schema changes: `packages/store`
+- Shared UI: `packages/ui`
+- Web app shell: `apps/web/app/layout.tsx`, `apps/web/components/providers.tsx`
+- Template cleanup: See `docs/start-fresh.md`
+- Bootstrap CLI: `apps/cli`
+
+## Commit Convention
+
+Format: `type(scope): short imperative summary`
+
+Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `build`, `ci`
+
+Example: `feat(auth): add GitHub provider`
