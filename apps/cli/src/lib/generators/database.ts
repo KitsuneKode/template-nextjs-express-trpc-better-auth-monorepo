@@ -461,9 +461,31 @@ export async function applyDatabaseTransform(
   }
 
   if (config.database === 'none') {
-    // Remove the store package and auth database configuration entirely
-    // For now, leave as-is since this is a niche case.
-    // Users can manually strip database references.
+    // Rewrite store index to export a minimal Prisma client placeholder
+    await writeFile_(
+      join(destinationDir, 'packages/store/src/index.ts'),
+      `// No database configured — placeholder export
+// Add a database or ORM via the CLI: create-kitsu-stack --database=postgres
+export const prisma = null as unknown as import('./generated/client').PrismaClient
+`,
+    )
+
+    // Remove Prisma artifacts that require a datasource
+    await rm(join(destinationDir, 'packages/store/prisma/migrations'), {
+      recursive: true,
+      force: true,
+    })
+
+    // Rewrite auth to error at startup if used without a database
+    await writeFile_(
+      join(destinationDir, 'packages/auth/src/index.ts'),
+      `// Auth requires a database. Scaffold with --database=postgres or --database=sqlite.
+export const auth = null as never
+export const toNodeHandler = null as never
+export const fromNodeHeaders = null as never
+`,
+    )
+
     return
   }
 }

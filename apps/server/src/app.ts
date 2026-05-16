@@ -1,11 +1,22 @@
 import { timingMiddleWare } from '@/middlewares/timing-middleware'
+import { tracingMiddleware } from '@/middlewares/tracing-middleware'
+import { authRateLimit, apiRateLimit } from '@/middlewares/rate-limit-middleware'
+import { noCache } from '@/middlewares/cache-middleware'
 import { toNodeHandler, auth } from '@template/auth/server'
 import { expressMiddleWare } from '@template/trpc'
+import { prisma } from '@template/store'
 import { config } from '@/utils/config'
+import { serverAdapter as bullBoardAdapter } from '@/admin/bull-board'
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import compression from 'compression'
 
 const app = express()
+
+app.use(tracingMiddleware)
+app.use(helmet())
+app.use(compression())
 
 app.use(
   cors({
@@ -15,15 +26,20 @@ app.use(
   }),
 )
 
-app.all('/api/auth/*splat', timingMiddleWare, toNodeHandler(auth))
+app.use('/admin/queues', bullBoardAdapter.getRouter())
 
-app.use(express.json())
-app.use('/api/trpc', expressMiddleWare)
+app.all('/api/auth/*splat', timingMiddleWare, authRateLimit, toNodeHandler(auth))
 
-app.use('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-  })
+app.use(express.json({ limit: '1mb' }))
+app.use('/api/trpc', apiRateLimit, expressMiddleWare)
+
+app.use('/health', noCache, async (req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    res.json({ status: 'OK', database: 'connected' })
+  } catch {
+    res.status(503).json({ status: 'ERROR', database: 'disconnected' })
+  }
 })
 
 app.all('/{*splat}', (req, res) => {

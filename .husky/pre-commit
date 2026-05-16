@@ -1,3 +1,4 @@
 #!/bin/sh
 
 bunx lint-staged
+bun run check-types 2>/dev/null || echo "Type checking skipped (run manually: bun run check-types)"

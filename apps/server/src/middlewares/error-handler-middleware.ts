@@ -1,22 +1,49 @@
-import type { NextFunction, Request, Response } from 'express'
-import { logger } from '@/utils/logger'
+/**
+ * Error handling middleware with proper recovery and logging
+ *
+ * Catches all Express errors and responds with structured error objects.
+ * Logs errors for debugging and monitoring.
+ */
 
-export const errorHandlerMiddleware = async (
+import type { Request, Response, NextFunction } from 'express'
+import { logger } from '../utils/logger'
+
+export function errorHandlerMiddleware(
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
   _next: NextFunction,
-) => {
-  const errorDetails = {
-    message: error.message,
+): void {
+  const status = (error as any).status || 500
+  const code = (error as any).code || 'INTERNAL_SERVER_ERROR'
+  const message = error.message || 'An unexpected error occurred'
+
+  // Log error with context
+  logger.error({
+    code,
+    status,
+    message,
     stack: error.stack,
-    route: req.originalUrl,
-    method: req.method,
-    time: Date.now(),
+    timestamp: new Date().toISOString(),
+  })
+
+  // Respond with structured error
+  res.status(status).json({
+    error: {
+      code,
+      message,
+      ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
+    },
+  })
+}
+
+/**
+ * Wrap async route handlers to catch errors
+ */
+export function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next)
   }
-
-  logger.error(`Error on Route : ${errorDetails.route}`, error, errorHandlerMiddleware)
-
-  // Send a generic, user-friendly error response to the client
-  res.status(500).send('Internal Server Error')
 }

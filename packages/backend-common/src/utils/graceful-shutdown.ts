@@ -5,7 +5,10 @@
  * Prevents data loss and ensures all pending operations complete.
  */
 
-import { logger } from '@template/backend-common/logger'
+const logger = {
+  info: (msg: string) => console.log(`[INFO] ${msg}`),
+  error: (msg: string) => console.error(`[ERROR] ${msg}`),
+}
 
 const shutdownCallbacks: Array<() => Promise<void>> = []
 let isShuttingDown = false

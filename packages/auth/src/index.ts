@@ -9,7 +9,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false, //defaults to true
+    autoSignIn: false, // defaults to true in Better Auth; explicitly opting out
   },
   plugins: [], // make sure this is the last plugin in the array
   socialProviders: {

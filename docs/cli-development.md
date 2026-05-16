@@ -67,17 +67,29 @@ bun unlink
 ```text
 apps/cli/
 ├── src/
-│   ├── index.ts          # Entry point, --help/--version handling
+│   ├── index.ts              # Entry point, --help/--version handling
 │   ├── lib/
-│   │   ├── scaffold.ts   # Core scaffolding logic
-│   │   └── spawn.ts      # Cross-platform subprocess execution
-│   ├── types/
-│   │   └── schemas.ts    # Zod schemas (extensible for future features)
-│   └── utils/
-│       └── paths.ts      # Portable path resolution
+│   │   ├── scaffold.ts       # Core scaffolding logic
+│   │   ├── spawn.ts          # Cross-platform subprocess execution
+│   │   └── generators/
+│   │       ├── index.ts      # Barrel export
+│   │       ├── backend.ts    # Backend transforms (Hono, future Go/Rust)
+│   │       ├── database.ts   # Database transforms (SQLite, MongoDB)
+│   │       ├── orm.ts        # ORM transforms (Drizzle: schema, routers, auth)
+│   │       ├── docker.ts     # Config-aware Docker Compose
+│   │       ├── env.ts        # Config-aware .env files
+│   │       ├── ci.ts         # Config-aware GitHub Actions CI
+│   │       └── deployment.ts # Config-aware deployment guide
+│   └── types/
+│       └── schemas.ts        # Zod schemas, compatibility checks
 ├── tests/
-│   └── *.test.ts         # Bun test files
-├── dist/                 # Built output (git-ignored)
+│   ├── scaffold.test.ts      # Scaffold + file-generation tests
+│   ├── schemas.test.ts       # Schema validation + compatibility tests
+│   ├── backend.test.ts       # Backend transform tests (fs-based)
+│   ├── database.test.ts      # Database transform tests (fs-based)
+│   ├── orm.test.ts           # ORM transform tests (Drizzle, fs-based)
+│   └── spawn.test.ts         # Spawn utility tests
+├── dist/                     # Built output (Node.js compatible)
 ├── package.json
 └── tsconfig.json
 ```
@@ -145,9 +157,12 @@ bun test --watch
 
 ### Test Structure
 
-- `tests/args.test.ts` - Argument parsing
-- `tests/scaffold.test.ts` - File generation (uses temp directories)
-- `tests/integration.test.ts` - End-to-end CLI execution
+- `tests/scaffold.test.ts` - Scaffold utilities + pure generator rendering tests
+- `tests/schemas.test.ts` - Zod schema validation + compatibility checks
+- `tests/backend.test.ts` - Backend transform integration (file-based)
+- `tests/database.test.ts` - Database transform integration (file-based)
+- `tests/orm.test.ts` - ORM transform integration (file-based, Drizzle)
+- `tests/spawn.test.ts` - Spawn utility unit tests
 
 ## Publishing to npm
 

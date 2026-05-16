@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/bun": "1.3.9",
-    "eslint": "^9.0.0",
+    "eslint": "^9.39.4",
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*"
   },
@@ -21,6 +21,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "bullmq": "^5.48.1",
     "@template/backend-common": "workspace:*",
     "@template/common": "workspace:*",
     "@template/auth": "workspace:*",

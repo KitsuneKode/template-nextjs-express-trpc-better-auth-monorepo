@@ -1,12 +1,22 @@
 import {
   renderDockerCompose,
+  renderDockerComposeProd,
+  renderGithubActionsWorkflow,
+  renderNginxConfig,
   buildServerEnv,
   buildWebEnv,
-  renderGithubActionsWorkflow,
   renderDeploymentGuide,
   applyBackendTransform,
   applyDatabaseTransform,
   applyOrmTransform,
+  buildRootAgentsMd,
+  buildContextMd,
+  buildClaudeMd,
+  buildStoreRulesMd,
+  buildWebRulesMd,
+  buildTrpcRulesMd,
+  buildReadme,
+  buildShowcaseMdx,
 } from './generators'
 import { access, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import type { ProjectConfig, CleanupTarget } from '../types/schemas'
@@ -33,7 +43,20 @@ const EXCLUDED_SEGMENTS = new Set([
 ])
 
 // Files that should not appear in scaffolded output
-const EXCLUDED_FILES = new Set(['bun.lock', 'docs/cli-development.md', 'docs/bootstrap-cli.md'])
+const EXCLUDED_FILES = new Set([
+  'bun.lock',
+  'docs/cli-development.md',
+  'docs/bootstrap-cli.md',
+  // Never copy actual .env files — only .env.example
+  '.env',
+  'apps/server/.env',
+  'apps/web/.env',
+  'apps/worker/.env',
+  'packages/auth/.env',
+  'packages/store/.env',
+  'apps/server/.env.example',
+  'apps/web/.env.example',
+])
 
 // Node.js compatible path resolution (works in both Node and Bun)
 const __filename = fileURLToPath(import.meta.url)
@@ -128,7 +151,7 @@ async function copyTemplate(destinationDir: string): Promise<void> {
 // Scripts that reference the CLI workspace and should not appear in scaffolded output
 const CLI_SCRIPTS = new Set(['dev:cli', 'build:cli'])
 
-async function updateRootPackageJson(destinationDir: string, packageName: string): Promise<void> {
+async function updateRootPackageJson(destinationDir: string, packageName: string, options: ProjectConfig): Promise<void> {
   const packageJsonPath = join(destinationDir, 'package.json')
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as Record<string, unknown>
   packageJson.name = packageName
@@ -139,6 +162,13 @@ async function updateRootPackageJson(destinationDir: string, packageName: string
     for (const key of CLI_SCRIPTS) {
       delete scripts[key]
     }
+  }
+
+  // Portfolio metadata for kitsunekode.in auto-discovery
+  packageJson.portfolio = {
+    type: 'fullstack',
+    tags: [options.backend, options.database || 'none', options.orm || 'none'],
+    featured: false,
   }
 
   await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n')
@@ -160,12 +190,16 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
 
   await ensureDestinationAvailable(destinationDir)
   await copyTemplate(destinationDir)
-  await updateRootPackageJson(destinationDir, packageName)
+  await updateRootPackageJson(destinationDir, packageName, options)
 
   // Apply backend/database/ORM transforms BEFORE rename-scope so generated files
   // use @template/ imports and get renamed along with everything else.
   await applyBackendTransform(destinationDir, options)
-  await applyDatabaseTransform(destinationDir, options)
+  // Skip database transform when ORM is Drizzle — Drizzle generates its own schema
+  // and the database transform's Prisma-specific output would be wasted work.
+  if (options.orm !== 'drizzle') {
+    await applyDatabaseTransform(destinationDir, options)
+  }
   await applyOrmTransform(destinationDir, options)
 
   runCommand(['bun', 'toolings/scripts/rename-scope.ts', '--quiet'], { cwd: destinationDir })
@@ -205,6 +239,14 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
   if (options.includeDocker) {
     await writeGeneratedFile(destinationDir, 'docker-compose.yml', renderDockerCompose(options))
     generatedFiles.push('docker-compose.yml')
+
+    // Production Docker Compose with app services, Nginx, and worker
+    await writeGeneratedFile(destinationDir, 'docker-compose.prod.yml', renderDockerComposeProd(options))
+    generatedFiles.push('docker-compose.prod.yml')
+
+    // Nginx reverse proxy configuration
+    await writeGeneratedFile(destinationDir, 'nginx/nginx.conf', renderNginxConfig(options))
+    generatedFiles.push('nginx/nginx.conf')
   }
 
   // GitHub Actions CI (config-aware: adapts to testing/runtime)
@@ -216,6 +258,30 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
     )
     generatedFiles.push('.github/workflows/ci.yml')
   }
+
+  // Agent documentation (AI-development-ready from day one)
+  await writeGeneratedFile(destinationDir, 'AGENTS.md', buildRootAgentsMd(options))
+  generatedFiles.push('AGENTS.md')
+  await writeGeneratedFile(destinationDir, 'CONTEXT.md', buildContextMd(options))
+  generatedFiles.push('CONTEXT.md')
+  await writeGeneratedFile(destinationDir, 'CLAUDE.md', buildClaudeMd())
+  generatedFiles.push('CLAUDE.md')
+
+  // Generate .claude/rules/ directory for path-scoped agent rules
+  await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
+  await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
+  await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
+  generatedFiles.push('.claude/rules/', '.claude/rules/store.md', '.claude/rules/web.md', '.claude/rules/trpc.md')
+
+  // SHOWCASE.mdx (portfolio-ready)
+  if (options.includeShowcase) {
+    await writeGeneratedFile(destinationDir, 'SHOWCASE.mdx', buildShowcaseMdx(options))
+    generatedFiles.push('SHOWCASE.mdx')
+  }
+
+  // Project README
+  await writeGeneratedFile(destinationDir, 'README.md', buildReadme(options))
+  generatedFiles.push('README.md')
 
   // Deployment guide (config-aware: adapts to backend/database/docker)
   if (options.deployment !== 'none') {

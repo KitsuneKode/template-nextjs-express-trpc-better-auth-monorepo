@@ -24,6 +24,14 @@ import { config } from './utils/config'
 
 const app = new Hono()
 
+// Security headers (expand as needed for production)
+app.use('*', async (c, next) => {
+  c.res.headers.set('X-Content-Type-Options', 'nosniff')
+  c.res.headers.set('X-Frame-Options', 'DENY')
+  c.res.headers.set('X-XSS-Protection', '1; mode=block')
+  await next()
+})
+
 // CORS
 app.use(
   '*',
@@ -48,8 +56,8 @@ app.use('/api/trpc/*', async (c) => {
   return response
 })
 
-// Health check
-app.get('/health', (c) => c.json({ status: 'OK' }))
+// Health check (add DB ping as needed)
+app.get('/health', (c) => c.json({ status: 'OK', timestamp: Date.now() }))
 
 // 404 catch-all
 app.all('*', (c) => c.json({ error: 'Not found' }, 404))

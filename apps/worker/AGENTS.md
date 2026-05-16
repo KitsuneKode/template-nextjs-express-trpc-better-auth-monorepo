@@ -2,36 +2,40 @@
 
 ## Purpose
 
-`apps/worker` is a placeholder worker workspace. The Redis and logger wiring
-exists, but the runtime logic is still stub-level.
+Background job processing with BullMQ — email, webhooks, and scheduled cleanup.
 
 ## Read First
 
-- `src/index.ts`
-- `src/redis/index.ts`
-- `src/utils/logger.ts`
+- `src/index.ts` — entrypoint, worker bootstrap
+- `src/queue.ts` — BullMQ queue definitions
+- `src/jobs/` — job handler implementations
 
 ## Owns
 
-- future background jobs
-- worker-specific logging
-- worker Redis connection bootstrap
+- BullMQ queue definitions
+- Job processor implementations
+- Worker-specific Redis connection (via `@template/backend-common/redis/bull`)
 
-## Current State
+## Job Types
 
-- `src/index.ts` only logs a placeholder startup message.
-- There is no queue, scheduler, or real job processor yet.
+- `email` — transactional emails (Resend/SendGrid)
+- `webhook` — async webhook processing (Stripe, GitHub, custom)
+- `cleanup` — periodic cleanup (expired sessions, old logs)
 
 ## Common Tasks
 
-- Build real jobs or consumers in `src/index.ts` or new files under `src/`
-- Reuse the shared Redis/config/logger helpers instead of re-implementing them
+- Add a new job: create handler in `src/jobs/`, add to `queue.ts`, wire in `index.ts`
+- Change Redis config: update in `src/queue.ts`
+
+## Dev
+
+- `bun run dev` — hot-reload worker
+- `bun run build` — compile for production
 
 ## Cleanup Notes
 
-- Remove this workspace if the product will not use background jobs.
+- Remove this workspace if the product does not use background jobs.
 
 ## Update When
 
-Update this file when real jobs, queues, schedules, or worker entrypoints are
-added.
+New job types, changed queue config, or Redis wiring changes.

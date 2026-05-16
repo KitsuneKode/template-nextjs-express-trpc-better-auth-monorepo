@@ -1,6 +1,6 @@
 {
   "name": "@kitsu/create",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
   "author": "kitsunekode <bhuyanmanash2002@gmail.com>",
   "license": "MIT",
@@ -64,7 +64,7 @@
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
     "@types/node": "^22.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^9.39.4",
     "typescript": "^5.9.3"
   }
 }

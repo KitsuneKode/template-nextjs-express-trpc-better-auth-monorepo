@@ -8,6 +8,9 @@ node_modules
 # Session handoff state (per-developer, not committed)
 .context/
 
+# Agent local settings (per-developer, not committed)
+.claude/settings.local.json
+
 # Local env files
 .env
 .env.local

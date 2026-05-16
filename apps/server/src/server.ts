@@ -1,55 +1,40 @@
-import { logger } from '@/utils/logger'
-import { config } from '@/utils/config'
-import cluster from 'cluster'
-import app from '@/app'
-import os from 'os'
+/**
+ * Server startup script
+ *
+ * Handles environment validation, graceful shutdown, and cluster management.
+ */
 
-try {
-  config.validateAll()
-} catch (error) {
-  logger.error('Server configuration validation failed. Startup aborted.', error)
-  process.exit(1)
-}
+import app from './app'
+import { config } from './utils/config'
+import { logger } from './utils/logger'
+import { validateEnvironment } from '@template/backend-common/validate-env'
+import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
+import { prisma } from '@template/store'
+import { redis } from './lib/redis'
 
-const port = config.getConfig('port')
+// Validate environment on startup
+validateEnvironment('server')
 
-const numCPUs = config.getConfig('nodeEnv') === 'development' ? 1 : os.cpus().length
+const PORT = config.getConfig('port')
 
-if (cluster.isPrimary) {
-  logger.info(`Master process ${process.pid} is running`)
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork()
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    logger.warn(
-      `Worker ${worker.process.pid} died with code: ${code}, signal: ${signal}, Restarting...`,
-    )
-    cluster.fork()
+const server = app.listen(PORT, () => {
+  logger.info({
+    port: PORT,
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
   })
-} else {
-  const server = app.listen(port, (err) => {
-    if (err) {
-      logger.error(`Worker ${process.pid} failed to start server:`, err)
-      process.exit(1)
-    } else {
-      logger.info(`Worker ${process.pid} started server on port ${port}`)
-    }
-  })
+})
 
-  const gracefulShutdown = () => {
-    console.log(`Worker ${process.pid} received shutdown signal. Shutting down gracefully...`)
-    server.close(() => {
-      console.log(`Worker ${process.pid} closed.`)
-      process.exit(0)
-    })
+// Register shutdown callbacks
+onShutdown(async () => {
+  logger.info('Closing Prisma connection...')
+  await prisma.$disconnect()
+})
 
-    setTimeout(() => {
-      console.error(`Worker ${process.pid} forced to exit after shutdown timeout.`)
-      process.exit(1)
-    }, 10000)
-  }
+onShutdown(async () => {
+  logger.info('Closing Redis connection...')
+  await redis.close()
+})
 
-  process.on('SIGINT', gracefulShutdown)
-  process.on('SIGTERM', gracefulShutdown)
-}
+// Setup graceful shutdown
+setupGracefulShutdown(server)

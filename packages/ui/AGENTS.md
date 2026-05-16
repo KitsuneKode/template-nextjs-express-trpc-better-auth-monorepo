@@ -2,38 +2,31 @@
 
 ## Purpose
 
-`packages/ui` is the shared component and style library used by the web app.
+`packages/ui` holds the shared UI component library, shadcn configuration, global styles, and icon components used across apps.
 
 ## Read First
 
-- `src/styles/globals.css`
-- `src/components`
-- `src/lib/utils.ts`
-- `components.json`
-- `turbo/generators/config.ts`
+- `src/components/` — available components
+- `globals.css` — global Tailwind styles
+- `components.json` — shadcn configuration
 
 ## Owns
 
-- shared design primitives
-- shared icons and form controls
-- global Tailwind v4 styles
-- shadcn aliases and component generation config
+- shadcn component registry and generator setup
+- global CSS (`globals.css`) imported by `apps/web`
+- shared React components (icons, layout primitives)
+- tailwind integration through postcss config
 
 ## Common Tasks
 
-- style system changes:
-  `src/styles/globals.css`
-- shared component changes:
-  `src/components/*`
-- shadcn alias or generator changes:
-  `components.json`, `turbo/generators/config.ts`
+- add a shadcn component:
+  `bunx --bun shadcn@latest add <component> --c packages/ui`
+- add a shared UI component:
+  create `src/components/<name>.tsx`
+- change global styles:
+  edit `globals.css`
 
-## Notes
+## Cleanup Notes
 
-- `apps/web` imports global styles from `@template/ui/globals.css`.
-- This package mixes hand-written shared components with shadcn-oriented setup.
-
-## Update When
-
-Update this file when shared UI exports, global styles, aliases, or generation
-workflow change.
+- This package is a core workspace worth keeping even when stripping template showcase content.
+- Existing package README is boilerplate; prefer this file.

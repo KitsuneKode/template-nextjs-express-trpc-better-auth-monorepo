@@ -1,8 +1,29 @@
 import { logger } from '@/utils/logger'
+import { createWorker, QUEUE_NAMES } from './queue'
+import { sendEmail, processWebhook, runCleanup } from './jobs'
 
-// eslint-disable-next-line no-constant-condition
-while (1) {
-  await new Promise(() => setTimeout(() => logger.info('worker started'), 1000))
+const emailWorker = createWorker(QUEUE_NAMES.EMAIL, sendEmail)
+const webhookWorker = createWorker(QUEUE_NAMES.WEBHOOK, processWebhook)
+const cleanupWorker = createWorker(QUEUE_NAMES.CLEANUP, runCleanup)
 
-  break
-}
+logger.info('Worker started — listening for jobs')
+
+process.on('SIGTERM', async () => {
+  logger.info('Shutting down workers')
+  await Promise.all([
+    emailWorker.close(),
+    webhookWorker.close(),
+    cleanupWorker.close(),
+  ])
+  process.exit(0)
+})
+
+process.on('SIGINT', async () => {
+  logger.info('Shutting down workers')
+  await Promise.all([
+    emailWorker.close(),
+    webhookWorker.close(),
+    cleanupWorker.close(),
+  ])
+  process.exit(0)
+})

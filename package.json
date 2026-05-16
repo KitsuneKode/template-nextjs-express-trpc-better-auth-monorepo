@@ -36,18 +36,19 @@
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.4",
-    "@commitlint/config-conventional": "^20.4.4",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
-    "eslint": "^9.0.0",
+    "@types/compression": "^1.7.5",
+    "eslint": "^9.39.4",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
+    "lint-staged": "^16.4.0",
     "markdownlint-cli2": "^0.21.0",
     "prettier": "^3.8.1",
     "prettier-plugin-sort-imports": "^1.8.11",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "turbo": "^2.8.11",
+    "turbo": "^2.8.20",
     "typescript": "5.9.3"
   },
   "engines": {
@@ -59,5 +60,10 @@
     "packages/*",
     "toolings/*",
     "tests/*"
-  ]
+  ],
+  "dependencies": {
+    "compression": "^1.7.5",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0"
+  }
 }

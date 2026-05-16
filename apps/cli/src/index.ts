@@ -18,7 +18,7 @@ import pc from 'picocolors'
 
 // Package info (keep in sync with package.json)
 const PKG_NAME = '@kitsu/create'
-const PKG_VERSION = '0.1.0'
+const PKG_VERSION = '0.2.0'
 
 function printHelp(): void {
   console.log(`
@@ -45,6 +45,7 @@ ${pc.bold('Options:')}
   --tests=<mode>     Testing setup: bun, none (default: bun)
   --deployment=<m>   Deployment guide: vercel-railway, none (default: vercel-railway)
   --backend=<b>      Backend: express-bun, hono-bun, none (default: express-bun)
+                     (experimental: fastify-node, go-fiber, rust-axum, python-fastapi)
   --database=<d>     Database: postgres, sqlite, mongodb, none (default: postgres)
   --orm=<o>          ORM: prisma, drizzle, mongoose, none (default: prisma)
   -v, --version      Show version number

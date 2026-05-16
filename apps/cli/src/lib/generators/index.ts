@@ -6,10 +6,21 @@
  * and writes the output to the destination directory.
  */
 
-export { renderDockerCompose } from './docker'
+export { renderDockerCompose, renderDockerComposeProd } from './docker'
+export { renderNginxConfig } from './nginx'
 export { buildServerEnv, buildWebEnv } from './env'
 export { renderGithubActionsWorkflow } from './ci'
 export { renderDeploymentGuide } from './deployment'
 export { applyBackendTransform } from './backend'
 export { applyDatabaseTransform } from './database'
 export { applyOrmTransform } from './orm'
+export {
+  buildRootAgentsMd,
+  buildContextMd,
+  buildClaudeMd,
+  buildStoreRulesMd,
+  buildWebRulesMd,
+  buildTrpcRulesMd,
+} from './agent-docs'
+export { buildReadme } from './readme'
+export { buildShowcaseMdx } from './showcase'
