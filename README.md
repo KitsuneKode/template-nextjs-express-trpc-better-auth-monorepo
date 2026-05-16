@@ -114,7 +114,61 @@ packages/
 
 6. Commit with the enforced Conventional Commit format
 
-   Example: `feat(auth): add google provider`
+    Example: `feat(auth): add google provider`
+
+---
+
+## 🔧 Environment Setup
+
+### Local Development
+
+The template requires environment variables for both frontend and backend. We provide `.env.example` files as templates.
+
+1. **Setup frontend environment:**
+
+   ```sh
+   cp apps/web/.env.example apps/web/.env.local
+   ```
+
+   This file contains frontend-specific variables like `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL`.
+
+2. **Setup backend environment:**
+
+   ```sh
+   cp apps/server/.env.example apps/server/.env
+   ```
+
+   This file contains backend variables like `DATABASE_URL`, `PORT`, and authentication secrets.
+
+3. **Configure for your setup:**
+
+   - Update database URLs if using a custom Postgres instance
+   - Set `BETTER_AUTH_SECRET` to a secure random string (min 32 characters)
+   - For OAuth providers (GitHub, Google), add your client credentials
+
+4. **Start development:**
+
+   ```sh
+   bun dev
+   ```
+
+   This starts all services: frontend (port 3000), backend (port 8080), and database.
+
+### Environment Variables Reference
+
+**Frontend** (`apps/web/.env.local`):
+- `NEXT_PUBLIC_SITE_NAME` - Your app name
+- `NEXT_PUBLIC_APP_URL` - Frontend URL (local: `http://localhost:3000`)
+- `NEXT_PUBLIC_API_URL` - Backend API URL (local: `http://localhost:8080`)
+
+**Backend** (`apps/server/.env`):
+- `PORT` - Backend server port (default: 8080)
+- `DATABASE_URL` - Database connection string
+- `REDIS_URL` - Redis connection for caching
+- `BETTER_AUTH_SECRET` - Auth secret (must be at least 32 characters)
+- `BETTER_AUTH_URL` - Auth service URL
+
+See `apps/web/.env.example` and `apps/server/.env.example` for all available options.
 
 ---
 

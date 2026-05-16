@@ -10,7 +10,7 @@ export default function TermsPage() {
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <h1 className="text-4xl sm:text-5xl font-bold mb-2 text-neutral-900">Terms of Service</h1>
-        <p className="text-sm text-neutral-600 mb-12">Last updated: {new Date().toLocaleDateString()}</p>
+        <p className="text-sm text-neutral-600 mb-12">Last updated: January 2025</p>
 
         <div className="prose max-w-none bg-white rounded-lg shadow-sm p-8">
           <section className="mb-8">

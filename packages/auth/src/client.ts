@@ -1,6 +1,14 @@
 import { clientConfig as config } from '@template/common/config-loader'
 import { createAuthClient } from 'better-auth/react' // make sure to import from better-auth/react
 
-export const authClient = createAuthClient({
+/**
+ * Better Auth client for frontend use.
+ *
+ * TODO: Type this properly once Better Auth exports a usable type.
+ * Current issue: createAuthClient returns a type that references internal
+ * Better Auth files that can't be serialized to .d.ts files.
+ * See: https://github.com/better-auth/better-auth/issues
+ */
+export const authClient: any = createAuthClient({
   baseURL: config.getConfig('appUrl'),
 })

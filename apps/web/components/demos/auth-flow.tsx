@@ -56,7 +56,7 @@ export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
           })
           setIsLoading(false)
         },
-        onError: (ctx) => {
+        onError: (ctx: any) => {
           alert(ctx.error.message)
           setIsLoading(false)
         },
