@@ -1,0 +1,10 @@
+{
+  "version": "0.2.0",
+  "include": [
+    "README.md",
+    "apps/api/package.json",
+    "apps/web/package.json",
+    "apps/worker/package.json",
+    "package.json"
+  ]
+}

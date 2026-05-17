@@ -148,6 +148,7 @@ export const CLIArgsSchema = z.object({
   yes: z.boolean().default(false),
   help: z.boolean().default(false),
   version: z.boolean().default(false),
+  dryRun: z.boolean().default(false),
   // Existing flags
   install: z.boolean().optional(),
   git: z.boolean().optional(),
@@ -163,6 +164,11 @@ export const CLIArgsSchema = z.object({
   example: ExampleSchema.optional(),
   // Family-specific flags
   presets: z.array(NextPresetSchema).optional(),
+  // Internal: subcommand dispatch
+  _command: z.string().optional(),
+  _jsonConfig: z.any().optional(),
+  _addFeature: z.string().optional(),
+  _addDir: z.string().optional(),
 })
 export type CLIArgs = z.infer<typeof CLIArgsSchema>
 
@@ -280,6 +286,48 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
     warnings.push(
       'SQLite is file-based and does not need a Docker container. Docker will only include Redis.',
     )
+  }
+
+  // Family-specific validation
+  if (config.family === 'solana' && config.backend !== 'none' && config.backend !== undefined) {
+    warnings.push('Solana programs do not use a backend server. Backend will be ignored.')
+  }
+  if (config.family === 'rust' && config.backend !== 'none' && config.backend !== undefined) {
+    warnings.push('Rust API projects use their own backend. Selected backend ignored.')
+  }
+  if (config.family === 'mobile' && config.backend === undefined) {
+    // Mobile has its own concerns — no backend validation needed
+  }
+
+  // Bundle compatibility
+  if (
+    config.bundles?.includes('realtime') &&
+    !config.includeWorker &&
+    config.family === 'ts-turbo'
+  ) {
+    warnings.push('Realtime bundle works best with worker enabled (--worker).')
+  }
+  if (config.bundles?.includes('ai') && config.family !== 'ts-turbo' && config.family !== 'next') {
+    warnings.push('AI bundle is designed for ts-turbo or next families.')
+  }
+
+  // Backend + family validation
+  if (config.family && config.family !== 'ts-turbo' && config.family !== 'backend') {
+    if (config.backend && config.backend !== 'none') {
+      warnings.push(
+        `Backend selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+      )
+    }
+    if (config.database && config.database !== 'none') {
+      warnings.push(
+        `Database selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+      )
+    }
+    if (config.orm && config.orm !== 'none') {
+      warnings.push(
+        `ORM selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+      )
+    }
   }
 
   return { warnings, errors }

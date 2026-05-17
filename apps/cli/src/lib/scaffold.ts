@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs'
-import { access, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import { basename, dirname, join, resolve } from 'node:path'
+import { access, cp, mkdir, readdir, readFile, writeFile, stat } from 'node:fs/promises'
+import { basename, dirname, join, resolve, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
+import type { Family, ProjectConfig, CleanupTarget, PackageManager } from '../types/schemas'
 import {
   renderDockerCompose,
   renderDockerComposeProd,
@@ -23,6 +23,7 @@ import {
   buildReadme,
   buildShowcaseMdx,
 } from './generators'
+import { pmInstall } from './pm'
 import { runCommand, tryCommand } from './spawn'
 
 export interface ScaffoldResult {
@@ -176,7 +177,52 @@ function shouldCopyPath(relativePath: string): boolean {
   return true
 }
 
+interface KitsuFilesManifest {
+  version: string
+  include: string[]
+}
+
+async function loadManifest(sourceDir: string): Promise<KitsuFilesManifest | null> {
+  const manifestPath = join(sourceDir, '.kitsufiles.json')
+  try {
+    const raw = await readFile(manifestPath, 'utf8')
+    return JSON.parse(raw) as KitsuFilesManifest
+  } catch {
+    return null
+  }
+}
+
+async function copyWithManifest(
+  destinationDir: string,
+  sourceDir: string,
+  manifest: KitsuFilesManifest,
+): Promise<void> {
+  for (const relativePath of manifest.include) {
+    const srcPath = join(sourceDir, relativePath)
+    const destPath = join(destinationDir, relativePath)
+    try {
+      const srcStat = await stat(srcPath)
+      if (srcStat.isDirectory()) {
+        await mkdir(destPath, { recursive: true })
+      } else {
+        await mkdir(dirname(destPath), { recursive: true })
+        await cp(srcPath, destPath)
+      }
+    } catch {
+      // Skip files that don't exist in the source
+    }
+  }
+}
+
 async function copyTemplate(destinationDir: string, sourceDir: string): Promise<void> {
+  // Check for inclusion manifest
+  const manifest = await loadManifest(sourceDir)
+  if (manifest) {
+    await copyWithManifest(destinationDir, sourceDir, manifest)
+    return
+  }
+
+  // Fall back to exclusion-based copy (for ts-turbo which uses ROOT_DIR)
   await cp(sourceDir, destinationDir, {
     recursive: true,
     filter: (sourcePath) => {
@@ -226,10 +272,37 @@ async function writeGeneratedFile(
   await writeFile(filePath, content)
 }
 
-export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldResult> {
+function buildKitsuConfig(options: ProjectConfig): string {
+  const config = {
+    $schema: 'https://kitsunekode.in/schemas/kitsu.json',
+    version: '0.2.0',
+    createdAt: new Date().toISOString(),
+    family: options.family,
+    packageManager: options.packageManager,
+    choices: {
+      backend: options.backend,
+      database: options.database,
+      orm: options.orm,
+      bundles: options.bundles,
+      testing: options.testing,
+      deployment: options.deployment,
+      includeWorker: options.includeWorker,
+      includeShowcase: options.includeShowcase,
+      presets: options.presets,
+    },
+    reproducible: `npx @kitsu/create ${options.projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
+  }
+  return JSON.stringify(config, null, 2) + '\n'
+}
+
+export async function scaffoldProject(
+  options: ProjectConfig,
+  dryRun = false,
+): Promise<ScaffoldResult> {
   const packageName = sanitizeProjectName(options.projectName)
   const destinationDir = resolve(options.destinationDir)
   const family = options.family
+  const pm = options.packageManager ?? 'bun'
 
   await ensureDestinationAvailable(destinationDir)
 
@@ -246,13 +319,15 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
     await applyOrmTransform(destinationDir, options)
   }
 
-  runCommand(['bun', 'toolings/scripts/rename-scope.ts', '--quiet'], { cwd: destinationDir })
+  runCommand([pmExecTool(pm, 'bun'), 'toolings/scripts/rename-scope.ts', '--quiet'], {
+    cwd: destinationDir,
+  })
 
   const cleanupTargets = buildCleanupTargets(options)
   if (cleanupTargets.length > 0) {
     runCommand(
       [
-        'bun',
+        pmExecTool(pm, 'bun'),
         'toolings/scripts/template-cleanup.ts',
         `--remove=${cleanupTargets.join(',')}`,
         '--yes',
@@ -261,7 +336,10 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
     )
   }
 
-  const generatedFiles: string[] = []
+  // Write kitsu.jsonc for reproducibility
+  await writeGeneratedFile(destinationDir, 'kitsu.jsonc', buildKitsuConfig(options))
+
+  const generatedFiles: string[] = ['kitsu.jsonc']
 
   // Family-aware env generation
   const hasServer = !shouldStripServer(family)
@@ -349,8 +427,8 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
     tryCommand(['git', 'init', '-b', 'main'], { cwd: destinationDir })
   }
 
-  if (options.installDependencies) {
-    runCommand(['bun', 'install'], { cwd: destinationDir })
+  if (options.installDependencies && !dryRun) {
+    runCommand([pmInstall(pm)], { cwd: destinationDir })
   }
 
   return {
@@ -359,4 +437,11 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
     cleanupTargets,
     generatedFiles,
   }
+}
+
+/** Get the executable runner for a given package manager (bun vs npx vs pnpm dlx) */
+function pmExecTool(pm: PackageManager, defaultTool: string): string {
+  if (pm === 'bun') return 'bun'
+  if (pm === 'pnpm') return 'pnpm'
+  return 'npx'
 }

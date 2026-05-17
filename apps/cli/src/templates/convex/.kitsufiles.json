@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "include": [
+    ".env.example",
+    ".oxlintrc.json",
+    "AGENTS.md",
+    "app/layout.tsx",
+    "app/page.tsx",
+    "convex/auth.ts",
+    "convex/schema.ts",
+    "package.json",
+    "tsconfig.json"
+  ]
+}

@@ -13,7 +13,11 @@ import {
   text,
 } from '@clack/prompts'
 import pc from 'picocolors'
+import { addFeature } from './lib/add'
+import { createProject, validateConfig } from './lib/create'
+import { recordHistory, printHistory } from './lib/history'
 import { scaffoldProject, sanitizeProjectName } from './lib/scaffold'
+import { startMcpServer } from './mcp'
 import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
 import {
   BUNDLE_LABELS,
@@ -67,18 +71,32 @@ ${pc.bold('Options:')}
   --no-ci            Skip CI generation
   --tests=<mode>     Testing setup: bun, none (default: bun)
   --deployment=<m>   Deployment guide: vercel-railway, none (default: vercel-railway)
+  --dry-run           Preview without writing files
   --backend=<b>      Backend: express-bun, hono-bun, none (default: express-bun)
   --database=<d>     Database: postgres, sqlite, mongodb, none (default: postgres)
   --orm=<o>          ORM: prisma, drizzle, mongoose, none (default: prisma)
   -v, --version      Show version number
   -h, --help         Show this help message
 
+${pc.bold('Subcommands:')}
+  mcp                Start MCP server for AI agent integration (stdio)
+  create-json <json> Non-interactive create from JSON config
+  validate <json>    Validate config without writing files
+  add <feature> [dir] Add feature to existing project (docker, ci, websocket, etc.)
+  history            Show recent scaffold activity
+
 ${pc.bold('Examples:')}
   ${pc.dim('# Interactive mode')}
   npx ${PKG_NAME} my-app
 
-  ${pc.dim('# Non-interactive with defaults')}
-  npx ${PKG_NAME} my-app --yes
+  ${pc.dim('# Non-interactive with JSON')}
+  npx ${PKG_NAME} create-json '{"projectName":"my-app","family":"backend","backend":"hono-bun"}'
+
+  ${pc.dim('# Validate without writing')}
+  npx ${PKG_NAME} validate '{"projectName":"my-app","database":"mongodb","orm":"prisma"}'
+
+  ${pc.dim('# Dry-run — preview files')}
+  npx ${PKG_NAME} my-app --yes --dry-run
 
   ${pc.dim('# Specify family')}
   npx ${PKG_NAME} my-app backend --bundle=product --yes
@@ -92,8 +110,44 @@ ${pc.bold('Documentation:')}
 }
 
 function parseArgs(argv: string[]): CLIArgs {
-  const parsed: CLIArgs = { yes: false, help: false, version: false }
+  const parsed: CLIArgs = { yes: false, help: false, version: false, dryRun: false }
   let positionalCount = 0
+
+  // Check for subcommands
+  if (argv[0] === 'mcp') {
+    parsed._command = 'mcp'
+    return parsed
+  }
+  if (argv[0] === 'create-json' && argv[1]) {
+    parsed._command = 'create-json'
+    try {
+      parsed._jsonConfig = JSON.parse(argv[1])
+    } catch {
+      parsed._jsonConfig = { projectName: 'invalid' }
+    }
+    if (argv.includes('--dry-run')) parsed.dryRun = true
+    return parsed
+  }
+  if (argv[0] === 'validate' && argv[1]) {
+    parsed._command = 'validate'
+    try {
+      parsed._jsonConfig = JSON.parse(argv[1])
+    } catch {
+      parsed._jsonConfig = {}
+    }
+    return parsed
+  }
+  if (argv[0] === 'add' && argv[1]) {
+    parsed._command = 'add'
+    parsed._addFeature = argv[1]
+    parsed._addDir = argv[2] || '.'
+    if (argv.includes('--dry-run')) parsed.dryRun = true
+    return parsed
+  }
+  if (argv[0] === 'history') {
+    parsed._command = 'history'
+    return parsed
+  }
 
   for (const arg of argv) {
     if (arg === '--help' || arg === '-h') {
@@ -131,6 +185,7 @@ function parseArgs(argv: string[]): CLIArgs {
     if (arg === '--no-docker') parsed.includeDocker = false
     if (arg === '--ci') parsed.includeCi = true
     if (arg === '--no-ci') parsed.includeCi = false
+    if (arg === '--dry-run') parsed.dryRun = true
 
     if (arg.startsWith('--tests='))
       parsed.testing = arg.slice('--tests='.length) as CLIArgs['testing']
@@ -188,6 +243,53 @@ async function main(): Promise<void> {
   if (args.help) {
     printHelp()
     process.exit(0)
+  }
+
+  // --- Subcommands ---
+
+  // kitsu mcp — start MCP server for AI agent integration
+  if (args._command === 'mcp') {
+    startMcpServer()
+    return
+  }
+
+  // kitsu create-json <json-string> — non-interactive JSON config
+  if (args._command === 'create-json' && args._jsonConfig) {
+    const result = await createProject({
+      config: args._jsonConfig as ProjectConfig,
+      dryRun: args.dryRun,
+    })
+    console.log(JSON.stringify(result, null, 2))
+    process.exit(result.success ? 0 : 1)
+  }
+
+  // kitsu validate — validate config without writing
+  if (args._command === 'validate' && args._jsonConfig) {
+    const result = validateConfig(args._jsonConfig as Partial<ProjectConfig>)
+    console.log(JSON.stringify(result, null, 2))
+    process.exit(result.valid ? 0 : 1)
+  }
+
+  // kitsu history — show scaffold history
+  if (args._command === 'history') {
+    printHistory()
+    process.exit(0)
+  }
+
+  // kitsu add <feature> [dir] — add feature to existing project
+  if (args._command === 'add' && args._addFeature) {
+    const result = await addFeature({
+      feature: args._addFeature,
+      destinationDir: resolve(process.cwd(), args._addDir || '.'),
+    })
+    if (result.success) {
+      console.log(`Added "${result.feature}":\n  ${result.generatedFiles.join('\n  ')}`)
+      process.exit(0)
+    } else {
+      console.error(`Failed: ${result.errors.join(', ')}`)
+      if (result.warnings.length) console.warn(`Warnings: ${result.warnings.join(', ')}`)
+      process.exit(1)
+    }
   }
 
   intro(pc.cyan(PKG_NAME))
@@ -534,8 +636,25 @@ async function main(): Promise<void> {
   step.start('Generating project...')
 
   try {
-    const result = await scaffoldProject(options)
+    const result = await scaffoldProject(options, args.dryRun)
+    if (args.dryRun) {
+      step.stop('Dry-run complete — no files written.')
+      note(JSON.stringify({ plannedFiles: result.generatedFiles }, null, 2), 'Dry-run plan')
+      process.exit(0)
+    }
     step.stop('Project generated successfully.')
+
+    // Record to history
+    recordHistory({
+      timestamp: new Date().toISOString(),
+      projectName,
+      destinationDir,
+      family: options.family,
+      backend: options.backend,
+      database: options.database,
+      orm: options.orm,
+      reproducible: `npx ${PKG_NAME} ${projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
+    })
 
     note(
       [

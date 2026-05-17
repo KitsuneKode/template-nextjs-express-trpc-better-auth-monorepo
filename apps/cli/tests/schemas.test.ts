@@ -92,6 +92,44 @@ describe('checkCompatibility', () => {
     })
     expect(result.errors.some((e: string) => e.includes('requires a database'))).toBe(true)
   })
+
+  it('warns about reel time bundle without worker', () => {
+    const result = checkCompatibility({
+      example: 'todo',
+      addons: [],
+      bundles: ['realtime'],
+      includeWorker: false,
+      family: 'ts-turbo',
+    })
+    expect(result.warnings.some((w: string) => w.includes('Realtime bundle'))).toBe(true)
+  })
+
+  it('warns when family is next and backend is set', () => {
+    const result = checkCompatibility({
+      family: 'next',
+      backend: 'express-bun',
+      database: 'postgres',
+    })
+    expect(result.warnings.some((w: string) => w.includes('Backend selection'))).toBe(true)
+  })
+
+  it('warns when family is rust and database is set', () => {
+    const result = checkCompatibility({
+      family: 'rust',
+      database: 'postgres',
+    })
+    expect(result.warnings.some((w: string) => w.includes('Database selection'))).toBe(true)
+  })
+
+  it('no warnings for ts-turbo with backend and database', () => {
+    const result = checkCompatibility({
+      family: 'ts-turbo',
+      backend: 'express-bun',
+      database: 'postgres',
+      orm: 'prisma',
+    })
+    expect(result.warnings.filter((w: string) => w.includes('only applicable'))).toEqual([])
+  })
 })
 
 describe('Zod schemas', () => {

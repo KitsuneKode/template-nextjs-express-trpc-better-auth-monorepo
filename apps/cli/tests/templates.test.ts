@@ -5,17 +5,20 @@ import { FamilySchema } from '../src/types/schemas'
 
 const TEMPLATES_DIR = join(import.meta.dir, '../src/templates')
 
+// Families that should include production-ready agent/doc/lint files
+const PRODUCTION_FILES = ['.env.example', '.oxlintrc.json', 'AGENTS.md']
+
 const FAMILY_DIRS: Record<string, string[]> = {
-  next: ['package.json', 'tsconfig.json', 'next.config.js'],
-  backend: ['package.json', 'tsconfig.json'],
-  convex: ['package.json', 'tsconfig.json'],
+  next: ['package.json', 'tsconfig.json', 'next.config.js', ...PRODUCTION_FILES],
+  backend: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
+  convex: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
   rust: ['Cargo.toml'],
   polyglot: ['package.json', 'README.md'],
-  cli: ['package.json', 'tsconfig.json'],
-  mobile: ['package.json', 'tsconfig.json', 'app.json', 'App.tsx'],
+  cli: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
+  mobile: ['package.json', 'tsconfig.json', 'app.json', 'App.tsx', ...PRODUCTION_FILES],
   solana: ['Cargo.toml', 'Anchor.toml'],
-  lib: ['package.json', 'tsconfig.json'],
-  worker: ['package.json', 'tsconfig.json'],
+  lib: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
+  worker: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
 }
 
 const families = FamilySchema.options.filter((f) => f !== 'ts-turbo')
