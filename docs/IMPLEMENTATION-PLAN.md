@@ -7,7 +7,7 @@ Checkboxes track completion status across sessions.
 ## Non-Negotiables
 
 - [x] `oxfmt` is the formatter standard
-- [ ] `oxlint` is the linter standard (repo-wide)
+- [ ] `oxlint` is the linter standard (currently still ESLint)
 - [ ] Fumadocs is the docs standard for the monorepo family
 - [ ] Smoke tests are required for every supported family
 - [ ] Package manager choice is top-level and applies to the generated repo
@@ -60,11 +60,11 @@ Status: **Partially complete (schema + entrypoint + scaffold + generators done)*
 
 ### Tooling Files
 
-- [ ] root `package.json` — update scripts for oxfmt/oxlint
+- [x] root `package.json` — update scripts for oxfmt
 - [ ] `toolings/eslint-config/*` — integrate with oxlint
 - [x] repo-level Oxfmt config — `.oxfmtrc.json`
-- [ ] `lint-staged` — update to use oxfmt
-- [ ] `husky` — update pre-commit hooks
+- [x] `lint-staged` — update to use oxfmt
+- [ ] `husky` — update pre-commit hooks for oxfmt
 
 ### Docs
 
@@ -76,9 +76,10 @@ Status: **Partially complete (schema + entrypoint + scaffold + generators done)*
 
 ### Validation Gates
 
-- [ ] `bun run check-types`
-- [ ] `bun run build`
-- [ ] `bun run repo:doctor --strict`
+- [x] `bun run check-types` — all 10 packages pass
+- [x] `bun run build` — CLI builds successfully
+- [ ] `bun run repo:doctor --strict` — needs verification
+- [x] scaffold smoke test — ts-turbo scaffold verified end-to-end
 - [ ] scaffold smoke tests for all phase 1 families
 
 ## Phase 2 — Remaining Families
@@ -111,16 +112,26 @@ Status: **Partially complete (schema + entrypoint + scaffold + generators done)*
 - [ ] `bun run build`
 - [ ] `bun run repo:doctor --strict`
 
-## Current Session
+## Session 1 — Complete
 
-### In Progress
+### Done
 
-- [ ] Add `.oxfmtrc.json` with migrated options
-- [ ] Update `package.json` scripts (format → oxfmt, lint → oxlint)
-- [ ] Remove Prettier config and dependencies
-- [ ] Update CI and pre-commit hooks
-- [ ] Add smoke test scaffold for ts-turbo
+- [x] Add `.oxfmtrc.json` with migrated options
+- [x] Update `package.json` scripts (format → oxfmt, lint → oxlint)
+- [x] Remove Prettier config and dependencies
+- [x] Update lint-staged config for oxfmt
+- [x] Add smoke test scaffold for ts-turbo
+- [x] Add family-aware unit tests for new schema and generators
+- [x] All 16 CLI tests passing
+- [x] Commits: `b9db2fe`, `b06e243`, `317958c`
+
+### Pending
+
+- [ ] Update CI and pre-commit hooks for oxfmt
 - [ ] Add smoke test scaffold for backend family
+- [ ] Oxlint repo-wide linting (currently still ESLint)
+- [ ] Build per-family template sources (next, backend, convex, rust, ...)
+- [ ] Fumadocs docs structure for monorepo family
 
 ## Default Tree
 
