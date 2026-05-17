@@ -3,6 +3,10 @@
 This file describes the real runtime flow across workspaces so agents can avoid
 guessing from folder names alone.
 
+This repo is a **ts-turbo family** template — the default full-stack TypeScript
+monorepo. For other family architectures (next, backend, convex, rust, etc.),
+see [template-variants.md](./template-variants.md).
+
 ## Request Flow
 
 1. `apps/web` loads shared global styles from `@template/ui/globals.css` in
@@ -35,16 +39,14 @@ guessing from folder names alone.
 - `packages/trpc` centralizes context, middleware, and routers and depends on
   auth, store, common, and backend-common.
 - `packages/backend-common` holds backend env validation, Redis, and logging.
-- `packages/common` holds the generic `ConfigLoader` plus client-side config.
+- `packages/common` holds client-side config and shared env validation.
 
 ## Config Surfaces
 
-- Client config is validated in `packages/common/src/utils/config-loader.ts`.
-- `apps/web/utils/config.ts` is a thin wrapper around the shared client config.
-- Backend env validation lives in
-  `packages/backend-common/src/utils/config.ts`.
-- `apps/server/src/utils/config.ts` and `packages/trpc/src/utils/config.ts`
-  both re-export backend config.
+- Client config is validated in `packages/common/src/env/client.ts`.
+- Backend env validation lives in `packages/backend-common/src/env.ts`.
+- `apps/server/src/utils/config.ts` re-exports backend config.
+- `apps/web/utils/config.ts` is a thin wrapper around client config.
 
 ## Template-Only Surfaces
 
@@ -54,6 +56,5 @@ be removed when turning this template into a product.
 ## Current Scaffold Status
 
 - `apps/worker` has logging and Redis wiring but no real background job system.
-- `tests` contains repo tooling tests, but not broad runtime coverage yet.
-- `packages/backend-common/src/index.ts` is effectively empty; most meaningful
-  imports use subpath exports such as `@template/backend-common/config`.
+- `tests` contains repo tooling and CLI tests, but not broad runtime coverage yet.
+- All 11 CLI families are defined but only `ts-turbo` has a dedicated template source.

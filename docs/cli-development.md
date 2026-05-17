@@ -3,16 +3,36 @@
 This document is for developers working on the `@kitsu/create` CLI itself, not for
 users bootstrapping projects with the CLI.
 
-For usage documentation, see [bootstrap-cli.md](./bootstrap-cli.md).
-
 ## Overview
 
 The CLI lives in `apps/cli` and is designed to:
 
-1. Copy the monorepo template to a new directory
-2. Customize it based on user selections (prompts or flags)
-3. Generate additional files (Docker, CI, env examples, deployment docs)
-4. Optionally initialize git and install dependencies
+1. Prompt for the **project family** (ts-turbo, next, backend, etc.)
+2. Prompt for family-specific options (backend/database/orm for ts-turbo, presets for next)
+3. Prompt for **feature bundles** (product, realtime, growth, infra, AI)
+4. Copy the template source for the selected family
+5. Apply family-specific transforms
+6. Generate additional files (Docker, CI, env examples, deployment docs)
+7. Optionally initialize git and install dependencies
+
+### Family Model
+
+The CLI uses a family-first approach. Each family represents a distinct project
+archetype with its own template source, defaults, and transforms:
+
+| Family     | Description                    | Transform Pipeline              |
+| ---------- | ------------------------------ | ------------------------------- |
+| `ts-turbo` | Full-stack TypeScript monorepo | Full (backend + database + ORM) |
+| `next`     | Standalone Next.js app         | Minimal (presets only)          |
+| `backend`  | API-only service               | Full (backend + database + ORM) |
+| `rust`     | Rust API service               | Minimal (stub)                  |
+| `solana`   | Solana program                 | Minimal (stub)                  |
+| `convex`   | Next.js + Convex               | Minimal (stub)                  |
+| `worker`   | Background job worker          | Minimal (stub)                  |
+| `lib`      | Generic TypeScript package     | Minimal (stub)                  |
+| `cli`      | CLI package                    | Minimal (stub)                  |
+| `mobile`   | Expo mobile app                | Minimal (stub)                  |
+| `polyglot` | Multi-language monorepo        | Minimal (stub)                  |
 
 ## Local Development
 
@@ -30,7 +50,6 @@ bun run dev -- my-test-app
 ### Building the CLI
 
 ```bash
-# Build for distribution (Node.js compatible)
 cd apps/cli
 bun run build
 
@@ -39,13 +58,11 @@ bun run build
 
 ### Testing with `bun link`
 
-To test the CLI as if it were installed globally:
-
 ```bash
 cd apps/cli
 bun run link    # Builds and links globally
 
-# Now test from anywhere
+# Test from anywhere
 cd /tmp
 create-kitsu-stack test-project
 
@@ -67,29 +84,34 @@ bun unlink
 ```text
 apps/cli/
 ├── src/
-│   ├── index.ts              # Entry point, --help/--version handling
+│   ├── index.ts              # Entry point, family dispatch, prompts
 │   ├── lib/
-│   │   ├── scaffold.ts       # Core scaffolding logic
+│   │   ├── scaffold.ts       # Core scaffolding logic (family-aware)
 │   │   ├── spawn.ts          # Cross-platform subprocess execution
 │   │   └── generators/
 │   │       ├── index.ts      # Barrel export
-│   │       ├── backend.ts    # Backend transforms (Hono, future Go/Rust)
+│   │       ├── backend.ts    # Backend transforms (Express, Hono)
 │   │       ├── database.ts   # Database transforms (SQLite, MongoDB)
-│   │       ├── orm.ts        # ORM transforms (Drizzle: schema, routers, auth)
+│   │       ├── orm.ts        # ORM transforms (Prisma, Drizzle)
 │   │       ├── docker.ts     # Config-aware Docker Compose
 │   │       ├── env.ts        # Config-aware .env files
 │   │       ├── ci.ts         # Config-aware GitHub Actions CI
-│   │       └── deployment.ts # Config-aware deployment guide
-│   └── types/
-│       └── schemas.ts        # Zod schemas, compatibility checks
+│   │       ├── deployment.ts # Config-aware deployment guide
+│   │       ├── readme.ts     # Family-aware README generator
+│   │       ├── agent-docs.ts # Family-aware AGENTS.md, CONTEXT.md
+│   │       └── showcase.ts   # SHOWCASE.mdx (ts-turbo only)
+│   ├── types/
+│   │   └── schemas.ts        # Zod schemas, family/bundle types, validators
+│   └── templates/            # Per-family template sources (future)
+│       └── ts-turbo/         # (defaults to repo root)
 ├── tests/
 │   ├── scaffold.test.ts      # Scaffold + file-generation tests
 │   ├── schemas.test.ts       # Schema validation + compatibility tests
-│   ├── backend.test.ts       # Backend transform tests (fs-based)
-│   ├── database.test.ts      # Database transform tests (fs-based)
-│   ├── orm.test.ts           # ORM transform tests (Drizzle, fs-based)
+│   ├── backend.test.ts       # Backend transform tests
+│   ├── database.test.ts      # Database transform tests
+│   ├── orm.test.ts           # ORM transform tests
 │   └── spawn.test.ts         # Spawn utility tests
-├── dist/                     # Built output (Node.js compatible)
+├── dist/                     # Built output
 ├── package.json
 └── tsconfig.json
 ```
@@ -97,72 +119,54 @@ apps/cli/
 ### Key Design Decisions
 
 1. **Node.js Compatible**: The CLI targets Node.js for maximum npm compatibility.
-   Bun can also run the built output. Uses `child_process.spawnSync` instead of
-   `Bun.spawnSync`.
+   Uses `child_process.spawnSync` instead of `Bun.spawnSync`.
 
 2. **Single-File Bundle**: Dependencies are bundled into `dist/index.js` for
    faster installs and no version conflicts.
 
-3. **Schema-First Types**: Zod schemas in `src/types/schemas.ts` define all CLI
-   options. This enables future extensibility (databases, addons, polyglot backends)
-   without refactoring.
+3. **Family-First Schema**: Zod schemas in `src/types/schemas.ts` define the
+   family model, bundles, addons, and per-family options.
 
-4. **Template-Based**: Currently copies the parent monorepo and customizes via
-   cleanup scripts. Future phases may add composable template fragments.
+4. **Template-Based**: Copies the parent monorepo (or a family-specific template
+   directory) and customizes via transforms and cleanup scripts.
 
-## Adding New Features
+5. **Oxfmt Formatting**: All source files are formatted with oxfmt. Run
+   `bun run format` to format, `bun run format:check` to verify.
 
-### Adding a New CLI Option
+## Adding a New Family
 
-1. Add the schema in `src/types/schemas.ts`:
+1. Add the family name to `FamilySchema` in `src/types/schemas.ts`
+2. Add labels and helper functions (`hasBackendOptions`, etc.)
+3. Add the family to the prompt options in `src/index.ts`
+4. Add template source (directory in `apps/cli/templates/{family}/`) or
+   implement transforms in the scaffold pipeline
+5. Add family-specific generator content in `readme.ts` and `agent-docs.ts`
+6. Add a cleanup target if needed
+7. Add a scaffold smoke test in `tests/src/cli/create-kitsu-stack.test.ts`
 
-```typescript
-export const StorageSchema = z.enum(['s3', 'r2', 'none'])
-export type StorageMode = z.infer<typeof StorageSchema>
-```
+## Adding a New Feature Bundle
 
-1. Update `BootstrapOptions` interface in `src/lib/scaffold.ts`
-
-2. Add the prompt in `src/index.ts`
-
-3. Implement the generation logic in `src/lib/scaffold.ts`
-
-### Adding a New Example Template
-
-Future structure for example templates:
-
-```text
-apps/cli/src/templates/examples/
-├── todo/           # Files for todo example
-├── chat/           # Files for chat example
-└── game/           # Files for game example
-```
-
-Each example is a set of files to copy/generate when selected.
+1. Add the bundle name to `BundleSchema` in `src/types/schemas.ts`
+2. Add labels to `BUNDLE_LABELS`
+3. Add bundle-specific transforms in the scaffold pipeline
+4. Add bundle-specific generated content in generators
 
 ## Testing
 
 ```bash
-cd apps/cli
-
-# Run all tests
+cd tests
 bun test
 
-# Run specific test
-bun test tests/scaffold.test.ts
-
-# Watch mode
-bun test --watch
+# Run just the CLI tests
+bun test src/cli/create-kitsu-stack.test.ts
 ```
 
 ### Test Structure
 
-- `tests/scaffold.test.ts` - Scaffold utilities + pure generator rendering tests
-- `tests/schemas.test.ts` - Zod schema validation + compatibility checks
-- `tests/backend.test.ts` - Backend transform integration (file-based)
-- `tests/database.test.ts` - Database transform integration (file-based)
-- `tests/orm.test.ts` - ORM transform integration (file-based, Drizzle)
-- `tests/spawn.test.ts` - Spawn utility unit tests
+- `src/cli/create-kitsu-stack.test.ts` — Schema tests, family-aware generator
+  output tests, and scaffold smoke tests (ts-turbo + backend)
+- `src/toolings/` — Repo tooling script tests
+- `src/integration/` — Runtime integration tests (in progress)
 
 ## Publishing to npm
 
@@ -176,12 +180,12 @@ bun test --watch
 ```bash
 cd apps/cli
 
-# 1. Update version in package.json
-# 2. Build and test
+# Build and test
 bun run build
-bun test
+cd ../../tests && bun test
 
-# 3. Publish
+# Publish
+cd ../apps/cli
 npm publish --access public
 
 # Or dry-run first
@@ -191,12 +195,10 @@ npm publish --access public --dry-run
 ### Version Strategy
 
 - **Patch** (0.1.x): Bug fixes, documentation
-- **Minor** (0.x.0): New features, new options
+- **Minor** (0.x.0): New features, new families, new options
 - **Major** (x.0.0): Breaking changes to CLI interface or generated output
 
 ## Debugging
-
-### Verbose Output
 
 ```bash
 # See what files would be generated
@@ -216,30 +218,26 @@ bun run dev -- my-app --yes 2>&1 | head -50
 
 ## Roadmap
 
-### Phase 1 (Current)
+### Current (2026)
 
-- [x] Node.js compatibility
-- [x] `--help` and `--version` flags
-- [x] `bun link` for local testing
-- [x] npm publishing setup
+- [x] Family-first CLI architecture (11 families defined)
+- [x] Family-aware README, AGENTS.md, CONTEXT.md generators
+- [x] Feature bundle system (product, realtime, growth, infra, AI)
+- [x] Oxfmt formatting standard
+- [x] Scaffold smoke tests (ts-turbo + backend)
+- [ ] Per-family template sources
+- [ ] CI + pre-commit fully migrated to oxfmt
 
-### Phase 2 (Planned)
+### Next
 
+- [ ] Oxlint linting standard (replace ESLint)
+- [ ] Fumadocs docs for monorepo family
 - [ ] Example templates (todo, chat, game)
-- [ ] MongoDB support
-- [ ] Vector database (pgvector)
-- [ ] Object storage (S3/R2)
-- [ ] WebSocket server option
-
-### Phase 3 (Future)
-
-- [ ] Polyglot backends (Go, Rust, Python)
-- [ ] Microfrontend scaffolding
-- [ ] React Native support
 - [ ] `kitsu add` command for augmenting existing projects
 
 ## Related Documentation
 
-- [bootstrap-cli.md](./bootstrap-cli.md) - User-facing CLI documentation
-- [architecture.md](./architecture.md) - Cross-workspace dependencies
-- [start-fresh.md](./start-fresh.md) - Template cleanup guide
+- [template-variants.md](./template-variants.md) — Family definitions
+- [architecture.md](./architecture.md) — Cross-workspace dependencies
+- [master-plan.md](./master-plan.md) — Current build direction
+- [IMPLEMENTATION-PLAN.md](./IMPLEMENTATION-PLAN.md) — Progress tracking
