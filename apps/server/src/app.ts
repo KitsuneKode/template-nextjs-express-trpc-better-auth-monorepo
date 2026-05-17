@@ -20,7 +20,7 @@ app.use(compression())
 
 app.use(
   cors({
-    origin: config.getConfig('frontendUrl'),
+    origin: config.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   }),

@@ -1,7 +1,7 @@
 'use client'
 // ^-- to make sure we can mount the Provider from a server component
 import { useState } from 'react'
-import config from '@/utils/config'
+import config from '@/env'
 import { SuperJSON } from 'superjson'
 import type { AppRouter } from '@template/trpc'
 import { makeQueryClient } from './query-client'
@@ -40,7 +40,7 @@ function getQueryClient() {
 function getUrl() {
   const base = (() => {
     // if (typeof window !== 'undefined') return ''
-    return config.getConfig('apiBaseUrl')
+    return config.NEXT_PUBLIC_API_URL
   })()
   return `${base}/api/trpc`
 }
@@ -69,7 +69,7 @@ export function TRPCReactProvider(
       links: [
         loggerLink({
           enabled: (op) =>
-            config.getConfig('nodeEnv') === 'development' ||
+            process.env.NODE_ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
         httpBatchLink({

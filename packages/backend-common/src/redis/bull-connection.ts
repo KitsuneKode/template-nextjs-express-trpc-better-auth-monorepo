@@ -13,7 +13,7 @@ let bullConnection: IORedis | null = null
 export function getBullConnection(): IORedis {
   if (bullConnection) return bullConnection
 
-  const url = backendConfig.getConfig('redisUrl') || 'redis://localhost:6379'
+  const url = backendConfig.REDIS_URL || 'redis://localhost:6379'
 
   bullConnection = new IORedis(url, {
     maxRetriesPerRequest: null,
@@ -28,7 +28,7 @@ export function getBullConnection(): IORedis {
  * Workers should use this to avoid sharing event loop with the server.
  */
 export function createWorkerBullConnection(): IORedis {
-  const url = workerConfig.getConfig('redisUrl') || 'redis://localhost:6379'
+  const url = workerConfig.REDIS_URL || 'redis://localhost:6379'
 
   return new IORedis(url, {
     maxRetriesPerRequest: null,

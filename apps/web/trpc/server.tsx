@@ -1,5 +1,5 @@
 import 'server-only' // <-- ensure this file cannot be imported from the client
-import config from '@/utils/config'
+import config from '@/env'
 import React, { cache } from 'react'
 import { SuperJSON } from 'superjson'
 import { headers } from 'next/headers'
@@ -27,7 +27,7 @@ export const trpcCaller = cache(async () => {
 function getUrl() {
   const base = (() => {
     // if (typeof window !== 'undefined') return ''
-    return config.getConfig('apiBaseUrl')
+    return config.NEXT_PUBLIC_API_URL
   })()
   return `${base}/api/trpc`
 }

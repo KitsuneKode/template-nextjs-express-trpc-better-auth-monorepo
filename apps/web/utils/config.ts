@@ -1,5 +1,9 @@
-import { clientConfig as config } from '@template/common/config-loader'
+/**
+ * Frontend configuration module.
+ * Environment validation happens automatically at build/runtime via t3-env.
+ */
 
-config.validateAll()
+import { env } from '@/env'
 
-export default config
+// Validation happens automatically at import time
+export default env

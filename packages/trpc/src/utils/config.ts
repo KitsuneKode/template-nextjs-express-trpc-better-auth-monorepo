@@ -1,1 +1,1 @@
-export { backendConfig as config } from '@template/backend-common/config'
+export { serverEnv as config } from '@template/backend-common/env'

@@ -1,4 +1,4 @@
-import { clientConfig as config } from '@template/common/config-loader'
+import { clientEnv as env } from '@template/common/env'
 import { createAuthClient } from 'better-auth/react' // make sure to import from better-auth/react
 
 /**
@@ -10,5 +10,5 @@ import { createAuthClient } from 'better-auth/react' // make sure to import from
  * See: https://github.com/better-auth/better-auth/issues
  */
 export const authClient: any = createAuthClient({
-  baseURL: config.getConfig('appUrl'),
+  baseURL: env.NEXT_PUBLIC_APP_URL,
 })

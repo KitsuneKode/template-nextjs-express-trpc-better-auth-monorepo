@@ -26,7 +26,7 @@ const expressMiddleWare = createExpressMiddleware({
   router: appRouter,
   createContext: createTRPCContext,
   onError:
-    config.getConfig('nodeEnv') === 'development'
+    config.NODE_ENV === 'development'
       ? ({ path, error }) => {
           logger.error(`[TRPC]❌ tRPC failed on ${path ?? '<no-path>'}: ${error.message}`, error)
         }

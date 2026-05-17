@@ -15,7 +15,7 @@ import { redis } from './lib/redis'
 // Validate environment on startup
 validateEnvironment('server')
 
-const PORT = config.getConfig('port')
+const PORT = config.PORT
 
 const server = app.listen(PORT, () => {
   logger.info({

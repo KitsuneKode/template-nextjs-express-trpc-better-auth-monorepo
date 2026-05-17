@@ -1,13 +1,13 @@
-import { backendConfig, workerConfig } from '../utils/config'
 import { RedisClient } from 'bun'
+import { backendConfig, workerConfig } from '../utils/config'
 
 type ServiceType = 'server' | 'worker'
 
 const getEnvironment = (service: ServiceType) => {
   if (service == 'worker') {
-    return workerConfig.getConfig('redisUrl')
+    return workerConfig.REDIS_URL
   } else {
-    return backendConfig.getConfig('redisUrl')
+    return backendConfig.REDIS_URL
   }
 }
 
