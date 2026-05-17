@@ -165,18 +165,18 @@ describe('family-aware context', () => {
 })
 
 describe('scaffold smoke tests', () => {
-  const smokeDir = '/tmp/opencode/test-scaffold-smoke'
+  const tsTurboDir = '/tmp/opencode/test-ts-turbo-scaffold'
+  const backendDir = '/tmp/opencode/test-backend-scaffold'
 
   it('scaffolds a ts-turbo project and produces expected files', async () => {
-    // Remove any leftover from previous runs
     try {
-      Bun.spawnSync(['rm', '-rf', smokeDir])
+      Bun.spawnSync(['rm', '-rf', tsTurboDir])
     } catch {}
 
     const result = await scaffoldProject(
       baseConfig({
-        projectName: 'smoke-test',
-        destinationDir: smokeDir,
+        projectName: 'smoke-ts-turbo',
+        destinationDir: tsTurboDir,
         includeShowcase: true,
         includeWorker: true,
         includeDocker: true,
@@ -186,12 +186,43 @@ describe('scaffold smoke tests', () => {
       }),
     )
 
-    expect(result.packageName).toBe('smoke-test')
-    expect(existsSync(join(smokeDir, 'package.json'))).toBe(true)
-    expect(existsSync(join(smokeDir, 'apps/server'))).toBe(true)
-    expect(existsSync(join(smokeDir, 'apps/web'))).toBe(true)
-    expect(existsSync(join(smokeDir, 'packages/trpc'))).toBe(true)
-    expect(existsSync(join(smokeDir, 'docker-compose.yml'))).toBe(true)
-    expect(existsSync(join(smokeDir, 'SHOWCASE.mdx'))).toBe(true)
+    expect(result.packageName).toBe('smoke-ts-turbo')
+    expect(existsSync(join(tsTurboDir, 'package.json'))).toBe(true)
+    expect(existsSync(join(tsTurboDir, 'apps/server'))).toBe(true)
+    expect(existsSync(join(tsTurboDir, 'apps/web'))).toBe(true)
+    expect(existsSync(join(tsTurboDir, 'packages/trpc'))).toBe(true)
+    expect(existsSync(join(tsTurboDir, 'docker-compose.yml'))).toBe(true)
+    expect(existsSync(join(tsTurboDir, 'SHOWCASE.mdx'))).toBe(true)
+  })
+
+  it('scaffolds a backend project and produces expected files', async () => {
+    try {
+      Bun.spawnSync(['rm', '-rf', backendDir])
+    } catch {}
+
+    const result = await scaffoldProject(
+      baseConfig({
+        projectName: 'smoke-backend',
+        destinationDir: backendDir,
+        family: 'backend',
+        backend: 'express-bun',
+        database: 'postgres',
+        orm: 'prisma',
+        includeDocker: true,
+        includeCi: true,
+        initializeGit: false,
+        installDependencies: false,
+      }),
+    )
+
+    expect(result.packageName).toBe('smoke-backend')
+    expect(existsSync(join(backendDir, 'package.json'))).toBe(true)
+    expect(existsSync(join(backendDir, 'apps/server'))).toBe(true)
+    expect(existsSync(join(backendDir, 'apps/server/.env'))).toBe(true)
+    expect(existsSync(join(backendDir, 'docker-compose.yml'))).toBe(true)
+    expect(existsSync(join(backendDir, 'AGENTS.md'))).toBe(true)
+    expect(existsSync(join(backendDir, 'CONTEXT.md'))).toBe(true)
+    // Backend family should have server env but not web env
+    expect(existsSync(join(backendDir, 'apps/web/.env'))).toBe(false)
   })
 })
