@@ -1,16 +1,79 @@
-/**
- * Agent docs generator
- *
- * Generates AGENTS.md, CLAUDE.md, CONTEXT.md, and .claude/rules/ in
- * scaffolded projects so every new project is AI-development-ready
- * from day one.
- */
-
 import type { ProjectConfig } from '../../types/schemas'
 import { sanitizeProjectName } from '../scaffold'
 
+function hasServer(family: string): boolean {
+  return family === 'ts-turbo' || family === 'backend' || family === 'rust'
+}
+
+function hasWeb(family: string): boolean {
+  return family === 'ts-turbo' || family === 'next' || family === 'convex' || family === 'mobile'
+}
+
+function keyDirs(config: ProjectConfig): string[] {
+  const { family, includeWorker } = config
+  const dirs: string[] = []
+
+  if (family === 'ts-turbo') {
+    dirs.push('`apps/web` — Next.js frontend')
+    dirs.push('`apps/server` — Express API server')
+    if (includeWorker) dirs.push('`apps/worker` — Background job processing')
+    dirs.push('`packages/auth` — Better Auth configuration')
+    dirs.push('`packages/store` — Database schema and client')
+    dirs.push('`packages/trpc` — tRPC routers and context')
+    dirs.push('`packages/ui` — Shared UI components')
+  } else if (family === 'next') {
+    dirs.push('`app` — Next.js App Router pages')
+    dirs.push('`components` — React components')
+    if (config.presets.includes('auth')) dirs.push('`lib/auth` — Auth configuration')
+  } else if (family === 'backend') {
+    dirs.push('`src` — API source')
+    dirs.push('`prisma` — Database schema')
+    dirs.push('`packages/auth` — Auth configuration')
+  } else if (family === 'convex') {
+    dirs.push('`app` — Next.js App Router pages')
+    dirs.push('`convex` — Convex functions and schema')
+  } else if (family === 'rust') {
+    dirs.push('`src` — Rust source')
+    dirs.push('`Cargo.toml` — Rust dependencies')
+  } else if (family === 'worker') {
+    dirs.push('`src` — Worker source')
+    dirs.push('`src/queue.ts` — Queue definitions')
+  } else if (family === 'lib') {
+    dirs.push('`src` — Package source')
+  } else if (family === 'cli') {
+    dirs.push('`src` — CLI source')
+    dirs.push('`CHANGELOG.md` — Release notes')
+  } else if (family === 'solana') {
+    dirs.push('`programs` — Anchor programs')
+    dirs.push('`tests` — Program tests')
+  } else if (family === 'mobile') {
+    dirs.push('`app` — Expo Router screens')
+    dirs.push('`components` — Reusable components')
+  }
+
+  return dirs
+}
+
+function commandsForFamily(family: string): string[] {
+  const cmds: string[] = [
+    '- `bun dev` — Start development',
+    '- `bun run build` — Build all packages',
+    '- `bun run lint` — Lint all packages',
+    '- `bun run check-types` — Type check all packages',
+  ]
+
+  if (family === 'ts-turbo' || family === 'backend') {
+    cmds.push('- `bun run db:generate` — Generate database client')
+    cmds.push('- `bun run db:migrate` — Run database migrations')
+  }
+
+  return cmds
+}
+
 export function buildRootAgentsMd(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
+  const dirs = keyDirs(config)
+  const cmds = commandsForFamily(config.family)
 
   return `# ${name}
 
@@ -23,39 +86,25 @@ bun dev
 
 ## Stack
 
-- **Backend**: ${config.backend}
-- **Database**: ${config.database}
-- **ORM**: ${config.orm}
-- **Auth**: Better Auth
-- **API**: tRPC
+- **Family**: ${config.family}
 - **Runtime**: ${config.runtime}
-
+${config.backend !== 'none' ? `- **Backend**: ${config.backend}\n` : ''}${config.database !== 'none' ? `- **Database**: ${config.database}\n` : ''}${config.orm !== 'none' ? `- **ORM**: ${config.orm}\n` : ''}${config.presets.length > 0 ? `- **Presets**: ${config.presets.join(', ')}\n` : ''}
 ## Key Directories
 
-- \`apps/web\` — Next.js frontend
-- \`apps/server\` — ${config.backend} API server
-${config.includeWorker ? "- `apps/worker` — Background job processing\n" : ""}- \`packages/auth\` — Better Auth configuration
-- \`packages/store\` — Database schema and client
-- \`packages/trpc\` — tRPC routers and context
-- \`packages/ui\` — Shared UI components
+${dirs.map((d) => `- ${d}`).join('\n')}
 
 ## Commands
 
-- \`bun dev\` — Start development
-- \`bun run build\` — Build all packages
-- \`bun run lint\` — Lint all packages
-- \`bun run check-types\` — Type check all packages
-- \`bun run db:generate\` — Generate database client
-- \`bun run db:migrate\` — Run database migrations
+${cmds.join('\n')}
 `
 }
 
 export function buildContextMd(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
+  const family = config.family
 
-  return `# ${name} — Context
-
-A full-stack TypeScript monorepo scaffolded with @kitsu/create.
+  const descriptions: Record<string, string> = {
+    'ts-turbo': `A full-stack TypeScript monorepo scaffolded with @kitsu/create.
 
 ## Architecture
 
@@ -78,7 +127,61 @@ A full-stack TypeScript monorepo scaffolded with @kitsu/create.
 
 ## Environment Variables
 
-See \`apps/server/.env.example\` and \`apps/web/.env.example\` for required variables.
+See \`apps/server/.env.example\` and \`apps/web/.env.example\` for required variables.`,
+    next: `A standalone Next.js application scaffolded with @kitsu/create.
+
+## Architecture
+
+- **Frontend**: Next.js (App Router)
+${config.presets.includes('auth') ? '- **Auth**: Better Auth\n' : ''}${config.presets.includes('docs') ? '- **Docs**: Fumadocs\n' : ''}- **Runtime**: Bun
+
+## Key Entry Points
+
+- App layout: \`app/layout.tsx\`
+- App pages: \`app/\` (App Router directories)
+${config.presets.includes('auth') ? '- Auth config: \`lib/auth\`\n' : ''}
+## Environment Variables
+
+See \`.env.example\` at the project root.`,
+    backend: `An API service scaffolded with @kitsu/create.
+
+## Architecture
+
+- **Backend**: ${config.backend}
+- **Database**: ${config.database} via ${config.orm}
+- **Auth**: Better Auth
+- **Runtime**: Bun
+
+## Key Entry Points
+
+- Server setup: \`src/app.ts\`
+- Database schema: \`prisma/schema.prisma\`
+- Auth configuration: \`packages/auth/src/index.ts\`
+
+## Environment Variables
+
+See \`.env.example\` for required variables.`,
+    convex: `A Next.js + Convex application scaffolded with @kitsu/create.
+
+## Architecture
+
+- **Frontend**: Next.js (App Router)
+- **Backend**: Convex (serverless)
+- **Auth**: Better Auth with Convex integration
+- **Real-time**: Built-in Convex subscriptions
+
+## Key Entry Points
+
+- Convex functions: \`convex/\`
+- Convex schema: \`convex/schema.ts\`
+- App pages: \`app/\``,
+  }
+
+  const description = descriptions[family] ?? `A ${family} project scaffolded with @kitsu/create.`
+
+  return `# ${name} — Context
+
+${description}
 `
 }
 
@@ -91,6 +194,12 @@ Use \`CONTEXT.md\` for architecture decisions and stack details.
 }
 
 export function buildStoreRulesMd(config: ProjectConfig): string {
+  if (!hasServer(config.family)) {
+    return `# store
+
+Database configuration lives here.`
+  }
+
   if (config.orm === 'drizzle') {
     return `---
 paths: ["packages/store/**"]

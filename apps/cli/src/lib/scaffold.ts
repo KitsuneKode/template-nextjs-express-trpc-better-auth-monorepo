@@ -1,3 +1,8 @@
+import { existsSync } from 'node:fs'
+import { access, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
+import { basename, dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
   renderDockerCompose,
   renderDockerComposeProd,
@@ -18,11 +23,7 @@ import {
   buildReadme,
   buildShowcaseMdx,
 } from './generators'
-import { access, cp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
-import type { ProjectConfig, CleanupTarget } from '../types/schemas'
-import { basename, dirname, join, resolve } from 'node:path'
 import { runCommand, tryCommand } from './spawn'
-import { fileURLToPath } from 'node:url'
 
 export interface ScaffoldResult {
   destinationDir: string
@@ -85,17 +86,54 @@ export function sanitizeProjectName(input: string): string {
   return normalized
 }
 
+/** Map family to template source directory. Falls back to ROOT_DIR. */
+function resolveTemplateSource(family: Family): string {
+  const localTemplatesDir = resolve(__dirname, '../templates')
+  const familyDir = join(localTemplatesDir, family)
+  if (existsSync(familyDir)) {
+    return familyDir
+  }
+  return ROOT_DIR
+}
+
+/** Families that get backend/database/ORM transforms from the ts-turbo pipeline */
+function hasTransformPipeline(family: Family): boolean {
+  return family === 'ts-turbo' || family === 'backend'
+}
+
+/** Families that should strip the web workspace */
+function shouldStripWeb(family: Family): boolean {
+  return family === 'backend'
+}
+
+/** Families that should strip the server workspace */
+function shouldStripServer(family: Family): boolean {
+  return family === 'next' || family === 'mobile'
+}
+
+/** Families that should strip the worker workspace */
+function shouldDefaultStripWorker(family: Family): boolean {
+  return family !== 'ts-turbo'
+}
+
 export function buildCleanupTargets(
-  options: Pick<ProjectConfig, 'includeShowcase' | 'includeWorker' | 'testing'>,
+  options: Pick<ProjectConfig, 'includeShowcase' | 'includeWorker' | 'testing' | 'family'>,
 ): CleanupTarget[] {
   const targets = new Set<CleanupTarget>(['readme'])
 
-  if (!options.includeShowcase) {
+  // Showcase is only relevant for ts-turbo
+  if (!options.includeShowcase || options.family !== 'ts-turbo') {
     targets.add('showcase')
     targets.add('seed')
   }
 
+  // Worker stripping
   if (!options.includeWorker) {
+    targets.add('worker')
+  }
+
+  // Non-ts-turbo families strip worker by default
+  if (shouldDefaultStripWorker(options.family)) {
     targets.add('worker')
   }
 
@@ -138,11 +176,11 @@ function shouldCopyPath(relativePath: string): boolean {
   return true
 }
 
-async function copyTemplate(destinationDir: string): Promise<void> {
-  await cp(ROOT_DIR, destinationDir, {
+async function copyTemplate(destinationDir: string, sourceDir: string): Promise<void> {
+  await cp(sourceDir, destinationDir, {
     recursive: true,
     filter: (sourcePath) => {
-      const relativePath = sourcePath === ROOT_DIR ? '' : sourcePath.slice(ROOT_DIR.length + 1)
+      const relativePath = sourcePath === sourceDir ? '' : sourcePath.slice(sourceDir.length + 1)
       return shouldCopyPath(relativePath)
     },
   })
@@ -151,7 +189,11 @@ async function copyTemplate(destinationDir: string): Promise<void> {
 // Scripts that reference the CLI workspace and should not appear in scaffolded output
 const CLI_SCRIPTS = new Set(['dev:cli', 'build:cli'])
 
-async function updateRootPackageJson(destinationDir: string, packageName: string, options: ProjectConfig): Promise<void> {
+async function updateRootPackageJson(
+  destinationDir: string,
+  packageName: string,
+  options: ProjectConfig,
+): Promise<void> {
   const packageJsonPath = join(destinationDir, 'package.json')
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as Record<string, unknown>
   packageJson.name = packageName
@@ -166,8 +208,8 @@ async function updateRootPackageJson(destinationDir: string, packageName: string
 
   // Portfolio metadata for kitsunekode.in auto-discovery
   packageJson.portfolio = {
-    type: 'fullstack',
-    tags: [options.backend, options.database || 'none', options.orm || 'none'],
+    type: options.family,
+    tags: [options.backend || 'none', options.database || 'none', options.orm || 'none'],
     featured: false,
   }
 
@@ -187,20 +229,22 @@ async function writeGeneratedFile(
 export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldResult> {
   const packageName = sanitizeProjectName(options.projectName)
   const destinationDir = resolve(options.destinationDir)
+  const family = options.family
 
   await ensureDestinationAvailable(destinationDir)
-  await copyTemplate(destinationDir)
+
+  const templateSource = resolveTemplateSource(family)
+  await copyTemplate(destinationDir, templateSource)
   await updateRootPackageJson(destinationDir, packageName, options)
 
-  // Apply backend/database/ORM transforms BEFORE rename-scope so generated files
-  // use @template/ imports and get renamed along with everything else.
-  await applyBackendTransform(destinationDir, options)
-  // Skip database transform when ORM is Drizzle — Drizzle generates its own schema
-  // and the database transform's Prisma-specific output would be wasted work.
-  if (options.orm !== 'drizzle') {
-    await applyDatabaseTransform(destinationDir, options)
+  // Family-specific transforms
+  if (hasTransformPipeline(family)) {
+    await applyBackendTransform(destinationDir, options)
+    if (options.orm !== 'drizzle') {
+      await applyDatabaseTransform(destinationDir, options)
+    }
+    await applyOrmTransform(destinationDir, options)
   }
-  await applyOrmTransform(destinationDir, options)
 
   runCommand(['bun', 'toolings/scripts/rename-scope.ts', '--quiet'], { cwd: destinationDir })
 
@@ -219,32 +263,38 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
 
   const generatedFiles: string[] = []
 
-  // Generate .env.example and .env files using the env generator
-  const serverEnvContent = buildServerEnv(options)
-  const webEnvContent = buildWebEnv()
+  // Family-aware env generation
+  const hasServer = !shouldStripServer(family)
+  const hasWeb = !shouldStripWeb(family)
 
-  await writeGeneratedFile(destinationDir, 'apps/server/.env.example', serverEnvContent)
-  generatedFiles.push('apps/server/.env.example')
+  if (hasServer) {
+    const serverEnvContent = buildServerEnv(options)
+    await writeGeneratedFile(destinationDir, 'apps/server/.env.example', serverEnvContent)
+    generatedFiles.push('apps/server/.env.example')
+    await writeGeneratedFile(destinationDir, 'apps/server/.env', serverEnvContent)
+    generatedFiles.push('apps/server/.env')
+  }
 
-  await writeGeneratedFile(destinationDir, 'apps/web/.env.example', webEnvContent)
-  generatedFiles.push('apps/web/.env.example')
-
-  await writeGeneratedFile(destinationDir, 'apps/server/.env', serverEnvContent)
-  generatedFiles.push('apps/server/.env')
-
-  await writeGeneratedFile(destinationDir, 'apps/web/.env', webEnvContent)
-  generatedFiles.push('apps/web/.env')
+  if (hasWeb) {
+    const webEnvContent = buildWebEnv()
+    await writeGeneratedFile(destinationDir, 'apps/web/.env.example', webEnvContent)
+    generatedFiles.push('apps/web/.env.example')
+    await writeGeneratedFile(destinationDir, 'apps/web/.env', webEnvContent)
+    generatedFiles.push('apps/web/.env')
+  }
 
   // Docker Compose (config-aware: adapts to database selection)
   if (options.includeDocker) {
     await writeGeneratedFile(destinationDir, 'docker-compose.yml', renderDockerCompose(options))
     generatedFiles.push('docker-compose.yml')
 
-    // Production Docker Compose with app services, Nginx, and worker
-    await writeGeneratedFile(destinationDir, 'docker-compose.prod.yml', renderDockerComposeProd(options))
+    await writeGeneratedFile(
+      destinationDir,
+      'docker-compose.prod.yml',
+      renderDockerComposeProd(options),
+    )
     generatedFiles.push('docker-compose.prod.yml')
 
-    // Nginx reverse proxy configuration
     await writeGeneratedFile(destinationDir, 'nginx/nginx.conf', renderNginxConfig(options))
     generatedFiles.push('nginx/nginx.conf')
   }
@@ -268,13 +318,19 @@ export async function scaffoldProject(options: ProjectConfig): Promise<ScaffoldR
   generatedFiles.push('CLAUDE.md')
 
   // Generate .claude/rules/ directory for path-scoped agent rules
-  await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
-  await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
-  await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
-  generatedFiles.push('.claude/rules/', '.claude/rules/store.md', '.claude/rules/web.md', '.claude/rules/trpc.md')
+  if (hasServer) {
+    await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
+    generatedFiles.push('.claude/rules/store.md')
+  }
+  if (hasWeb) {
+    await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
+    generatedFiles.push('.claude/rules/web.md')
+    await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
+    generatedFiles.push('.claude/rules/trpc.md')
+  }
 
-  // SHOWCASE.mdx (portfolio-ready)
-  if (options.includeShowcase) {
+  // SHOWCASE.mdx (portfolio-ready) — only ts-turbo has showcase
+  if (options.includeShowcase && family === 'ts-turbo') {
     await writeGeneratedFile(destinationDir, 'SHOWCASE.mdx', buildShowcaseMdx(options))
     generatedFiles.push('SHOWCASE.mdx')
   }

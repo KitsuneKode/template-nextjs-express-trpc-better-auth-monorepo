@@ -1,312 +1,136 @@
-# Template Variants
-
-This document describes the four template variants available in the Kitsune Stack:
+# Template Families
 
-1. **Full Stack (Current)** - Next.js + Express + tRPC + Prisma + Better Auth
-2. **Convex Backend** - Next.js + Convex + Better Auth
-3. **Standalone Next.js** - Next.js only (no backend)
-4. **Backend-Only** - Express + tRPC + Prisma (for API-first projects)
+This document replaces the old variant matrix with the new family-first model.
 
----
-
-## 1. Full Stack Template (Current)
+## Families
 
-**Best for:** Teams needing maximum control, custom backend logic, and traditional architecture.
+1. `ts-turbo`
+2. `next`
+3. `backend`
+4. `rust`
+5. `solana`
+6. `convex`
+7. `worker`
+8. `lib`
+9. `cli`
+10. `mobile`
+11. `polyglot`
 
-**Stack:**
+## Shared Rules
 
-- **Frontend:** Next.js 16 with App Router, React 19
-- **Backend:** Express.js with TypeScript
-- **API:** tRPC for end-to-end type safety
-- **Database:** PostgreSQL with Prisma ORM
-- **Authentication:** Better Auth
-- **Jobs:** BullMQ with Redis
-- **Deployment:** Docker + Docker Compose
+- `create` stays the root verb
+- Families are the primary entrypoints
+- Addons are named overlays, not loose booleans
+- Package manager is chosen at the top level of the generated repo
+- Smoke tests are required for supported families
 
-**Key files:**
+## `ts-turbo`
 
-- `apps/server` - Express backend
-- `packages/trpc` - tRPC router definitions
-- `packages/store` - Prisma schema
-- `apps/worker` - Background job processing
+The default TypeScript monorepo family.
 
-**When to use:**
+- Core tree: `apps/web`, `apps/server`, `packages/*`
+- Default bundle: `product`
+- Optional extras: `worker`, `docs`, `examples`
+- Addon groups: `product`, `realtime`, `growth`, `infra`, `AI`
 
-- Complex backend logic needed
-- Custom authentication requirements
-- Multiple services/workers
-- Traditional monorepo structure
+## `next`
 
----
+Clean Next.js app family.
 
-## 2. Convex Backend Variant
+- Default: frontend-only
+- Presets: `auth`, `docs`, `analytics`, `storage`
 
-**Best for:** Teams wanting real-time features, serverless backend, and less operational complexity.
+## `backend`
 
-**Stack:**
+API-first service family.
 
-- **Frontend:** Next.js 16 with App Router, React 19
-- **Backend:** Convex (serverless backend)
-- **Database:** Convex (included)
-- **Authentication:** Better Auth (with Convex integration)
-- **Real-time:** Built-in Convex subscriptions
-- **Deployment:** Vercel + Convex dashboard
-
-**Key differences from Full Stack:**
+- Default: API-only
+- Default bundle: `product`
 
-```text
-❌ No Express, tRPC, Prisma, BullMQ, Redis, Docker
-✅ Convex functions replace tRPC routers
-✅ Convex database replaces Prisma
-✅ Convex actions replace background jobs
-✅ Automatic deployment and scaling
-```
+## `convex`
 
-**Project structure:**
+Next.js + Convex family.
 
-```bash
-template-nextjs-convex-bettera-auth/
-├── apps/
-│   └── web/
-│       ├── app/
-│       ├── components/
-│       └── convex/
-│           ├── _generated/
-│           ├── auth.ts
-│           ├── posts.ts
-│           └── schema.ts
-├── packages/
-│   ├── auth/
-│   ├── common/
-│   ├── ui/
-│   └── eslint-config/
-└── convex.json
-```
+- Default: Next.js + Convex + auth
 
-**Key features:**
+## `rust`
 
-- `convex/schema.ts` - Define database tables (replaces Prisma schema)
-- `convex/*.ts` - Query and mutation functions (replaces tRPC routers)
-- `convex/auth.ts` - Better Auth integration
-- Real-time subscriptions via `useQuery` and `useAction` hooks
-
-### Reading posts with Convex
-
-```typescript
-// convex/posts.ts
-import { query } from './_generated/server'
-
-export const list = query(async (ctx) => {
-  return await ctx.db.query('posts').collect()
-})
-
-// app/page.tsx
-import { useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-
-export default function Home() {
-  const posts = useQuery(api.posts.list)
-  return <div>{posts?.map(p => <div key={p._id}>{p.title}</div>)}</div>
-}
-```
-
-**When to use:**
-
-- Real-time features are important
-- Minimal DevOps needed
-- Prototyping or MVP
-- Serverless architecture preference
-
----
-
-## 3. Standalone Next.js Template
-
-**Best for:** Simple projects, marketing sites, or frontend-only applications.
-
-**Stack:**
-
-- **Frontend:** Next.js 16 with App Router
-- **Authentication:** None (integrate Clerk, Auth0, or headless auth)
-- **Database:** Optional (no pre-configured)
-- **Deployment:** Vercel, Netlify
-
-**Project structure:**
-
-```bash
-template-nextjs-standalone/
-├── app/
-│   ├── (marketing)/
-│   ├── (auth)/
-│   └── (dashboard)/
-├── components/
-├── lib/
-├── styles/
-└── public/
-```
-
-**Key features:**
-
-- Zero backend scaffolding
-- Clean component structure
-- SEO utilities
-- Design tokens and UI library
-- No database or auth pre-configured
-
-**When to use:**
-
-- Landing pages
-- Marketing sites
-- Content-driven apps
-- Frontend developer training
-- SPA with external backend
-
----
-
-## 4. Backend-Only Template
-
-**Best for:** Teams building APIs for multiple frontends or mobile apps.
-
-**Stack:**
-
-- **Backend:** Express.js with TypeScript
-- **API:** tRPC + REST endpoints
-- **Database:** PostgreSQL with Prisma
-- **Authentication:** Better Auth
-- **Jobs:** BullMQ with Redis
-- **Deployment:** Docker
+Rust service family.
 
-**Project structure:**
-
-```bash
-template-express-trpc-api/
-├── src/
-│   ├── app.ts
-│   ├── server.ts
-│   ├── routes/
-│   │   ├── auth.ts
-│   │   ├── posts.ts
-│   │   └── users.ts
-│   ├── middleware/
-│   ├── utils/
-│   └── jobs/
-├── prisma/
-│   ├── schema.prisma
-│   └── migrations/
-├── tests/
-├── Dockerfile
-└── docker-compose.yml
-```
+- Default: Rust API service
+- Presets: `axum`, `actix`
 
-**Key features:**
+## `solana`
 
-- Express setup with minimal frontend dependencies
-- tRPC for type-safe APIs
-- Better Auth endpoints
-- Background job processing
-- Production-ready error handling
-- Full logging and monitoring
+Solana program family.
 
-### tRPC router example
+- Default: Anchor program
 
-```typescript
-// src/routes/posts.ts
-import { publicProcedure, router } from '@/trpc'
-import { z } from 'zod'
+## `worker`
 
-export const postsRouter = router({
-  list: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.post.findMany()
-  }),
+Standalone worker family.
 
-  create: publicProcedure
-    .input(z.object({ title: z.string(), content: z.string() }))
-    .mutation(async ({ input, ctx }) => {
-      return await ctx.prisma.post.create({ data: input })
-    }),
-})
-```
+- Default: BullMQ + Redis
+- Optional: Inngest
 
-**When to use:**
+## `lib`
 
-- Multiple frontend applications
-- Native mobile apps
-- API-first architecture
-- Microservices
-- GraphQL/REST hybrid
+Generic package family.
 
----
+- Default: TypeScript package
+- Optional: shadcn/ui, Storybook
 
-## Migration Between Variants
+## `cli`
 
-### From Full Stack to Convex
+CLI package family.
 
-1. Keep `apps/web` and `packages/*`
-2. Replace `apps/server` with Convex functions
-3. Replace Prisma schema with Convex schema
-4. Replace tRPC routers with Convex queries/mutations
-5. Use Convex actions for background jobs
+- Default: TypeScript package
+- Default release config and Changesets
 
-**Time estimate:** 2-3 days for medium project
+## `mobile`
 
-### From Full Stack to Standalone Next.js
+Expo family.
 
-1. Keep `apps/web` and `packages/ui`
-2. Remove `apps/server`, `apps/worker`, `packages/trpc`, `packages/store`
-3. Integrate external auth provider
-4. Remove backend-only dependencies
+- Default: Expo Router + TypeScript
+- Optional: auth, data, docs presets
 
-**Time estimate:** 1 day
+## `polyglot`
 
-### From Full Stack to Backend-Only
+Separate first-class family for mixed-language repos.
 
-1. Keep `apps/server`, `packages/trpc`, `packages/store`
-2. Remove `apps/web`, `apps/worker` frontend
-3. Keep `apps/worker` for jobs
-4. Remove Next.js dependencies from root
+- Service-centric monorepo
+- Rust + TS support service default
+- Go and Python are advanced opt-ins
+- Separate roots only
 
-**Time estimate:** 1 day
+## Addon Bundles
 
----
+### `product`
 
-## Choosing Your Variant
+- auth
+- DB
+- API
 
-| Feature | Full Stack | Convex | Standalone | Backend-Only |
-|---------|-----------|--------|-----------|--------------|
-| **Real-time** | Manual | Built-in | Manual | N/A |
-| **DevOps** | Medium | Low | Low | Medium |
-| **Control** | High | Medium | High | High |
-| **Learning curve** | Medium | Low | Low | Medium |
-| **Scaling** | Manual | Auto | Auto | Manual |
-| **Cost** | Low (self-host) | High | Low | Low (self-host) |
-| **Team size** | 2+ | 1+ | 1+ | 2+ |
+### `realtime`
 
----
+- WebSocket
+- worker
+- docs
 
-## Getting Started
+### `growth`
 
-To initialize your chosen variant:
+- analytics
+- feature flags
+- A/B docs
 
-```bash
-# Full Stack (current - default)
-npx @kitsu/create@latest my-app
+### `infra`
 
-# Convex Backend
-npx @kitsu/create@latest my-app --preset convex
+- monitoring
+- storage
+- CI/deploy docs
 
-# Standalone Next.js
-npx @kitsu/create@latest my-app --preset next-only
+### `AI`
 
-# Backend-Only
-npx @kitsu/create@latest my-app --preset api-only
-```
-
-Each variant comes pre-configured with:
-
-- ✅ TypeScript strict mode
-- ✅ ESLint + Prettier
-- ✅ Turborepo for monorepos
-- ✅ Design tokens and UI components
-- ✅ Production-ready error handling
-- ✅ Security best practices
-- ✅ Docker support
-- ✅ CI/CD workflows
+- examples
+- helpers
+- docs

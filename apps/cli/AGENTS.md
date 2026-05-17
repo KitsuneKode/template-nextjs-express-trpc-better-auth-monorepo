@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Bootstrap CLI for scaffolding full-stack TypeScript monorepos from this template.
+Bootstrap CLI for scaffolding family-first repositories from this template.
 
 ## Read First
 
@@ -13,15 +13,14 @@ Bootstrap CLI for scaffolding full-stack TypeScript monorepos from this template
 
 ## Scaffold Pipeline
 
-Copy template → update package.json → backend transform → database transform (skipped for Drizzle) → ORM transform → rename scope → template cleanup → generate env/docker/CI/deployment/agent-docs → git init → bun install
+Copy template → update package.json → family transform → addon/bundle transforms → rename scope → template cleanup → generate env/docker/CI/deployment/agent-docs → git init → install
 
 ## Owns
 
 - CLI prompts and arg parsing
 - Template copy and customization
-- Backend transforms (Express, Hono)
-- Database transforms (Postgres, SQLite, MongoDB)
-- ORM transforms (Prisma, Drizzle)
+- Family transforms
+- Bundle/addon transforms
 - Generated files (Docker, CI, env, deployment, agent-docs, showcase)
 
 ## Quick Commands

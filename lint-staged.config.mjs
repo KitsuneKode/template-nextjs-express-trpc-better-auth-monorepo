@@ -14,7 +14,6 @@ export default {
       } else if (file.startsWith('packages/ui/')) {
         configPath = './packages/ui/eslint.config.mjs'
       }
-      // Add more conditions as needed
 
       if (!acc[configPath]) {
         acc[configPath] = []
@@ -23,7 +22,6 @@ export default {
       return acc
     }, {})
 
-    // Generate commands for each config group
     const commands = []
 
     for (const [configPath, groupedFiles] of Object.entries(filesByConfig)) {
@@ -31,18 +29,18 @@ export default {
       commands.push(`eslint --fix -c ${configPath} ${escapedFiles}`)
     }
 
-    // Prettier runs on all files at once
+    // oxfmt runs on all files at once
     const escapedAllFiles = files.map((f) => `'${f.replace(/'/g, "'\\''")}'`).join(' ')
-    commands.push(`prettier --write ${escapedAllFiles}`)
+    commands.push(`oxfmt ${escapedAllFiles}`)
 
     return commands
   },
 
   // Markdown: format first, then lint/fix content rules
-  '**/*.md': ['prettier --write', 'markdownlint-cli2 --fix'],
+  '**/*.md': ['oxfmt', 'markdownlint-cli2 --fix'],
 
-  // Prettier for non-code text formats
-  '**/*.{json,yml,yaml}': ['prettier --write'],
+  // oxfmt for non-code text formats
+  '**/*.{json,yml,yaml}': ['oxfmt'],
 
   // Prisma schema formatting
   'packages/store/prisma/schema.prisma': (file) => [`prisma format --schema ${file}`],

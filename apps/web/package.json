@@ -1,8 +1,8 @@
 {
   "name": "@template/web",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack --port 3000",
     "build": "next build",
@@ -48,9 +48,6 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint": "^9.39.4",
-    "prettier": "^3.6.2",
-    "prettier-plugin-sort-imports": "^1.8.11",
-    "prettier-plugin-tailwindcss": "^0.7.1",
     "typescript": "^5.9.3"
   }
 }

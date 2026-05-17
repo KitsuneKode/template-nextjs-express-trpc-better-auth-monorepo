@@ -1,22 +1,31 @@
 #!/usr/bin/env node
+import { resolve } from 'node:path'
 import {
   cancel,
   confirm,
   intro,
   isCancel,
+  multiselect,
   note,
   outro,
   select,
   spinner,
   text,
 } from '@clack/prompts'
-import { scaffoldProject, sanitizeProjectName } from './lib/scaffold'
-import type { CLIArgs, ProjectConfig } from './types/schemas'
-import { checkCompatibility } from './types/schemas'
-import { resolve } from 'node:path'
 import pc from 'picocolors'
+import { scaffoldProject, sanitizeProjectName } from './lib/scaffold'
+import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
+import {
+  BUNDLE_LABELS,
+  checkCompatibility,
+  FAMILY_LABELS,
+  FamilySchema,
+  hasBackendOptions,
+  hasDatabaseOptions,
+  hasOrmOptions,
+  hasPresetOptions,
+} from './types/schemas'
 
-// Package info (keep in sync with package.json)
 const PKG_NAME = '@kitsu/create'
 const PKG_VERSION = '0.2.0'
 
@@ -25,11 +34,26 @@ function printHelp(): void {
 ${pc.cyan(PKG_NAME)} v${PKG_VERSION}
 
 ${pc.bold('Usage:')}
-  npx ${PKG_NAME} [project-name] [options]
-  bunx ${PKG_NAME} [project-name] [options]
+  npx ${PKG_NAME} [project-name] [family] [options]
+  bunx ${PKG_NAME} [project-name] [family] [options]
+
+${pc.bold('Families:')}
+  ts-turbo    Full-stack TypeScript monorepo (default)
+  next        Standalone Next.js app
+  backend     API-only service
+  rust        Rust API service
+  solana      Solana program
+  convex      Next.js + Convex
+  worker      Background job worker
+  lib         Generic TypeScript package
+  cli         CLI package
+  mobile      Expo mobile app
+  polyglot    Multi-language monorepo
 
 ${pc.bold('Options:')}
   --yes              Skip prompts, use defaults
+  --pm=<pm>          Package manager: bun, pnpm, npm (default: bun)
+  --bundle=<b>       Feature bundle: product, realtime, growth, infra, ai
   --git              Initialize git repository (default: yes)
   --no-git           Skip git initialization
   --install          Run bun install (default: yes)
@@ -45,7 +69,6 @@ ${pc.bold('Options:')}
   --tests=<mode>     Testing setup: bun, none (default: bun)
   --deployment=<m>   Deployment guide: vercel-railway, none (default: vercel-railway)
   --backend=<b>      Backend: express-bun, hono-bun, none (default: express-bun)
-                     (experimental: fastify-node, go-fiber, rust-axum, python-fastapi)
   --database=<d>     Database: postgres, sqlite, mongodb, none (default: postgres)
   --orm=<o>          ORM: prisma, drizzle, mongoose, none (default: prisma)
   -v, --version      Show version number
@@ -58,11 +81,11 @@ ${pc.bold('Examples:')}
   ${pc.dim('# Non-interactive with defaults')}
   npx ${PKG_NAME} my-app --yes
 
+  ${pc.dim('# Specify family')}
+  npx ${PKG_NAME} my-app backend --bundle=product --yes
+
   ${pc.dim('# Skip Docker and CI')}
   npx ${PKG_NAME} my-app --no-docker --no-ci
-
-  ${pc.dim('# Hono backend with SQLite')}
-  npx ${PKG_NAME} my-app --backend=hono-bun --database=sqlite
 
 ${pc.bold('Documentation:')}
   https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo
@@ -71,9 +94,9 @@ ${pc.bold('Documentation:')}
 
 function parseArgs(argv: string[]): CLIArgs {
   const parsed: CLIArgs = { yes: false, help: false, version: false }
+  let positionalCount = 0
 
   for (const arg of argv) {
-    // Help and version flags
     if (arg === '--help' || arg === '-h') {
       parsed.help = true
       continue
@@ -83,13 +106,19 @@ function parseArgs(argv: string[]): CLIArgs {
       continue
     }
 
-    // Project name (first non-flag argument)
-    if (!arg.startsWith('-') && !parsed.projectName) {
-      parsed.projectName = arg
+    if (!arg.startsWith('-')) {
+      positionalCount++
+      if (positionalCount === 1) {
+        parsed.projectName = arg
+      } else if (positionalCount === 2) {
+        const result = FamilySchema.safeParse(arg)
+        if (result.success) {
+          parsed.family = result.data
+        }
+      }
       continue
     }
 
-    // Boolean flags
     if (arg === '--yes') parsed.yes = true
     if (arg === '--install') parsed.install = true
     if (arg === '--no-install') parsed.install = false
@@ -104,7 +133,6 @@ function parseArgs(argv: string[]): CLIArgs {
     if (arg === '--ci') parsed.includeCi = true
     if (arg === '--no-ci') parsed.includeCi = false
 
-    // Value flags
     if (arg.startsWith('--tests='))
       parsed.testing = arg.slice('--tests='.length) as CLIArgs['testing']
     if (arg.startsWith('--deployment='))
@@ -114,6 +142,16 @@ function parseArgs(argv: string[]): CLIArgs {
     if (arg.startsWith('--database='))
       parsed.database = arg.slice('--database='.length) as CLIArgs['database']
     if (arg.startsWith('--orm=')) parsed.orm = arg.slice('--orm='.length) as CLIArgs['orm']
+    if (arg.startsWith('--pm=') || arg.startsWith('--package-manager=')) {
+      const val = arg.startsWith('--pm=')
+        ? arg.slice('--pm='.length)
+        : arg.slice('--package-manager='.length)
+      parsed.packageManager = val as CLIArgs['packageManager']
+    }
+    if (arg.startsWith('--bundle=')) {
+      const val = arg.slice('--bundle='.length)
+      parsed.bundles = val.split(',').filter(Boolean) as CLIArgs['bundles']
+    }
   }
 
   return parsed
@@ -124,22 +162,38 @@ async function promptIfNeeded<T>(value: T | undefined, prompt: () => Promise<T>)
   return prompt()
 }
 
+const FAMILIES: Family[] = [
+  'ts-turbo',
+  'next',
+  'backend',
+  'rust',
+  'solana',
+  'convex',
+  'worker',
+  'lib',
+  'cli',
+  'mobile',
+  'polyglot',
+]
+
+const BUNDLES: Bundle[] = ['product', 'realtime', 'growth', 'infra', 'ai']
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2))
 
-  // Handle --version
   if (args.version) {
     console.log(PKG_VERSION)
     process.exit(0)
   }
 
-  // Handle --help
   if (args.help) {
     printHelp()
     process.exit(0)
   }
 
   intro(pc.cyan(PKG_NAME))
+
+  // --- Project name ---
 
   const rawProjectName = await promptIfNeeded(args.projectName, async () => {
     const value = await text({
@@ -155,126 +209,169 @@ async function main(): Promise<void> {
         }
       },
     })
-
     if (isCancel(value)) {
       cancel('Project creation cancelled.')
       process.exit(0)
     }
-
     return String(value)
   })
 
   const projectName = sanitizeProjectName(rawProjectName)
   const destinationDir = resolve(process.cwd(), projectName)
 
-  // --- Stack selection prompts ---
+  // --- Family selection ---
 
-  const backend = args.yes
-    ? (args.backend ?? 'express-bun')
-    : await promptIfNeeded(args.backend, async () => {
+  const family: Family = args.yes
+    ? (args.family ?? 'ts-turbo')
+    : await promptIfNeeded(args.family, async () => {
         const value = await select({
-          message: 'Backend framework',
-          initialValue: 'express-bun',
-          options: [
-            {
-              label: 'Express (Bun)',
-              value: 'express-bun',
-              hint: 'production-ready, current default',
-            },
-            { label: 'Hono (Bun)', value: 'hono-bun', hint: 'lightweight, edge-ready' },
-            { label: 'None', value: 'none', hint: 'frontend only' },
-          ],
+          message: 'Project family',
+          options: FAMILIES.map((f) => ({
+            label: f,
+            value: f,
+            hint: FAMILY_LABELS[f],
+          })),
         })
         if (isCancel(value)) {
           cancel('Project creation cancelled.')
           process.exit(0)
         }
-        return value as ProjectConfig['backend']
+        return value as Family
       })
 
-  const database = args.yes
-    ? (args.database ?? 'postgres')
-    : await promptIfNeeded(args.database, async () => {
-        const value = await select({
-          message: 'Database',
-          initialValue: 'postgres',
-          options: [
-            { label: 'PostgreSQL', value: 'postgres', hint: 'recommended for production' },
-            { label: 'SQLite', value: 'sqlite', hint: 'zero-config, file-based' },
-            { label: 'MongoDB', value: 'mongodb', hint: 'document database' },
-            { label: 'None', value: 'none', hint: 'API-only or external DB' },
-          ],
+  // --- Family-specific prompts ---
+
+  let backend: ProjectConfig['backend'] = 'express-bun'
+  let database: ProjectConfig['database'] = 'postgres'
+  let orm: ProjectConfig['orm'] = 'prisma'
+  let presets: ProjectConfig['presets'] = []
+  let includeShowcase = false
+  let includeWorker = false
+
+  if (family === 'ts-turbo' || family === 'backend') {
+    backend = args.yes
+      ? (args.backend ?? 'express-bun')
+      : await promptIfNeeded(args.backend, async () => {
+          const value = await select({
+            message: 'Backend framework',
+            initialValue: 'express-bun',
+            options: [
+              {
+                label: 'Express (Bun)',
+                value: 'express-bun',
+                hint: 'production-ready, current default',
+              },
+              { label: 'Hono (Bun)', value: 'hono-bun', hint: 'lightweight, edge-ready' },
+              { label: 'None', value: 'none', hint: 'no backend' },
+            ],
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['backend']
+        })
+
+    database = args.yes
+      ? (args.database ?? 'postgres')
+      : await promptIfNeeded(args.database, async () => {
+          const value = await select({
+            message: 'Database',
+            initialValue: 'postgres',
+            options: [
+              { label: 'PostgreSQL', value: 'postgres', hint: 'recommended for production' },
+              { label: 'SQLite', value: 'sqlite', hint: 'zero-config, file-based' },
+              { label: 'MongoDB', value: 'mongodb', hint: 'document database' },
+              { label: 'None', value: 'none', hint: 'API-only or external DB' },
+            ],
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['database']
+        })
+
+    orm = args.yes
+      ? (args.orm ?? 'prisma')
+      : await promptIfNeeded(args.orm, async () => {
+          const ormOptions =
+            database === 'none'
+              ? [{ label: 'None', value: 'none' as const, hint: 'no database selected' }]
+              : database === 'mongodb'
+                ? [
+                    {
+                      label: 'Prisma',
+                      value: 'prisma' as const,
+                      hint: 'type-safe, MongoDB support',
+                    },
+                    { label: 'None', value: 'none' as const, hint: 'raw queries' },
+                  ]
+                : [
+                    {
+                      label: 'Prisma',
+                      value: 'prisma' as const,
+                      hint: 'type-safe, migration support',
+                    },
+                    { label: 'Drizzle', value: 'drizzle' as const, hint: 'lightweight, SQL-first' },
+                    { label: 'None', value: 'none' as const, hint: 'raw queries' },
+                  ]
+          const value = await select({
+            message: 'ORM',
+            initialValue: database === 'none' ? 'none' : 'prisma',
+            options: ormOptions,
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['orm']
+        })
+  }
+
+  if (family === 'next') {
+    presets = args.yes
+      ? (args.presets ?? [])
+      : await promptIfNeeded(args.presets, async () => {
+          const value = await multiselect({
+            message: 'Next.js presets',
+            options: [
+              { label: 'Auth (Better Auth)', value: 'auth', hint: 'authentication setup' },
+              { label: 'Docs (Fumadocs)', value: 'docs', hint: 'documentation site' },
+              { label: 'Analytics', value: 'analytics', hint: 'analytics integration' },
+              { label: 'Storage', value: 'storage', hint: 'file/object storage setup' },
+            ],
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['presets']
+        })
+  }
+
+  // --- Bundle selection ---
+
+  const bundles: Bundle[] = args.yes
+    ? (args.bundles ?? ['product'])
+    : await promptIfNeeded(args.bundles, async () => {
+        const value = await multiselect({
+          message: 'Feature bundles (additive)',
+          options: BUNDLES.map((b) => ({
+            label: b,
+            value: b,
+            hint: BUNDLE_LABELS[b],
+          })),
+          required: false,
         })
         if (isCancel(value)) {
           cancel('Project creation cancelled.')
           process.exit(0)
         }
-        return value as ProjectConfig['database']
-      })
-
-  const orm = args.yes
-    ? (args.orm ?? 'prisma')
-    : await promptIfNeeded(args.orm, async () => {
-        // Filter ORM choices based on database selection
-        const ormOptions =
-          database === 'none'
-            ? [{ label: 'None', value: 'none' as const, hint: 'no database selected' }]
-            : database === 'mongodb'
-              ? [
-                  { label: 'Prisma', value: 'prisma' as const, hint: 'type-safe, MongoDB support' },
-                  { label: 'None', value: 'none' as const, hint: 'raw queries' },
-                ]
-              : [
-                  {
-                    label: 'Prisma',
-                    value: 'prisma' as const,
-                    hint: 'type-safe, migration support',
-                  },
-                  { label: 'Drizzle', value: 'drizzle' as const, hint: 'lightweight, SQL-first' },
-                  { label: 'None', value: 'none' as const, hint: 'raw queries' },
-                ]
-
-        const value = await select({
-          message: 'ORM',
-          initialValue: database === 'none' ? 'none' : 'prisma',
-          options: ormOptions,
-        })
-        if (isCancel(value)) {
-          cancel('Project creation cancelled.')
-          process.exit(0)
-        }
-        return value as ProjectConfig['orm']
+        return value as Bundle[]
       })
 
   // --- Project structure prompts ---
-
-  const includeShowcase = args.yes
-    ? (args.includeShowcase ?? false)
-    : await promptIfNeeded(args.includeShowcase, async () => {
-        const value = await confirm({
-          message: 'Keep the landing/demo showcase in the generated app?',
-          initialValue: false,
-        })
-        if (isCancel(value)) {
-          cancel('Project creation cancelled.')
-          process.exit(0)
-        }
-        return value
-      })
-
-  const includeWorker = args.yes
-    ? (args.includeWorker ?? false)
-    : await promptIfNeeded(args.includeWorker, async () => {
-        const value = await confirm({
-          message: 'Keep the background worker workspace?',
-          initialValue: false,
-        })
-        if (isCancel(value)) {
-          cancel('Project creation cancelled.')
-          process.exit(0)
-        }
-        return value
-      })
 
   const testing = args.yes
     ? (args.testing ?? 'bun')
@@ -381,9 +478,12 @@ async function main(): Promise<void> {
   const options: ProjectConfig = {
     destinationDir,
     projectName,
-    backend,
-    database,
-    orm,
+    family,
+    bundles,
+    packageManager: args.packageManager ?? 'bun',
+    backend: hasBackendOptions(family) ? backend : 'none',
+    database: hasDatabaseOptions(family) ? database : 'none',
+    orm: hasOrmOptions(family) ? orm : 'none',
     vectorDatabase: 'none',
     runtime: 'bun',
     addons: [],
@@ -396,9 +496,9 @@ async function main(): Promise<void> {
     deployment,
     initializeGit,
     installDependencies,
+    presets,
   }
 
-  // Validate option compatibility
   const { warnings, errors } = checkCompatibility(options)
 
   if (errors.length > 0) {
@@ -413,17 +513,21 @@ async function main(): Promise<void> {
   note(
     [
       `Project: ${pc.bold(projectName)}`,
-      `Backend: ${options.backend}`,
-      `Database: ${options.database}`,
-      `ORM: ${options.orm}`,
-      `Showcase: ${options.includeShowcase ? 'keep' : 'strip'}`,
-      `Worker: ${options.includeWorker ? 'keep' : 'remove'}`,
+      `Family: ${options.family}`,
+      `Bundles: ${options.bundles.join(', ') || 'none'}`,
+      `Package manager: ${options.packageManager}`,
+      hasBackendOptions(family) ? `Backend: ${options.backend}` : null,
+      hasDatabaseOptions(family) ? `Database: ${options.database}` : null,
+      hasOrmOptions(family) ? `ORM: ${options.orm}` : null,
+      presets.length > 0 ? `Presets: ${presets.join(', ')}` : null,
       `Testing: ${options.testing}`,
       `Docker: ${options.includeDocker ? 'generate' : 'skip'}`,
       `CI: ${options.includeCi ? 'generate' : 'skip'}`,
       `Deployment guide: ${options.deployment}`,
       `Install deps: ${options.installDependencies ? 'yes' : 'no'}`,
-    ].join('\n'),
+    ]
+      .filter(Boolean)
+      .join('\n'),
     'Bootstrap plan',
   )
 
