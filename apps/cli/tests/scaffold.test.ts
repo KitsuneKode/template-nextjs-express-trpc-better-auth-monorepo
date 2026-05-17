@@ -66,6 +66,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: true,
       testing: 'bun',
+      family: 'ts-turbo',
     })
     expect(targets).toContain('readme')
   })
@@ -75,6 +76,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: false,
       includeWorker: true,
       testing: 'bun',
+      family: 'ts-turbo',
     })
     expect(targets).toContain('showcase')
     expect(targets).toContain('seed')
@@ -85,6 +87,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: false,
       testing: 'bun',
+      family: 'ts-turbo',
     })
     expect(targets).toContain('worker')
   })
@@ -94,8 +97,133 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: true,
       testing: 'none',
+      family: 'ts-turbo',
     })
     expect(targets).toContain('tests')
+  })
+
+  it('includes readme for all configurations', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: false,
+      includeWorker: false,
+      testing: 'bun',
+      family: 'ts-turbo',
+    })
+    expect(targets).toContain('readme')
+  })
+})
+
+describe('buildCleanupTargets — family awareness', () => {
+  it('ts-turbo with full options strips nothing extra', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: true,
+      includeWorker: true,
+      testing: 'bun',
+      family: 'ts-turbo',
+    })
+    expect(targets).toEqual(['readme'])
+  })
+
+  it('ts-turbo without showcase strips showcase and seed', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: false,
+      includeWorker: true,
+      testing: 'bun',
+      family: 'ts-turbo',
+    })
+    expect(targets).toContain('showcase')
+    expect(targets).toContain('seed')
+    expect(targets).not.toContain('worker')
+  })
+
+  it('ts-turbo without worker strips worker', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: true,
+      includeWorker: false,
+      testing: 'bun',
+      family: 'ts-turbo',
+    })
+    expect(targets).toContain('worker')
+  })
+
+  it('backend always strips showcase, seed, and worker', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: false,
+      includeWorker: false,
+      testing: 'bun',
+      family: 'backend',
+    })
+    expect(targets).toContain('showcase')
+    expect(targets).toContain('seed')
+    expect(targets).toContain('worker')
+  })
+
+  it('next always strips worker (via shouldDefaultStripWorker)', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: false,
+      includeWorker: false,
+      testing: 'bun',
+      family: 'next',
+    })
+    expect(targets).toContain('worker')
+  })
+
+  it('non-ts-turbo families always strip worker', () => {
+    for (const family of [
+      'backend',
+      'next',
+      'rust',
+      'solana',
+      'convex',
+      'worker',
+      'lib',
+      'cli',
+      'mobile',
+      'polyglot',
+    ] as const) {
+      const targets = buildCleanupTargets({
+        includeShowcase: false,
+        includeWorker: false,
+        testing: 'bun',
+        family,
+      })
+      expect(targets).toContain('worker')
+    }
+  })
+
+  it('non-ts-turbo families always strip showcase and seed', () => {
+    for (const family of [
+      'backend',
+      'next',
+      'rust',
+      'solana',
+      'convex',
+      'worker',
+      'lib',
+      'cli',
+      'mobile',
+      'polyglot',
+    ] as const) {
+      const targets = buildCleanupTargets({
+        includeShowcase: false,
+        includeWorker: false,
+        testing: 'bun',
+        family,
+      })
+      expect(targets).toContain('showcase')
+      expect(targets).toContain('seed')
+    }
+  })
+
+  it('duplicate worker entry is not present when worker already stripped by family', () => {
+    const targets = buildCleanupTargets({
+      includeShowcase: false,
+      includeWorker: false,
+      testing: 'bun',
+      family: 'next',
+    })
+    const workerCount = targets.filter((t) => t === 'worker').length
+    expect(workerCount).toBe(1)
   })
 })
 

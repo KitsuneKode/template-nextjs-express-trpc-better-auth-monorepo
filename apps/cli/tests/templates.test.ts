@@ -1,0 +1,116 @@
+import { describe, expect, it } from 'bun:test'
+import { existsSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+import { FamilySchema } from '../src/types/schemas'
+
+const TEMPLATES_DIR = join(import.meta.dir, '../src/templates')
+
+const FAMILY_DIRS: Record<string, string[]> = {
+  next: ['package.json', 'tsconfig.json', 'next.config.js'],
+  backend: ['package.json', 'tsconfig.json'],
+  convex: ['package.json', 'tsconfig.json'],
+  rust: ['Cargo.toml'],
+  polyglot: ['package.json', 'README.md'],
+  cli: ['package.json', 'tsconfig.json'],
+  mobile: ['package.json', 'tsconfig.json', 'app.json', 'App.tsx'],
+  solana: ['Cargo.toml', 'Anchor.toml'],
+  lib: ['package.json', 'tsconfig.json'],
+  worker: ['package.json', 'tsconfig.json'],
+}
+
+const families = FamilySchema.options.filter((f) => f !== 'ts-turbo')
+
+describe('template stubs', () => {
+  for (const family of families) {
+    describe(family, () => {
+      const dir = join(TEMPLATES_DIR, family)
+
+      it('has a template directory', () => {
+        expect(existsSync(dir)).toBe(true)
+        const stat = statSync(dir)
+        expect(stat.isDirectory()).toBe(true)
+      })
+
+      const topLevel = FAMILY_DIRS[family]!
+      for (const file of topLevel) {
+        it(`has required file: ${file}`, () => {
+          const filePath = join(dir, file)
+          expect(existsSync(filePath)).toBe(true)
+          expect(statSync(filePath).isFile()).toBe(true)
+        })
+      }
+
+      if (topLevel.includes('package.json')) {
+        it('has valid parseable package.json', () => {
+          const raw = readFileSync(join(dir, 'package.json'), 'utf8')
+          expect(() => JSON.parse(raw)).not.toThrow()
+          const pkg = JSON.parse(raw)
+          expect(pkg).toHaveProperty('name')
+          expect(typeof pkg.name).toBe('string')
+        })
+      }
+
+      if (topLevel.includes('Cargo.toml')) {
+        it('has valid Cargo.toml with package section', () => {
+          const raw = readFileSync(join(dir, 'Cargo.toml'), 'utf8')
+          expect(raw).toContain('[package]')
+          expect(raw).toContain('name =')
+        })
+      }
+    })
+  }
+
+  it('ts-turbo has no template stub (falls back to ROOT_DIR)', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'ts-turbo'))).toBe(false)
+  })
+})
+
+describe('template stub file integrity', () => {
+  it('next has app directory with layout and page', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'next', 'app', 'layout.tsx'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'next', 'app', 'page.tsx'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'next', 'public', '.gitkeep'))).toBe(true)
+  })
+
+  it('backend has src directory with app.ts and server.ts', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'backend', 'src', 'app.ts'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'backend', 'src', 'server.ts'))).toBe(true)
+  })
+
+  it('convex has app/ and convex/ directories', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'app', 'layout.tsx'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'app', 'page.tsx'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex', 'auth.ts'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex', 'schema.ts'))).toBe(true)
+  })
+
+  it('rust has src/ with main.rs', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'rust', 'src', 'main.rs'))).toBe(true)
+  })
+
+  it('solana has src/ with lib.rs', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'solana', 'src', 'lib.rs'))).toBe(true)
+  })
+
+  it('polyglot has apps/ subdirectories', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'polyglot', 'apps', 'web', 'package.json'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'polyglot', 'apps', 'api', 'package.json'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'polyglot', 'apps', 'worker', 'package.json'))).toBe(true)
+  })
+
+  it('cli has src/ with index.ts', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'cli', 'src', 'index.ts'))).toBe(true)
+  })
+
+  it('lib has src/ with index.ts', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'lib', 'src', 'index.ts'))).toBe(true)
+  })
+
+  it('worker has src/ with index.ts', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'worker', 'src', 'index.ts'))).toBe(true)
+  })
+
+  it('mobile has App.tsx at root', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'mobile', 'App.tsx'))).toBe(true)
+  })
+})

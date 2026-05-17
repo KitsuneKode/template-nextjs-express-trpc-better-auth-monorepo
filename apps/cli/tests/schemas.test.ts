@@ -7,6 +7,13 @@ import {
   TestingSchema,
   DeploymentSchema,
   DatabaseSchema,
+  FamilySchema,
+  hasBackendOptions,
+  hasDatabaseOptions,
+  hasOrmOptions,
+  hasPresetOptions,
+  familySupportsWorker,
+  familySupportsShowcase,
 } from '../src/types/schemas'
 
 describe('validateProjectName', () => {
@@ -156,6 +163,91 @@ describe('Zod schemas', () => {
       expect(result.includeCi).toBe(true)
       expect(result.initializeGit).toBe(true)
       expect(result.installDependencies).toBe(true)
+    })
+  })
+
+  describe('Family helpers', () => {
+    const allFamilies = FamilySchema.options
+
+    describe('hasBackendOptions', () => {
+      it('returns true for ts-turbo and backend', () => {
+        expect(hasBackendOptions('ts-turbo')).toBe(true)
+        expect(hasBackendOptions('backend')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'ts-turbo' || f === 'backend') continue
+          expect(hasBackendOptions(f)).toBe(false)
+        }
+      })
+    })
+
+    describe('hasDatabaseOptions', () => {
+      it('returns true for ts-turbo and backend', () => {
+        expect(hasDatabaseOptions('ts-turbo')).toBe(true)
+        expect(hasDatabaseOptions('backend')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'ts-turbo' || f === 'backend') continue
+          expect(hasDatabaseOptions(f)).toBe(false)
+        }
+      })
+    })
+
+    describe('hasOrmOptions', () => {
+      it('returns true for ts-turbo and backend', () => {
+        expect(hasOrmOptions('ts-turbo')).toBe(true)
+        expect(hasOrmOptions('backend')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'ts-turbo' || f === 'backend') continue
+          expect(hasOrmOptions(f)).toBe(false)
+        }
+      })
+    })
+
+    describe('hasPresetOptions', () => {
+      it('returns true only for next', () => {
+        expect(hasPresetOptions('next')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'next') continue
+          expect(hasPresetOptions(f)).toBe(false)
+        }
+      })
+    })
+
+    describe('familySupportsWorker', () => {
+      it('returns true only for ts-turbo', () => {
+        expect(familySupportsWorker('ts-turbo')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'ts-turbo') continue
+          expect(familySupportsWorker(f)).toBe(false)
+        }
+      })
+    })
+
+    describe('familySupportsShowcase', () => {
+      it('returns true only for ts-turbo', () => {
+        expect(familySupportsShowcase('ts-turbo')).toBe(true)
+      })
+
+      it('returns false for all other families', () => {
+        for (const f of allFamilies) {
+          if (f === 'ts-turbo') continue
+          expect(familySupportsShowcase(f)).toBe(false)
+        }
+      })
     })
   })
 })
