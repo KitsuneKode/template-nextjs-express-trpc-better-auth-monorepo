@@ -47,8 +47,8 @@
     "link": "bun run build && bun link",
     "unlink": "bun unlink",
     "test": "bun test",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "check-types": "tsc --noEmit",
     "prepublishOnly": "bun run build"
   },
@@ -58,10 +58,8 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
     "@types/node": "^22.0.0",
-    "eslint": "^9.39.4",
     "typescript": "^5.9.3"
   },
   "engines": {

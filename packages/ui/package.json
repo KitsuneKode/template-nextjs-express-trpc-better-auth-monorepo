@@ -9,7 +9,7 @@
     "./postcss.config": "./postcss.config.mjs"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
+    "lint": "oxlint",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit"
   },
@@ -32,13 +32,11 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
-    "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
     "@turbo/gen": "^2.8.20",
     "@types/node": "^25.5.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.4",
     "typescript": "^5.9.3"
   },
   "ignoreScripts": [

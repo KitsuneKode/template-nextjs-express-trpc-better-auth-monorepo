@@ -5,10 +5,6 @@ function hasServer(family: string): boolean {
   return family === 'ts-turbo' || family === 'backend' || family === 'rust'
 }
 
-function hasWeb(family: string): boolean {
-  return family === 'ts-turbo' || family === 'next' || family === 'convex' || family === 'mobile'
-}
-
 function keyDirs(config: ProjectConfig): string[] {
   const { family, includeWorker } = config
   const dirs: string[] = []
@@ -120,7 +116,7 @@ export function buildContextMd(config: ProjectConfig): string {
 
 - Server app setup: \`apps/server/src/app.ts\`
 - tRPC context & procedures: \`packages/trpc/src/trpc.ts\`
-- Database schema: \`packages/store/prisma/schema.prisma\`${config.orm === 'drizzle' ? '\n- Database schema: \`packages/store/src/schema.ts\`' : ''}
+- Database schema: \`packages/store/prisma/schema.prisma\`${config.orm === 'drizzle' ? '\n- Database schema: `packages/store/src/schema.ts`' : ''}
 - Auth configuration: \`packages/auth/src/index.ts\`
 - Frontend providers: \`apps/web/components/providers.tsx\`
 - tRPC client setup: \`apps/web/trpc/client.tsx\`
@@ -139,7 +135,7 @@ ${config.presets.includes('auth') ? '- **Auth**: Better Auth\n' : ''}${config.pr
 
 - App layout: \`app/layout.tsx\`
 - App pages: \`app/\` (App Router directories)
-${config.presets.includes('auth') ? '- Auth config: \`lib/auth\`\n' : ''}
+${config.presets.includes('auth') ? '- Auth config: `lib/auth`\n' : ''}
 ## Environment Variables
 
 See \`.env.example\` at the project root.`,

@@ -2,10 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { buildMetadata } from '@/lib/seo'
-
 // Note: metadata doesn't work with 'use client', define it via an RSC wrapper or layout
-// export const metadata = buildMetadata({...})
 
 interface Session {
   id: string
@@ -20,7 +17,7 @@ export default function SessionsPage() {
   const router = useRouter()
   const [sessions, setSessions] = useState<Session[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, _setError] = useState<string | null>(null)
 
   useEffect(() => {
     // TODO: Fetch sessions from API

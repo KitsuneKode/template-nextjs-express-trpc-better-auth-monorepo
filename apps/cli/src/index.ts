@@ -23,7 +23,6 @@ import {
   hasBackendOptions,
   hasDatabaseOptions,
   hasOrmOptions,
-  hasPresetOptions,
 } from './types/schemas'
 
 const PKG_NAME = '@kitsu/create'

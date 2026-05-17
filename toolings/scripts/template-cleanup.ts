@@ -160,13 +160,7 @@ function buildStarterRootAgentsMd(options: {
   includeWorker: boolean
   includeTests: boolean
 }): string {
-  const workerLine = options.includeWorker
-    ? '- Auth: `packages/auth`, `packages/trpc/src/trpc.ts`, `apps/server/src/app.ts`'
-    : '- Auth: `packages/auth`, `packages/trpc/src/trpc.ts`, `apps/server/src/app.ts`'
-
   const workerRouting = options.includeWorker ? `- Worker background jobs: \`apps/worker\`\n` : ''
-
-  const workerMap = options.includeWorker ? `- \`apps/worker\`: Background job processing\n` : ''
 
   const testsMap = options.includeTests ? `- \`tests\`: Test workspace\n` : ''
 

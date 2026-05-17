@@ -39,7 +39,7 @@ export const Testimonials = () => {
   }
 
   const prev = () => {
-    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+    setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)
   }
 
   useEffect(() => {

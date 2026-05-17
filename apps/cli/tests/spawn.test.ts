@@ -1,7 +1,4 @@
 import { describe, expect, it } from 'bun:test'
-import { mkdtempSync, rmdirSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
 import { runCommand, runCommandWithOutput, tryCommand } from '../src/lib/spawn'
 
 describe('runCommand', () => {

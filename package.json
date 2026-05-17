@@ -52,14 +52,13 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
-    "@template/eslint-config": "workspace:*",
     "@template/typescript-config": "workspace:*",
     "@types/compression": "^1.7.5",
-    "eslint": "^9.39.4",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "markdownlint-cli2": "^0.21.0",
     "oxfmt": "^0.50.0",
+    "oxlint": "^1.65.0",
     "turbo": "^2.8.20",
     "typescript": "5.9.3"
   },

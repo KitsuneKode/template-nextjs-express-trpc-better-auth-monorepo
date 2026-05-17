@@ -1,0 +1,26 @@
+{
+  "plugins": ["typescript", "import", "react", "react-hooks", "jsx-a11y"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error"
+  },
+  "rules": {
+    "no-console": "off",
+    "eslint/no-unused-vars": "off",
+    "typescript/no-unused-vars": ["error", { "args": "none", "varsIgnorePattern": "^_" }],
+    "import/no-named-as-default-member": "off",
+    "import/no-nodejs-modules": "off",
+    "import/no-unassigned-import": "off",
+    "eslint/no-underscore-dangle": "off",
+    "import/default": "error",
+    "import/no-cycle": "warn",
+    "react/jsx-no-target-blank": "error",
+    "react-in-jsx-scope": "off",
+    "no-autofocus": "warn",
+    "control-has-associated-label": "warn",
+    "prefer-tag-over-role": "warn",
+    "label-has-associated-control": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}

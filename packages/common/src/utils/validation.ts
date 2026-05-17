@@ -75,4 +75,4 @@ export const searchQuerySchema = z
   .string()
   .min(1, 'Search query cannot be empty')
   .max(100, 'Search query must be less than 100 characters')
-  .refine((q) => !/[<>\"'%;()&+]/.test(q), 'Search query contains invalid characters')
+  .refine((q) => !/[<>"'%;()&+]/.test(q), 'Search query contains invalid characters')

@@ -82,8 +82,8 @@ export function renderDockerCompose(config: ProjectConfig): string {
 }
 
 export function renderDockerComposeProd(config: ProjectConfig): string {
-  const { services: dbServices, volumes: dbVolumes } = buildDbService(config)
-  const { services: redisServices, volumes: redisVolumes } = buildRedisService(config)
+  const { volumes: dbVolumes } = buildDbService(config)
+  const { volumes: redisVolumes } = buildRedisService(config)
 
   const appServices: string[] = []
   const appVolumes: string[] = [...dbVolumes, ...redisVolumes]

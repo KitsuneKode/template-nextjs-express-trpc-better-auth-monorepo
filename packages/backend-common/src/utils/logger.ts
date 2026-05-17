@@ -28,8 +28,8 @@ const baseFormat = printf((info) => {
   return `([${colorizer(info.level, ts)}]) [${lvl}] [${info.service}] ${msg}${stack}${payload}`
 })
 
-function formatTimestamp(timestamp: string) {
-  const date = parseISO(timestamp)
+function formatTimestamp(ts: string) {
+  const date = parseISO(ts)
   return dateFormat(date, 'yyyy-MM-dd HH:mm:ss.SSS a')
 }
 
