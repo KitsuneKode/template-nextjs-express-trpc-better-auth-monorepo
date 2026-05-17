@@ -127,8 +127,11 @@ Status: **Partially complete (schema + entrypoint + scaffold + generators done)*
 
 ### Pending
 
-- [ ] Update CI and pre-commit hooks for oxfmt
-- [ ] Add smoke test scaffold for backend family
+- [x] Update CI workflow with format:check step
+- [x] Harden pre-commit hook (hard check-types requirement)
+- [x] Add smoke test scaffold for backend family
+- [x] Align architecture.md and cli-development.md to family model
+- [x] Verify repo:doctor --strict passes (0 errors, 0 warnings)
 - [ ] Oxlint repo-wide linting (currently still ESLint)
 - [ ] Build per-family template sources (next, backend, convex, rust, ...)
 - [ ] Fumadocs docs structure for monorepo family
