@@ -53,8 +53,8 @@ Start here before searching the repo.
 - `packages/ui`
   Shared UI components, styles, and shadcn generator config.
 
-- `toolings/eslint-config`
-  Shared ESLint presets for backend, Next.js, and shared React packages.
+- `.oxlintrc.json`
+  Repo-wide oxlint configuration replacing ESLint.
 
 - `toolings/typescript-config`
   Shared TS base configs extended by apps and packages.
