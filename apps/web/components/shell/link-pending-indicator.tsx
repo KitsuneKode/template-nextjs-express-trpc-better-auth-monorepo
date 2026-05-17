@@ -1,16 +1,14 @@
 'use client'
 
-import { useLinkStatus } from 'next/link'
-import { cn } from '@template/ui/lib/utils'
 import { Loader2 } from '@template/ui/components/icons'
+import { cn } from '@template/ui/lib/utils'
+import { useLinkStatus } from 'next/link'
 
 interface LinkPendingIndicatorProps {
   tone?: 'default' | 'premium'
 }
 
-export function LinkPendingIndicator({
-  tone = 'default',
-}: LinkPendingIndicatorProps) {
+export function LinkPendingIndicator({ tone = 'default' }: LinkPendingIndicatorProps) {
   const { pending } = useLinkStatus()
 
   return (

@@ -3,6 +3,7 @@
 ## Executive Summary
 
 **Critical Issues Found: 7**
+
 - CLI doesn't generate .env files ❌
 - Template doesn't build (Better Auth types) ❌
 - Config loader is overly complex ❌
@@ -21,12 +22,14 @@ Priority: CRITICAL (blocks all scaffolding)
 ## Problem 1: CLI Doesn't Generate .env Files
 
 ### Location
+
 - `apps/cli/src/lib/scaffold.ts:222-236` — Code exists but has a bug
 - `apps/cli/src/lib/generators/env.ts` — Generator functions exist
 
 ### What's Happening
 
 The code looks correct:
+
 ```typescript
 // Line 222-236 in scaffold.ts
 const serverEnvContent = buildServerEnv(options)
@@ -41,16 +44,20 @@ await writeGeneratedFile(destinationDir, 'apps/web/.env', webEnvContent)
 But the **built CLI** (`apps/cli/dist/index.js`) was built at `May 17 00:01` and doesn't have the updated code.
 
 ### Root Cause
+
 The CLI needs to be **rebuilt** after the env generation code was added.
 
 ### Fix
+
 ```bash
 cd apps/cli
 bun run build
 ```
 
 ### Verification
+
 After rebuild, scaffold again:
+
 ```bash
 cd /tmp/test-kitsu-app-fixed
 rm -rf .env .env.example apps/*/env*
@@ -66,20 +73,24 @@ ls -la apps/web/.env apps/server/.env
 ## Problem 2: Better Auth Client Type Errors
 
 ### Location
+
 - `packages/auth/src/client.ts` — Missing type annotation
 
 ### What's Happening
 
 When building `@template/web`, TypeScript fails:
+
 ```
-Type error: The inferred type of 'authClient' 
+Type error: The inferred type of 'authClient'
 cannot be named without a reference to 'better-auth/dist/client/path-to-object.mjs'
 ```
 
 ### Root Cause
+
 `createAuthClient()` returns a complex inferred type that TypeScript can't serialize to `.d.ts` files.
 
 ### Fix
+
 Add explicit type annotation:
 
 **File: `packages/auth/src/client.ts`**
@@ -95,6 +106,7 @@ export const authClient = createAuthClient({
 ```
 
 Alternative: Use `as const` assertion:
+
 ```typescript
 export const authClient = createAuthClient({
   baseURL: config.getConfig('appUrl'),
@@ -102,6 +114,7 @@ export const authClient = createAuthClient({
 ```
 
 **Verification:**
+
 ```bash
 cd packages/auth && bun run build
 # Should succeed without type errors
@@ -114,6 +127,7 @@ cd packages/auth && bun run build
 ## Problem 3: Template Doesn't Build
 
 ### Location
+
 - `apps/web/` — Next.js build fails
 - Root cause: `.env` file missing + Better Auth types
 
@@ -131,6 +145,7 @@ bun run build
 **Step 1:** Generate .env files in template root
 
 **File: Create `apps/web/.env.local`** (git-ignored)
+
 ```env
 NEXT_PUBLIC_SITE_NAME=Template
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
@@ -140,6 +155,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 **File: Create `apps/server/.env.local`** (git-ignored)
+
 ```env
 PORT=8080
 NODE_ENV=development
@@ -152,6 +168,7 @@ BETTER_AUTH_URL=http://localhost:8080
 **Step 2:** Update `.gitignore` to exclude `.env.local`:
 
 **File: `.gitignore`**
+
 ```bash
 # Already should have:
 .env
@@ -160,6 +177,7 @@ BETTER_AUTH_URL=http://localhost:8080
 ```
 
 **Verification:**
+
 ```bash
 cd apps/web && bun run build
 # Should succeed
@@ -172,6 +190,7 @@ cd apps/web && bun run build
 ## Problem 4: Custom Config Loader Is Overly Complex
 
 ### Location
+
 - `packages/common/src/utils/config-loader.ts` — 415 lines of custom code
 
 ### Why This Is A Problem
@@ -196,6 +215,7 @@ cd apps/web && bun run build
 ### Migration Path
 
 1. **Install t3-env**
+
    ```bash
    bun add @t3-oss/env-core @t3-oss/env-nextjs zod
    ```
@@ -212,6 +232,7 @@ cd apps/web && bun run build
 ## Problem 5: No Env Validation Across Monorepo
 
 ### Location
+
 - `packages/common/src/utils/config-loader.ts` — Client only
 - `apps/server/` — No env validation
 - `apps/cli/` — No env validation
@@ -249,11 +270,13 @@ packages/
 ## Problem 6: CLI Env Generator Outputs Wrong Content
 
 ### Location
+
 - `apps/cli/src/lib/generators/env.ts` — Generator creates valid but needs migration
 
 ### What's Happening
 
 The generator creates this format:
+
 ```bash
 # ============================================
 # Core Configuration
@@ -263,6 +286,7 @@ NODE_ENV=development
 ```
 
 This is **fine for now** but should eventually use env schema patterns like:
+
 ```bash
 # .env format (used by apps/web and apps/server)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -271,6 +295,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### Why It Works But Could Be Better
 
 Current approach:
+
 - ✅ Creates working .env files
 - ✅ Includes comments explaining each section
 - ✅ Provides production examples
@@ -279,6 +304,7 @@ Current approach:
 - ❌ Can get out of sync with actual env needs
 
 ### Fix
+
 Migrate env generator to read from t3-env schemas:
 
 **File: `apps/cli/src/lib/generators/env.ts`** (Updated)
@@ -368,6 +394,7 @@ NODE_ENV=development
 ## Problem 7: No .env.example in Template Root
 
 ### Location
+
 - `apps/web/` — No `.env.example`
 - `apps/server/` — No `.env.example`
 - Root — No `.env.example` or documentation
@@ -375,6 +402,7 @@ NODE_ENV=development
 ### What's Needed
 
 Users need to know:
+
 1. Which env vars are required
 2. What format they should be in
 3. How to set them up locally
@@ -385,6 +413,7 @@ Users need to know:
 Create `.env.example` files:
 
 **File: `apps/web/.env.example`**
+
 ```bash
 # Frontend configuration
 # Copy to .env.local for local development
@@ -399,6 +428,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 **File: `apps/server/.env.example`**
+
 ```bash
 # Backend configuration
 # Copy to .env for local development
@@ -420,7 +450,8 @@ BETTER_AUTH_URL=http://localhost:8080
 ```
 
 **File: `README.md` (Add section)**
-```markdown
+
+````markdown
 ## Environment Setup
 
 ### Local Development
@@ -429,8 +460,10 @@ BETTER_AUTH_URL=http://localhost:8080
    ```bash
    cp apps/web/.env.example apps/web/.env.local
    ```
+````
 
 2. **Backend (.env)**
+
    ```bash
    cp apps/server/.env.example apps/server/.env
    # Edit values as needed
@@ -445,7 +478,8 @@ BETTER_AUTH_URL=http://localhost:8080
 ### Required Variables
 
 See `docs/environment-variables.md` for complete reference.
-```
+
+````
 
 **Effort: 15 minutes**
 
@@ -459,7 +493,7 @@ This is the **largest change** but provides the most value.
 
 ```bash
 bun add @t3-oss/env-core @t3-oss/env-nextjs zod
-```
+````
 
 **Effort: 2 minutes**
 
@@ -606,23 +640,27 @@ export type Env = typeof env
 **Replace in entire codebase:**
 
 From:
+
 ```typescript
 import { clientConfig } from '@template/common/config-loader'
 const appUrl = clientConfig.getConfig('appUrl')
 ```
 
 To:
+
 ```typescript
 import { env } from '@template/common/env/client'
 const appUrl = env.NEXT_PUBLIC_APP_URL
 ```
 
 **Files to update:**
+
 - `apps/web/` — All components (grep `clientConfig`)
 - `packages/auth/src/client.ts` — Better Auth setup
 - Any other files importing `config-loader`
 
 **Command to find all:**
+
 ```bash
 rg "clientConfig|config-loader" --type ts --type tsx
 ```
@@ -634,6 +672,7 @@ rg "clientConfig|config-loader" --type ts --type tsx
 ### Step 6: Delete Old Config Loader
 
 Once all imports updated:
+
 ```bash
 rm packages/common/src/utils/config-loader.ts
 rm packages/common/src/utils/client-logger.ts  # No longer needed
@@ -656,16 +695,19 @@ Update `apps/cli/src/lib/generators/env.ts` to reference t3-env schemas.
 ## Complete Chronological Fix Order
 
 ### Phase 1: Quick Wins (30 minutes)
+
 1. ✅ Rebuild CLI → Enables .env generation
 2. ✅ Fix Better Auth types → Template builds
 3. ✅ Create `.env.local` files → App runs locally
 
 ### Phase 2: Template Validation (45 minutes)
+
 4. ✅ Create `.env.example` files
 5. ✅ Update README with env setup steps
 6. ✅ Verify template builds end-to-end
 
 ### Phase 3: t3-env Migration (5-6 hours)
+
 7. ⚠️ Install t3-env dependencies
 8. ⚠️ Create shared env schemas
 9. ⚠️ Create client/server env modules
@@ -680,6 +722,7 @@ Update `apps/cli/src/lib/generators/env.ts` to reference t3-env schemas.
 After each phase:
 
 ### Phase 1 Validation
+
 ```bash
 # CLI builds
 cd apps/cli && bun run build
@@ -696,6 +739,7 @@ cd apps/server && bun run build
 ```
 
 ### Phase 2 Validation
+
 ```bash
 # Copy .env.example to .env
 cp apps/web/.env.example apps/web/.env.local
@@ -708,6 +752,7 @@ bun run dev
 ```
 
 ### Phase 3 Validation
+
 ```bash
 # All env imports work
 bun run type-check
@@ -733,6 +778,7 @@ bun run dev    # Should start without env errors
 ## Files Modified Summary
 
 ### Create (New Files)
+
 - `packages/common/src/env/shared.ts`
 - `packages/common/src/env/client.ts`
 - `packages/common/src/env/index.ts`
@@ -745,6 +791,7 @@ bun run dev    # Should start without env errors
 - `apps/server/.env.example`
 
 ### Modify (Update)
+
 - `apps/cli/src/lib/scaffold.ts` — No change needed (just rebuild)
 - `apps/cli/src/lib/generators/env.ts` — Update comments
 - `packages/auth/src/client.ts` — Fix type annotation
@@ -754,10 +801,12 @@ bun run dev    # Should start without env errors
 - `.gitignore` — Add `.env.local`
 
 ### Delete
+
 - `packages/common/src/utils/config-loader.ts`
 - `packages/common/src/utils/client-logger.ts` (optional)
 
 ### CLI Changes
+
 - Rebuild `apps/cli` to bundle .env generation
 
 ---
@@ -765,6 +814,7 @@ bun run dev    # Should start without env errors
 ## Implementation Notes
 
 ### Why t3-env Wins
+
 1. **Composition** — Extend schemas across packages (shared, client, server)
 2. **Type Safety** — Full TypeScript inference, catch errors at build time
 3. **Validation** — Zod integration, clear error messages at runtime
@@ -775,12 +825,15 @@ bun run dev    # Should start without env errors
 8. **Smaller Bundle** — ~2KB vs custom implementation
 
 ### Backward Compatibility
+
 - During migration: both config-loader and t3-env can coexist
 - Gradual: migrate imports file-by-file
 - No breaking changes to public APIs (internal only)
 
 ### Testing During Migration
+
 Each file updated:
+
 ```bash
 bun run type-check    # Catch type errors
 bun run lint          # Catch import errors
@@ -791,21 +844,21 @@ bun run build         # Catch missing env
 
 ## Total Effort Estimate
 
-| Phase | Task | Hours |
-|-------|------|-------|
-| 1 | Rebuild CLI | 0.1 |
-| 1 | Fix Better Auth types | 0.25 |
-| 1 | Create .env.local files | 0.25 |
-| 2 | Create .env.example files | 0.25 |
-| 2 | Update README | 0.25 |
-| 2 | Validation & testing | 0.5 |
-| 3 | Install dependencies | 0.05 |
-| 3 | Create env schemas (shared/client/server) | 1.5 |
-| 3 | Update CLI generators | 0.5 |
-| 3 | Migrate imports | 1.5 |
-| 3 | Delete old code | 0.25 |
-| 3 | Full validation | 1.0 |
-| **TOTAL** | **All phases** | **7-8 hours** |
+| Phase     | Task                                      | Hours         |
+| --------- | ----------------------------------------- | ------------- |
+| 1         | Rebuild CLI                               | 0.1           |
+| 1         | Fix Better Auth types                     | 0.25          |
+| 1         | Create .env.local files                   | 0.25          |
+| 2         | Create .env.example files                 | 0.25          |
+| 2         | Update README                             | 0.25          |
+| 2         | Validation & testing                      | 0.5           |
+| 3         | Install dependencies                      | 0.05          |
+| 3         | Create env schemas (shared/client/server) | 1.5           |
+| 3         | Update CLI generators                     | 0.5           |
+| 3         | Migrate imports                           | 1.5           |
+| 3         | Delete old code                           | 0.25          |
+| 3         | Full validation                           | 1.0           |
+| **TOTAL** | **All phases**                            | **7-8 hours** |
 
 ---
 
@@ -853,7 +906,7 @@ Migration:
 1. **TODAY**: Execute Phase 1 (30 min) → Verify scaffolding works
 2. **THIS WEEK**: Execute Phase 2 (45 min) → Verify template builds
 3. **NEXT WEEK**: Execute Phase 3 (6 hours) → Complete migration
-4. **POST-MIGRATION**: 
+4. **POST-MIGRATION**:
    - Deploy scaffolded app to Railway
    - Record video walkthrough
    - Create quick-start guide
@@ -867,14 +920,11 @@ Before starting, clarify:
 
 1. **Monorepo structure** — Apps need separate env or shared?
    - Current: Web (.env.local) + Server (.env) separate ✓
-   
 2. **Database choices** — Which are primary (Postgres, SQLite)?
    - Primary: Postgres (cloudflare/neon friendly)
    - Secondary: SQLite (local dev)
-   
 3. **OAuth support** — GitHub, Google, or both?
    - Optional in schema, both supported
-   
 4. **Worker env** — Needs separate schema?
    - Yes: `packages/backend-common/src/env.ts` covers both
 

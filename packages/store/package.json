@@ -1,8 +1,11 @@
 {
   "name": "@template/store",
-  "module": "src/index.ts",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "db:generate": "bunx --bun prisma generate",
     "db:migrate": "bunx --bun prisma migrate dev",
@@ -14,23 +17,20 @@
     "lint:fix": "eslint . --fix",
     "check-types": "tsc --noEmit"
   },
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "1.3.9",
-    "@types/pg": "^8.20.0",
-    "eslint": "^9.39.4",
-    "prisma": "^7.5.0",
-    "@template/eslint-config": "workspace:*",
-    "@template/typescript-config": "workspace:*"
-  },
-  "peerDependencies": {
-    "typescript": "^5.9.3"
-  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@template/eslint-config": "workspace:*",
+    "@template/typescript-config": "workspace:*",
+    "@types/bun": "1.3.9",
+    "@types/pg": "^8.20.0",
+    "eslint": "^9.39.4",
+    "prisma": "^7.5.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
   }
 }

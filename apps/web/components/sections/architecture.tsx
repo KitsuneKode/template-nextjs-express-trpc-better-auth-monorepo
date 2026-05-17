@@ -1,16 +1,9 @@
 'use client'
 
-import React from 'react'
+import { Code2, Database, Layout, Lock, MessageSquare, Zap } from '@template/ui/components/icons'
 import { motion } from 'motion/react'
+import React from 'react'
 import { SectionWrapper } from '../ui/section-wrapper'
-import {
-  Code2,
-  Database,
-  Layout,
-  Lock,
-  MessageSquare,
-  Zap,
-} from '@template/ui/components/icons'
 
 const PACKAGES = [
   { name: 'apps/web', role: 'Next.js UI + app router', icon: Layout },
@@ -67,13 +60,9 @@ export const Architecture = () => {
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-[#D9AB72]">
                     <item.icon className="h-4 w-4" />
                   </div>
-                  <span className="text-sm font-medium text-[#FAFAFA]">
-                    {item.name}
-                  </span>
+                  <span className="text-sm font-medium text-[#FAFAFA]">{item.name}</span>
                 </div>
-                <p className="text-xs leading-relaxed text-[#A1A1AA]">
-                  {item.role}
-                </p>
+                <p className="text-xs leading-relaxed text-[#A1A1AA]">{item.role}</p>
               </motion.div>
             ))}
           </div>
@@ -98,11 +87,9 @@ export const Architecture = () => {
           </ol>
 
           <div className="mt-6 rounded-xl border border-[#5FD1C4]/20 bg-[#5FD1C4]/[0.05] p-5 text-sm leading-relaxed text-[#A1A1AA]">
-            <span className="font-medium text-[#FAFAFA]">
-              Predictable onboarding:
-            </span>{' '}
-            One repo, shared types, and consistent conventions means onboarding
-            new developers is predictable instead of tribal.
+            <span className="font-medium text-[#FAFAFA]">Predictable onboarding:</span> One repo,
+            shared types, and consistent conventions means onboarding new developers is predictable
+            instead of tribal.
           </div>
         </div>
       </div>

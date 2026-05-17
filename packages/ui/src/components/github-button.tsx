@@ -1,9 +1,9 @@
 'use client'
 
-import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'motion/react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import React, { useCallback, useEffect, useState } from 'react'
 import { cn } from '@template/ui/lib/utils'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'motion/react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Star } from './icons'
 
 const githubButtonVariants = cva(

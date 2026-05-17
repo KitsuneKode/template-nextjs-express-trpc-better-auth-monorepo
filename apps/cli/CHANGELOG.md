@@ -3,6 +3,7 @@
 ## 0.2.0 (unreleased)
 
 ### Added
+
 - Security middleware: rate limiting, Helmet, compression, request tracing, cache headers, body size limits
 - Health endpoint now checks database connectivity
 - Request ID tracing middleware for log correlation
@@ -18,6 +19,7 @@
 - `database=none` now properly strips Prisma artifacts
 
 ### Fixed
+
 - `.env` files no longer leak into scaffolded output
 - `@template/auth` package.json `module` field pointing to non-existent file
 - `@template/backend-common` had empty main export
@@ -31,6 +33,7 @@
 - Stale test references in `docs/cli-development.md`
 
 ### Changed
+
 - Added AGENTS.md for `packages/ui`
 - `.claude/settings.local.json` removed from git tracking
 - `docs/cli-development.md` file tree and test structure updated to match actual source

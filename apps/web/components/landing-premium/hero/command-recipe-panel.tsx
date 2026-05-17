@@ -1,8 +1,8 @@
 'use client'
 
-import { toast } from 'sonner'
-import { useState } from 'react'
 import { Check, Copy } from '@template/ui/components/icons'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 const commands = [
   'bun create-turbo@latest --example https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo my-app',
@@ -12,14 +12,7 @@ const commands = [
   'bun dev',
 ] as const
 
-const tags = [
-  'Next.js 16',
-  'tRPC',
-  'Prisma',
-  'Better Auth',
-  'Upstash Redis',
-  'Turborepo',
-] as const
+const tags = ['Next.js 16', 'tRPC', 'Prisma', 'Better Auth', 'Upstash Redis', 'Turborepo'] as const
 
 export function CommandRecipePanel() {
   const [copiedLine, setCopiedLine] = useState<string | null>(null)
@@ -28,10 +21,7 @@ export function CommandRecipePanel() {
     await navigator.clipboard.writeText(line)
     toast.success('Command copied to clipboard')
     setCopiedLine(line)
-    setTimeout(
-      () => setCopiedLine((prev) => (prev === line ? null : prev)),
-      1600,
-    )
+    setTimeout(() => setCopiedLine((prev) => (prev === line ? null : prev)), 1600)
   }
 
   return (

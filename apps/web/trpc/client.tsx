@@ -1,16 +1,15 @@
 'use client'
-// ^-- to make sure we can mount the Provider from a server component
-import { useState } from 'react'
-import config from '@/env'
-import { SuperJSON } from 'superjson'
-import type { AppRouter } from '@template/trpc'
-import { makeQueryClient } from './query-client'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { createTRPCContext } from '@trpc/tanstack-react-query'
+import type { AppRouter } from '@template/trpc'
 import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client'
-export const { TRPCProvider, useTRPC, useTRPCClient } =
-  createTRPCContext<AppRouter>()
+import { createTRPCContext } from '@trpc/tanstack-react-query'
+// ^-- to make sure we can mount the Provider from a server component
+import { useState } from 'react'
+import { SuperJSON } from 'superjson'
+import config from '@/env'
+import { makeQueryClient } from './query-client'
+export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>()
 let browserQueryClient: QueryClient
 /**
  * Returns a React Query client instance, creating a new one per request on the server or reusing a singleton on the browser.

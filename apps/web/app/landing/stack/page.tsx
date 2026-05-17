@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
-import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
 import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
+import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 
 export const metadata: Metadata = {
   title: 'Stack Deep Dive | Kitsune Stack Premium',
-  description:
-    'Technical deep dive for the premium landing stack architecture.',
+  description: 'Technical deep dive for the premium landing stack architecture.',
 }
 
 export default function LandingStackPage() {

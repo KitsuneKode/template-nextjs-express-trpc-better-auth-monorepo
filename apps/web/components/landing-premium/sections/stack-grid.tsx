@@ -18,9 +18,7 @@ export function StackGrid() {
             <card.icon className="h-5 w-5" />
           </div>
           <h3 className="text-xl font-semibold text-[#f6eee3]">{card.title}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-[#baa68f]">
-            {card.description}
-          </p>
+          <p className="mt-2 text-sm leading-relaxed text-[#baa68f]">{card.description}</p>
           <pre className="mt-4 rounded-xl border border-white/8 bg-[#090d12] p-3 text-xs break-all whitespace-pre-wrap text-[#9eb2c3]">
             <code>{card.snippet}</code>
           </pre>

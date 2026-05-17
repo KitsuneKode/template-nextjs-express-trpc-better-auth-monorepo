@@ -76,7 +76,7 @@ import { debounce } from 'lodash-es'
 
 export function SearchBox() {
   const [results, setResults] = useState([])
-  
+
   const handleSearch = useMemo(
     () => debounce(async (query: string) => {
       const results = await api.search(query)
@@ -94,6 +94,7 @@ export function SearchBox() {
 ### Bundle Size Optimization
 
 **Analyze bundle:**
+
 ```bash
 npm run build
 npx next-bundle-analyzer
@@ -103,6 +104,7 @@ npx next-bundle-analyzer
 ```
 
 **Code splitting:**
+
 ```typescript
 // ❌ Bad: Import everything
 import * as components from '@/components'
@@ -117,6 +119,7 @@ const AdminPanel = dynamic(() => import('@/components/AdminPanel'), {
 ```
 
 **Remove unused dependencies:**
+
 ```bash
 # Find unused packages
 npm ls --depth=0
@@ -218,6 +221,7 @@ export default function RootLayout() {
 ### Database Optimization
 
 **N+1 Query Detection:**
+
 ```typescript
 // ❌ Bad: N+1 query
 const users = await db.user.findMany()
@@ -228,12 +232,13 @@ for (const user of users) {
 
 // ✅ Good: Eager loading
 const users = await db.user.findMany({
-  include: { posts: true }
+  include: { posts: true },
 })
 // Query count: 1 or 2 (depending on Prisma strategy)
 ```
 
 **Query Performance Analysis:**
+
 ```sql
 -- Enable query logging
 SET log_statement = 'all';
@@ -255,6 +260,7 @@ CREATE INDEX idx_posts_user_id ON posts(user_id);
 ```
 
 **Connection Pool Optimization:**
+
 ```typescript
 // Prisma connection pooling
 const prisma = new PrismaClient()
@@ -269,31 +275,33 @@ prisma.$queryRaw`SELECT count(*) FROM pg_stat_activity;`
 ### API Response Time
 
 **Add request/response tracking:**
+
 ```typescript
 import { performance } from 'perf_hooks'
 
 app.use((req, res, next) => {
   const start = performance.now()
-  
+
   res.on('finish', () => {
     const duration = performance.now() - start
     console.log(`${req.method} ${req.path} ${res.statusCode} ${duration.toFixed(2)}ms`)
-    
+
     // Alert on slow requests
     if (duration > 500) {
       logger.warn('Slow request', {
         method: req.method,
         path: req.path,
-        duration
+        duration,
       })
     }
   })
-  
+
   next()
 })
 ```
 
 **Endpoint benchmarks:**
+
 ```bash
 # Test endpoint performance
 curl -w "Time: %{time_total}s\n" https://api.example.com/posts
@@ -305,6 +313,7 @@ artillery quick --count 100 --num 1000 https://api.example.com/posts
 ### Memory Optimization
 
 **Detect memory leaks:**
+
 ```typescript
 // Monitor memory over time
 setInterval(() => {
@@ -318,6 +327,7 @@ setInterval(() => {
 ```
 
 **Stream large responses:**
+
 ```typescript
 // ❌ Bad: Load all in memory
 app.get('/api/export', async (req, res) => {
@@ -329,22 +339,22 @@ app.get('/api/export', async (req, res) => {
 app.get('/api/export', async (req, res) => {
   res.setHeader('Content-Type', 'application/json')
   res.write('[')
-  
+
   const PAGE_SIZE = 1000
   let offset = 0
-  
+
   while (true) {
     const posts = await db.post.findMany({
       skip: offset,
-      take: PAGE_SIZE
+      take: PAGE_SIZE,
     })
-    
+
     if (posts.length === 0) break
-    
+
     res.write(posts.map(JSON.stringify).join(','))
     offset += PAGE_SIZE
   }
-  
+
   res.write(']')
   res.end()
 })
@@ -353,6 +363,7 @@ app.get('/api/export', async (req, res) => {
 ### Request Caching
 
 **HTTP Caching Headers:**
+
 ```typescript
 // Cacheable by browser and CDN
 app.get('/api/posts', (req, res) => {
@@ -375,14 +386,15 @@ app.post('/api/checkout', (req, res) => {
 ```
 
 **Conditional Requests:**
+
 ```typescript
 app.get('/api/posts', (req, res) => {
   const etag = generateETag(posts)
-  
+
   if (req.get('if-none-match') === etag) {
     return res.status(304).end() // Not Modified
   }
-  
+
   res.set('ETag', etag)
   res.json(posts)
 })
@@ -416,13 +428,13 @@ import path from 'path'
 function runHeavyComputation(data: unknown): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const worker = new Worker(path.join(__dirname, 'compute.worker.ts'))
-    
+
     worker.on('message', resolve)
     worker.on('error', reject)
     worker.on('exit', (code) => {
       if (code !== 0) reject(new Error(`Worker exited with code ${code}`))
     })
-    
+
     worker.postMessage(data)
   })
 }
@@ -440,15 +452,17 @@ app.post('/api/heavy', async (req, res) => {
 import compression from 'compression'
 
 // ✅ Enable gzip compression
-app.use(compression({
-  level: 6, // Balance speed vs ratio
-  threshold: 1024, // Only compress > 1KB
-  filter: (req, res) => {
-    // Don't compress if already compressed
-    if (req.headers['x-no-compression']) return false
-    return compression.filter(req, res)
-  }
-}))
+app.use(
+  compression({
+    level: 6, // Balance speed vs ratio
+    threshold: 1024, // Only compress > 1KB
+    filter: (req, res) => {
+      // Don't compress if already compressed
+      if (req.headers['x-no-compression']) return false
+      return compression.filter(req, res)
+    },
+  }),
+)
 ```
 
 ## Monitoring & Alerting
@@ -459,7 +473,7 @@ app.use(compression({
 // Create custom metrics endpoint
 app.get('/metrics', (req, res) => {
   const usage = process.memoryUsage()
-  
+
   res.json({
     uptime: process.uptime(),
     memory: {
@@ -476,6 +490,7 @@ app.get('/metrics', (req, res) => {
 ### Set Thresholds
 
 **Alert when:**
+
 - Heap memory > 80% of limit
 - Response time p95 > 1 second
 - Error rate > 1%
@@ -485,6 +500,7 @@ app.get('/metrics', (req, res) => {
 ## Performance Checklist
 
 Frontend:
+
 - ✅ Core Web Vitals < targets
 - ✅ Images optimized with next/image
 - ✅ Fonts preloaded
@@ -494,6 +510,7 @@ Frontend:
 - ✅ Code splitting implemented
 
 Backend:
+
 - ✅ N+1 queries eliminated
 - ✅ Database indexes created
 - ✅ Connection pooling configured
@@ -505,6 +522,7 @@ Backend:
 ## Emergency Response
 
 **If site is slow:**
+
 1. Check error logs for crashes/exceptions
 2. Monitor database connections (are they maxed?)
 3. Check CPU/memory usage
@@ -515,6 +533,7 @@ Backend:
 8. Review recent deployments
 
 **If memory is growing:**
+
 1. Check for memory leaks (use heap snapshots)
 2. Review background jobs
 3. Check for circular references

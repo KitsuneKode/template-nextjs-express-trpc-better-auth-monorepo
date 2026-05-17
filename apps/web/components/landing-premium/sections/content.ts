@@ -69,8 +69,7 @@ export const stackCards = [
   },
   {
     title: 'Developer Throughput',
-    description:
-      'Sane scripts, isolated packages, and fast local loops with Turborepo caching.',
+    description: 'Sane scripts, isolated packages, and fast local loops with Turborepo caching.',
     icon: Code2,
     accent: '#b6a2df',
     snippet: `bun dev\n# web, server, worker start together`,

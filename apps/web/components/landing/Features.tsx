@@ -1,15 +1,8 @@
 'use client'
 
-import React from 'react'
+import { Zap, Shield, Globe, Database, Layout, Code2 } from '@template/ui/components/icons'
 import { motion } from 'motion/react'
-import {
-  Zap,
-  Shield,
-  Globe,
-  Database,
-  Layout,
-  Code2,
-} from '@template/ui/components/icons'
+import React from 'react'
 
 const features = [
   {
@@ -20,26 +13,22 @@ const features = [
   },
   {
     title: 'Type-Safe API',
-    description:
-      'End-to-end type safety with tRPC. Catch errors at compile time, not runtime.',
+    description: 'End-to-end type safety with tRPC. Catch errors at compile time, not runtime.',
     icon: <Shield className="h-6 w-6 text-green-400" />,
   },
   {
     title: 'Global Scale',
-    description:
-      'Deploy anywhere with ease. Optimized for edge computing and global CDNs.',
+    description: 'Deploy anywhere with ease. Optimized for edge computing and global CDNs.',
     icon: <Globe className="h-6 w-6 text-blue-400" />,
   },
   {
     title: 'Database Ready',
-    description:
-      'Prisma ORM configured with PostgreSQL. Ready for your data models.',
+    description: 'Prisma ORM configured with PostgreSQL. Ready for your data models.',
     icon: <Database className="h-6 w-6 text-purple-400" />,
   },
   {
     title: 'Modern UI',
-    description:
-      'Beautifully crafted components with Tailwind CSS and Framer Motion.',
+    description: 'Beautifully crafted components with Tailwind CSS and Framer Motion.',
     icon: <Layout className="h-6 w-6 text-pink-400" />,
   },
   {
@@ -71,8 +60,8 @@ export const Features = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-lg text-neutral-400"
           >
-            A complete toolkit designed for modern web development. Stop
-            configuring and start building.
+            A complete toolkit designed for modern web development. Stop configuring and start
+            building.
           </motion.p>
         </div>
 
@@ -90,13 +79,7 @@ export const Features = () => {
   )
 }
 
-const FeatureCard = ({
-  feature,
-  index,
-}: {
-  feature: (typeof features)[0]
-  index: number
-}) => {
+const FeatureCard = ({ feature, index }: { feature: (typeof features)[0]; index: number }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -112,12 +95,8 @@ const FeatureCard = ({
         <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-800/50 transition-colors group-hover:bg-neutral-800">
           {feature.icon}
         </div>
-        <h3 className="mb-2 text-xl font-semibold text-white">
-          {feature.title}
-        </h3>
-        <p className="leading-relaxed text-neutral-400">
-          {feature.description}
-        </p>
+        <h3 className="mb-2 text-xl font-semibold text-white">{feature.title}</h3>
+        <p className="leading-relaxed text-neutral-400">{feature.description}</p>
       </div>
     </motion.div>
   )

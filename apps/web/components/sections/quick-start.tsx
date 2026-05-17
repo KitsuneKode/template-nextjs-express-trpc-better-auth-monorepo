@@ -1,15 +1,14 @@
 'use client'
 
+import { Check, Copy } from '@template/ui/components/icons'
+import { motion } from 'motion/react'
 import React from 'react'
 import { toast } from 'sonner'
-import { motion } from 'motion/react'
-import { terminalSteps } from '@/lib/demo-data'
 import { CodeBlock } from '@/components/ui/code-block'
-import { Check, Copy } from '@template/ui/components/icons'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
+import { terminalSteps } from '@/lib/demo-data'
 
-const SHADCN_COMMAND =
-  'bunx --bun shadcn@latest add button card dialog dropdown-menu -c apps/web'
+const SHADCN_COMMAND = 'bunx --bun shadcn@latest add button card dialog dropdown-menu -c apps/web'
 
 const COMMAND_BUNDLE = `# 1) Scaffold the repo\nbun create-turbo@latest --example https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo my-app\n\n# 2) Install + rename package scope\ncd my-app && bun install\nbun run rename-scope\n\n# 3) Add new shadcn components into packages/ui\n${SHADCN_COMMAND}\n\n# 4) Start everything\nbun dev`
 
@@ -25,8 +24,8 @@ export const QuickStart = () => {
             Copy, run, ship.
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-[#A1A1AA]">
-            This flow mirrors how teams actually onboard the template: scaffold,
-            personalize scope, add UI primitives, then start building features.
+            This flow mirrors how teams actually onboard the template: scaffold, personalize scope,
+            add UI primitives, then start building features.
           </p>
 
           <div className="mt-10 space-y-4">
@@ -71,12 +70,10 @@ export const QuickStart = () => {
           <div className="mt-6 flex gap-3 rounded-2xl border border-[#5FD1C4]/20 bg-[#5FD1C4]/[0.05] p-5 text-sm text-[#A1A1AA]">
             <Check className="mt-0.5 h-5 w-5 shrink-0 text-[#5FD1C4]" />
             <div>
-              <p className="font-medium text-[#FAFAFA]">
-                shadcn workflow included
-              </p>
+              <p className="font-medium text-[#FAFAFA]">shadcn workflow included</p>
               <p className="mt-1 leading-relaxed">
-                Add new components directly into `packages/ui` and consume them
-                in both the app and feature demos.
+                Add new components directly into `packages/ui` and consume them in both the app and
+                feature demos.
               </p>
             </div>
           </div>

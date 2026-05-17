@@ -1,12 +1,12 @@
 'use client'
 
-import { useTRPC } from '@/trpc/client'
-import { authClient } from '@template/auth/client'
-import { motion, AnimatePresence } from 'motion/react'
-import { CodeBlock } from '@/components/ui/code-block'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Send, Wifi, Loader2 } from '@template/ui/components/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { authClient } from '@template/auth/client'
+import { Send, Wifi, Loader2 } from '@template/ui/components/icons'
+import { motion, AnimatePresence } from 'motion/react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { CodeBlock } from '@/components/ui/code-block'
+import { useTRPC } from '@/trpc/client'
 
 type ChatMessage = {
   id: string
@@ -86,8 +86,7 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
           ...prev,
           {
             id: (Date.now() + 1).toString(),
-            content:
-              'This is a mock response. Sign in to the full demo to use the real backend!',
+            content: 'This is a mock response. Sign in to the full demo to use the real backend!',
             senderId: 'bot',
             sender: { name: 'Bot' },
           },
@@ -133,15 +132,12 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                 >
                   <div
                     className={`max-w-[80%] rounded-2xl p-3 ${
-                      msg.senderId ===
-                      (mode === 'mock' ? 'user' : session?.user?.id)
+                      msg.senderId === (mode === 'mock' ? 'user' : session?.user?.id)
                         ? 'rounded-br-none bg-[var(--solar-blue)] text-white'
                         : 'rounded-bl-none bg-white/10 text-neutral-200'
                     }`}
                   >
-                    <div className="mb-1 text-xs opacity-50">
-                      {msg.sender?.name ?? 'Anonymous'}
-                    </div>
+                    <div className="mb-1 text-xs opacity-50">{msg.sender?.name ?? 'Anonymous'}</div>
                     {msg.content}
                   </div>
                 </motion.div>
@@ -162,21 +158,13 @@ export const RealtimeChat = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={
-                session || mode === 'mock'
-                  ? 'Type a message...'
-                  : 'Sign in to chat'
-              }
+              placeholder={session || mode === 'mock' ? 'Type a message...' : 'Sign in to chat'}
               disabled={!session && mode === 'real'}
               className="flex-1 rounded-lg border border-white/10 bg-neutral-950 px-4 py-2 text-white transition-colors focus:border-[var(--solar-blue)] focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
-              disabled={
-                !input.trim() ||
-                sendMessage.isPending ||
-                (!session && mode === 'real')
-              }
+              disabled={!input.trim() || sendMessage.isPending || (!session && mode === 'real')}
               className="rounded-lg bg-[var(--solar-blue)] p-2 text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {sendMessage.isPending ? (

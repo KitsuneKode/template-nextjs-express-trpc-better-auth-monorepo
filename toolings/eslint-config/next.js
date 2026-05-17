@@ -1,13 +1,13 @@
-import eslintConfigPrettier from 'eslint-config-prettier'
-import pluginReactHooks from 'eslint-plugin-react-hooks'
-import turboConfig from 'eslint-config-turbo/flat'
-import pluginNext from '@next/eslint-plugin-next'
-import { config as baseConfig } from './base.js'
-import turboPlugin from 'eslint-plugin-turbo'
-import pluginReact from 'eslint-plugin-react'
-import tseslint from 'typescript-eslint'
-import globals from 'globals'
 import js from '@eslint/js'
+import pluginNext from '@next/eslint-plugin-next'
+import eslintConfigPrettier from 'eslint-config-prettier'
+import turboConfig from 'eslint-config-turbo/flat'
+import pluginReact from 'eslint-plugin-react'
+import pluginReactHooks from 'eslint-plugin-react-hooks'
+import turboPlugin from 'eslint-plugin-turbo'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+import { config as baseConfig } from './base.js'
 
 /**
  * A custom ESLint configuration for libraries that use Next.js.

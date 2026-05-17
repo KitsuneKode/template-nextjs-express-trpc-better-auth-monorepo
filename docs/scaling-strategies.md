@@ -5,12 +5,14 @@ This guide covers scaling patterns and strategies for production applications.
 ## Scaling Approaches
 
 ### Vertical Scaling (Scale Up)
+
 - Increase resources (CPU, RAM) on existing servers
 - Simpler but has limits
 - Eventually becomes expensive
 - Causes downtime during upgrades
 
 ### Horizontal Scaling (Scale Out)
+
 - Add more servers/instances
 - Distribute load across instances
 - Better for cloud infrastructure
@@ -21,6 +23,7 @@ This guide covers scaling patterns and strategies for production applications.
 ### Stateless Application Design
 
 **Good (Stateless):**
+
 ```typescript
 app.get('/api/user/:id', async (req, res) => {
   const user = await db.user.findUnique({ where: { id: req.params.id } })
@@ -29,6 +32,7 @@ app.get('/api/user/:id', async (req, res) => {
 ```
 
 **Bad (Stateful):**
+
 ```typescript
 const userCache: Map<string, User> = new Map()
 
@@ -41,6 +45,7 @@ app.get('/api/user/:id', (req, res) => {
 ### Containerization & Orchestration
 
 **Docker Compose (Development):**
+
 ```yaml
 version: '3.8'
 services:
@@ -59,6 +64,7 @@ services:
 ```
 
 **Kubernetes (Production):**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -75,34 +81,35 @@ spec:
         app: api
     spec:
       containers:
-      - name: api
-        image: api:latest
-        ports:
-        - containerPort: 3000
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: api
+          image: api:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 ### Load Balancing
 
 **Nginx Load Balancer:**
+
 ```nginx
 upstream api_backend {
     least_conn;
@@ -121,7 +128,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # Session stickiness (if needed)
         proxy_cookie_path / "/";
     }
@@ -129,6 +136,7 @@ server {
 ```
 
 **AWS Application Load Balancer:**
+
 ```bash
 aws elbv2 create-load-balancer \
   --name api-alb \
@@ -151,6 +159,7 @@ aws elbv2 create-target-group \
 ### Read Replicas
 
 **PostgreSQL Read Replica Setup:**
+
 ```bash
 # Create read replica
 aws rds create-db-instance-read-replica \
@@ -184,6 +193,7 @@ app.post('/api/posts', async (req, res) => {
 ### Connection Pooling
 
 **PgBouncer Configuration:**
+
 ```ini
 [databases]
 api = host=postgres.example.com port=5432 dbname=api
@@ -198,6 +208,7 @@ reserve_pool_timeout = 3
 ```
 
 **Prisma with Connection Pooling:**
+
 ```typescript
 const prisma = new PrismaClient({
   log: ['query'],
@@ -210,6 +221,7 @@ const prisma = new PrismaClient({
 ### Database Sharding
 
 **Simple Sharding Strategy:**
+
 ```typescript
 type ShardKey = 'user_id'
 
@@ -220,12 +232,12 @@ function getShardId(key: string, shardCount: number): number {
 async function getFromShard(userId: string, query: string) {
   const shardId = getShardId(userId, 4) // 4 shards
   const shardHost = `db-shard-${shardId}.example.com`
-  
+
   const db = new Pool({
     host: shardHost,
-    database: 'api'
+    database: 'api',
   })
-  
+
   return db.query(query, [userId])
 }
 ```
@@ -235,6 +247,7 @@ async function getFromShard(userId: string, query: string) {
 ### Redis Caching
 
 **Cache-Aside Pattern:**
+
 ```typescript
 async function getPost(postId: string) {
   // Try cache first
@@ -243,31 +256,33 @@ async function getPost(postId: string) {
 
   // Cache miss - query database
   const post = await db.post.findUnique({ where: { id: postId } })
-  
+
   // Store in cache
   await redis.setex(`post:${postId}`, 3600, JSON.stringify(post))
-  
+
   return post
 }
 ```
 
 **Write-Through Caching:**
+
 ```typescript
 async function updatePost(postId: string, data: PostUpdate) {
   // Update database
   const post = await db.post.update({
     where: { id: postId },
-    data
+    data,
   })
-  
+
   // Update cache
   await redis.setex(`post:${postId}`, 3600, JSON.stringify(post))
-  
+
   return post
 }
 ```
 
 **Cache Invalidation:**
+
 ```typescript
 // Invalidate on changes
 async function deletePost(postId: string) {
@@ -287,6 +302,7 @@ async function invalidateUserPosts(userId: string) {
 ### CDN Integration
 
 **CloudFront Configuration:**
+
 ```bash
 aws cloudfront create-distribution \
   --origin-domain-name api.example.com \
@@ -298,6 +314,7 @@ aws cloudfront create-distribution \
 ```
 
 **Cache Headers:**
+
 ```typescript
 app.get('/api/posts', (req, res) => {
   res.set('Cache-Control', 'public, max-age=3600') // 1 hour
@@ -316,18 +333,23 @@ app.get('/api/user/profile', (req, res) => {
 ### BullMQ for Distributed Jobs
 
 **Distributed Job Processing:**
+
 ```typescript
 // Producer (multiple app instances)
 const queue = new Queue('email', { connection: redis })
 
 app.post('/api/send-email', async (req, res) => {
-  await queue.add('send', {
-    to: req.body.email,
-    subject: req.body.subject
-  }, {
-    attempts: 3,
-    backoff: { type: 'exponential', delay: 2000 }
-  })
+  await queue.add(
+    'send',
+    {
+      to: req.body.email,
+      subject: req.body.subject,
+    },
+    {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 2000 },
+    },
+  )
   res.json({ queued: true })
 })
 
@@ -364,6 +386,7 @@ failover_policy: latency-based
 ### Database Replication
 
 **Cross-Region Replication:**
+
 ```bash
 # Create secondary database
 aws rds create-db-instance-read-replica \
@@ -389,31 +412,31 @@ spec:
   minReplicas: 3
   maxReplicas: 20
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 60
       policies:
-      - type: Percent
-        value: 50
-        periodSeconds: 60
+        - type: Percent
+          value: 50
+          periodSeconds: 60
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
-      - type: Percent
-        value: 10
-        periodSeconds: 60
+        - type: Percent
+          value: 10
+          periodSeconds: 60
 ```
 
 ### AWS Auto Scaling
@@ -448,13 +471,13 @@ for (const user of users) {
 
 // Good: Eager loading
 const users = await db.user.findMany({
-  include: { posts: true }
+  include: { posts: true },
 })
 
 // Good: Projection
 const posts = await db.post.findMany({
   select: { id: true, title: true }, // Only needed fields
-  take: 100
+  take: 100,
 })
 ```
 
@@ -474,6 +497,7 @@ CREATE INDEX idx_post_user_published ON posts(user_id, published);
 ## Monitoring Scaling
 
 **Key Metrics:**
+
 - CPU utilization (target: 60-70%)
 - Memory utilization (target: 70-80%)
 - Network I/O
@@ -483,6 +507,7 @@ CREATE INDEX idx_post_user_published ON posts(user_id, published);
 - Error rate
 
 **Alerts:**
+
 - Scale up when CPU > 75%
 - Scale down when CPU < 30% for 10 minutes
 - Alert when scaling reaches limits
@@ -491,23 +516,26 @@ CREATE INDEX idx_post_user_published ON posts(user_id, published);
 ## Cost Optimization
 
 ### Reserved Instances
+
 - Commit to 1-3 year terms for 30-60% discount
 - Good for baseline capacity
 
 ### Spot Instances
+
 - Up to 90% discount
 - Use for fault-tolerant workloads
 - Mix spot + on-demand
 
 ### Resource Limits
+
 ```yaml
 resources:
   requests:
-    memory: "512Mi"   # Minimum guaranteed
-    cpu: "250m"
+    memory: '512Mi' # Minimum guaranteed
+    cpu: '250m'
   limits:
-    memory: "1Gi"     # Maximum allowed
-    cpu: "500m"
+    memory: '1Gi' # Maximum allowed
+    cpu: '500m'
 ```
 
 ## Migration Path

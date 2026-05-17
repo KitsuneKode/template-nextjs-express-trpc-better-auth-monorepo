@@ -1,7 +1,7 @@
 'use client'
 
-import Link from 'next/link'
 import { ArrowLeft } from '@template/ui/components/icons'
+import Link from 'next/link'
 import { RealtimeChat } from '@/components/demos/realtime-chat'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
@@ -17,12 +17,9 @@ export default function ChatDemoPage() {
             <ArrowLeft size={16} />
             Back to Demos
           </Link>
-          <h1 className="mb-2 text-3xl font-bold text-white">
-            Real-time Chat Demo
-          </h1>
+          <h1 className="mb-2 text-3xl font-bold text-white">Real-time Chat Demo</h1>
           <p className="text-neutral-400">
-            Live messaging powered by tRPC subscriptions and Redis (or standard
-            polling).
+            Live messaging powered by tRPC subscriptions and Redis (or standard polling).
           </p>
         </div>
 

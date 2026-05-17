@@ -5,6 +5,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 ## Pre-Deployment (1-2 hours before)
 
 ### Code & Repo
+
 - [ ] All tests pass: `npm run test` ✓
 - [ ] Build succeeds: `npm run build` ✓
 - [ ] No TypeScript errors: `npm run check-types` ✓
@@ -14,6 +15,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] `.env.example` is up-to-date with all required variables
 
 ### Environment
+
 - [ ] Production `.env` file created with all values (not committed to git)
 - [ ] Database URL points to production database
 - [ ] `NODE_ENV=production`
@@ -23,6 +25,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Monitoring credentials set (Sentry DSN, DataDog keys)
 
 ### Database
+
 - [ ] Migrations applied: `npx prisma migrate deploy`
 - [ ] Database backup exists
 - [ ] Connection pooling configured (PgBouncer or Prisma Pool)
@@ -32,6 +35,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] SSL/TLS enforced for database connection
 
 ### Secrets & Security
+
 - [ ] No `.env` files in Docker image
 - [ ] Secrets loaded from environment at runtime, not baked into code
 - [ ] SSH keys for deployments are secured
@@ -43,6 +47,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Default passwords/API keys changed
 
 ### Domain & DNS
+
 - [ ] Domain registered and points to server
 - [ ] DNS propagated (check with `dig`)
 - [ ] SSL certificate obtained (Let's Encrypt or purchased)
@@ -54,12 +59,14 @@ Use this checklist the first time you deploy to production. It covers security, 
 ## Deployment (30 minutes)
 
 ### Docker & Container Build
+
 - [ ] Dockerfile uses multi-stage build (dev deps not in production image)
 - [ ] Image tagged: `myapp:latest` and `myapp:1.0.0` (version tag)
 - [ ] Image size checked (should be < 500MB for Node)
 - [ ] Docker build tested locally: `docker build -t myapp:latest . && docker run -it myapp:latest`
 
 ### Infrastructure Setup
+
 - [ ] Server/container resources allocated: CPU 2+ cores, RAM 2GB+
 - [ ] Persistent volumes mounted for uploads/data (if needed)
 - [ ] Logs collected and centralized
@@ -67,6 +74,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Health check endpoint working: `GET /health` → 200
 
 ### Deployment Strategy
+
 - [ ] Blue-green deployment configured (old version stays running until new is healthy)
 - [ ] OR canary deployment configured (% of traffic to new version)
 - [ ] OR rolling deployment configured (0 downtime)
@@ -75,6 +83,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Startup script runs migrations if needed (but preferably before deployment)
 
 ### Services Started
+
 - [ ] API server started: check `GET /health` returns 200
 - [ ] Frontend built and serving: check HTTPS works
 - [ ] Worker processes started (if using queues)
@@ -87,12 +96,14 @@ Use this checklist the first time you deploy to production. It covers security, 
 ## Verification (15 minutes after deployment)
 
 ### API Health
+
 - [ ] `GET /health` returns 200
 - [ ] `GET /api/trpc/sample.hello` (or similar test endpoint) works
 - [ ] Response times acceptable (< 500ms)
 - [ ] No 500 errors in logs
 
 ### Frontend Health
+
 - [ ] Homepage loads: `curl https://example.com/`
 - [ ] Page is interactive (JavaScript loaded)
 - [ ] CSS/images loaded correctly
@@ -100,6 +111,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] No console errors in browser
 
 ### Authentication Flow
+
 - [ ] Sign up page accessible
 - [ ] Can create account
 - [ ] Can log in
@@ -109,12 +121,14 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Logout clears session
 
 ### Database
+
 - [ ] Can read from database (check user list from API)
 - [ ] Can write to database (create test record)
 - [ ] No connection pool exhaustion in logs
 - [ ] Query performance acceptable
 
 ### Monitoring
+
 - [ ] Sentry configured and capturing errors
 - [ ] DataDog agent running (if configured)
 - [ ] Logs aggregated and searchable
@@ -125,6 +139,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 ## First Week Checks
 
 ### Daily
+
 - [ ] No errors from Sentry alerts
 - [ ] Error rate < 1% (from logs/monitoring)
 - [ ] API response time p95 < 500ms
@@ -132,6 +147,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] Database disk usage stable
 
 ### Performance
+
 - [ ] Core Web Vitals (LCP, FID, CLS) within targets
 - [ ] First page load < 3 seconds
 - [ ] Database queries < 500ms
@@ -139,6 +155,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] No memory leaks (heap size stable)
 
 ### Security
+
 - [ ] No unauthorized access attempts in logs
 - [ ] Rate limiting working (test with many requests)
 - [ ] CORS not too permissive
@@ -146,6 +163,7 @@ Use this checklist the first time you deploy to production. It covers security, 
 - [ ] SSL certificate valid (check with `openssl s_client`)
 
 ### Data
+
 - [ ] Backups running (check backup logs)
 - [ ] Can restore from backup (test on staging)
 - [ ] Data encrypted in transit (HTTPS) and at rest (if applicable)
@@ -158,11 +176,13 @@ Use this checklist the first time you deploy to production. It covers security, 
 **If something goes wrong:**
 
 1. **Is the site still up?**
+
    ```bash
    curl -I https://example.com
    ```
 
 2. **Check logs immediately**
+
    ```bash
    tail -f /var/log/app/error.log
    # or
@@ -181,6 +201,7 @@ Use this checklist the first time you deploy to production. It covers security, 
    - Circuit breaker: disable external API calls if they're failing
 
 5. **Rollback if needed**
+
    ```bash
    docker pull myapp:previous-version
    docker stop myapp && docker rm myapp
@@ -214,18 +235,18 @@ Use this checklist the first time you deploy to production. It covers security, 
 
 ## Common First-Week Issues
 
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| Blank page | Frontend build missing | `npm run build` in Docker |
-| 404 on routes | Wrong API URL in frontend | Check `NEXT_PUBLIC_API_URL` env var |
-| Login fails | Database not migrated | `npx prisma migrate deploy` |
-| High memory | Memory leak | Take heap snapshot, investigate |
-| Slow API | N+1 queries | Add indexes, eager load in queries |
-| Email not sending | External service failing | Check API keys, test endpoint |
-| Jobs not running | Redis not connected | `redis-cli ping`, check REDIS_URL |
-| CORS errors | Headers not set | Check `apps/server/src/app.ts` CORS config |
-| Uploads failing | Disk full or permission denied | Check disk space, verify permissions |
-| Workers crashing | Unhandled exception | Add error handling, check logs |
+| Issue             | Cause                          | Fix                                        |
+| ----------------- | ------------------------------ | ------------------------------------------ |
+| Blank page        | Frontend build missing         | `npm run build` in Docker                  |
+| 404 on routes     | Wrong API URL in frontend      | Check `NEXT_PUBLIC_API_URL` env var        |
+| Login fails       | Database not migrated          | `npx prisma migrate deploy`                |
+| High memory       | Memory leak                    | Take heap snapshot, investigate            |
+| Slow API          | N+1 queries                    | Add indexes, eager load in queries         |
+| Email not sending | External service failing       | Check API keys, test endpoint              |
+| Jobs not running  | Redis not connected            | `redis-cli ping`, check REDIS_URL          |
+| CORS errors       | Headers not set                | Check `apps/server/src/app.ts` CORS config |
+| Uploads failing   | Disk full or permission denied | Check disk space, verify permissions       |
+| Workers crashing  | Unhandled exception            | Add error handling, check logs             |
 
 ---
 
@@ -253,8 +274,9 @@ If all are ✅, you're good.
 ## Next Steps
 
 → Pick your deployment platform: `deployment-platforms.md`
-   - Vercel (frontend) / render (backend)
-   - AWS (EC2, ECS, EKS)
-   - Heroku
-   - Self-hosted (Docker Compose)
-   - Railway, Fly.io, etc.
+
+- Vercel (frontend) / render (backend)
+- AWS (EC2, ECS, EKS)
+- Heroku
+- Self-hosted (Docker Compose)
+- Railway, Fly.io, etc.

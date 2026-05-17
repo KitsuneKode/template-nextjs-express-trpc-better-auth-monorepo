@@ -64,7 +64,11 @@ export function loadKitsuConfig(): KitsuConfig {
   return cachedConfig
 }
 
-export function applyConfigDefaults<T>(cliValue: T | undefined, configKey: keyof KitsuConfig, defaultValue: T): T {
+export function applyConfigDefaults<T>(
+  cliValue: T | undefined,
+  configKey: keyof KitsuConfig,
+  defaultValue: T,
+): T {
   if (cliValue !== undefined) return cliValue
   const cfg = loadKitsuConfig()
   const configValue = cfg[configKey] as T | undefined

@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'bun:test'
 import {
   validateProjectName,
   checkCompatibility,
@@ -7,7 +8,6 @@ import {
   DeploymentSchema,
   DatabaseSchema,
 } from '../src/types/schemas'
-import { describe, expect, it } from 'bun:test'
 
 describe('validateProjectName', () => {
   it('accepts valid project names', () => {

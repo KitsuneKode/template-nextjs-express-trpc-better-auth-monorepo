@@ -8,8 +8,8 @@
  */
 
 import { createEnv } from '@t3-oss/env-nextjs'
-import { z } from 'zod'
 import { clientEnv } from '@template/common/env'
+import { z } from 'zod'
 
 export const env = createEnv({
   extends: [clientEnv],

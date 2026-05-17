@@ -36,8 +36,8 @@ export function CookieConsent() {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex-1">
           <p className="text-sm">
-            We use cookies to enhance your browsing experience and analyze traffic.
-            By continuing, you accept our{' '}
+            We use cookies to enhance your browsing experience and analyze traffic. By continuing,
+            you accept our{' '}
             <a href="/privacy" className="underline hover:text-neutral-300">
               privacy policy
             </a>

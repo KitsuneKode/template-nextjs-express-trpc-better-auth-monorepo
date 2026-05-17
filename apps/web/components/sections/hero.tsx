@@ -1,24 +1,11 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
+import { ArrowRight, Check, Database, Lock, Zap } from '@template/ui/components/icons'
 import { motion } from 'motion/react'
-import {
-  ArrowRight,
-  Check,
-  Database,
-  Lock,
-  Zap,
-} from '@template/ui/components/icons'
+import Link from 'next/link'
+import React from 'react'
 
-const STACK = [
-  'Next.js 16',
-  'tRPC',
-  'Prisma',
-  'Better Auth',
-  'Upstash Redis',
-  'Turborepo',
-]
+const STACK = ['Next.js 16', 'tRPC', 'Prisma', 'Better Auth', 'Upstash Redis', 'Turborepo']
 
 const KEY_POINTS = [
   'Typed end-to-end from DB to UI',
@@ -56,15 +43,12 @@ export const Hero = () => {
 
           <h1 className="font-serif text-5xl font-medium tracking-tight text-[#FAFAFA] sm:text-6xl lg:text-7xl lg:leading-[1.1]">
             Ship product logic,
-            <span className="block text-[#D9AB72] italic">
-              not setup scripts.
-            </span>
+            <span className="block text-[#D9AB72] italic">not setup scripts.</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#A1A1AA] sm:text-xl">
-            A full-stack starter built for teams that want real momentum: shared
-            UI, typed APIs, auth wired in, database ready, and live demos you
-            can trust on day one.
+            A full-stack starter built for teams that want real momentum: shared UI, typed APIs,
+            auth wired in, database ready, and live demos you can trust on day one.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -133,9 +117,7 @@ export const Hero = () => {
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="mb-3 text-xs font-medium text-[#71717A]">
-                    Core Stack
-                  </p>
+                  <p className="mb-3 text-xs font-medium text-[#71717A]">Core Stack</p>
                   <div className="flex flex-wrap gap-2">
                     {STACK.slice(0, 4).map((item) => (
                       <span
@@ -149,9 +131,7 @@ export const Hero = () => {
                 </div>
 
                 <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
-                  <p className="mb-3 text-xs font-medium text-[#71717A]">
-                    Features
-                  </p>
+                  <p className="mb-3 text-xs font-medium text-[#71717A]">Features</p>
                   <ul className="space-y-2.5 text-xs text-[#A1A1AA]">
                     <li className="flex items-center gap-2">
                       <Lock className="h-3.5 w-3.5 text-[#D9AB72]" /> Auth

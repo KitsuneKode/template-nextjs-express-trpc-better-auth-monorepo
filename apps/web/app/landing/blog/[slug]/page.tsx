@@ -1,5 +1,5 @@
-import type { Metadata } from 'next'
 import { prisma } from '@template/store'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PremiumBlogArticle } from '@/components/landing-premium/sections/premium-blog-article'
 

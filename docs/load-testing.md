@@ -13,13 +13,13 @@ This guide covers load testing strategies and tools for validating application p
 
 ## Load Testing Tools Comparison
 
-| Tool | Language | Type | Best For |
-|------|----------|------|----------|
-| **Artillery** | YAML/JS | HTTP/WebSocket | Simple API testing |
-| **k6** | JavaScript | HTTP/WebSocket/gRPC | Performance-focused |
-| **JMeter** | Java GUI | HTTP/Database/FTP | Complex scenarios |
-| **Locust** | Python | HTTP | Custom load patterns |
-| **Gatling** | Scala/Java | HTTP/WebSocket | Enterprise grade |
+| Tool          | Language   | Type                | Best For             |
+| ------------- | ---------- | ------------------- | -------------------- |
+| **Artillery** | YAML/JS    | HTTP/WebSocket      | Simple API testing   |
+| **k6**        | JavaScript | HTTP/WebSocket/gRPC | Performance-focused  |
+| **JMeter**    | Java GUI   | HTTP/Database/FTP   | Complex scenarios    |
+| **Locust**    | Python     | HTTP                | Custom load patterns |
+| **Gatling**   | Scala/Java | HTTP/WebSocket      | Enterprise grade     |
 
 ## Artillery Load Testing
 
@@ -37,7 +37,7 @@ npm install -D artillery
 config:
   # Target
   target: 'http://localhost:3000'
-  
+
   # Load phases
   phases:
     - duration: 60
@@ -52,7 +52,7 @@ config:
     - duration: 30
       arrivalRate: 10
       name: 'Cool down'
-  
+
   # Settings
   settings:
     # Maximum concurrent connections
@@ -82,13 +82,13 @@ scenarios:
           capture:
             - json: '$.data[0].id'
               as: 'post_id'
-      
+
       # GET by ID
       - get:
           url: '/api/posts/{{ post_id }}'
           expect:
             - statusCode: 200
-      
+
       # POST new post
       - post:
           url: '/api/posts'
@@ -97,13 +97,13 @@ scenarios:
             content: 'Testing under load'
           expect:
             - statusCode: 201
-      
+
       # DELETE post
       - delete:
           url: '/api/posts/{{ post_id }}'
           expect:
             - statusCode: 204
-  
+
   - name: 'Authentication Flow'
     weight: 20
     flow:
@@ -117,7 +117,7 @@ scenarios:
               as: 'auth_token'
           expect:
             - statusCode: 200
-      
+
       - get:
           url: '/api/user/profile'
           headers:
@@ -197,9 +197,9 @@ export const options = {
   ],
   thresholds: {
     // Performance thresholds
-    'http_req_duration': ['p(95)<500', 'p(99)<1000'],
-    'http_req_failed': ['rate<0.1'], // Less than 10% failure
-    'errors': ['rate<0.1'],
+    http_req_duration: ['p(95)<500', 'p(99)<1000'],
+    http_req_failed: ['rate<0.1'], // Less than 10% failure
+    errors: ['rate<0.1'],
   },
 }
 
@@ -247,7 +247,7 @@ export default function (data) {
       const res = http.post('http://localhost:3000/api/posts', JSON.stringify(payload), {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 
@@ -279,11 +279,15 @@ export default function (data) {
 
 // Teardown - run once after test
 export function teardown(data) {
-  http.post('http://localhost:3000/api/auth/logout', {}, {
-    headers: {
-      'Authorization': `Bearer ${data.token}`,
+  http.post(
+    'http://localhost:3000/api/auth/logout',
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${data.token}`,
+      },
     },
-  })
+  )
 }
 ```
 
@@ -345,10 +349,13 @@ export default function () {
   const result = db.query('SELECT * FROM posts LIMIT 10')
 
   // Insert
-  db.exec(`
+  db.exec(
+    `
     INSERT INTO posts (title, content) 
     VALUES ('Post ' || $1, 'Content ' || $1)
-  `, [__VU + __ITER])
+  `,
+    [__VU + __ITER],
+  )
 }
 ```
 
@@ -365,19 +372,19 @@ scenarios:
       - think: 5
       - get:
           url: '/api/posts'
-      
+
       # User browsing
       - think: 10
       - get:
           url: '/api/posts/{{ post_id }}'
-      
+
       # Comment activity
       - think: 15
       - post:
           url: '/api/posts/{{ post_id }}/comments'
           json:
             content: 'Great post!'
-      
+
       # Sharing/engagement
       - think: 8
       - post:
@@ -394,12 +401,12 @@ config:
       arrivalRate: 1
       rampTo: 100
       name: 'Stress'
-    
+
     # Maintain stress
     - duration: 60
       arrivalRate: 100
       name: 'Hold'
-    
+
     # Measure recovery
     - duration: 60
       arrivalRate: 10
@@ -532,18 +539,22 @@ Before running in production:
 ## Common Issues
 
 **Issue: "Too many connections"**
+
 - Solution: Implement connection pooling
 - Increase database max connections
 
 **Issue: "Memory leak detected"**
+
 - Solution: Check for event listener leaks
 - Monitor heap usage
 
 **Issue: "Cache ineffective"**
+
 - Solution: Increase cache TTL
 - Review cache invalidation strategy
 
 **Issue: "Slow database queries"**
+
 - Solution: Add missing indexes
 - Optimize query complexity
 

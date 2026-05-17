@@ -8,8 +8,8 @@
  */
 
 import { createEnv } from '@t3-oss/env-core'
-import { z } from 'zod'
 import { serverEnv as baseEnv } from '@template/backend-common/env'
+import { z } from 'zod'
 
 export const serverEnv = createEnv({
   extends: [baseEnv],

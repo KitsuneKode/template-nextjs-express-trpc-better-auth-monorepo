@@ -424,10 +424,7 @@ posts: defineTable({
 export const listPaginated = query({
   args: { cursor: v.optional(v.string()), limit: v.number() },
   handler: async (ctx, { cursor, limit }) => {
-    const posts = await ctx.db
-      .query('posts')
-      .order('desc')
-      .paginate({ cursor, numItems: limit })
+    const posts = await ctx.db.query('posts').order('desc').paginate({ cursor, numItems: limit })
 
     return posts
   },
@@ -458,8 +455,12 @@ export const postCount = query({
 export const updateUserAndPost = mutation({
   handler: async (ctx) => {
     // Both succeed or both fail
-    await ctx.db.patch(userId, { /* ... */ })
-    await ctx.db.insert('posts', { /* ... */ })
+    await ctx.db.patch(userId, {
+      /* ... */
+    })
+    await ctx.db.insert('posts', {
+      /* ... */
+    })
   },
 })
 ```

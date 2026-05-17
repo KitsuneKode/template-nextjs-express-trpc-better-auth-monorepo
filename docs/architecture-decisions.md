@@ -1,11 +1,12 @@
-/**
- * Architecture Decision Records (ADR)
- *
- * This document records key architectural decisions made in this template.
- * For each decision, we capture the context, decision, and consequences.
- *
- * See https://adr.github.io/ for more information on ADRs.
- */
+/\*\*
+
+- Architecture Decision Records (ADR)
+-
+- This document records key architectural decisions made in this template.
+- For each decision, we capture the context, decision, and consequences.
+-
+- See https://adr.github.io/ for more information on ADRs.
+  \*/
 
 # ADR-001: Monorepo with Turborepo
 
@@ -20,6 +21,7 @@ The project needs to share code between frontend, backend, and worker without du
 Use Turborepo for monorepo management with Bun as the package manager.
 
 **Consequences:**
+
 - ✅ Shared packages (auth, store, ui, common, backend-common) reduce duplication
 - ✅ Type-safe cross-package imports
 - ✅ Single lock file (bun.lock)
@@ -42,6 +44,7 @@ Authentication needs to be flexible, modern, and easy to integrate with OAuth pr
 Use Better Auth as the auth solution with session-based authentication.
 
 **Consequences:**
+
 - ✅ Built-in OAuth provider support
 - ✅ TypeScript types for auth procedures
 - ✅ Session-based (can migrate to JWT later if needed)
@@ -64,6 +67,7 @@ Need end-to-end type safety between frontend and backend. REST would require man
 Use tRPC for the API layer.
 
 **Consequences:**
+
 - ✅ Full type safety (frontend & backend share types)
 - ✅ Minimal boilerplate (no schema files)
 - ✅ Easy to add new endpoints
@@ -86,6 +90,7 @@ Need a type-safe ORM with good DX and migration support. Considered Prisma vs Dr
 Default to Prisma with Drizzle as an option.
 
 **Consequences:**
+
 - ✅ Prisma: Great DX, migrations, data seed, good for most projects
 - ✅ Drizzle: Lightweight, type-safe, better for advanced queries
 - ⚠️ Prisma: Adds runtime overhead
@@ -106,6 +111,7 @@ Need background job processing for email, webhooks, and scheduled tasks. Conside
 Use BullMQ (modern Bull) with Redis as the backing store.
 
 **Consequences:**
+
 - ✅ Simple queue API
 - ✅ Persistent job storage
 - ✅ Bull Board for UI
@@ -128,6 +134,7 @@ Need a backend framework with good middleware ecosystem and production track rec
 Default to Express with Hono as a lightweight alternative.
 
 **Consequences:**
+
 - ✅ Express: Mature, large ecosystem, most developers know it
 - ✅ Hono: Lightweight, Edge Runtime compatible, great for Bun
 - ⚠️ Express: Heavy, not optimized for modern Node

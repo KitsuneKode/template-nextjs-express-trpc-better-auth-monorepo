@@ -7,6 +7,7 @@ This scaffolding CLI (`apps/cli`) bootstraps projects from the monorepo template
 ## The Portfolio Ecosystem
 
 KitsuneKode's developer ecosystem has interconnected parts:
+
 - **Portfolio** (`kitsunekode.in`) — Next.js 15 + Supabase, hybrid content architecture
 - **Learning repos** (`kaitai-*`) — domain-specific deep dives with AI mentor CLAUDE.md files
 - **Content pipeline** — Obsidian vault → publish script → portfolio blog
@@ -19,7 +20,9 @@ The portfolio syncs project content from GitHub repos via `SHOWCASE.mdx` files. 
 Every scaffolded project automatically includes:
 
 ### 1. `SHOWCASE.mdx` Template
+
 A pre-filled template at the project root with:
+
 - Frontmatter pre-populated with the project name from CLI input
 - Available MDX components documented in comments
 - Freeform body sections (Why I Built This, Architecture, etc.)
@@ -28,10 +31,12 @@ A pre-filled template at the project root with:
 The template lives in the `internals` repo at `docs/SHOWCASE-TEMPLATE.mdx`.
 
 ### 2. GitHub Webhook Awareness
+
 - Include a note in the project README about the portfolio webhook
 - Optionally: GitHub Actions workflow that pings the portfolio's revalidation endpoint when `SHOWCASE.mdx` changes
 
 ### 3. Portfolio Metadata in `package.json`
+
 ```json
 {
   "portfolio": {
@@ -41,17 +46,18 @@ The template lives in the `internals` repo at `docs/SHOWCASE-TEMPLATE.mdx`.
   }
 }
 ```
+
 This metadata can be read by the portfolio sync pipeline as a fallback when frontmatter isn't enough.
 
 ## Template Types to Support
 
-| Template | Description | Default Tags |
-|----------|-------------|--------------|
+| Template             | Description                                     | Default Tags                      |
+| -------------------- | ----------------------------------------------- | --------------------------------- |
 | Monorepo (TurboRepo) | Next.js + Express + tRPC + BetterAuth (current) | next.js, express, trpc, turborepo |
-| Standalone Next.js | Simpler single-app setup | next.js, react |
-| Solana project | Anchor + Next.js frontend | solana, anchor, next.js |
-| AI project | Python/Node.js backend + Next.js frontend | ai, next.js |
-| CLI tool | Node.js CLI with TypeScript | typescript, cli |
+| Standalone Next.js   | Simpler single-app setup                        | next.js, react                    |
+| Solana project       | Anchor + Next.js frontend                       | solana, anchor, next.js           |
+| AI project           | Python/Node.js backend + Next.js frontend       | ai, next.js                       |
+| CLI tool             | Node.js CLI with TypeScript                     | typescript, cli                   |
 
 Each template type should include the `SHOWCASE.mdx` template with type-appropriate default frontmatter (e.g., Solana projects get `type: web3`, AI projects get `type: ai`).
 

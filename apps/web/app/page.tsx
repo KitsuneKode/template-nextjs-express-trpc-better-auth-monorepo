@@ -1,23 +1,23 @@
-import Link from 'next/link'
+import { ArrowRight } from '@template/ui/components/icons'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
-import { Hero } from '@/components/sections/hero'
-import { Footer } from '@/components/landing/Footer'
-import { Metrics } from '@/components/sections/metrics'
-import { Features } from '@/components/sections/features'
-import { ArrowRight } from '@template/ui/components/icons'
-import { LiveDemos } from '@/components/sections/live-demos'
-import { QuickStart } from '@/components/sections/quick-start'
-import { Architecture } from '@/components/sections/architecture'
+import Link from 'next/link'
 import { PremiumHero } from '@/components/landing-premium/hero/premium-hero'
-import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
-import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
-import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
-import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
-import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
-import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
 import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
+import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
+import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
+import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
+import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
 import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
+import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
+import { Footer } from '@/components/landing/Footer'
+import { Architecture } from '@/components/sections/architecture'
+import { Features } from '@/components/sections/features'
+import { Hero } from '@/components/sections/hero'
+import { LiveDemos } from '@/components/sections/live-demos'
+import { Metrics } from '@/components/sections/metrics'
+import { QuickStart } from '@/components/sections/quick-start'
+import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
 
 export const metadata: Metadata = {
   title: 'Next.js Monorepo Template | Better Auth + Prisma + tRPC',
@@ -61,9 +61,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const cookieStore = await cookies()
-  const design = resolveSiteDesign(
-    cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value,
-  )
+  const design = resolveSiteDesign(cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value)
 
   if (design === 'design2') {
     return (

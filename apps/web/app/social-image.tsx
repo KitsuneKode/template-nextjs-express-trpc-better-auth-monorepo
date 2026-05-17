@@ -6,20 +6,9 @@ interface SocialImageOptions {
   subtitle: string
 }
 
-const STACK = [
-  'Next.js 16',
-  'Express',
-  'tRPC',
-  'Better Auth',
-  'Prisma',
-  'Turborepo',
-]
+const STACK = ['Next.js 16', 'Express', 'tRPC', 'Better Auth', 'Prisma', 'Turborepo']
 
-export function createSocialImage({
-  eyebrow,
-  title,
-  subtitle,
-}: SocialImageOptions) {
+export function createSocialImage({ eyebrow, title, subtitle }: SocialImageOptions) {
   return new ImageResponse(
     <div
       style={{

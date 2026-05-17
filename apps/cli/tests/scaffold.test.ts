@@ -1,10 +1,10 @@
-import { sanitizeProjectName, buildCleanupTargets } from '../src/lib/scaffold'
-import { renderDeploymentGuide } from '../src/lib/generators/deployment'
-import { buildServerEnv, buildWebEnv } from '../src/lib/generators/env'
-import { renderGithubActionsWorkflow } from '../src/lib/generators/ci'
-import { renderDockerCompose } from '../src/lib/generators/docker'
-import type { ProjectConfig } from '../src/types/schemas'
 import { describe, expect, it } from 'bun:test'
+import { renderGithubActionsWorkflow } from '../src/lib/generators/ci'
+import { renderDeploymentGuide } from '../src/lib/generators/deployment'
+import { renderDockerCompose } from '../src/lib/generators/docker'
+import { buildServerEnv, buildWebEnv } from '../src/lib/generators/env'
+import { sanitizeProjectName, buildCleanupTargets } from '../src/lib/scaffold'
+import type { ProjectConfig } from '../src/types/schemas'
 
 /** Helper to build a minimal ProjectConfig for testing generators */
 function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {

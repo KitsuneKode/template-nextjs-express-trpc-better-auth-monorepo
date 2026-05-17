@@ -1,7 +1,7 @@
+import { Github, Heart } from '@template/ui/components/icons'
 import Link from 'next/link'
 import React, { Suspense } from 'react'
 import { CurrentYear } from './CurrentYear'
-import { Github, Heart } from '@template/ui/components/icons'
 
 const FOOTER_LINKS = [
   { href: '#stack', label: 'Stack' },
@@ -24,8 +24,8 @@ export const Footer = () => {
               Build product features, not monorepo plumbing.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-[#A1A1AA]">
-              Built for teams who want type safety, coherent architecture, and
-              polished UX from the first commit.
+              Built for teams who want type safety, coherent architecture, and polished UX from the
+              first commit.
             </p>
           </div>
 

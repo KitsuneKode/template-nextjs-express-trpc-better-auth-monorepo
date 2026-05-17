@@ -17,6 +17,7 @@ first, then `docs/README.md` for commands and env vars.
 This CLI is part of KitsuneKode's developer ecosystem. See `apps/cli/CLI-SPEC.md` for the full spec on portfolio-aware scaffolding.
 
 **Key context:**
+
 - The portfolio at `kitsunekode.in` syncs project content from `SHOWCASE.mdx` files in GitHub repos
 - Every scaffolded project should include a `SHOWCASE.mdx` template (source: `internals` repo, `docs/SHOWCASE-TEMPLATE.mdx`)
 - The portfolio uses Supabase as source of truth, with MDX files as one input source

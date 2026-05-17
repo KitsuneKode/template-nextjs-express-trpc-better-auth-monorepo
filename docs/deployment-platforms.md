@@ -4,15 +4,15 @@ Choose your deployment strategy: serverless, managed containers, or self-hosted.
 
 ## Platform Comparison
 
-| Platform | Frontend | Backend | Database | Cost | Scaling | Complexity |
-|----------|----------|---------|----------|------|---------|------------|
-| **Vercel** | ⭐⭐⭐⭐⭐ | ⭐⭐ (Functions) | ⭐⭐⭐ (Postgres) | Low | Auto | Low |
-| **AWS** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Varies | Auto | High |
-| **Heroku** | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | Medium | Manual | Low |
-| **Railway** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | Low | Auto | Low |
-| **Fly.io** | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | Low | Auto | Medium |
-| **Docker (Self)** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Varies | Manual | High |
-| **Kubernetes** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | High | Auto | Very High |
+| Platform          | Frontend   | Backend          | Database          | Cost   | Scaling | Complexity |
+| ----------------- | ---------- | ---------------- | ----------------- | ------ | ------- | ---------- |
+| **Vercel**        | ⭐⭐⭐⭐⭐ | ⭐⭐ (Functions) | ⭐⭐⭐ (Postgres) | Low    | Auto    | Low        |
+| **AWS**           | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐       | ⭐⭐⭐⭐⭐        | Varies | Auto    | High       |
+| **Heroku**        | ⭐⭐⭐     | ⭐⭐⭐           | ⭐⭐⭐            | Medium | Manual  | Low        |
+| **Railway**       | ⭐⭐⭐     | ⭐⭐⭐⭐         | ⭐⭐⭐            | Low    | Auto    | Low        |
+| **Fly.io**        | ⭐⭐⭐     | ⭐⭐⭐⭐         | ⭐⭐⭐            | Low    | Auto    | Medium     |
+| **Docker (Self)** | ⭐⭐⭐⭐   | ⭐⭐⭐⭐         | ⭐⭐⭐⭐          | Varies | Manual  | High       |
+| **Kubernetes**    | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐       | ⭐⭐⭐⭐          | High   | Auto    | Very High  |
 
 ---
 
@@ -56,11 +56,13 @@ vercel --prod
 ⚠️ **Problem**: Vercel Functions have 10-second timeout. Express needs longer.
 
 **Solution 1: Move backend elsewhere** (Recommended)
+
 - Deploy Express to Railway, Fly, Render
 - Set `NEXT_PUBLIC_API_URL=https://api.example.com` in Vercel
 - Frontend talks to separate backend URL
 
 **Solution 2: Use Vercel Functions** (Limited)
+
 - Rewrite Express routes as serverless functions
 - Works for simple CRUD, not for long-running processes
 - Jobs/workers won't work
@@ -68,6 +70,7 @@ vercel --prod
 ### Database
 
 **Use Vercel Postgres** (managed PostgreSQL):
+
 ```bash
 # In Vercel dashboard: Storage → Create Database
 
@@ -79,6 +82,7 @@ DATABASE_URL=<vercel_postgres_url> npx prisma migrate deploy
 ```
 
 Or use external PostgreSQL (AWS RDS, Supabase, Neon):
+
 ```
 DATABASE_URL=postgresql://user:pass@db.example.com:5432/myapp
 ```
@@ -129,6 +133,7 @@ aws cloudfront create-invalidation --distribution-id E123456 --paths "/*"
 ```
 
 Or use **AWS Amplify** (easier):
+
 ```bash
 # Connect GitHub repo
 # Auto-deploy on push
@@ -155,6 +160,7 @@ aws ecs create-service --cluster my-cluster --service-name my-api --task-definit
 ```
 
 **EC2 (More control, but you manage updates):**
+
 ```bash
 # Launch EC2 instance
 aws ec2 run-instances --image-id ami-0c55b159cbfafe1f0 --instance-type t3.medium
@@ -378,11 +384,11 @@ primary_region = "sjc"
 [services]
   http_checks = [{grace_period = "10s", interval = "30s", timeout = "5s", protocol = "http", method = "GET", path = "/health"}]
   processes = ["app"]
-  
+
   [[services.ports]]
     handlers = ["http"]
     port = 80
-  
+
   [[services.ports]]
     handlers = ["tls", "http"]
     port = 443
@@ -463,8 +469,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs
@@ -480,12 +486,12 @@ services:
       - DATABASE_URL=postgresql://user:pass@db:5432/myapp
       - REDIS_URL=redis://redis:6379
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - db
       - redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
       interval: 10s
       timeout: 3s
       retries: 3
@@ -495,7 +501,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     ports:
-      - "3001:3000"
+      - '3001:3000'
     environment:
       - NEXT_PUBLIC_API_URL=https://api.example.com
 
@@ -507,12 +513,12 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5432:5432'
 
   redis:
     image: redis:7
     ports:
-      - "6379:6379"
+      - '6379:6379'
 
 volumes:
   db-data:

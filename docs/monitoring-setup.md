@@ -25,14 +25,14 @@ import * as Sentry from '@sentry/nextjs'
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   environment: process.env.NODE_ENV,
-  
+
   // Performance Monitoring
   tracesSampleRate: 0.1,
   profilesSampleRate: 0.1,
-  
+
   // Release tracking
   release: process.env.NEXT_PUBLIC_RELEASE_VERSION,
-  
+
   // Error filtering
   beforeSend(event, hint) {
     // Filter out specific errors
@@ -100,7 +100,7 @@ export function initSentry() {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     environment: process.env.NODE_ENV,
-    
+
     // Profiling
     integrations: [nodeProfilingIntegration()],
     tracesSampleRate: 0.1,
@@ -296,9 +296,9 @@ export function initDatadog() {
     service: 'api',
     env: process.env.NODE_ENV,
     version: process.env.RELEASE_VERSION,
-    
+
     // Sampling
-    sampler: { 
+    sampler: {
       rateLimit: 100, // max 100 traces per second
     },
 
@@ -508,6 +508,7 @@ services:
 ### Key Metrics to Track
 
 **Backend:**
+
 - Request rate (RPS)
 - Error rate
 - Response time (p50, p95, p99)
@@ -517,6 +518,7 @@ services:
 - Active database connections
 
 **Frontend:**
+
 - Page load time
 - Core Web Vitals
 - JavaScript errors
@@ -528,6 +530,7 @@ services:
 Both Sentry and DataDog provide built-in dashboards, but you can create custom ones:
 
 **DataDog Custom Dashboard:**
+
 ```
 1. Go to Dashboards
 2. Click "New Dashboard"
@@ -610,16 +613,19 @@ jobs:
 ## Troubleshooting
 
 **No traces appearing:**
+
 - Check DataDog agent is running
 - Verify DD_AGENT_HOST and DD_TRACE_AGENT_PORT
 - Check firewall/network rules
 
 **High volume of errors:**
+
 - Review beforeSend filter
 - Check error sampling rate
 - Implement error recovery
 
 **Source maps not resolving:**
+
 - Verify source maps uploaded
 - Check release version matches
 - Verify file paths in bundle

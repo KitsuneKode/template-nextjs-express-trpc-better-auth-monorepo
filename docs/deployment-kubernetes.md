@@ -5,6 +5,7 @@ For production systems at scale, Kubernetes orchestrates containers across multi
 ## When to Use Kubernetes
 
 ✅ **Use if:**
+
 - Multiple services (API, worker, caching)
 - 50+ concurrent users
 - Need auto-scaling
@@ -13,6 +14,7 @@ For production systems at scale, Kubernetes orchestrates containers across multi
 - Need service mesh (traffic management)
 
 ❌ **Don't use if:**
+
 - Single small service (use Railway/Fly instead)
 - Just starting out (learn Docker first)
 - Team unfamiliar with Kubernetes
@@ -110,8 +112,8 @@ metadata:
   name: app-config
   namespace: production
 data:
-  NODE_ENV: "production"
-  LOG_LEVEL: "info"
+  NODE_ENV: 'production'
+  LOG_LEVEL: 'info'
 ```
 
 ```bash
@@ -154,7 +156,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/db"
+    path: '/data/db'
 
 ---
 apiVersion: v1
@@ -189,45 +191,45 @@ spec:
         app: api
     spec:
       containers:
-      - name: api
-        image: registry.example.com/myapp:1.0.0
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 3000
-          name: http
-        
-        # Environment variables
-        envFrom:
-        - configMapRef:
-            name: app-config
-        - secretRef:
-            name: app-secrets
-        
-        # Resource limits
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        
-        # Health checks
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 3
-          failureThreshold: 3
-        
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: api
+          image: registry.example.com/myapp:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+
+          # Environment variables
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+
+          # Resource limits
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 ### 6. Service (Internal Load Balancing)
@@ -241,11 +243,11 @@ metadata:
 spec:
   selector:
     app: api
-  type: ClusterIP  # or LoadBalancer for external access
+  type: ClusterIP # or LoadBalancer for external access
   ports:
-  - port: 80       # External port
-    targetPort: 3000  # Pod port
-    name: http
+    - port: 80 # External port
+      targetPort: 3000 # Pod port
+      name: http
 ```
 
 ### 7. Ingress (External Access)
@@ -257,36 +259,36 @@ metadata:
   name: app-ingress
   namespace: production
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/rate-limit: "100"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/rate-limit: '100'
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - example.com
-    - api.example.com
-    secretName: app-tls
+    - hosts:
+        - example.com
+        - api.example.com
+      secretName: app-tls
   rules:
-  - host: example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-service
-            port:
-              number: 80
-  - host: api.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 80
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-service
+                port:
+                  number: 80
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 80
 ```
 
 ### 8. HorizontalPodAutoscaler (Auto-Scaling)
@@ -305,18 +307,18 @@ spec:
   minReplicas: 3
   maxReplicas: 20
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
 ```
 
 ---
@@ -341,8 +343,8 @@ metadata:
   name: app-config
   namespace: production
 data:
-  NODE_ENV: "production"
-  LOG_LEVEL: "info"
+  NODE_ENV: 'production'
+  LOG_LEVEL: 'info'
 
 ---
 # Secret
@@ -353,9 +355,9 @@ metadata:
   namespace: production
 type: Opaque
 stringData:
-  DATABASE_URL: "postgresql://user:pass@db:5432/myapp"
-  SENTRY_DSN: "https://key@sentry.io/123456"
-  REDIS_URL: "redis://redis:6379"
+  DATABASE_URL: 'postgresql://user:pass@db:5432/myapp'
+  SENTRY_DSN: 'https://key@sentry.io/123456'
+  REDIS_URL: 'redis://redis:6379'
 
 ---
 # API Deployment
@@ -375,28 +377,28 @@ spec:
         app: api
     spec:
       containers:
-      - name: api
-        image: registry.example.com/myapp:latest
-        ports:
-        - containerPort: 3000
-        envFrom:
-        - configMapRef:
-            name: app-config
-        - secretRef:
-            name: app-secrets
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 10
+        - name: api
+          image: registry.example.com/myapp:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '250m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
 
 ---
 # API Service
@@ -410,8 +412,8 @@ spec:
     app: api
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000
 
 ---
 # Web Deployment
@@ -431,10 +433,10 @@ spec:
         app: web
     spec:
       containers:
-      - name: web
-        image: registry.example.com/myapp-web:latest
-        ports:
-        - containerPort: 3000
+        - name: web
+          image: registry.example.com/myapp-web:latest
+          ports:
+            - containerPort: 3000
 
 ---
 # Web Service
@@ -448,8 +450,8 @@ spec:
     app: web
   type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000
 
 ---
 # Ingress
@@ -459,35 +461,35 @@ metadata:
   name: app-ingress
   namespace: production
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - example.com
-    - api.example.com
-    secretName: app-tls
+    - hosts:
+        - example.com
+        - api.example.com
+      secretName: app-tls
   rules:
-  - host: example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-service
-            port:
-              number: 80
-  - host: api.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: api-service
-            port:
-              number: 80
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-service
+                port:
+                  number: 80
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 80
 
 ---
 # HPA
@@ -504,12 +506,12 @@ spec:
   minReplicas: 3
   maxReplicas: 20
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
 ```
 
 ---
@@ -549,8 +551,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1        # 1 extra pod during update
-      maxUnavailable: 0  # 0 pods down during update
+      maxSurge: 1 # 1 extra pod during update
+      maxUnavailable: 0 # 0 pods down during update
   replicas: 3
 ```
 
@@ -632,38 +634,40 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:15
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
-        ports:
-        - containerPort: 5432
-        volumeMounts:
-        - name: db-storage
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: db-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Gi
+    - metadata:
+        name: db-storage
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 100Gi
 ```
 
 ### Option 2: External Database (Recommended)
 
 Keep database outside Kubernetes:
+
 - AWS RDS
 - Cloud SQL (GCP)
 - Azure Database
 - Managed Postgres (DigitalOcean, Linode)
 
 Benefits:
+
 - Automatic backups
 - Replication
 - No data loss on cluster failure
@@ -717,18 +721,21 @@ helm install kibana elastic/kibana
 ## Common Issues
 
 **Pods stuck in Pending:**
+
 ```bash
 kubectl describe pod <pod-name> -n production
 # Usually: not enough resources, image pull failed
 ```
 
 **CrashLoopBackOff:**
+
 ```bash
 kubectl logs <pod-name> -n production
 # App crashed, check app logs
 ```
 
 **Service not accessible:**
+
 ```bash
 kubectl get svc -n production
 kubectl get ingress -n production

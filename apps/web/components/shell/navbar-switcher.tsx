@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Navbar } from '@/components/landing/Navbar'
+import { useEffect, useState } from 'react'
 import { PremiumNavbar } from '@/components/landing-premium/nav/premium-navbar'
+import { Navbar } from '@/components/landing/Navbar'
 import { parseDesignFromCookieString, type SiteDesign } from '@/lib/site-design'
 
 export function NavbarSwitcher() {

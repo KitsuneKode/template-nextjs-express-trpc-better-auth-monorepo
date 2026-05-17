@@ -2,22 +2,24 @@
 
 ## Quick Reference Table
 
-| Problem | Location | Root Cause | Fix | Effort | Priority |
-|---------|----------|-----------|-----|--------|----------|
-| **CLI doesn't generate .env** | `apps/cli/dist/` | CLI not rebuilt after code added | `bun run build` in apps/cli | 5 min | 🔴 CRITICAL |
-| **Better Auth types fail** | `packages/auth/src/client.ts` | Complex inferred type | Add `satisfies` annotation | 15 min | 🔴 CRITICAL |
-| **No .env.local files** | `apps/web/` `apps/server/` | Missing for local dev | Create .env.local (git-ignored) | 10 min | 🔴 CRITICAL |
-| **Template doesn't build** | `apps/web/` | Missing .env vars | Phase 1 fixes + .env files | 30 min | 🔴 CRITICAL |
-| **No .env.example** | Template root | Users don't know setup | Create .env.example files | 15 min | 🟠 HIGH |
-| **Config loader overly complex** | `packages/common/` | 415 lines of custom code | Migrate to t3-env | 6 hours | 🟠 HIGH |
-| **No env validation** | All packages | Each package has its own approach | Use t3-env schemas | 6 hours | 🟠 HIGH |
+| Problem                          | Location                      | Root Cause                        | Fix                             | Effort  | Priority    |
+| -------------------------------- | ----------------------------- | --------------------------------- | ------------------------------- | ------- | ----------- |
+| **CLI doesn't generate .env**    | `apps/cli/dist/`              | CLI not rebuilt after code added  | `bun run build` in apps/cli     | 5 min   | 🔴 CRITICAL |
+| **Better Auth types fail**       | `packages/auth/src/client.ts` | Complex inferred type             | Add `satisfies` annotation      | 15 min  | 🔴 CRITICAL |
+| **No .env.local files**          | `apps/web/` `apps/server/`    | Missing for local dev             | Create .env.local (git-ignored) | 10 min  | 🔴 CRITICAL |
+| **Template doesn't build**       | `apps/web/`                   | Missing .env vars                 | Phase 1 fixes + .env files      | 30 min  | 🔴 CRITICAL |
+| **No .env.example**              | Template root                 | Users don't know setup            | Create .env.example files       | 15 min  | 🟠 HIGH     |
+| **Config loader overly complex** | `packages/common/`            | 415 lines of custom code          | Migrate to t3-env               | 6 hours | 🟠 HIGH     |
+| **No env validation**            | All packages                  | Each package has its own approach | Use t3-env schemas              | 6 hours | 🟠 HIGH     |
 
 ---
 
 ## ISSUE #1: CLI Doesn't Generate .env Files
 
 ### 🔴 Problem
+
 After scaffolding with CLI, no `.env` files exist in the output:
+
 ```bash
 npx create-kitsu-stack my-app --yes
 cd my-app
@@ -26,6 +28,7 @@ bun run build
 ```
 
 ### 📍 Why It Happens
+
 - **Code exists** in `apps/cli/src/lib/scaffold.ts:222-236`
 - **Generator exists** in `apps/cli/src/lib/generators/env.ts`
 - **But CLI dist is old** — built before code was added
@@ -34,6 +37,7 @@ bun run build
 ### ✅ Fix (5 minutes)
 
 **Step 1: Rebuild CLI**
+
 ```bash
 cd apps/cli
 bun run build
@@ -41,6 +45,7 @@ bun run build
 ```
 
 **Step 2: Test**
+
 ```bash
 rm -rf /tmp/test-fixed
 npx /home/kitsunekode/Projects/templates/template-nextjs-express-trpc-bettera-auth-monorepo/apps/cli/dist/index.js /tmp/test-fixed --yes
@@ -49,11 +54,13 @@ ls -la /tmp/test-fixed/apps/web/.env
 ```
 
 **Why this works:**
+
 - The build process bundles `generators/env.ts` into `dist/index.js`
 - Old dist doesn't include the env generation code
 - New dist will have it
 
 **Verify:**
+
 ```bash
 # Old dist (broken)
 ls -lh apps/cli/dist/index.js
@@ -70,14 +77,17 @@ ls -lh dist/index.js
 ## ISSUE #2: Better Auth Client Types Fail
 
 ### 🔴 Problem
+
 Building `apps/web` fails:
+
 ```
-Type error: The inferred type of 'authClient' 
-cannot be named without a reference to 
+Type error: The inferred type of 'authClient'
+cannot be named without a reference to
 'better-auth/dist/client/path-to-object.mjs'
 ```
 
 ### 📍 Why It Happens
+
 - `createAuthClient()` returns a complex inferred type
 - TypeScript can't generate `.d.ts` file because type is too complex
 - No type annotation to give it a name
@@ -87,6 +97,7 @@ cannot be named without a reference to
 **File: `packages/auth/src/client.ts`**
 
 **BEFORE:**
+
 ```typescript
 import { clientConfig as config } from '@template/common/config-loader'
 import { createAuthClient } from 'better-auth/react'
@@ -97,6 +108,7 @@ export const authClient = createAuthClient({
 ```
 
 **AFTER:**
+
 ```typescript
 import { clientConfig as config } from '@template/common/config-loader'
 import { createAuthClient } from 'better-auth/react'
@@ -107,6 +119,7 @@ export const authClient = createAuthClient({
 ```
 
 **Alternative (if above doesn't work):**
+
 ```typescript
 export const authClient = createAuthClient({
   baseURL: config.getConfig('appUrl'),
@@ -114,11 +127,13 @@ export const authClient = createAuthClient({
 ```
 
 **Why this works:**
+
 - `satisfies` keyword tells TypeScript the type without naming it
 - Gives the compiler enough info to generate types
 - Better than `as const` — preserves type information
 
 **Verify:**
+
 ```bash
 cd packages/auth && bun run build
 # Should succeed without type errors
@@ -129,7 +144,9 @@ cd packages/auth && bun run build
 ## ISSUE #3: Missing .env.local Files
 
 ### 🔴 Problem
+
 Users can't run the template locally:
+
 ```bash
 cd apps/web
 bun run dev
@@ -137,6 +154,7 @@ bun run dev
 ```
 
 ### 📍 Why It Happens
+
 - `.env` files are git-ignored (correct)
 - Template doesn't include them (by design)
 - Users don't know they need to create them
@@ -174,6 +192,7 @@ BETTER_AUTH_URL=http://localhost:8080
 **Step 3: Verify .gitignore**
 
 Check `.gitignore` includes:
+
 ```bash
 .env
 .env.local
@@ -181,11 +200,13 @@ Check `.gitignore` includes:
 ```
 
 **Why this works:**
+
 - Files are git-ignored, won't be committed
 - Developers create local copies, don't affect repo
 - `.local` suffix is convention for git-ignored env files
 
 **Verify:**
+
 ```bash
 # Check files exist
 ls -la apps/web/.env.local apps/server/.env
@@ -200,7 +221,9 @@ git status
 ## ISSUE #4: Template Doesn't Build
 
 ### 🔴 Problem
+
 All build attempts fail:
+
 ```bash
 bun run build
 # Error: Configuration resolution failed for "client"
@@ -208,6 +231,7 @@ bun run build
 ```
 
 ### 📍 Why It Happens
+
 - Caused by Issues #1, #2, #3 combined
 - Issue #1: CLI doesn't generate .env
 - Issue #2: Better Auth types fail
@@ -223,6 +247,7 @@ bun run build
 3. Create .env files (Issue #3) — ✅ 10 min
 
 Then verify:
+
 ```bash
 # Test web app
 cd apps/web && bun run build
@@ -242,7 +267,9 @@ bun run build
 ## ISSUE #5: No .env.example Files
 
 ### 🔴 Problem
+
 Users don't know what environment variables to set:
+
 ```bash
 # User just scaffolded
 npx create-kitsu-stack my-app --yes
@@ -252,6 +279,7 @@ cd my-app
 ```
 
 ### 📍 Why It Happens
+
 - CLI generates .env but NOT .env.example
 - Template doesn't include examples
 - Users have no reference
@@ -310,12 +338,14 @@ BETTER_AUTH_URL=http://localhost:8080
 ```
 
 **Why this works:**
+
 - `.example` files are committed to repo
 - Users copy them to create local `.env` files
 - Clear documentation of all variables
 - References validation schemas
 
 **Verify:**
+
 ```bash
 # Files exist in git
 git ls-files | grep env.example
@@ -331,7 +361,9 @@ cp apps/server/.env.example apps/server/.env
 ## ISSUE #6: Config Loader Is Overly Complex
 
 ### 🔴 Problem
+
 `packages/common/src/utils/config-loader.ts` is **415 lines** of custom code:
+
 - Custom validation logic
 - Custom error handling
 - Doesn't compose across packages
@@ -341,12 +373,15 @@ cp apps/server/.env.example apps/server/.env
 ### 📍 Why It's a Problem
 
 **Complexity:**
+
 ```typescript
 // Current approach (415 lines)
 const clientConfigSchema: ConfigSchema<ClientConfig> = {
   appUrl: () => readClientEnvUrl('NEXT_PUBLIC_APP_URL'),
   apiBaseUrl: () => readClientEnvUrl('NEXT_PUBLIC_API_URL'),
-  nodeEnv: () => { /* complex logic */ },
+  nodeEnv: () => {
+    /* complex logic */
+  },
 }
 
 let clientConfigInstance: ConfigLoader<ClientConfig> | null = null
@@ -369,6 +404,7 @@ export const clientConfig: ClientConfigAccessor = {
 ```
 
 **vs t3-env approach (10 lines):**
+
 ```typescript
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
@@ -383,6 +419,7 @@ export const env = createEnv({
 ```
 
 **Issues:**
+
 - No schema composition (can't reuse in other packages)
 - No presets (have to write everything from scratch)
 - Verbose API (`getConfig('key')` vs just `env.KEY`)
@@ -400,6 +437,7 @@ See `docs/FIX-PLAN.md` for detailed steps.
 ## ISSUE #7: No Environment Validation Across Monorepo
 
 ### 🔴 Problem
+
 - ✅ Web app has ConfigLoader for client env
 - ❌ Server app has no env validation
 - ❌ Worker has no env validation
@@ -407,6 +445,7 @@ See `docs/FIX-PLAN.md` for detailed steps.
 - Result: Runtime errors when env vars are missing
 
 ### 📍 Why It Happens
+
 - ConfigLoader only exports client config
 - No shared server env schema
 - Each app has to validate its own env (or doesn't)
@@ -450,6 +489,7 @@ export const env = createEnv({
 ```
 
 **Result:**
+
 - All packages validate env at startup
 - One source of truth for schema
 - Type-safe everywhere
@@ -464,6 +504,7 @@ export const env = createEnv({
 Must complete to unblock everything else.
 
 1. **Rebuild CLI** (5 min)
+
    ```bash
    cd apps/cli && bun run build
    ```
@@ -477,6 +518,7 @@ Must complete to unblock everything else.
    - Create `apps/server/.env`
 
 **Verify:**
+
 ```bash
 bun run build  # Everything builds
 bun run dev    # App starts locally
@@ -551,6 +593,7 @@ Phase 3: Migration (MEDIUM)
 After each phase, make **one commit** per phase:
 
 ### Phase 1 Commit
+
 ```bash
 git add apps/cli dist/index.js packages/auth/src/client.ts apps/web/.env.local apps/server/.env
 git commit -m "fix(env): enable .env generation and fix types
@@ -561,6 +604,7 @@ git commit -m "fix(env): enable .env generation and fix types
 ```
 
 ### Phase 2 Commit
+
 ```bash
 git add apps/web/.env.example apps/server/.env.example README.md
 git commit -m "docs(env): add .env.example and setup documentation
@@ -571,6 +615,7 @@ git commit -m "docs(env): add .env.example and setup documentation
 ```
 
 ### Phase 3 Commit (Large)
+
 ```bash
 git add packages/common/src/env packages/backend-common/src/env.ts apps/web/env.ts apps/server/env.ts ...
 git commit -m "refactor(env): migrate to t3-env for type-safe validation
@@ -594,6 +639,7 @@ Migration:
 ## What Gets Better
 
 ### Before (Current State)
+
 ```
 User experience:
 npm create kitsu-stack my-app
@@ -612,6 +658,7 @@ Developer experience:
 ```
 
 ### After (All Phases Done)
+
 ```
 User experience:
 npm create kitsu-stack my-app
@@ -637,6 +684,7 @@ Developer experience:
 ## Success Criteria (How to Know It's Fixed)
 
 ### Phase 1 ✅
+
 - [ ] CLI rebuilds successfully
 - [ ] Scaffolded apps have .env files
 - [ ] Better Auth builds without type errors
@@ -644,12 +692,14 @@ Developer experience:
 - [ ] Can run `bun run dev` without env errors
 
 ### Phase 2 ✅
+
 - [ ] .env.example files exist and can be copied
 - [ ] README has clear setup instructions
 - [ ] First-time user can scaffold → install → build → run
 - [ ] All instructions are accurate
 
 ### Phase 3 ✅
+
 - [ ] All env imports use t3-env
 - [ ] Type errors are gone
 - [ ] Error messages are clear when env is missing

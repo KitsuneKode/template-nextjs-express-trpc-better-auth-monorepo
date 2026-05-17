@@ -70,7 +70,12 @@ template-express-trpc-api/
 ```typescript
 import express, { Express } from 'express'
 import helmet from 'helmet'
-import { createOpenApiDocument, createExpressMiddleware, Procedure, ProcedureType } from '@trpc/server/adapters/express'
+import {
+  createOpenApiDocument,
+  createExpressMiddleware,
+  Procedure,
+  ProcedureType,
+} from '@trpc/server/adapters/express'
 import { appRouter } from './routes'
 import { createTRPCContext } from '@/utils/trpc'
 import { errorHandler } from '@/middleware/error-handler'
@@ -338,7 +343,12 @@ import { Express, Request, Response, NextFunction } from 'express'
 import { TRPCError } from '@trpc/server'
 import { logger } from '@template/backend-common/logger/server'
 
-export function errorHandler(err: Error | TRPCError, _req: Request, res: Response, _next: NextFunction) {
+export function errorHandler(
+  err: Error | TRPCError,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+) {
   // Log error
   logger.error({ error: err.message, stack: err.stack }, 'Request error')
 
@@ -534,18 +544,22 @@ render deploy
 ## Performance Tips
 
 **Indexing:**
+
 - Index frequently queried fields
 - Use composite indexes for multi-field queries
 
 **Caching:**
+
 - Cache responses with Redis
 - Use query deduplication
 
 **Rate Limiting:**
+
 - Implement per-IP rate limits
 - Implement per-user rate limits
 
 **Pagination:**
+
 - Always paginate large result sets
 - Use cursor-based pagination for consistency
 

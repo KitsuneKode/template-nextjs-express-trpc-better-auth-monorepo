@@ -1,8 +1,8 @@
 'use client'
 
+import { ArrowLeft } from '@template/ui/components/icons'
 import Link from 'next/link'
 import { AuthFlow } from '@/components/demos/auth-flow'
-import { ArrowLeft } from '@template/ui/components/icons'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
 export default function AuthDemoPage() {
@@ -17,12 +17,9 @@ export default function AuthDemoPage() {
             <ArrowLeft size={16} />
             Back to Demos
           </Link>
-          <h1 className="mb-2 text-3xl font-bold text-white">
-            Authentication Demo
-          </h1>
+          <h1 className="mb-2 text-3xl font-bold text-white">Authentication Demo</h1>
           <p className="text-neutral-400">
-            Full-featured authentication with email/password and social
-            providers using Better Auth.
+            Full-featured authentication with email/password and social providers using Better Auth.
           </p>
         </div>
 

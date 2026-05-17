@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
 import { motion } from 'motion/react'
+import React from 'react'
 import { features } from '@/lib/demo-data'
 import { SectionWrapper } from '../ui/section-wrapper'
 
@@ -16,8 +16,8 @@ export const Features = () => {
           Opinionated choices that keep velocity high after month twelve.
         </h2>
         <p className="mt-6 text-lg leading-relaxed text-[#A1A1AA]">
-          Every layer is pre-wired for real product work. No toy architecture,
-          no “starter” compromises, no disconnected package decisions.
+          Every layer is pre-wired for real product work. No toy architecture, no “starter”
+          compromises, no disconnected package decisions.
         </p>
       </div>
 
@@ -35,9 +35,7 @@ export const Features = () => {
               <feature.icon className="h-6 w-6" />
             </div>
 
-            <h3 className="mb-3 text-xl font-medium text-[#FAFAFA]">
-              {feature.title}
-            </h3>
+            <h3 className="mb-3 text-xl font-medium text-[#FAFAFA]">{feature.title}</h3>
             <p className="mb-6 flex-1 text-sm leading-relaxed text-[#A1A1AA]">
               {feature.description}
             </p>

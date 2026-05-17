@@ -1,18 +1,17 @@
-import Link from 'next/link'
-import type { Metadata } from 'next'
 import { ArrowRight } from '@template/ui/components/icons'
+import type { Metadata } from 'next'
+import Link from 'next/link'
 import { PremiumHero } from '@/components/landing-premium/hero/premium-hero'
-import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
-import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
-import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
 import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
+import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
+import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
 import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
+import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
 
 export const metadata: Metadata = {
   title: 'Premium Landing | Kitsune Stack',
-  description:
-    'Premium landing experience for the Next.js + Express + tRPC + Prisma template.',
+  description: 'Premium landing experience for the Next.js + Express + tRPC + Prisma template.',
 }
 
 export default function LandingPage() {

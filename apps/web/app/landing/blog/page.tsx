@@ -1,6 +1,6 @@
+import { prisma } from '@template/store'
 import type { Metadata } from 'next'
 import { cacheLife } from 'next/cache'
-import { prisma } from '@template/store'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
 import { PremiumBlogList } from '@/components/landing-premium/sections/premium-blog-list'
 

@@ -4,13 +4,13 @@
  * Handles environment validation, graceful shutdown, and cluster management.
  */
 
+import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
+import { validateEnvironment } from '@template/backend-common/validate-env'
+import { prisma } from '@template/store'
 import app from './app'
+import { redis } from './lib/redis'
 import { config } from './utils/config'
 import { logger } from './utils/logger'
-import { validateEnvironment } from '@template/backend-common/validate-env'
-import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
-import { prisma } from '@template/store'
-import { redis } from './lib/redis'
 
 // Validate environment on startup
 validateEnvironment('server')

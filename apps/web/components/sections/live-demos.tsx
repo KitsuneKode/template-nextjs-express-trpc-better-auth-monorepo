@@ -1,23 +1,13 @@
 'use client'
 
+import { Database, FileText, Lock, MessageSquare } from '@template/ui/components/icons'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@template/ui/components/tabs'
 import React from 'react'
 import { AuthFlow } from '@/components/demos/auth-flow'
 import { BlogCrud } from '@/components/demos/blog-crud'
+import { DatabasePlayground } from '@/components/demos/database-playground'
 import { RealtimeChat } from '@/components/demos/realtime-chat'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
-import { DatabasePlayground } from '@/components/demos/database-playground'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@template/ui/components/tabs'
-import {
-  Database,
-  FileText,
-  Lock,
-  MessageSquare,
-} from '@template/ui/components/icons'
 
 const DEMO_TABS = [
   {
@@ -62,8 +52,8 @@ export const LiveDemos = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
             This is not just pretty scaffolding.
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-[#A1A1AA]">
-            Click through the demos to verify real interaction patterns before
-            writing your own features.
+            Click through the demos to verify real interaction patterns before writing your own
+            features.
           </p>
         </div>
         <div className="hidden lg:block">
@@ -86,9 +76,7 @@ export const LiveDemos = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[#D9AB72] ring-1 ring-white/10 transition-colors group-data-[state=active]:bg-[#D9AB72]/10 group-data-[state=active]:text-[#D9AB72] group-data-[state=active]:ring-[#D9AB72]/30">
                     <tab.icon className="h-5 w-5" />
                   </div>
-                  <span className="text-base font-medium text-[#FAFAFA]">
-                    {tab.label}
-                  </span>
+                  <span className="text-base font-medium text-[#FAFAFA]">{tab.label}</span>
                 </div>
                 <span className="text-sm leading-relaxed text-[#A1A1AA] group-data-[state=active]:text-[#D4D4D8]">
                   {tab.description}

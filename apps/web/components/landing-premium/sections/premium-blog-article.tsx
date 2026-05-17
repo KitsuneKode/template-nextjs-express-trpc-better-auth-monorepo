@@ -1,6 +1,6 @@
+import { ArrowLeft, Calendar, Clock } from '@template/ui/components/icons'
 import Link from 'next/link'
 import { Streamdown } from 'streamdown'
-import { ArrowLeft, Calendar, Clock } from '@template/ui/components/icons'
 
 type Author = {
   name: string | null

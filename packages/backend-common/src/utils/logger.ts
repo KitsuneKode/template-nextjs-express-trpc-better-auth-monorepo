@@ -1,6 +1,6 @@
-import { createLogger as winstonCreateLogger, format, transports } from 'winston'
-import { format as dateFormat, parseISO } from 'date-fns'
 import path from 'path'
+import { format as dateFormat, parseISO } from 'date-fns'
+import { createLogger as winstonCreateLogger, format, transports } from 'winston'
 
 const { splat, combine, errors, timestamp, printf, align, colorize } = format
 const colorizer = colorize({

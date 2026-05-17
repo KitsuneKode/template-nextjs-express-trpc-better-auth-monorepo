@@ -16,8 +16,8 @@
  */
 
 import { readFile, writeFile, rm, mkdir } from 'node:fs/promises'
-import type { ProjectConfig } from '../../types/schemas'
 import { join, dirname } from 'node:path'
+import type { ProjectConfig } from '../../types/schemas'
 
 // =============================================================================
 // Drizzle schema definitions (database-aware)

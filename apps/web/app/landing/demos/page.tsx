@@ -1,11 +1,10 @@
 import type { Metadata } from 'next'
-import { DemoShowcase } from '@/components/landing-premium/sections/demo-showcase'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
+import { DemoShowcase } from '@/components/landing-premium/sections/demo-showcase'
 
 export const metadata: Metadata = {
   title: 'Functional Demos | Kitsune Stack Premium',
-  description:
-    'Interactive demos showcasing auth, realtime, blog, and database flows.',
+  description: 'Interactive demos showcasing auth, realtime, blog, and database flows.',
 }
 
 export default function LandingDemosPage() {

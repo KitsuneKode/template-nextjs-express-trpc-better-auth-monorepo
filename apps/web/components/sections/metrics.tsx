@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
 import { motion } from 'motion/react'
+import React from 'react'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
 const metrics = [

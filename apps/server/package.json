@@ -1,8 +1,8 @@
 {
   "name": "@template/server",
-  "module": "src/server.ts",
-  "type": "module",
   "private": true,
+  "type": "module",
+  "module": "src/server.ts",
   "scripts": {
     "check-types": "tsc -noEmit",
     "build": "bun build ./src/app.ts --outdir ./dist --target bun --minify --sourcemap",
@@ -12,30 +12,30 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix"
   },
-  "devDependencies": {
-    "@types/bun": "1.3.9",
-    "@types/compression": "^1.7.5",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "eslint": "^9.39.4",
-    "@template/eslint-config": "workspace:*",
-    "@template/typescript-config": "workspace:*"
-  },
-  "peerDependencies": {
-    "typescript": "^5.9.3"
-  },
   "dependencies": {
     "@bull-board/api": "^6.10.0",
     "@bull-board/express": "^6.10.0",
+    "@template/auth": "workspace:*",
+    "@template/backend-common": "workspace:*",
+    "@template/store": "workspace:*",
+    "@template/trpc": "workspace:*",
     "bullmq": "^5.48.1",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "helmet": "^8.1.0",
     "express-rate-limit": "^7.5.1",
-    "@template/backend-common": "workspace:*",
-    "@template/auth": "workspace:*",
-    "@template/trpc": "workspace:*",
-    "@template/store": "workspace:*"
+    "helmet": "^8.1.0"
+  },
+  "devDependencies": {
+    "@template/eslint-config": "workspace:*",
+    "@template/typescript-config": "workspace:*",
+    "@types/bun": "1.3.9",
+    "@types/compression": "^1.7.5",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "eslint": "^9.39.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
   }
 }

@@ -1,8 +1,8 @@
 'use client'
 
-import { buildMetadata } from '@/lib/seo'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { buildMetadata } from '@/lib/seo'
 
 // Note: metadata doesn't work with 'use client', define it via an RSC wrapper or layout
 // export const metadata = buildMetadata({...})
@@ -43,7 +43,7 @@ export default function SessionsPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-neutral-50 px-4 py-20">
-        <div className="max-w-2xl mx-auto">
+        <div className="mx-auto max-w-2xl">
           <p className="text-neutral-600">Loading sessions...</p>
         </div>
       </div>
@@ -52,29 +52,29 @@ export default function SessionsPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50 px-4 py-20">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-neutral-900">Active Sessions</h1>
+      <div className="mx-auto max-w-2xl">
+        <h1 className="mb-8 text-3xl font-bold text-neutral-900">Active Sessions</h1>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
             <p className="text-red-800">{error}</p>
           </div>
         )}
 
         {sessions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div className="rounded-lg bg-white p-8 text-center shadow-sm">
             <p className="text-neutral-600">No active sessions found.</p>
           </div>
         ) : (
           <div className="space-y-4">
             {sessions.map((session) => (
-              <div key={session.id} className="bg-white rounded-lg shadow-sm p-6">
-                <div className="flex justify-between items-start mb-4">
+              <div key={session.id} className="rounded-lg bg-white p-6 shadow-sm">
+                <div className="mb-4 flex items-start justify-between">
                   <div className="flex-1">
-                    <p className="text-sm text-neutral-600 mb-2">
+                    <p className="mb-2 text-sm text-neutral-600">
                       {session.userAgent || 'Unknown Device'}
                     </p>
-                    <p className="text-xs text-neutral-500 mb-2">
+                    <p className="mb-2 text-xs text-neutral-500">
                       IP: {session.ipAddress || 'Unknown'}
                     </p>
                     <p className="text-xs text-neutral-500">
@@ -82,7 +82,7 @@ export default function SessionsPage() {
                     </p>
                   </div>
                   {session.isCurrent && (
-                    <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                    <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs text-green-800">
                       Current
                     </span>
                   )}
@@ -91,7 +91,7 @@ export default function SessionsPage() {
                 {!session.isCurrent && (
                   <button
                     onClick={() => handleRevokeSession(session.id)}
-                    className="text-sm text-red-600 hover:text-red-700 font-medium"
+                    className="text-sm font-medium text-red-600 hover:text-red-700"
                   >
                     Revoke
                   </button>
@@ -101,7 +101,7 @@ export default function SessionsPage() {
 
             <button
               onClick={handleRevokeAll}
-              className="w-full mt-6 px-4 py-2 border border-red-300 text-red-600 font-medium rounded-lg hover:bg-red-50 transition"
+              className="mt-6 w-full rounded-lg border border-red-300 px-4 py-2 font-medium text-red-600 transition hover:bg-red-50"
             >
               Revoke All Other Sessions
             </button>

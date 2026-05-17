@@ -1,8 +1,9 @@
-/**
- * Migration & Upgrade Guide
- *
- * This guide helps migrate from older versions and upgrade dependencies safely.
- */
+/\*\*
+
+- Migration & Upgrade Guide
+-
+- This guide helps migrate from older versions and upgrade dependencies safely.
+  \*/
 
 # Upgrading Your Project
 
@@ -128,6 +129,7 @@ bun run build
 ## Troubleshooting
 
 ### Build fails with module not found
+
 ```bash
 # Clear build cache
 rm -rf .turbo .next dist
@@ -138,6 +140,7 @@ bun install
 ```
 
 ### Database connection errors after upgrade
+
 ```bash
 # Verify DATABASE_URL is correct
 echo $DATABASE_URL
@@ -147,6 +150,7 @@ bun run db:generate
 ```
 
 ### Type errors after upgrade
+
 ```bash
 # Regenerate types
 bun run check-types --force

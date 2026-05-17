@@ -1,5 +1,5 @@
-import { architectureGroups, flowSteps } from './content'
 import { ArrowRight } from '@template/ui/components/icons'
+import { architectureGroups, flowSteps } from './content'
 
 export function ArchitectureMap() {
   return (
@@ -18,8 +18,7 @@ export function ArchitectureMap() {
                     className="rounded-xl border border-white/8 bg-[#090d12] p-3"
                   >
                     <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#f1e6d8]">
-                      <item.icon className="h-4 w-4 text-[#d7ae7f]" />{' '}
-                      {item.name}
+                      <item.icon className="h-4 w-4 text-[#d7ae7f]" /> {item.name}
                     </p>
                     <p className="mt-1 text-sm text-[#bba88f]">{item.role}</p>
                   </article>
@@ -36,15 +35,10 @@ export function ArchitectureMap() {
         </p>
         <ol className="space-y-3">
           {flowSteps.map((step, index) => (
-            <li
-              key={step}
-              className="rounded-xl border border-white/8 bg-[#090d12] p-3"
-            >
+            <li key={step} className="rounded-xl border border-white/8 bg-[#090d12] p-3">
               <p className="mb-1 inline-flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-[#dbc29f] uppercase">
                 Step {index + 1}
-                {index < flowSteps.length - 1 ? (
-                  <ArrowRight className="h-3 w-3" />
-                ) : null}
+                {index < flowSteps.length - 1 ? <ArrowRight className="h-3 w-3" /> : null}
               </p>
               <p className="text-sm text-[#bfaa91]">{step}</p>
             </li>

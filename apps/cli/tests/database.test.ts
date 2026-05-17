@@ -1,9 +1,9 @@
-import { readFile, mkdir, writeFile, access, rm } from 'node:fs/promises'
-import { applyDatabaseTransform } from '../src/lib/generators/database'
 import { describe, expect, it, beforeEach, afterEach } from 'bun:test'
-import type { ProjectConfig } from '../src/types/schemas'
-import { join } from 'node:path'
+import { readFile, mkdir, writeFile, access, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { applyDatabaseTransform } from '../src/lib/generators/database'
+import type { ProjectConfig } from '../src/types/schemas'
 
 /** Helper to build a minimal ProjectConfig for testing generators */
 function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {

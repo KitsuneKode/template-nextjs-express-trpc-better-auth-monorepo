@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
 import { ChevronLeft, ChevronRight, Quote } from '@template/ui/components/icons'
+import { motion, AnimatePresence } from 'motion/react'
+import React, { useState, useEffect } from 'react'
 
 const testimonials = [
   {
@@ -51,12 +51,8 @@ export const Testimonials = () => {
     <section className="relative bg-neutral-950 py-24">
       <div className="container px-4 md:px-6">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-5xl">
-            Loved by Developers
-          </h2>
-          <p className="text-lg text-neutral-400">
-            Don&apos;t just take our word for it.
-          </p>
+          <h2 className="mb-4 text-3xl font-bold text-white md:text-5xl">Loved by Developers</h2>
+          <p className="text-lg text-neutral-400">Don&apos;t just take our word for it.</p>
         </div>
 
         <div className="relative mx-auto max-w-4xl">
@@ -88,9 +84,7 @@ export const Testimonials = () => {
                     <div className="font-semibold text-white">
                       {testimonials?.[current]?.author}
                     </div>
-                    <div className="text-sm text-neutral-500">
-                      {testimonials?.[current]?.role}
-                    </div>
+                    <div className="text-sm text-neutral-500">{testimonials?.[current]?.role}</div>
                   </div>
                 </div>
               </motion.div>

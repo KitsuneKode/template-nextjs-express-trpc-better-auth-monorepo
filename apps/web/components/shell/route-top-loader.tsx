@@ -40,10 +40,7 @@ export function RouteTopLoader() {
     intervalRef.current = window.setInterval(() => {
       setProgress((previous) => {
         if (previous >= MAX_PROGRESS_BEFORE_COMPLETE) return previous
-        const increment = Math.max(
-          1.5,
-          (MAX_PROGRESS_BEFORE_COMPLETE - previous) * 0.12,
-        )
+        const increment = Math.max(1.5, (MAX_PROGRESS_BEFORE_COMPLETE - previous) * 0.12)
         return Math.min(MAX_PROGRESS_BEFORE_COMPLETE, previous + increment)
       })
     }, INCREMENT_INTERVAL_MS)
@@ -69,8 +66,7 @@ export function RouteTopLoader() {
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0) return
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-        return
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
       const target = event.target as Element | null
       const anchor = target?.closest('a[href]') as HTMLAnchorElement | null

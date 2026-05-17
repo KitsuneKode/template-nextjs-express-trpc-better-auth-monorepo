@@ -1,9 +1,9 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'motion/react'
 import { ArrowRight, Sparkles } from '@template/ui/components/icons'
+import { motion, useScroll, useTransform } from 'motion/react'
+import Link from 'next/link'
+import React from 'react'
 
 export const Hero = () => {
   const { scrollY } = useScroll()
@@ -46,8 +46,8 @@ export const Hero = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mb-10 max-w-2xl text-lg text-neutral-400 md:text-xl"
         >
-          A production-ready monorepo template with Next.js, tRPC, Prisma, and
-          Authentication. Everything you need to launch your next big idea.
+          A production-ready monorepo template with Next.js, tRPC, Prisma, and Authentication.
+          Everything you need to launch your next big idea.
         </motion.p>
 
         <motion.div

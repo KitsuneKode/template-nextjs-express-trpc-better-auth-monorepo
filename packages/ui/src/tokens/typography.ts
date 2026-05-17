@@ -1,17 +1,6 @@
 export const fontFamily = {
-  sans: [
-    'Inter',
-    'ui-sans-serif',
-    'system-ui',
-    '-apple-system',
-    'sans-serif',
-  ].join(', '),
-  mono: [
-    'JetBrains Mono',
-    'ui-monospace',
-    'SFMono-Regular',
-    'monospace',
-  ].join(', '),
+  sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'].join(', '),
+  mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'].join(', '),
 } as const
 
 export const fontSize = {

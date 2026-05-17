@@ -54,13 +54,15 @@ function buildRedisService(config: ProjectConfig): { services: string[]; volumes
   if (config.backend === 'none') return { services: [], volumes: [] }
 
   return {
-    services: [`  redis:
+    services: [
+      `  redis:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data`],
+      - redis-data:/data`,
+    ],
     volumes: ['  redis-data:'],
   }
 }

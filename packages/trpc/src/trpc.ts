@@ -1,10 +1,10 @@
 import { auth, fromNodeHeaders } from '@template/auth/server'
-import * as trpcExpress from '@trpc/server/adapters/express'
-import { initTRPC, TRPCError } from '@trpc/server'
 import { prisma as db } from '@template/store'
-import { logger } from './utils/logger'
-import { z, ZodError } from 'zod/v4'
+import { initTRPC, TRPCError } from '@trpc/server'
+import * as trpcExpress from '@trpc/server/adapters/express'
 import superjson from 'superjson'
+import { z, ZodError } from 'zod/v4'
+import { logger } from './utils/logger'
 
 export const createTRPCContext = async ({
   req,

@@ -1,8 +1,8 @@
 'use client'
 
+import { ArrowLeft } from '@template/ui/components/icons'
 import Link from 'next/link'
 import { BlogCrud } from '@/components/demos/blog-crud'
-import { ArrowLeft } from '@template/ui/components/icons'
 import { SectionWrapper } from '@/components/ui/section-wrapper'
 
 export default function BlogDemoPage() {
@@ -19,8 +19,7 @@ export default function BlogDemoPage() {
           </Link>
           <h1 className="mb-2 text-3xl font-bold text-white">Blog CMS Demo</h1>
           <p className="text-neutral-400">
-            Full CRUD capabilities with Prisma ORM, tRPC, and optimistic
-            updates.
+            Full CRUD capabilities with Prisma ORM, tRPC, and optimistic updates.
           </p>
         </div>
 

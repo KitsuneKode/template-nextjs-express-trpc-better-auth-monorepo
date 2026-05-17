@@ -1,5 +1,5 @@
-import superjson from 'superjson'
 import { defaultShouldDehydrateQuery, QueryClient } from '@tanstack/react-query'
+import superjson from 'superjson'
 
 /**
  * Creates and returns a new QueryClient instance with custom default options.
@@ -16,8 +16,7 @@ export function makeQueryClient() {
       dehydrate: {
         serializeData: superjson.serialize,
         shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) ||
-          query.state.status === 'pending',
+          defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
         shouldRedactErrors: () => {
           // We should not catch Next.js server errors
           // as that's how Next.js detects dynamic pages

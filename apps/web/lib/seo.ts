@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'My App'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-const SITE_DESCRIPTION = process.env.NEXT_PUBLIC_SITE_DESCRIPTION || 'A full-stack TypeScript application'
+const SITE_DESCRIPTION =
+  process.env.NEXT_PUBLIC_SITE_DESCRIPTION || 'A full-stack TypeScript application'
 
 type BuildMetadataParams = {
   title: string

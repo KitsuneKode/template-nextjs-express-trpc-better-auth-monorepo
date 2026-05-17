@@ -1,9 +1,9 @@
-import { readFile, mkdir, writeFile, access, rm } from 'node:fs/promises'
 import { describe, expect, it, beforeEach, afterEach } from 'bun:test'
+import { readFile, mkdir, writeFile, access, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { applyBackendTransform } from '../src/lib/generators/backend'
 import type { ProjectConfig } from '../src/types/schemas'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 
 /** Helper to build a minimal ProjectConfig for testing generators */
 function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {

@@ -1,17 +1,9 @@
-import {
-  Zap,
-  Shield,
-  Database,
-  Layout,
-  Code2,
-  Lock,
-} from '@template/ui/components/icons'
+import { Zap, Shield, Database, Layout, Code2, Lock } from '@template/ui/components/icons'
 
 export const features = [
   {
     title: 'Type-Safe Everything',
-    description:
-      'End-to-end type safety with tRPC. Catch errors at compile time, not runtime.',
+    description: 'End-to-end type safety with tRPC. Catch errors at compile time, not runtime.',
     icon: Shield,
     color: 'var(--solar-orange)',
     code: `const user = await trpc.user.byId.query({ id: '1' });
@@ -52,8 +44,7 @@ console.log(user.name); // Typed!`,
   },
   {
     title: 'Monorepo Architecture',
-    description:
-      'Scalable Turborepo structure. Share UI components and logic across apps.',
+    description: 'Scalable Turborepo structure. Share UI components and logic across apps.',
     icon: Layout,
     color: 'var(--solar-purple)',
     code: `apps/
@@ -65,8 +56,7 @@ packages/
   },
   {
     title: 'Developer Experience',
-    description:
-      'Hot reload, TypeScript, ESLint, Prettier. Everything configured for speed.',
+    description: 'Hot reload, TypeScript, ESLint, Prettier. Everything configured for speed.',
     icon: Code2,
     color: 'var(--solar-orange)',
     code: `pnpm dev
@@ -99,8 +89,7 @@ export const terminalSteps = [
   {
     command: 'bunx shadcn@latest add button card dialog dropdown-menu',
     output: 'Adding components to packages/ui...',
-    description:
-      'Install reusable shadcn components into the shared UI package',
+    description: 'Install reusable shadcn components into the shared UI package',
   },
   {
     command: 'bun dev',

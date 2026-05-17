@@ -362,8 +362,8 @@ test.describe('API Integration', () => {
     await page.goto('/posts')
 
     // Wait for API call
-    await page.waitForResponse((response) =>
-      response.url().includes('/api/posts') && response.status() === 200,
+    await page.waitForResponse(
+      (response) => response.url().includes('/api/posts') && response.status() === 200,
     )
 
     // Verify posts are rendered

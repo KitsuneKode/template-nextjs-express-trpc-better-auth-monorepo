@@ -1,14 +1,14 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { cn } from '@template/ui/lib/utils'
-import React, { useEffect, useState } from 'react'
-import type { SiteDesign } from '@/lib/site-design'
-import { motion, AnimatePresence } from 'motion/react'
-import { DesignToggle } from '@/components/shell/design-toggle'
 import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
+import { cn } from '@template/ui/lib/utils'
+import { motion, AnimatePresence } from 'motion/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { DesignToggle } from '@/components/shell/design-toggle'
 import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
+import type { SiteDesign } from '@/lib/site-design'
 
 const NAV_LINKS = [
   { href: '#stack', label: 'Stack' },
@@ -36,9 +36,7 @@ export const Navbar = ({ design }: NavbarProps) => {
     <nav
       className={cn(
         'fixed top-0 right-0 left-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'border-b border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl'
-          : 'bg-transparent',
+        isScrolled ? 'border-b border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl' : 'bg-transparent',
       )}
     >
       <div className="container mx-auto px-4 sm:px-6">
@@ -99,11 +97,7 @@ export const Navbar = ({ design }: NavbarProps) => {
             className="rounded-lg p-2 text-[#A1A1AA] hover:bg-white/5 hover:text-[#FAFAFA] lg:hidden"
             aria-label="Toggle mobile menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>

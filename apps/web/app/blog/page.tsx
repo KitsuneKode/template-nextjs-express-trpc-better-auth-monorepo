@@ -1,15 +1,15 @@
-import Link from 'next/link'
+import { prisma } from '@template/store'
+import { ArrowRight, Calendar, Clock } from '@template/ui/components/icons'
 import { Metadata } from 'next'
 import { cacheLife } from 'next/cache'
 import { cookies } from 'next/headers'
-import { prisma } from '@template/store'
-import { Footer } from '@/components/landing/Footer'
-import { SectionWrapper } from '@/components/ui/section-wrapper'
-import { ArrowRight, Calendar, Clock } from '@template/ui/components/icons'
-import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
+import Link from 'next/link'
+import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
 import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
 import { PremiumBlogList } from '@/components/landing-premium/sections/premium-blog-list'
-import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
+import { Footer } from '@/components/landing/Footer'
+import { SectionWrapper } from '@/components/ui/section-wrapper'
+import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
 
 export const metadata: Metadata = {
   title: 'Blog | Template',
@@ -28,13 +28,8 @@ async function getPublishedPosts() {
 }
 
 export default async function BlogIndexPage() {
-  const [cookieStore, posts] = await Promise.all([
-    cookies(),
-    getPublishedPosts(),
-  ])
-  const design = resolveSiteDesign(
-    cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value,
-  )
+  const [cookieStore, posts] = await Promise.all([cookies(), getPublishedPosts()])
+  const design = resolveSiteDesign(cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value)
 
   if (design === 'design2') {
     return (
@@ -65,8 +60,8 @@ export default async function BlogIndexPage() {
             Thoughts & Updates
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#A1A1AA]">
-            Deep dives into modern web development, monorepo architectures, and
-            building scalable systems.
+            Deep dives into modern web development, monorepo architectures, and building scalable
+            systems.
           </p>
         </div>
 
@@ -121,12 +116,8 @@ export default async function BlogIndexPage() {
 
         {posts.length === 0 && (
           <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] py-20 text-center">
-            <h3 className="mb-2 font-serif text-xl font-medium text-[#FAFAFA]">
-              No posts found
-            </h3>
-            <p className="text-sm text-[#A1A1AA]">
-              Check back later for new content.
-            </p>
+            <h3 className="mb-2 font-serif text-xl font-medium text-[#FAFAFA]">No posts found</h3>
+            <p className="text-sm text-[#A1A1AA]">Check back later for new content.</p>
           </div>
         )}
       </SectionWrapper>

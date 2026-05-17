@@ -1,8 +1,9 @@
-/**
- * Monitoring and Debugging Guide
- *
- * How to monitor production systems, debug issues, and optimize performance.
- */
+/\*\*
+
+- Monitoring and Debugging Guide
+-
+- How to monitor production systems, debug issues, and optimize performance.
+  \*/
 
 # Monitoring & Debugging
 
@@ -73,6 +74,7 @@ import { measureAsync } from '@template/backend-common/performance'
 ```
 
 Services:
+
 - **Sentry** - Error tracking and performance
 - **DataDog** - Full observability
 - **New Relic** - APM and monitoring
@@ -89,6 +91,7 @@ curl https://api.example.com/health
 ```
 
 Services:
+
 - UptimeRobot
 - Ping (StatusPage)
 - Checkly
@@ -97,6 +100,7 @@ Services:
 ### Database Monitoring
 
 Monitor database metrics:
+
 - **Connection pool usage** - Ensure not running out of connections
 - **Query performance** - Identify slow queries
 - **Disk space** - Prevent running out of storage

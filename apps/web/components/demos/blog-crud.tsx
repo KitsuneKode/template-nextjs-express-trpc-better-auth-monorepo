@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
-import { useTRPC } from '@/trpc/client'
-import { motion, AnimatePresence } from 'motion/react'
-import { CodeBlock } from '@/components/ui/code-block'
-import { Plus, Trash2, Loader2 } from '@template/ui/components/icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Plus, Trash2, Loader2 } from '@template/ui/components/icons'
+import { motion, AnimatePresence } from 'motion/react'
+import React, { useState } from 'react'
+import { CodeBlock } from '@/components/ui/code-block'
+import { useTRPC } from '@/trpc/client'
 
 type DemoPost = {
   id: string
@@ -161,9 +161,7 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                     disabled={createPost.isPending}
                     className="flex items-center gap-2 rounded-lg bg-[var(--solar-green)] px-3 py-1.5 text-sm font-medium text-neutral-900"
                   >
-                    {createPost.isPending && (
-                      <Loader2 size={14} className="animate-spin" />
-                    )}
+                    {createPost.isPending && <Loader2 size={14} className="animate-spin" />}
                     Publish
                   </button>
                 </div>
@@ -175,9 +173,7 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                 <Loader2 className="h-8 w-8 animate-spin text-[var(--solar-teal)]" />
               </div>
             ) : posts?.length === 0 ? (
-              <div className="py-8 text-center text-neutral-500">
-                No posts yet. Create one!
-              </div>
+              <div className="py-8 text-center text-neutral-500">No posts yet. Create one!</div>
             ) : (
               posts?.map((post) => (
                 <motion.div
@@ -189,13 +185,9 @@ export const BlogCrud = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                   className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
                 >
                   <div>
-                    <h4 className="mb-1 font-medium text-white">
-                      {post.title}
-                    </h4>
+                    <h4 className="mb-1 font-medium text-white">{post.title}</h4>
                     <div className="flex items-center gap-2 text-xs text-neutral-400">
-                      <span>
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </span>
+                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                       <span>•</span>
                       <span>{post.author?.name || 'Anonymous'}</span>
                     </div>

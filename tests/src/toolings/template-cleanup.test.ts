@@ -1,5 +1,5 @@
-import { buildCleanupPlan } from '../../../toolings/scripts/template-cleanup'
 import { describe, expect, it } from 'bun:test'
+import { buildCleanupPlan } from '../../../toolings/scripts/template-cleanup'
 
 describe('template-cleanup', () => {
   it('plans a starter seed replacement when requested', async () => {

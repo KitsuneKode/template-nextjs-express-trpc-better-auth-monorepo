@@ -1,15 +1,15 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
+import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
 import { cn } from '@template/ui/lib/utils'
+import Image from 'next/image'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { PremiumMobileMenu } from './premium-mobile-menu'
 import { DesignToggle } from '@/components/shell/design-toggle'
-import type { SiteDesign, SiteDesignNamespace } from '@/lib/site-design'
-import { ArrowRight, Github, Menu, X } from '@template/ui/components/icons'
 import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
+import type { SiteDesign, SiteDesignNamespace } from '@/lib/site-design'
+import { PremiumMobileMenu } from './premium-mobile-menu'
 
 interface PremiumNavbarProps {
   design: SiteDesign
@@ -58,16 +58,13 @@ export function PremiumNavbar({ design, namespace }: PremiumNavbarProps) {
   }, [pathname, namespace])
 
   const homeHref = namespace === 'canonical' ? '/' : '/landing'
-  const startHref =
-    namespace === 'canonical' ? '/#quick-start' : '/landing/start'
+  const startHref = namespace === 'canonical' ? '/#quick-start' : '/landing/start'
 
   return (
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'border-b border-white/12 bg-[#090d12]/90 backdrop-blur-xl'
-          : 'bg-transparent',
+        isScrolled ? 'border-b border-white/12 bg-[#090d12]/90 backdrop-blur-xl' : 'bg-transparent',
       )}
     >
       <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
@@ -130,12 +127,7 @@ export function PremiumNavbar({ design, namespace }: PremiumNavbarProps) {
         </button>
       </div>
 
-      <PremiumMobileMenu
-        design={design}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        links={links}
-      />
+      <PremiumMobileMenu design={design} isOpen={isOpen} setIsOpen={setIsOpen} links={links} />
     </header>
   )
 }

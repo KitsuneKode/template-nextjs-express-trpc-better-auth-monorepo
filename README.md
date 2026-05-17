@@ -114,7 +114,7 @@ packages/
 
 6. Commit with the enforced Conventional Commit format
 
-    Example: `feat(auth): add google provider`
+   Example: `feat(auth): add google provider`
 
 ---
 
@@ -141,7 +141,6 @@ The template requires environment variables for both frontend and backend. We pr
    This file contains backend variables like `DATABASE_URL`, `PORT`, and authentication secrets.
 
 3. **Configure for your setup:**
-
    - Update database URLs if using a custom Postgres instance
    - Set `BETTER_AUTH_SECRET` to a secure random string (min 32 characters)
    - For OAuth providers (GitHub, Google), add your client credentials
@@ -157,11 +156,13 @@ The template requires environment variables for both frontend and backend. We pr
 ### Environment Variables Reference
 
 **Frontend** (`apps/web/.env.local`):
+
 - `NEXT_PUBLIC_SITE_NAME` - Your app name
 - `NEXT_PUBLIC_APP_URL` - Frontend URL (local: `http://localhost:3000`)
 - `NEXT_PUBLIC_API_URL` - Backend API URL (local: `http://localhost:8080`)
 
 **Backend** (`apps/server/.env`):
+
 - `PORT` - Backend server port (default: 8080)
 - `DATABASE_URL` - Database connection string
 - `REDIS_URL` - Redis connection for caching

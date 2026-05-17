@@ -9,12 +9,14 @@
 ### 1. **Template Build Broken** ❌
 
 **Problem**: The template repository itself won't build:
+
 ```
-@template/web#build: Type error: The inferred type of 'authClient' 
+@template/web#build: Type error: The inferred type of 'authClient'
 cannot be named without a reference to 'better-auth/dist/client/path-to-object.mjs'
 ```
 
-**Impact**: 
+**Impact**:
+
 - Users cloning the repo can't build
 - Can't verify template works before scaffolding
 - CI/CD would fail
@@ -28,7 +30,8 @@ cannot be named without a reference to 'better-auth/dist/client/path-to-object.m
 
 ### 2. **Scaffolded Apps Won't Build** ❌
 
-**What I tested**: 
+**What I tested**:
+
 ```bash
 npx @kitsu/create test-kitsu-app --yes --no-install
 bun install
@@ -36,6 +39,7 @@ bun run build
 ```
 
 **Result**: Build fails with:
+
 ```
 Configuration resolution failed for "client".
 Fix the following environment variables:
@@ -43,7 +47,8 @@ Fix the following environment variables:
 - apiBaseUrl: Missing required environment variable: NEXT_PUBLIC_API_URL
 ```
 
-**Impact**: 
+**Impact**:
+
 - Users scaffold → install → try to build → FAIL
 - Not a good first impression
 - Breaks deployment guides (all assume building works)
@@ -55,6 +60,7 @@ Fix the following environment variables:
 ### 3. **CLI Doesn't Generate .env Files** ❌
 
 **What should happen:**
+
 ```bash
 npx @kitsu/create my-app --yes
 # Should create: .env (for local dev)
@@ -62,6 +68,7 @@ npx @kitsu/create my-app --yes
 ```
 
 **What actually happens:**
+
 ```bash
 npx @kitsu/create my-app --yes
 # Generates AGENTS.md, docker-compose.yml, CI files
@@ -78,9 +85,11 @@ npx @kitsu/create my-app --yes
 ### 4. **Critical Documentation Mismatch** ⚠️
 
 **What we documented:**
+
 > Users can scaffold with `npx create-kitsu-stack my-app` and have a working app
 
 **What actually happens:**
+
 1. CLI scaffolds files
 2. User runs `bun install`
 3. User tries to run app locally
@@ -94,11 +103,13 @@ npx @kitsu/create my-app --yes
 ### 5. **Agent Docs Generated but Incomplete** ⚠️
 
 **What works:**
+
 - ✅ AGENTS.md generated with correct structure
 - ✅ CLAUDE.md generated
 - ✅ docs/ folder copied
 
 **What's missing:**
+
 - ❌ Docs don't mention .env setup
 - ❌ Docs don't mention building locally requires env vars
 - ❌ No "first steps" guide after scaffolding
@@ -110,25 +121,25 @@ npx @kitsu/create my-app --yes
 
 ### What Works ✅
 
-| Feature | Status | Evidence |
-|---------|--------|----------|
-| Help output | ✅ WORKS | `--help` shows all options clearly |
-| Argument parsing | ✅ WORKS | `--yes`, `--no-*`, `--db=postgres` all parse |
-| CLI tests | ✅ PASS | 101 tests pass, 251 assertions |
-| Scaffolding | ✅ WORKS | Creates all directories and files |
-| Package rename | ✅ WORKS | `@template/*` → `@my-app/*` in 123 files |
-| Template cleanup | ✅ WORKS | Removes showcase, worker correctly |
-| Git init | ✅ WORKS | Initializes git repo |
-| Dependency install | ✅ WORKS | Calls `bun install` successfully |
-| Generated files | ✅ WORKS | Docker-compose, CI, deployment guides created |
+| Feature            | Status   | Evidence                                      |
+| ------------------ | -------- | --------------------------------------------- |
+| Help output        | ✅ WORKS | `--help` shows all options clearly            |
+| Argument parsing   | ✅ WORKS | `--yes`, `--no-*`, `--db=postgres` all parse  |
+| CLI tests          | ✅ PASS  | 101 tests pass, 251 assertions                |
+| Scaffolding        | ✅ WORKS | Creates all directories and files             |
+| Package rename     | ✅ WORKS | `@template/*` → `@my-app/*` in 123 files      |
+| Template cleanup   | ✅ WORKS | Removes showcase, worker correctly            |
+| Git init           | ✅ WORKS | Initializes git repo                          |
+| Dependency install | ✅ WORKS | Calls `bun install` successfully              |
+| Generated files    | ✅ WORKS | Docker-compose, CI, deployment guides created |
 
 ### What Doesn't Work ❌
 
-| Feature | Status | Evidence |
-|---------|--------|----------|
-| **Generate .env** | ❌ BROKEN | No `.env` in scaffolded app |
-| **Buildable output** | ❌ BROKEN | `bun run build` fails on missing env vars |
-| **Runnable output** | ❌ BROKEN | Can't `bun run dev` without .env |
+| Feature               | Status    | Evidence                                    |
+| --------------------- | --------- | ------------------------------------------- |
+| **Generate .env**     | ❌ BROKEN | No `.env` in scaffolded app                 |
+| **Buildable output**  | ❌ BROKEN | `bun run build` fails on missing env vars   |
+| **Runnable output**   | ❌ BROKEN | Can't `bun run dev` without .env            |
 | **First-run success** | ❌ BROKEN | No path to working app without manual steps |
 
 ---
@@ -157,6 +168,7 @@ bun run test
 ## Template Quality
 
 ### Code Architecture: Good ✅
+
 - Type-safe (tRPC + Prisma + Zod)
 - Security hardened (rate limiting, helmet, CORS)
 - Testing set up (Playwright, Vitest, Artillery)
@@ -164,6 +176,7 @@ bun run test
 - Production patterns (graceful shutdown, health checks)
 
 ### Documentation: Comprehensive ✅
+
 - 35+ guides covering everything
 - Real code examples
 - Architecture decisions explained
@@ -171,6 +184,7 @@ bun run test
 - Troubleshooting procedures
 
 ### Getting Started: Poor ❌
+
 - No working "hello world" after scaffold
 - Missing .env variables
 - Build fails on first attempt
@@ -182,18 +196,21 @@ bun run test
 ## Honest Truth
 
 ### What We Built
+
 - ✅ A theoretically excellent full-stack template
 - ✅ Comprehensive documentation (35+ guides)
 - ✅ Professional CLI with good UX
 - ✅ Proper architectural patterns
 
 ### What We Didn't Validate
+
 - ❌ That scaffolded apps actually build
 - ❌ That first-time users can get to "hello world"
 - ❌ That the template repo builds itself
 - ❌ Real end-to-end user experience
 
 ### The Gap
+
 **We documented deployment and scaling, but skipped validation that the basics work.**
 
 ---
@@ -201,10 +218,11 @@ bun run test
 ## Quick Wins to Fix (Highest Priority)
 
 ### 1. Fix .env Generation (Critical)
+
 ```typescript
 // In scaffold.ts, after copying template:
-- generateEnvFile(config, destDir) // Write .env
-- generateEnvExample(config, destDir) // Write .env.example
+;-generateEnvFile(config, destDir) - // Write .env
+  generateEnvExample(config, destDir) // Write .env.example
 ```
 
 **Impact**: Scaffolded apps would build immediately
@@ -212,12 +230,14 @@ bun run test
 **Effort**: 1-2 hours
 
 ### 2. Add .env to .gitignore (Already Done ✅)
+
 ```bash
 # Check if .env is in .gitignore
 cat .gitignore | grep "^\.env"
 ```
 
 ### 3. Create "First 5 Minutes" Guide
+
 ```markdown
 # After Scaffolding: Your First App
 
@@ -235,6 +255,7 @@ You should see a working app now.
 **Effort**: 30 minutes
 
 ### 4. Fix Better Auth Type Issue (Template)
+
 ```typescript
 // packages/auth/src/client.ts
 - export const authClient = createAuthClient({...})
@@ -246,6 +267,7 @@ You should see a working app now.
 **Effort**: 15 minutes
 
 ### 5. Add Pre-Scaffold Verification (CLI)
+
 ```bash
 // Before scaffolding, verify:
 - Node version >= 20
@@ -263,15 +285,19 @@ You should see a working app now.
 ## The Real Questions Answered
 
 ### "How good is the CLI?"
+
 **7/10** — Scaffolds correctly, but output isn't runnable
 
 ### "Did you test it?"
+
 **Partially** — Tested scaffolding, found build breaks, didn't test full flow
 
 ### "Does it have good templates?"
+
 **Yes, code is good** — But onboarding is broken
 
 ### "Does it really work?"
+
 **Not end-to-end** — Scaffolds ✅, but next steps fail ❌
 
 ---
@@ -279,6 +305,7 @@ You should see a working app now.
 ## What Should Have Been Done
 
 ### Before Claiming "Production-Ready"
+
 1. ✅ Code compiles
 2. ✅ Tests pass
 3. ✅ Build succeeds
@@ -287,12 +314,14 @@ You should see a working app now.
 6. ❌ Deployed successfully to 2 platforms (NOT TESTED)
 
 ### What We Got Right
+
 - Documentation is truly comprehensive
 - Code quality is high
 - Architecture decisions are sound
 - CLI UX is good
 
 ### What We Missed
+
 - **Validation that it works** (critical)
 - **Fixing the gaps we found** (1-2 hours of work)
 - **User testing** (would have found these issues)
@@ -301,15 +330,15 @@ You should see a working app now.
 
 ## Status Update: The Honest Version
 
-| Aspect | Status | Why |
-|--------|--------|-----|
-| **Code quality** | ✅ GOOD | Type-safe, secure, patterns tested |
-| **Documentation** | ✅ EXCELLENT | 35+ guides, comprehensive |
-| **Architecture** | ✅ EXCELLENT | Proven patterns, scalable design |
-| **CLI scaffolding** | ✅ WORKS | Creates files, installs deps |
-| **Developer experience** | ❌ BROKEN | Can't build after scaffold |
-| **Production-ready** | ❌ NOT YET | Gaps need fixing before shipping |
-| **First-time user success** | ❌ LOW | Many manual steps needed |
+| Aspect                      | Status       | Why                                |
+| --------------------------- | ------------ | ---------------------------------- |
+| **Code quality**            | ✅ GOOD      | Type-safe, secure, patterns tested |
+| **Documentation**           | ✅ EXCELLENT | 35+ guides, comprehensive          |
+| **Architecture**            | ✅ EXCELLENT | Proven patterns, scalable design   |
+| **CLI scaffolding**         | ✅ WORKS     | Creates files, installs deps       |
+| **Developer experience**    | ❌ BROKEN    | Can't build after scaffold         |
+| **Production-ready**        | ❌ NOT YET   | Gaps need fixing before shipping   |
+| **First-time user success** | ❌ LOW       | Many manual steps needed           |
 
 **Verdict: 6 months from production, not days. Need to fix scaffolding output + test end-to-end.**
 
@@ -318,6 +347,7 @@ You should see a working app now.
 ## If I Were Reviewing This as a User
 
 ### What I Expected
+
 ```
 npx create-kitsu-stack my-app
 cd my-app
@@ -326,6 +356,7 @@ bun run dev
 ```
 
 ### What Actually Happened
+
 ```
 npx create-kitsu-stack my-app
 cd my-app
@@ -335,6 +366,7 @@ bun run dev
 ```
 
 ### Frustration Level: HIGH
+
 "I followed the instructions, scaffolding worked, but I can't run the app. Is it broken?"
 
 ---
@@ -342,18 +374,21 @@ bun run dev
 ## Next Steps (Priority Order)
 
 ### This Week (Must Do)
+
 1. [ ] Fix .env generation in CLI
 2. [ ] Fix Better Auth types in template
 3. [ ] Test scaffold → build → run end-to-end
 4. [ ] Update "First Steps" guide
 
 ### Next Week (Should Do)
+
 5. [ ] Deploy to 1 real platform (Railway) and verify
 6. [ ] Record walkthrough video
 7. [ ] Create 5-minute quickstart guide
 8. [ ] Add pre-deployment automation checks
 
 ### Next Month (Nice to Have)
+
 9. [ ] Deploy to all 6 platforms
 10. [ ] Community feedback loop
 11. [ ] Maintenance automation
@@ -365,6 +400,7 @@ bun run dev
 We spent time building documentation for **deployment, scaling, and operations** before validating that **the basics work**. That's backwards.
 
 Should have been:
+
 1. ✅ Scaffold works (not done correctly)
 2. ✅ Build works (not done correctly)
 3. ✅ Deploy works (documented but untested)

@@ -1,17 +1,11 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { authClient } from '@template/auth/client'
+import { Mail, Lock, Github, CheckCircle, LogOut } from '@template/ui/components/icons'
 import confetti from 'canvas-confetti'
+import { motion } from 'motion/react'
 import React, { useState } from 'react'
 import { CodeBlock } from '../ui/code-block'
-import { authClient } from '@template/auth/client'
-import {
-  Mail,
-  Lock,
-  Github,
-  CheckCircle,
-  LogOut,
-} from '@template/ui/components/icons'
 
 export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -87,9 +81,7 @@ export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
             <h3 className="mb-2 text-2xl font-bold text-white">
               Welcome, {currentSession.user.name}!
             </h3>
-            <p className="mb-6 text-neutral-400">
-              You are securely authenticated.
-            </p>
+            <p className="mb-6 text-neutral-400">You are securely authenticated.</p>
             <button
               onClick={handleSignOut}
               className="mx-auto flex items-center gap-2 rounded-lg bg-white/5 px-4 py-2 text-white transition-colors hover:bg-white/10"
@@ -149,17 +141,13 @@ export const AuthFlow = ({ mode = 'real' }: { mode?: 'mock' | 'real' }) => {
                 <div className="w-full border-t border-white/10"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-neutral-900 px-2 text-neutral-500">
-                  Or continue with
-                </span>
+                <span className="bg-neutral-900 px-2 text-neutral-500">Or continue with</span>
               </div>
             </div>
 
             <button
               onClick={() =>
-                mode === 'mock'
-                  ? handleLogin()
-                  : authClient.signIn.social({ provider: 'github' })
+                mode === 'mock' ? handleLogin() : authClient.signIn.social({ provider: 'github' })
               }
               className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-white font-medium text-black transition-colors hover:bg-neutral-200"
             >

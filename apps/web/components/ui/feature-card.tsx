@@ -1,9 +1,9 @@
 'use client'
 
-import React from 'react'
-import { motion } from 'motion/react'
-import { cn } from '@template/ui/lib/utils'
 import { ArrowRight } from '@template/ui/components/icons'
+import { cn } from '@template/ui/lib/utils'
+import { motion } from 'motion/react'
+import React from 'react'
 
 interface FeatureCardProps {
   title: string

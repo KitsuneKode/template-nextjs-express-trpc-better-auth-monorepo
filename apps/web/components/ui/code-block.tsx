@@ -1,9 +1,9 @@
 'use client'
 
-import { toast } from 'sonner'
-import { codeToHtml } from 'shiki'
-import React, { useEffect, useState } from 'react'
 import { Check, Copy } from '@template/ui/components/icons'
+import React, { useEffect, useState } from 'react'
+import { codeToHtml } from 'shiki'
+import { toast } from 'sonner'
 
 interface CodeBlockProps {
   code: string
@@ -11,11 +11,7 @@ interface CodeBlockProps {
   filename?: string
 }
 
-export const CodeBlock = ({
-  code,
-  language = 'typescript',
-  filename,
-}: CodeBlockProps) => {
+export const CodeBlock = ({ code, language = 'typescript', filename }: CodeBlockProps) => {
   const [html, setHtml] = useState('')
   const [copied, setCopied] = useState(false)
 

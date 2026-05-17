@@ -1,8 +1,8 @@
-import { runCommand, runCommandWithOutput, tryCommand } from '../src/lib/spawn'
-import { mkdtempSync, rmdirSync } from 'node:fs'
 import { describe, expect, it } from 'bun:test'
-import { join } from 'node:path'
+import { mkdtempSync, rmdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { runCommand, runCommandWithOutput, tryCommand } from '../src/lib/spawn'
 
 describe('runCommand', () => {
   it('throws for empty command', () => {

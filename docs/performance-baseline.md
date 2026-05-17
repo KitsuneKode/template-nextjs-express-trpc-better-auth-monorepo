@@ -396,28 +396,33 @@ Create a baseline document tracking performance metrics:
 # Performance Baseline (2024-05-16)
 
 ## Frontend Metrics (Lighthouse)
+
 - Performance: 95
 - Accessibility: 98
 - Best Practices: 95
 - SEO: 100
 
 ## Core Web Vitals
+
 - LCP: 1.2s
 - FID: 45ms
 - CLS: 0.05
 
 ## Backend Metrics
+
 - GET /api/posts: 45ms
 - POST /api/posts: 120ms
 - GET /api/posts/:id: 12ms
 - Database query average: 25ms
 
 ## Memory Usage
+
 - Initial heap: 45MB
 - Peak heap: 120MB
 - Average heap: 75MB
 
 ## Load Testing Results (100 RPS)
+
 - Success rate: 99.8%
 - Average response time: 145ms
 - P95 response time: 340ms
@@ -505,16 +510,16 @@ tracer.init()
 
 ## Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| LCP | < 2.5s | 1.2s ✅ |
-| FID | < 100ms | 45ms ✅ |
-| CLS | < 0.1 | 0.05 ✅ |
-| FCP | < 1.8s | 0.8s ✅ |
-| TTFB | < 600ms | 150ms ✅ |
-| API Latency (P50) | < 100ms | 45ms ✅ |
+| Metric            | Target  | Current  |
+| ----------------- | ------- | -------- |
+| LCP               | < 2.5s  | 1.2s ✅  |
+| FID               | < 100ms | 45ms ✅  |
+| CLS               | < 0.1   | 0.05 ✅  |
+| FCP               | < 1.8s  | 0.8s ✅  |
+| TTFB              | < 600ms | 150ms ✅ |
+| API Latency (P50) | < 100ms | 45ms ✅  |
 | API Latency (P95) | < 500ms | 340ms ✅ |
-| Load Test Success | > 99% | 99.8% ✅ |
+| Load Test Success | > 99%   | 99.8% ✅ |
 
 ## Running Performance Tests
 

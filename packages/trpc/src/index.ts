@@ -1,11 +1,11 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
 import type { AppRouter } from './routers/_app'
-import { createCallerFactory } from './trpc'
 import { appRouter } from './routers/_app'
+import { createCallerFactory } from './trpc'
 import { createTRPCContext } from './trpc'
-import { logger } from './utils/logger'
 import { config } from './utils/config'
+import { logger } from './utils/logger'
 /**
  * Inference helpers for input types
  * @example

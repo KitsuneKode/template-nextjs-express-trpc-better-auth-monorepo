@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import { cn } from '@template/ui/lib/utils'
+import type { ReactNode } from 'react'
 
 interface SectionShellProps {
   id?: string

@@ -9,6 +9,7 @@ Common production issues and how to resolve them.
 **Symptoms:** Server crashes on startup, error in logs
 
 **Diagnosis:**
+
 ```bash
 # Check error logs
 docker logs <container-id>
@@ -47,6 +48,7 @@ npx prisma migrate deploy
 **Symptoms:** Process takes too long to shut down, hits kill timeout
 
 **Check graceful shutdown:**
+
 ```typescript
 // apps/server/src/server.ts
 import { setupGracefulShutdown } from '@template/backend-common'
@@ -60,11 +62,12 @@ setupGracefulShutdown(server, {
   onShutdown: async () => {
     // Close database connections
     await prisma.$disconnect()
-  }
+  },
 })
 ```
 
 **If still timing out:**
+
 ```bash
 # Find hanging connections
 psql $DATABASE_URL -c "SELECT * FROM pg_stat_activity WHERE state != 'idle';"
@@ -78,6 +81,7 @@ psql $DATABASE_URL -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WH
 ### Database Connection Errors
 
 **Error: `connect ECONNREFUSED`**
+
 ```bash
 # Check if database is running
 docker ps | grep postgres
@@ -91,12 +95,13 @@ psql -U postgres -h localhost
 ```
 
 **Error: `FATAL: too many connections`**
+
 ```typescript
 // Reduce connection pool size
 const prisma = new PrismaClient({
   __internal: {
     debug: true,
-  }
+  },
 })
 
 // Or use connection pooler
@@ -106,15 +111,16 @@ const prisma = new PrismaClient({
 ### Slow Queries
 
 **Diagnosis:**
+
 ```sql
 -- Show current queries
-SELECT pid, usename, application_name, state, query 
-FROM pg_stat_activity 
+SELECT pid, usename, application_name, state, query
+FROM pg_stat_activity
 WHERE state != 'idle';
 
 -- Find slow queries
-SELECT query, calls, mean_time, max_time 
-FROM pg_stat_statements 
+SELECT query, calls, mean_time, max_time
+FROM pg_stat_statements
 ORDER BY mean_time DESC LIMIT 10;
 
 -- Analyze query plan
@@ -123,13 +129,14 @@ SELECT * FROM posts WHERE user_id = 123 ORDER BY created_at DESC LIMIT 10;
 ```
 
 **Common Fixes:**
+
 ```sql
 -- Missing index
 CREATE INDEX idx_posts_user_id ON posts(user_id);
 CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
 
 -- Index on filtered query
-CREATE INDEX idx_posts_published ON posts(published) 
+CREATE INDEX idx_posts_published ON posts(published)
 WHERE published = true;
 
 -- Composite index
@@ -139,19 +146,21 @@ CREATE INDEX idx_posts_user_published ON posts(user_id, published);
 ### Database Disk Space
 
 **Check disk usage:**
+
 ```sql
 -- Database size
-SELECT datname, pg_size_pretty(pg_database_size(datname)) 
-FROM pg_database 
+SELECT datname, pg_size_pretty(pg_database_size(datname))
+FROM pg_database
 ORDER BY pg_database_size(datname) DESC;
 
 -- Table size
-SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) 
-FROM pg_tables 
+SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename))
+FROM pg_tables
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 ```
 
 **Clean up:**
+
 ```bash
 # Remove old backups
 rm -rf backups/old-*.dump
@@ -161,7 +170,7 @@ psql $DATABASE_URL -c "VACUUM ANALYZE;"
 
 # Archive old data to separate table
 psql $DATABASE_URL -c "
-  CREATE TABLE posts_archive AS 
+  CREATE TABLE posts_archive AS
   SELECT * FROM posts WHERE created_at < NOW() - INTERVAL '1 year';
   DELETE FROM posts WHERE created_at < NOW() - INTERVAL '1 year';
 "
@@ -172,6 +181,7 @@ psql $DATABASE_URL -c "
 ### High Error Rate
 
 **Diagnosis:**
+
 ```bash
 # Check error logs
 grep "ERROR" logs/error.log | tail -50
@@ -200,6 +210,7 @@ grep -o '"status":[0-9]*' logs/access.log | sort | uniq -c
 ### High Latency
 
 **Diagnosis:**
+
 ```bash
 # Check response times
 tail -f logs/access.log | grep -E "duration|time"
@@ -212,6 +223,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://api.example.com/posts
 ```
 
 **Common Causes:**
+
 1. Database query slow → Add indexes, optimize queries
 2. External API call slow → Implement caching, timeout
 3. Memory leak → Restart service, investigate
@@ -220,6 +232,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://api.example.com/posts
 ### Timeouts
 
 **API timeout configuration:**
+
 ```typescript
 app.use(express.json({ timeout: '10s' }))
 
@@ -231,6 +244,7 @@ const client = new http.Agent({ keepAliveTimeout: 1000 * 60 * 60 })
 ```
 
 **Increase if needed:**
+
 ```bash
 # Nginx upstream timeout
 proxy_connect_timeout 60s;
@@ -250,6 +264,7 @@ aws elbv2 modify-target-group \
 **Symptoms:** Memory usage grows over time, never freed
 
 **Diagnose with heap snapshot:**
+
 ```typescript
 import heapdump from 'heapdump'
 
@@ -264,6 +279,7 @@ app.get('/debug/heap-snapshot', (req, res) => {
 ```
 
 **Common Causes:**
+
 ```typescript
 // ❌ Circular references
 const obj = { self: null }
@@ -293,6 +309,7 @@ emitter.removeListener('event', handler)
 ### CPU Spike
 
 **Diagnosis:**
+
 ```bash
 # Check CPU usage
 top -p $(pgrep -f "node.*app")
@@ -304,6 +321,7 @@ cat profile.txt | grep -i "overhead\|us\|pc"
 ```
 
 **Common Causes:**
+
 1. Infinite loop → Fix logic, restart
 2. Regex catastrophic backtracking → Simplify regex
 3. N+1 queries → Add eager loading
@@ -324,6 +342,7 @@ SELECT pg_reload_conf();
 ```
 
 **Diagnose from app:**
+
 ```typescript
 app.get('/debug/db-connections', async (req, res) => {
   const result = await prisma.$queryRaw`SELECT count(*) FROM pg_stat_activity;`
@@ -336,6 +355,7 @@ app.get('/debug/db-connections', async (req, res) => {
 ### Users Can't Login
 
 **Diagnosis:**
+
 ```bash
 # Check auth service logs
 docker logs auth-service
@@ -358,10 +378,12 @@ curl -X POST http://localhost:3000/api/auth/signin \
 
 // CORS issue with auth cookie
 // Fix: Add proper CORS headers
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }),
+)
 
 // Database migration not run
 // Fix: npx prisma migrate deploy
@@ -370,6 +392,7 @@ app.use(cors({
 ### Permission Denied
 
 **Diagnosis:**
+
 ```typescript
 // Check middleware
 app.get('/api/admin', requireAdmin, (req, res) => {
@@ -383,6 +406,7 @@ app.get('/debug/session', (req, res) => {
 ```
 
 **Fix:**
+
 ```typescript
 // Ensure role is set correctly in database
 UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
@@ -396,6 +420,7 @@ UPDATE users SET role = 'admin' WHERE email = 'admin@example.com';
 ### Upload Failures
 
 **Diagnosis:**
+
 ```bash
 # Check disk space
 df -h
@@ -428,6 +453,7 @@ chmod 755 /uploads/
 ### External API Down
 
 **Graceful degradation:**
+
 ```typescript
 async function getDataWithFallback() {
   try {
@@ -445,13 +471,14 @@ import CircuitBreaker from 'opossum'
 const breaker = new CircuitBreaker(externalApi.get, {
   timeout: 3000,
   errorThresholdPercentage: 50,
-  resetTimeout: 30000
+  resetTimeout: 30000,
 })
 ```
 
 ### Payment Processing Failures
 
 **Diagnosis:**
+
 ```bash
 # Check payment service logs
 # Stripe: https://dashboard.stripe.com/logs
@@ -462,6 +489,7 @@ curl -X POST http://localhost:3000/api/webhooks/stripe \
 ```
 
 **Common Fixes:**
+
 ```typescript
 // Retry logic
 async function processPayment(amount: number) {
@@ -479,9 +507,9 @@ async function processPayment(amount: number) {
 app.post('/api/webhooks/stripe', (req, res) => {
   // Send 200 immediately
   res.json({ received: true })
-  
+
   // Process async
-  handleStripeEvent(req.body).catch(err => {
+  handleStripeEvent(req.body).catch((err) => {
     logger.error('Webhook processing failed', err)
     // Re-queue or alert
   })
@@ -493,6 +521,7 @@ app.post('/api/webhooks/stripe', (req, res) => {
 ### Alerts Not Firing
 
 **Check alert configuration:**
+
 ```bash
 # Sentry: https://sentry.io/ → Settings → Alerts
 # DataDog: https://app.datadoghq.com/ → Monitors
@@ -504,6 +533,7 @@ app.post('/api/webhooks/stripe', (req, res) => {
 ```
 
 **Common Issues:**
+
 - Wrong email configured
 - Slack webhook invalid
 - Threshold set too high
@@ -514,6 +544,7 @@ app.post('/api/webhooks/stripe', (req, res) => {
 ### Site Down - Immediate Response
 
 1. **Verify it's actually down:**
+
    ```bash
    curl -I https://api.example.com
    ping example.com
@@ -526,18 +557,21 @@ app.post('/api/webhooks/stripe', (req, res) => {
    - External APIs: Status page
 
 3. **Check logs:**
+
    ```bash
    tail -f logs/error.log
    docker logs <service> --tail 100
    ```
 
 4. **Restart services:**
+
    ```bash
    docker restart api worker
    systemctl restart node-app
    ```
 
 5. **Scale up if needed:**
+
    ```bash
    kubectl scale deployment api --replicas=5
    ```
@@ -567,6 +601,7 @@ git push
 ## Performance Checklist
 
 Production Health:
+
 - ✅ Error rate < 1%
 - ✅ API p95 response time < 500ms
 - ✅ Memory usage stable

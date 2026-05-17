@@ -1,9 +1,9 @@
-import { createTRPCRouter, publicProcedure } from '../trpc'
-import { userRouter } from './user'
-import { postRouter } from './post'
-import { chatRouter } from './chat'
-import { authRouter } from './auth'
 import { z } from 'zod'
+import { createTRPCRouter, publicProcedure } from '../trpc'
+import { authRouter } from './auth'
+import { chatRouter } from './chat'
+import { postRouter } from './post'
+import { userRouter } from './user'
 
 export const appRouter = createTRPCRouter({
   auth: authRouter,

@@ -2,44 +2,41 @@
   "name": "@kitsu/create",
   "version": "0.2.0",
   "description": "Bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
-  "author": "kitsunekode <bhuyanmanash2002@gmail.com>",
+  "keywords": [
+    "better-auth",
+    "boilerplate",
+    "cli",
+    "express",
+    "fullstack",
+    "monorepo",
+    "nextjs",
+    "prisma",
+    "scaffold",
+    "starter",
+    "template",
+    "trpc",
+    "turborepo",
+    "typescript"
+  ],
+  "homepage": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo#readme",
+  "bugs": {
+    "url": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo/issues"
+  },
   "license": "MIT",
+  "author": "kitsunekode <bhuyanmanash2002@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo.git",
     "directory": "apps/cli"
   },
-  "homepage": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo#readme",
-  "bugs": {
-    "url": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo/issues"
-  },
-  "keywords": [
-    "cli",
-    "scaffold",
-    "boilerplate",
-    "typescript",
-    "nextjs",
-    "express",
-    "trpc",
-    "better-auth",
-    "prisma",
-    "monorepo",
-    "turborepo",
-    "fullstack",
-    "starter",
-    "template"
-  ],
-  "type": "module",
   "bin": {
-    "create-kitsu-stack": "dist/index.js",
-    "@kitsu/create": "dist/index.js"
+    "@kitsu/create": "dist/index.js",
+    "create-kitsu-stack": "dist/index.js"
   },
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": ">=20.0.0"
-  },
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
@@ -66,5 +63,8 @@
     "@types/node": "^22.0.0",
     "eslint": "^9.39.4",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

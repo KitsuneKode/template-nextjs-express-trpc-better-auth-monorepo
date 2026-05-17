@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-import { basename, dirname, relative, resolve } from 'path'
 import { access } from 'fs/promises'
+import { basename, dirname, relative, resolve } from 'path'
 
 type Severity = 'error' | 'warn' | 'info'
 
@@ -133,7 +133,8 @@ async function checkBoilerplateDocs(): Promise<Finding[]> {
             code: entry.code,
             path,
             message: entry.message,
-            suggestion: 'Replace the file with a short workspace-specific redirect or real instructions.',
+            suggestion:
+              'Replace the file with a short workspace-specific redirect or real instructions.',
           })
         }
       }
@@ -207,18 +208,15 @@ async function checkSuspiciousPaths(): Promise<Finding[]> {
         code: 'suspicious-path-name',
         path,
         message: 'Directory name looks like a typo of "websocket".',
-        suggestion: 'Rename or remove the directory before real tests accumulate under the wrong path.',
+        suggestion:
+          'Rename or remove the directory before real tests accumulate under the wrong path.',
       })
     }
   }
   return findings
 }
 
-function readExportTargets(
-  currentPath: string,
-  value: unknown,
-  found: string[] = [],
-): string[] {
+function readExportTargets(currentPath: string, value: unknown, found: string[] = []): string[] {
   if (typeof value === 'string') {
     found.push(value)
     return found

@@ -1,17 +1,7 @@
 'use client'
 
-import {
-  Database,
-  Lock,
-  MessageSquare,
-  Shield,
-} from '@template/ui/components/icons'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@template/ui/components/tabs'
+import { Database, Lock, MessageSquare, Shield } from '@template/ui/components/icons'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@template/ui/components/tabs'
 
 const proof = [
   {
@@ -71,9 +61,7 @@ export function ProofTabs() {
           value={item.id}
           className="mt-4 rounded-2xl border border-white/10 bg-[#0d1218]/88 p-5"
         >
-          <p className="text-sm leading-relaxed text-[#c4b19a]">
-            {item.detail}
-          </p>
+          <p className="text-sm leading-relaxed text-[#c4b19a]">{item.detail}</p>
           <pre className="mt-4 rounded-xl border border-white/8 bg-[#080c11] p-3 text-xs break-all whitespace-pre-wrap text-[#9eb2c3]">
             <code>{item.snippet}</code>
           </pre>

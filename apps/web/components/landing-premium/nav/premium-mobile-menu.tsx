@@ -1,12 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import type { SiteDesign } from '@/lib/site-design'
-import type { Dispatch, SetStateAction } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
 import { Github } from '@template/ui/components/icons'
+import { AnimatePresence, motion } from 'motion/react'
+import Link from 'next/link'
+import type { Dispatch, SetStateAction } from 'react'
 import { DesignToggle } from '@/components/shell/design-toggle'
 import { LinkPendingIndicator } from '@/components/shell/link-pending-indicator'
+import type { SiteDesign } from '@/lib/site-design'
 
 interface PremiumMobileMenuProps {
   design: SiteDesign
@@ -15,12 +15,7 @@ interface PremiumMobileMenuProps {
   links: readonly { href: string; label: string }[]
 }
 
-export function PremiumMobileMenu({
-  design,
-  isOpen,
-  setIsOpen,
-  links,
-}: PremiumMobileMenuProps) {
+export function PremiumMobileMenu({ design, isOpen, setIsOpen, links }: PremiumMobileMenuProps) {
   return (
     <AnimatePresence>
       {isOpen ? (

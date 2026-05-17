@@ -7,11 +7,13 @@ This is the **decision tree** for navigating all production documentation. Use t
 **Are you...** → **Go to:**
 
 ### Getting Started
+
 - Scaffolding a new project? → `template-variants.md` (pick your type) → Get started guide in that variant doc
 - Deploying to production for the first time? → `deployment-checklist.md` (this page, below)
 - Running locally? → `docs/README.md` (repo level) + specific template variant
 
 ### Building Features
+
 - Adding a new API endpoint? → `packages/trpc/README.md` + `backend-only.md` (API section)
 - Building UI components? → `packages/ui/README.md` + `frontend-design` skill
 - Working with authentication? → `packages/auth/README.md`
@@ -19,6 +21,7 @@ This is the **decision tree** for navigating all production documentation. Use t
 - Storing data? → `packages/store/README.md` (Prisma schema) or variant doc (Convex, MongoDB, etc.)
 
 ### Debugging & Optimization
+
 - "Site is slow"? → `troubleshooting.md` (Quick Diagnosis) → `performance-optimization.md` (fix it)
 - "Many errors in production"? → `troubleshooting.md` (High Error Rate) → `monitoring-setup.md` (track it)
 - "Can't login"? → `troubleshooting.md` (Authentication Issues) → `packages/auth/README.md`
@@ -26,6 +29,7 @@ This is the **decision tree** for navigating all production documentation. Use t
 - Database too slow? → `troubleshooting.md` (Slow Queries) → `performance-optimization.md` (Query Optimization)
 
 ### Scaling & Operations
+
 - Need to handle more users? → `scaling-strategies.md`
 - Need monitoring/alerting? → `monitoring-setup.md`
 - Building for multiple regions? → `scaling-strategies.md` (Multi-Region Deployment)
@@ -33,11 +37,13 @@ This is the **decision tree** for navigating all production documentation. Use t
 - Performance benchmarks? → `performance-baseline.md`
 
 ### Testing
+
 - E2E tests? → `e2e-testing.md`
 - Unit tests? → `e2e-testing.md` (Vitest section)
 - Load testing? → `load-testing.md`
 
 ### Deployment
+
 - First time deploying? → Start here ↓ (read Deployment Checklist)
 - Deploying to specific platform? → `deployment-platforms.md` (Vercel, AWS, Heroku, etc.)
 - Kubernetes? → `deployment-kubernetes.md`
@@ -121,23 +127,24 @@ template-variants.md ← (pick: Full Stack, Convex, Standalone, Backend-only)
 
 ## Key Docs at a Glance
 
-| Situation | Duration | Doc | Key Sections |
-|-----------|----------|-----|--------------|
-| **Getting started** | 5 min | template-variants.md | Choose type, read getting started |
-| **Build first feature** | 30 min | packages/*/README.md | Entry points, examples |
-| **Local development** | 15 min | docs/README.md | Setup, env vars, npm scripts |
-| **Test locally** | 20 min | e2e-testing.md | Run Playwright tests |
-| **First deployment** | 2 hrs | deployment-* | Follow checklist + platform guide |
-| **Site is slow** | 1 hr | troubleshooting.md → performance-optimization.md | Diagnose → fix |
-| **Error spike** | 30 min | troubleshooting.md → monitoring-setup.md | Check logs → set up alerts |
-| **Scale for growth** | 2 hrs | scaling-strategies.md | Add replicas, caching, LB |
-| **Production incident** | Real-time | troubleshooting.md | Emergency procedures |
+| Situation               | Duration  | Doc                                              | Key Sections                      |
+| ----------------------- | --------- | ------------------------------------------------ | --------------------------------- |
+| **Getting started**     | 5 min     | template-variants.md                             | Choose type, read getting started |
+| **Build first feature** | 30 min    | packages/\*/README.md                            | Entry points, examples            |
+| **Local development**   | 15 min    | docs/README.md                                   | Setup, env vars, npm scripts      |
+| **Test locally**        | 20 min    | e2e-testing.md                                   | Run Playwright tests              |
+| **First deployment**    | 2 hrs     | deployment-\*                                    | Follow checklist + platform guide |
+| **Site is slow**        | 1 hr      | troubleshooting.md → performance-optimization.md | Diagnose → fix                    |
+| **Error spike**         | 30 min    | troubleshooting.md → monitoring-setup.md         | Check logs → set up alerts        |
+| **Scale for growth**    | 2 hrs     | scaling-strategies.md                            | Add replicas, caching, LB         |
+| **Production incident** | Real-time | troubleshooting.md                               | Emergency procedures              |
 
 ---
 
 ## Architecture at a Glance
 
 **Full Stack (default):**
+
 ```
 Frontend (Next.js) ← HTTP/WebSocket → Backend (Express)
                                         ↓
@@ -153,6 +160,7 @@ Frontend (Next.js) ← HTTP/WebSocket → Backend (Express)
 ```
 
 **Convex variant:**
+
 ```
 Frontend (Next.js) ← HTTP/WebSocket → Convex (serverless)
                                         ↓
@@ -160,6 +168,7 @@ Frontend (Next.js) ← HTTP/WebSocket → Convex (serverless)
 ```
 
 **Standalone Next.js:**
+
 ```
 Frontend (Next.js with API routes)
     ↓
@@ -168,6 +177,7 @@ Frontend (Next.js with API routes)
 ```
 
 **Backend-only:**
+
 ```
 Express Server (tRPC)
     ↓
@@ -205,11 +215,13 @@ Redis (for queues, caching)
 ### "Site is down"
 
 1. **Verify it's actually down**
+
    ```bash
    curl -I https://api.example.com
    ```
 
 2. **Check logs**
+
    ```bash
    tail -f logs/error.log
    # or
@@ -253,23 +265,24 @@ Redis (for queues, caching)
 
 ## Where Each Skill Fits
 
-| Skill | When to Use | Examples |
-|-------|------------|----------|
-| `context7-mcp` | Library setup, code examples | Prisma, Next.js, tRPC |
-| `next-best-practices` | Building Next.js features | RSC, data patterns, optimization |
-| `shadcn` | UI components, styling | Adding components, customizing |
-| `frontend-design` | Visual design, UI polish | Making interfaces beautiful |
-| `make-interfaces-feel-better` | Micro-interactions, animations | Hover states, transitions |
-| `gsap-react` | Complex animations | Scroll effects, choreography |
-| `turborepo` | Monorepo setup, task pipelines | Adding packages, CI/CD |
-| `vercel-react-best-practices` | Performance optimization | Bundle size, data fetching |
-| `grill-me` | Decision-making, stress-testing | "Should we do X?" |
+| Skill                         | When to Use                     | Examples                         |
+| ----------------------------- | ------------------------------- | -------------------------------- |
+| `context7-mcp`                | Library setup, code examples    | Prisma, Next.js, tRPC            |
+| `next-best-practices`         | Building Next.js features       | RSC, data patterns, optimization |
+| `shadcn`                      | UI components, styling          | Adding components, customizing   |
+| `frontend-design`             | Visual design, UI polish        | Making interfaces beautiful      |
+| `make-interfaces-feel-better` | Micro-interactions, animations  | Hover states, transitions        |
+| `gsap-react`                  | Complex animations              | Scroll effects, choreography     |
+| `turborepo`                   | Monorepo setup, task pipelines  | Adding packages, CI/CD           |
+| `vercel-react-best-practices` | Performance optimization        | Bundle size, data fetching       |
+| `grill-me`                    | Decision-making, stress-testing | "Should we do X?"                |
 
 ---
 
 ## Document Maintenance
 
 These docs are meant to **live and grow**. When you:
+
 - **Deploy successfully** → Add notes to `deployment-platforms.md`
 - **Hit production bug** → Add to `troubleshooting.md`
 - **Optimize something** → Add to `performance-optimization.md`

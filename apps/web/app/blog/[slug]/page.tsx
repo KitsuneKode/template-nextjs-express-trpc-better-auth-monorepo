@@ -1,15 +1,4 @@
-import Link from 'next/link'
-import { Metadata } from 'next'
-import { cacheLife } from 'next/cache'
-import { cookies } from 'next/headers'
-import { Streamdown } from 'streamdown'
 import { prisma } from '@template/store'
-import { notFound } from 'next/navigation'
-import { Footer } from '@/components/landing/Footer'
-import { SectionWrapper } from '@/components/ui/section-wrapper'
-import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
-import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
-import { PremiumBlogArticle } from '@/components/landing-premium/sections/premium-blog-article'
 import {
   ArrowLeft,
   Calendar,
@@ -18,6 +7,17 @@ import {
   Twitter,
   Linkedin,
 } from '@template/ui/components/icons'
+import { Metadata } from 'next'
+import { cacheLife } from 'next/cache'
+import { cookies } from 'next/headers'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { Streamdown } from 'streamdown'
+import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
+import { PremiumBlogArticle } from '@/components/landing-premium/sections/premium-blog-article'
+import { Footer } from '@/components/landing/Footer'
+import { SectionWrapper } from '@/components/ui/section-wrapper'
+import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -60,26 +60,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const slug = (await params).slug
-  const [cookieStore, post] = await Promise.all([
-    cookies(),
-    getPostBySlug(slug),
-  ])
+  const [cookieStore, post] = await Promise.all([cookies(), getPostBySlug(slug)])
 
   if (!post) notFound()
 
-  const design = resolveSiteDesign(
-    cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value,
-  )
+  const design = resolveSiteDesign(cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value)
 
   if (design === 'design2') {
     return (
       <PremiumSiteShell>
         <div className="pt-10 md:pt-14">
-          <PremiumBlogArticle
-            post={post}
-            backHref="/blog"
-            backLabel="Back to blog"
-          />
+          <PremiumBlogArticle post={post} backHref="/blog" backLabel="Back to blog" />
         </div>
       </PremiumSiteShell>
     )

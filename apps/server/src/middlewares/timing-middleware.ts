@@ -1,7 +1,7 @@
-import type { NextFunction, Request, Response } from 'express'
-import { logger } from '@/utils/logger'
-import { config } from '@/utils/config'
 import { sleep } from 'bun'
+import type { NextFunction, Request, Response } from 'express'
+import { config } from '@/utils/config'
+import { logger } from '@/utils/logger'
 
 export const timingMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
   const start = process.hrtime.bigint()

@@ -1,8 +1,9 @@
-/**
- * Security Best Practices Guide
- *
- * This document outlines security considerations and best practices.
- */
+/\*\*
+
+- Security Best Practices Guide
+-
+- This document outlines security considerations and best practices.
+  \*/
 
 # Security Best Practices
 
@@ -15,6 +16,7 @@
 - ✅ Validate all environment variables on startup
 
 Example:
+
 ```bash
 BETTER_AUTH_SECRET=your-random-32-character-minimum-secret
 ```
@@ -65,6 +67,7 @@ BETTER_AUTH_SECRET=your-random-32-character-minimum-secret
 ## Secrets Management
 
 For production:
+
 - AWS Secrets Manager
 - Google Cloud Secret Manager
 - HashiCorp Vault
@@ -72,6 +75,7 @@ For production:
 - 1Password Secrets
 
 Never:
+
 - ❌ Commit secrets to git
 - ❌ Log secrets
 - ❌ Pass secrets in URLs

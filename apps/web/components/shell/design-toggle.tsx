@@ -1,14 +1,10 @@
 'use client'
 
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
 import { cn } from '@template/ui/lib/utils'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
-import {
-  SITE_DESIGN_COOKIE_NAME,
-  SiteDesign,
-  toSiteDesignCookieValue,
-} from '@/lib/site-design'
+import { toast } from 'sonner'
+import { SITE_DESIGN_COOKIE_NAME, SiteDesign, toSiteDesignCookieValue } from '@/lib/site-design'
 
 interface DesignToggleProps {
   design: SiteDesign
@@ -21,11 +17,7 @@ const labels = {
   design2: 'Design 2',
 } as const
 
-export function DesignToggle({
-  design,
-  tone = 'classic',
-  className,
-}: DesignToggleProps) {
+export function DesignToggle({ design, tone = 'classic', className }: DesignToggleProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [activeDesign, setActiveDesign] = useState<SiteDesign>(design)
@@ -53,9 +45,7 @@ export function DesignToggle({
     <div
       className={cn(
         'inline-flex items-center rounded-full border p-1',
-        tone === 'premium'
-          ? 'border-white/15 bg-white/[0.03]'
-          : 'border-white/10 bg-white/[0.02]',
+        tone === 'premium' ? 'border-white/15 bg-white/[0.03]' : 'border-white/10 bg-white/[0.02]',
         className,
       )}
     >

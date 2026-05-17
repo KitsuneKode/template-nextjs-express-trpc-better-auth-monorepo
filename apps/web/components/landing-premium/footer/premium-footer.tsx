@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { Github } from '@template/ui/components/icons'
+import Link from 'next/link'
 import type { SiteDesignNamespace } from '@/lib/site-design'
 
 const landingLinks = [
@@ -38,8 +38,7 @@ export function PremiumFooter({ namespace = 'landing' }: PremiumFooterProps) {
               Premium baseline for teams shipping real software.
             </p>
             <p className="mt-3 text-sm text-[#b9a68d]">
-              Architecture, UI system, and developer workflows aligned from day
-              one.
+              Architecture, UI system, and developer workflows aligned from day one.
             </p>
           </div>
           <Link

@@ -1,8 +1,8 @@
 'use client'
 
+import { Play, Database, Table } from '@template/ui/components/icons'
 import React, { useState } from 'react'
 import { CodeBlock } from '@/components/ui/code-block'
-import { Play, Database, Table } from '@template/ui/components/icons'
 
 export const DatabasePlayground = () => {
   const [query, setQuery] = useState(`await prisma.user.findMany({
@@ -81,9 +81,7 @@ export const DatabasePlayground = () => {
             ) : result ? (
               <pre>{result}</pre>
             ) : (
-              <span className="text-neutral-600">
-                {'// Results will appear here'}
-              </span>
+              <span className="text-neutral-600">{'// Results will appear here'}</span>
             )}
           </div>
         </div>

@@ -1,14 +1,9 @@
 'use client'
 
-import React from 'react'
-import Link from 'next/link'
+import { Lock, MessageSquare, FileText, ArrowLeft } from '@template/ui/components/icons'
 import { motion } from 'motion/react'
-import {
-  Lock,
-  MessageSquare,
-  FileText,
-  ArrowLeft,
-} from '@template/ui/components/icons'
+import Link from 'next/link'
+import React from 'react'
 
 const demos = [
   {
@@ -16,8 +11,7 @@ const demos = [
     description: 'Secure sign-in and sign-up flows with Better Auth.',
     icon: <Lock className="h-8 w-8 text-emerald-400" />,
     href: '/demo/auth',
-    color:
-      'bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-500/50',
+    color: 'bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-500/50',
   },
   {
     title: 'Real-time Chat',
@@ -47,12 +41,10 @@ export default function DemoPage() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Home
           </Link>
-          <h1 className="mb-4 text-4xl font-bold md:text-6xl">
-            Template Demos
-          </h1>
+          <h1 className="mb-4 text-4xl font-bold md:text-6xl">Template Demos</h1>
           <p className="max-w-2xl text-xl text-neutral-400">
-            Explore the capabilities of this starter template. Each demo
-            showcases a specific feature implementation.
+            Explore the capabilities of this starter template. Each demo showcases a specific
+            feature implementation.
           </p>
         </div>
 
@@ -65,9 +57,7 @@ export default function DemoPage() {
                 transition={{ delay: index * 0.1 }}
                 className={`h-full rounded-2xl border p-8 transition-all duration-300 hover:scale-[1.02] ${demo.color}`}
               >
-                <div className="mb-6 w-fit rounded-xl bg-neutral-900/50 p-4">
-                  {demo.icon}
-                </div>
+                <div className="mb-6 w-fit rounded-xl bg-neutral-900/50 p-4">{demo.icon}</div>
                 <h2 className="mb-3 text-2xl font-bold">{demo.title}</h2>
                 <p className="text-neutral-400">{demo.description}</p>
               </motion.div>

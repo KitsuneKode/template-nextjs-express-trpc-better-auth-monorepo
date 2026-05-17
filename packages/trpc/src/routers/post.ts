@@ -1,7 +1,7 @@
-import { protectedProcedure, publicProcedure } from '../trpc'
-import type { TRPCRouterRecord } from '@trpc/server'
 import { prisma } from '@template/store'
+import type { TRPCRouterRecord } from '@trpc/server'
 import { z } from 'zod'
+import { protectedProcedure, publicProcedure } from '../trpc'
 
 export const postRouter = {
   list: publicProcedure.query(async () => {

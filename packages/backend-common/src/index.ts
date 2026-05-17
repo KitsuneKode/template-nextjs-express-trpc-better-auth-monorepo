@@ -6,4 +6,4 @@
 //
 // This file is intentionally minimal — see subpath exports in package.json.
 
-export {};
+export {}
