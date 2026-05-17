@@ -1,16 +1,17 @@
 import { describe, expect, it } from 'bun:test'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
+import { buildRootAgentsMd, buildContextMd } from '../../../apps/cli/src/lib/generators/agent-docs'
 import { renderGithubActionsWorkflow } from '../../../apps/cli/src/lib/generators/ci'
 import { renderDockerCompose } from '../../../apps/cli/src/lib/generators/docker'
 import { buildServerEnv } from '../../../apps/cli/src/lib/generators/env'
-import { buildCleanupTargets, sanitizeProjectName, scaffoldProject } from '../../../apps/cli/src/lib/scaffold'
 import { buildReadme } from '../../../apps/cli/src/lib/generators/readme'
 import {
-  buildRootAgentsMd,
-  buildContextMd,
-} from '../../../apps/cli/src/lib/generators/agent-docs'
+  buildCleanupTargets,
+  sanitizeProjectName,
+  scaffoldProject,
+} from '../../../apps/cli/src/lib/scaffold'
 import type { ProjectConfig } from '../../../apps/cli/src/types/schemas'
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
 
 function baseConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
   return {
@@ -142,7 +143,14 @@ describe('family-aware context', () => {
   })
 
   it('includes backend-specific architecture for backend family', () => {
-    const ctx = buildContextMd(baseConfig({ family: 'backend', backend: 'express-bun', database: 'postgres', orm: 'prisma' }))
+    const ctx = buildContextMd(
+      baseConfig({
+        family: 'backend',
+        backend: 'express-bun',
+        database: 'postgres',
+        orm: 'prisma',
+      }),
+    )
     expect(ctx).toContain('API service')
     expect(ctx).toContain('express-bun')
     expect(ctx).not.toContain('Frontend')
@@ -161,7 +169,9 @@ describe('scaffold smoke tests', () => {
 
   it('scaffolds a ts-turbo project and produces expected files', async () => {
     // Remove any leftover from previous runs
-    try { Bun.spawnSync(['rm', '-rf', smokeDir]) } catch {}
+    try {
+      Bun.spawnSync(['rm', '-rf', smokeDir])
+    } catch {}
 
     const result = await scaffoldProject(
       baseConfig({
