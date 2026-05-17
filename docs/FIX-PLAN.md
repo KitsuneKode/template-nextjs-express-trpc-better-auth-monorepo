@@ -23,7 +23,7 @@ Priority: CRITICAL (blocks all scaffolding)
 
 ### Location
 
-- `apps/cli/src/lib/scaffold.ts:222-236` — Code exists but has a bug
+- `apps/cli/src/lib/scaffold.ts` — Code exists but has a bug
 - `apps/cli/src/lib/generators/env.ts` — Generator functions exist
 
 ### What's Happening

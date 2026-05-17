@@ -15,7 +15,7 @@ This is the **decision tree** for navigating all production documentation. Use t
 ### Building Features
 
 - Adding a new API endpoint? → `packages/trpc/README.md` + `backend-only.md` (API section)
-- Building UI components? → `packages/ui/README.md` + `frontend-design` skill
+- Building UI components? → `packages/ui/AGENTS.md` + `frontend-design` skill
 - Working with authentication? → `packages/auth/README.md`
 - Setting up background jobs? → `apps/worker/README.md` or `backend-only.md` (Job Processing section)
 - Storing data? → `packages/store/README.md` (Prisma schema) or variant doc (Convex, MongoDB, etc.)
@@ -102,7 +102,7 @@ template-variants.md ← (pick: Full Stack, Convex, Standalone, Backend-only)
 [Dev] Build Features
     ├─→ packages/auth/README.md (auth)
     ├─→ packages/trpc/README.md (API)
-    ├─→ packages/ui/README.md (components)
+    ├─→ packages/ui/AGENTS.md (components)
     ├─→ packages/store/README.md (database)
     └─→ apps/worker/README.md (jobs)
     ↓
@@ -205,7 +205,7 @@ Redis (for queues, caching)
 3. **Add UI component**
    - Edit `apps/web/components/...`
    - Import from `packages/ui` for shared components
-   - Read: `packages/ui/README.md`
+   - Read: `packages/ui/AGENTS.md`
 
 4. **Connect with tests**
    - Add E2E test in `tests/e2e/...`

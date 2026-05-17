@@ -19,7 +19,7 @@ This CLI is part of KitsuneKode's developer ecosystem. See `apps/cli/CLI-SPEC.md
 **Key context:**
 
 - The portfolio at `kitsunekode.in` syncs project content from `SHOWCASE.mdx` files in GitHub repos
-- Every scaffolded project should include a `SHOWCASE.mdx` template (source: `internals` repo, `docs/SHOWCASE-TEMPLATE.mdx`)
+- Every scaffolded project should include a `SHOWCASE.mdx` template (ts-turbo family only)
 - The portfolio uses Supabase as source of truth, with MDX files as one input source
 - Projects are categorized by type: fullstack, web3, ai, mobile, infra
 - See `apps/cli/CLI-SPEC.md` for implementation details on the portfolio-ready scaffolding extension
