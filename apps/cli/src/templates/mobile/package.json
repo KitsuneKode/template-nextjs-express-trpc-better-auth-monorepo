@@ -1,0 +1,20 @@
+{
+  "name": "@acme/mobile",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo start --ios",
+    "android": "expo start --android"
+  },
+  "dependencies": {
+    "expo": "~52",
+    "expo-router": "~4",
+    "react": "^19",
+    "react-native": "^0.76"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

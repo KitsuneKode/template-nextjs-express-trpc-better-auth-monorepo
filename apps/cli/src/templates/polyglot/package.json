@@ -1,0 +1,14 @@
+{
+  "name": "@acme/polyglot",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build"
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  }
+}

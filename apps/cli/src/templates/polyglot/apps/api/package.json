@@ -1,0 +1,16 @@
+{
+  "name": "@acme/polyglot-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^5"
+  },
+  "devDependencies": {
+    "@types/express": "^5",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@acme/polyglot-worker",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1"
+  }
+}
