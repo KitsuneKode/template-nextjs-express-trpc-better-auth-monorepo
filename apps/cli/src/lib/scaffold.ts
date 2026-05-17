@@ -22,6 +22,8 @@ import {
   buildTrpcRulesMd,
   buildReadme,
   buildShowcaseMdx,
+  writeSkillConfigs,
+  applyBundleTransforms,
 } from './generators'
 import { pmInstall } from './pm'
 import { runCommand, tryCommand } from './spawn'
@@ -339,7 +341,10 @@ export async function scaffoldProject(
   // Write kitsu.jsonc for reproducibility
   await writeGeneratedFile(destinationDir, 'kitsu.jsonc', buildKitsuConfig(options))
 
-  const generatedFiles: string[] = ['kitsu.jsonc']
+  // Apply bundle transforms (realtime, growth, infra, ai)
+  const bundleFiles = applyBundleTransforms(destinationDir, options)
+
+  const generatedFiles: string[] = ['kitsu.jsonc', ...bundleFiles]
 
   // Family-aware env generation
   const hasServer = !shouldStripServer(family)
@@ -394,6 +399,9 @@ export async function scaffoldProject(
   generatedFiles.push('CONTEXT.md')
   await writeGeneratedFile(destinationDir, 'CLAUDE.md', buildClaudeMd())
   generatedFiles.push('CLAUDE.md')
+
+  // Agent skill configuration
+  writeSkillConfigs(destinationDir, options)
 
   // Generate .claude/rules/ directory for path-scoped agent rules
   if (hasServer) {

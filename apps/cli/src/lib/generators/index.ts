@@ -24,3 +24,5 @@ export {
 } from './agent-docs'
 export { buildReadme } from './readme'
 export { buildShowcaseMdx } from './showcase'
+export { writeSkillConfigs, buildSkillRecommendations } from './skills'
+export { applyBundleTransforms } from './bundles'

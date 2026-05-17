@@ -50,34 +50,71 @@ function keyDirs(config: ProjectConfig): string[] {
   return dirs
 }
 
-function commandsForFamily(family: string): string[] {
+function commandsForFamily(family: string, pm: string): string[] {
+  const run = pm === 'bun' ? 'bun run' : pm === 'pnpm' ? 'pnpm' : 'npm run'
+
   const cmds: string[] = [
-    '- `bun dev` — Start development',
-    '- `bun run build` — Build all packages',
-    '- `bun run lint` — Lint all packages',
-    '- `bun run check-types` — Type check all packages',
+    `- \`${pm} dev\` — Start development`,
+    `- \`${run} build\` — Build all packages`,
+    `- \`${run} lint\` — Lint all packages`,
+    `- \`${run} check-types\` — Type check all packages`,
   ]
 
   if (family === 'ts-turbo' || family === 'backend') {
-    cmds.push('- `bun run db:generate` — Generate database client')
-    cmds.push('- `bun run db:migrate` — Run database migrations')
+    cmds.push(`- \`${run} db:generate\` — Generate database client`)
+    cmds.push(`- \`${run} db:migrate\` — Run database migrations`)
   }
 
   return cmds
 }
 
+function agentPrompt(family: string): string[] {
+  const prompts: string[] = [
+    'Before making changes, read the relevant files listed under Key Directories.',
+    'Update CONTEXT.md and this AGENTS.md when adding new endpoints, packages, or auth flows.',
+    'Run `bun run repo:doctor` after structural changes to verify consistency.',
+    'Update SHOWCASE.mdx when adding significant features.',
+  ]
+
+  if (family === 'ts-turbo') {
+    prompts.push(
+      'When adding a new tRPC procedure: create the router, add to _app.ts, update trpc.md rule.',
+    )
+    prompts.push(
+      'When modifying the Prisma schema: run db:generate and db:migrate, update the store rule.',
+    )
+  }
+
+  return prompts
+}
+
 export function buildRootAgentsMd(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
   const dirs = keyDirs(config)
-  const cmds = commandsForFamily(config.family)
+  const cmds = commandsForFamily(config.family, config.packageManager ?? 'bun')
+  const prompts = agentPrompt(config.family)
+  const pm = config.packageManager ?? 'bun'
 
-  return `# ${name}
+  return `---
+navigation:
+  entry: AGENTS.md
+  version: generated
+  generator: '@kitsu/create@0.2.0'
+  stack:
+    family: ${config.family}
+    backend: ${config.backend}
+    database: ${config.database}
+    orm: ${config.orm}
+    pm: ${pm}
+---
+
+# ${name}
 
 ## Quick Start
 
 \`\`\`bash
-bun install
-bun dev
+${pm} install
+${pm} dev
 \`\`\`
 
 ## Stack
@@ -92,6 +129,20 @@ ${dirs.map((d) => `- ${d}`).join('\n')}
 ## Commands
 
 ${cmds.join('\n')}
+
+## Agent Protocol
+
+{/* These instructions are for AI agents modifying this project. */}
+
+${prompts.map((p) => `- ${p}`).join('\n')}
+
+## Maintenance
+
+When modifying this project as an agent:
+1. Read the relevant file first — don't guess
+2. Run lint + typecheck after changes
+3. Update this file if directory structure changes
+4. Keep SHOWCASE.mdx in sync with the project's actual state
 `
 }
 
@@ -115,7 +166,7 @@ export function buildContextMd(config: ProjectConfig): string {
 ## Key Entry Points
 
 - Server app setup: \`apps/server/src/app.ts\`
-- tRPC context & procedures: \`packages/trpc/src/trpc.ts\`
+- tRPC context and procedures: \`packages/trpc/src/trpc.ts\`
 - Database schema: \`packages/store/prisma/schema.prisma\`${config.orm === 'drizzle' ? '\n- Database schema: `packages/store/src/schema.ts`' : ''}
 - Auth configuration: \`packages/auth/src/index.ts\`
 - Frontend providers: \`apps/web/components/providers.tsx\`
@@ -186,6 +237,7 @@ export function buildClaudeMd(): string {
 
 Read \`AGENTS.md\` first for the project map and commands.
 Use \`CONTEXT.md\` for architecture decisions and stack details.
+SHOWCASE.mdx is the portfolio-facing description — keep it in sync.
 `
 }
 
