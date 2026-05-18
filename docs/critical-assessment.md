@@ -19,7 +19,7 @@ Using grill-me methodology to examine what we've built and where we can improve.
 ❌ But we're missing:
 
 - **Actual working examples** — No deployed reference app showing all pieces working
-- **End-to-end walkthrough** — No step-by-step video/guide from `npx create-kitsu` → deployed production app
+- **End-to-end walkthrough** — No step-by-step video/guide from `npx create-arche` → deployed production app
 - **"Day 0" verification** — How do users know they scaffolded correctly?
 - **"Day 1" debugging** — What if deployment fails? Where's the troubleshooting?
 - **Integration tests across platforms** — We don't test that Vercel + RDS works, only that code builds

@@ -79,7 +79,7 @@ const MATRIX: Array<{
 describe('scaffold smoke matrix', () => {
   for (const entry of MATRIX) {
     it(`scaffolds ${entry.family} with ${entry.pm}`, async () => {
-      const tmpRoot = mkdtempSync(join(tmpdir(), 'kitsu-scaffold-smoke-'))
+      const tmpRoot = mkdtempSync(join(tmpdir(), 'arche-scaffold-smoke-'))
       const destinationDir = join(tmpRoot, `${entry.family}-${entry.pm}`)
       try {
         const result = await createProject({
@@ -104,11 +104,11 @@ describe('scaffold smoke matrix', () => {
         expect(result.result).toBeDefined()
         expect(existsSync(join(destinationDir, 'package.json'))).toBe(true)
         expect(existsSync(join(destinationDir, 'README.md'))).toBe(true)
-        expect(existsSync(join(destinationDir, 'kitsu.jsonc'))).toBe(true)
+        expect(existsSync(join(destinationDir, 'arche.json'))).toBe(true)
 
-        const kitsu = JSON.parse(readFileSync(join(destinationDir, 'kitsu.jsonc'), 'utf8'))
-        expect(kitsu.family).toBe(entry.family)
-        expect(kitsu.packageManager).toBe(entry.pm)
+        const arche = JSON.parse(readFileSync(join(destinationDir, 'arche.json'), 'utf8'))
+        expect(arche.family).toBe(entry.family)
+        expect(arche.packageManager).toBe(entry.pm)
 
         if (entry.family === 'fullstack') {
           expect(existsSync(join(destinationDir, '.opencode/skills.json'))).toBe(true)

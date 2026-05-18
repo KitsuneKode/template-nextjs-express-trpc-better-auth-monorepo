@@ -128,7 +128,7 @@ export function buildReadme(config: ProjectConfig): string {
 
   return `# ${name}
 
-A ${label.toLowerCase()} scaffolded with [@kitsu/create](https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo).
+A ${label.toLowerCase()} scaffolded with [@arche/create](https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo).
 
 ## Stack
 
@@ -154,9 +154,9 @@ For MCP-capable agents, register this server:
 \`\`\`json
 {
   "mcpServers": {
-    "@kitsu/create": {
+    "@arche/create": {
       "command": "bunx",
-      "args": ["@kitsu/create", "mcp"]
+      "args": ["@arche/create", "mcp"]
     }
   }
 }

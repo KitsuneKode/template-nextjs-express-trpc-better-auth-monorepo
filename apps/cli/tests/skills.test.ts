@@ -73,7 +73,7 @@ describe('buildSkillRecommendations', () => {
 
 describe('writeSkillConfigs', () => {
   it('writes skills.json to .opencode directory', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-skills-test-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-skills-test-'))
     try {
       writeSkillConfigs(tmpDir, makeConfig())
       const skillsPath = join(tmpDir, '.opencode/skills.json')
@@ -90,7 +90,7 @@ describe('writeSkillConfigs', () => {
   })
 
   it('does not write file when no skills match', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-skills-empty-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-skills-empty-'))
     try {
       writeSkillConfigs(
         tmpDir,
@@ -104,7 +104,7 @@ describe('writeSkillConfigs', () => {
   })
 
   it('writes only opencode skills by default', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-skills-agent-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-skills-agent-'))
     try {
       writeSkillConfigs(tmpDir, makeConfig())
       const content = JSON.parse(readFileSync(join(tmpDir, '.opencode/skills.json'), 'utf8'))
@@ -119,7 +119,7 @@ describe('writeSkillConfigs', () => {
 
 describe('writeCursorRules', () => {
   it('writes cursor rules for fullstack family', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-cursor-test-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-cursor-test-'))
     try {
       writeCursorRules(tmpDir, makeConfig())
       const rulesDir = join(tmpDir, '.cursor/rules')
@@ -136,7 +136,7 @@ describe('writeCursorRules', () => {
   })
 
   it('writes fewer rules for simple families', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-cursor-simple-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-cursor-simple-'))
     try {
       writeCursorRules(
         tmpDir,
@@ -154,7 +154,7 @@ describe('writeCursorRules', () => {
   })
 
   it('writes only base project rule for families without backend rules', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'kitsu-cursor-none-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'arche-cursor-none-'))
     try {
       writeCursorRules(
         tmpDir,

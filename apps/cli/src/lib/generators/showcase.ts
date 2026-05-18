@@ -40,7 +40,7 @@ tags: [${tags.join(', ')}]
 featured: false
 created: ${created}
 updated: ${created}
-generator: '@kitsu/create@0.2.0'
+generator: '@arche/create@0.2.0'
 agent_hint: >
   This file is structured for agent-assisted maintenance.
   Fill in each section with project-specific details.
@@ -100,7 +100,7 @@ import { ProjectCard, TechBadge, MetricBadge } from './components'
 
 {/* Agents: append entries here when making significant modifications. Keep the 5 most recent. */}
 
-- ${created}: Project scaffolded with @kitsu/create
+- ${created}: Project scaffolded with @arche/create
 
 ## Getting Started
 
@@ -111,6 +111,6 @@ bun dev
 
 ---
 
-*Maintained with @kitsu/create. Push changes to sync with portfolio at kitsunekode.in.*
+*Maintained with @arche/create. Push changes to sync with portfolio at kitsunekode.in.*
 `
 }

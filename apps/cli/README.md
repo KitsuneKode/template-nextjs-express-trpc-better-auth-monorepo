@@ -1,4 +1,4 @@
-# create-kitsu-stack
+# create-arche
 
 Bootstrap a new project from this template with an interactive Bun-native CLI.
 
@@ -11,7 +11,7 @@ bun run dev:cli -- my-app
 ## Planned Published Usage
 
 ```sh
-bunx create-kitsu-stack my-app
+bunx create-arche my-app
 ```
 
 ## What It Does

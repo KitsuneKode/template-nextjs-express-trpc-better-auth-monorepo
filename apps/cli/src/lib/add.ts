@@ -43,7 +43,7 @@ const VALID_FEATURES = [
 ] as const
 
 function readProjectConfig(destinationDir: string): ProjectConfigFile | null {
-  const configPath = join(destinationDir, 'kitsu.jsonc')
+  const configPath = join(destinationDir, 'arche.json')
   if (!existsSync(configPath)) return null
   try {
     const raw = readFileSync(configPath, 'utf8')
@@ -141,7 +141,7 @@ const FEATURE_HANDLERS: Record<
 
 /**
  * Add a feature to an existing scaffolded project.
- * Requires kitsu.jsonc to detect current config.
+ * Requires arche.json to detect current config.
  */
 export async function addFeature(options: AddOptions): Promise<AddResult> {
   const { feature, destinationDir, params = {} } = options
@@ -165,7 +165,7 @@ export async function addFeature(options: AddOptions): Promise<AddResult> {
 
   const configFile = readProjectConfig(destinationDir)
   if (!configFile) {
-    warnings.push('No kitsu.jsonc found. Using fullstack defaults.')
+    warnings.push('No arche.json found. Using fullstack defaults.')
   }
 
   const config = buildProjectConfig(destinationDir, feature, params)
@@ -186,14 +186,14 @@ export async function addFeature(options: AddOptions): Promise<AddResult> {
     generatedFiles.push(...files)
   }
 
-  // Update kitsu.jsonc to record the addon
+  // Update arche.json to record the addon
   if (configFile) {
     configFile.choices = {
       ...configFile.choices,
       addons: [...((configFile.choices.addons as string[]) || []), feature],
     }
-    writeGeneratedFile(destinationDir, 'kitsu.jsonc', JSON.stringify(configFile, null, 2) + '\n')
-    generatedFiles.push('kitsu.jsonc (updated)')
+    writeGeneratedFile(destinationDir, 'arche.json', JSON.stringify(configFile, null, 2) + '\n')
+    generatedFiles.push('arche.json (updated)')
   }
 
   return {

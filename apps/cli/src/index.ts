@@ -30,7 +30,7 @@ import {
   hasOrmOptions,
 } from './types/schemas'
 
-const PKG_NAME = '@kitsu/create'
+const PKG_NAME = '@arche/create'
 const PKG_VERSION = '0.2.0'
 
 function printHelp(): void {
@@ -248,13 +248,13 @@ async function main(): Promise<void> {
 
   // --- Subcommands ---
 
-  // kitsu mcp — start MCP server for AI agent integration
+  // arche mcp — start MCP server for AI agent integration
   if (args._command === 'mcp') {
     startMcpServer()
     return
   }
 
-  // kitsu create-json <json-string> — non-interactive JSON config
+  // arche create-json <json-string> — non-interactive JSON config
   if (args._command === 'create-json' && args._jsonConfig) {
     const config = args._jsonConfig as ProjectConfig
     const destinationDir =
@@ -267,20 +267,20 @@ async function main(): Promise<void> {
     process.exit(result.success ? 0 : 1)
   }
 
-  // kitsu validate — validate config without writing
+  // arche validate — validate config without writing
   if (args._command === 'validate' && args._jsonConfig) {
     const result = validateConfig(args._jsonConfig as Partial<ProjectConfig>)
     console.log(JSON.stringify(result, null, 2))
     process.exit(result.valid ? 0 : 1)
   }
 
-  // kitsu history — show scaffold history
+  // arche history — show scaffold history
   if (args._command === 'history') {
     printHistory()
     process.exit(0)
   }
 
-  // kitsu add <feature> [dir] — add feature to existing project
+  // arche add <feature> [dir] — add feature to existing project
   if (args._command === 'add' && args._addFeature) {
     const result = await addFeature({
       feature: args._addFeature,
@@ -303,8 +303,8 @@ async function main(): Promise<void> {
   const rawProjectName = await promptIfNeeded(args.projectName, async () => {
     const value = await text({
       message: 'Project name',
-      placeholder: 'my-kitsu-app',
-      defaultValue: 'my-kitsu-app',
+      placeholder: 'my-arche-app',
+      defaultValue: 'my-arche-app',
       validate: (input) => {
         try {
           sanitizeProjectName(input ?? '')

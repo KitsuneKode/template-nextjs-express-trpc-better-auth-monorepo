@@ -33,7 +33,7 @@ bun dev
 ## 🛠️ Bootstrap CLI
 
 This repo now includes a purpose-built bootstrap CLI called
-`create-kitsu-stack`.
+`create-arche`.
 
 ```sh
 bun run dev:cli -- my-app

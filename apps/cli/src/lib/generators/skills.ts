@@ -96,7 +96,7 @@ function buildCursorRules(config: ProjectConfig): CursorRule[] {
     fileName: 'project.mdc',
     description: 'Project overview and agent navigation',
     globs: '*',
-    content: `This is a ${config.family} project scaffolded with @kitsu/create.
+    content: `This is a ${config.family} project scaffolded with @arche/create.
 
 Key information:
 - Family: ${config.family}

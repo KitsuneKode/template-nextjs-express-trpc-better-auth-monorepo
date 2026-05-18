@@ -1,4 +1,4 @@
-# Bootstrap CLI (@kitsu/create)
+# Bootstrap CLI (@arche/create)
 
 ## Purpose
 

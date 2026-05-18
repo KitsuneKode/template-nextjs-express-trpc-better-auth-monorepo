@@ -1,6 +1,7 @@
 {
   "extends": "@template/typescript-config/react-library.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@template/ui/*": ["./src/*"]

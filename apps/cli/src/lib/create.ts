@@ -43,7 +43,7 @@ export async function createProject(options: CreateOptions): Promise<CreateResul
 
   if (dryRun) {
     const generatedFiles = [
-      'kitsu.jsonc',
+      'arche.json',
       'apps/server/.env.example',
       'docker-compose.yml',
       '.github/workflows/ci.yml',

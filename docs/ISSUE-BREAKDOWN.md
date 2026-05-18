@@ -21,7 +21,7 @@
 After scaffolding with CLI, no `.env` files exist in the output:
 
 ```bash
-npx create-kitsu-stack my-app --yes
+npx create-arche my-app --yes
 cd my-app
 bun run build
 # Error: Missing required environment variable: NEXT_PUBLIC_APP_URL
@@ -272,7 +272,7 @@ Users don't know what environment variables to set:
 
 ```bash
 # User just scaffolded
-npx create-kitsu-stack my-app --yes
+npx create-arche my-app --yes
 cd my-app
 # Now what? What vars do I need?
 # No .env.example to copy from
@@ -542,7 +542,7 @@ Improves first-time user experience.
 6. **End-to-end test** (15 min)
    ```bash
    rm -rf /tmp/test-scaffold
-   npx create-kitsu-stack /tmp/test-scaffold --yes
+   npx create-arche /tmp/test-scaffold --yes
    cd /tmp/test-scaffold
    bun install
    bun run build  # Should work
@@ -642,7 +642,7 @@ Migration:
 
 ```
 User experience:
-npm create kitsu-stack my-app
+npm create arche my-app
 → Scaffolds
 → Installs dependencies
 → npm run build
@@ -661,7 +661,7 @@ Developer experience:
 
 ```
 User experience:
-npm create kitsu-stack my-app
+npm create arche my-app
 → Scaffolds WITH .env files
 → Installs dependencies
 → npm run build

@@ -11,7 +11,7 @@
 - Agent documentation generation (AGENTS.md, CONTEXT.md, .claude/rules/) for scaffolded projects
 - SHOWCASE.mdx generator for portfolio-ready scaffolding
 - Project README generation with stack summary and portfolio webhook note
-- Config file support (`~/.kitsurc`, `kitsu.jsonc`)
+- Config file support (`~/.archerc`, `arche.json`)
 - Portfolio metadata in scaffolded `package.json`
 - Template CI workflow (`.github/workflows/ci.yml`)
 - Integration tests for auth, post CRUD, and server health

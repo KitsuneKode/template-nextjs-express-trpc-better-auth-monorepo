@@ -28,7 +28,7 @@ function rpcError(id: number | string | null, code: number, message: string): vo
 
 const TOOLS = [
   {
-    name: 'kitsu_plan_project',
+    name: 'arche_plan_project',
     description: 'Validate a project config without writing files. Returns warnings and errors.',
     inputSchema: {
       type: 'object',
@@ -54,7 +54,7 @@ const TOOLS = [
     },
   },
   {
-    name: 'kitsu_create_project',
+    name: 'arche_create_project',
     description:
       'Scaffold a project from a full explicit config. Requires projectName and outputs to ./<projectName>.',
     inputSchema: {
@@ -86,12 +86,12 @@ const TOOLS = [
     },
   },
   {
-    name: 'kitsu_get_schema',
+    name: 'arche_get_schema',
     description: 'Returns the full JSON Schema of the project config for agent introspection.',
     inputSchema: { type: 'object', properties: {} },
   },
   {
-    name: 'kitsu_get_guidance',
+    name: 'arche_get_guidance',
     description: 'Returns guidance on how agents should use this CLI tool.',
     inputSchema: {
       type: 'object',
@@ -120,7 +120,7 @@ async function handleToolsCall(
   args: Record<string, unknown>,
 ): Promise<void> {
   switch (name) {
-    case 'kitsu_plan_project': {
+    case 'arche_plan_project': {
       const config = buildConfig(args)
       const result = validateConfig(config)
       send({
@@ -142,7 +142,7 @@ async function handleToolsCall(
       break
     }
 
-    case 'kitsu_create_project': {
+    case 'arche_create_project': {
       if (!args.projectName || typeof args.projectName !== 'string') {
         rpcError(id, -32602, 'projectName is required')
         return
@@ -174,7 +174,7 @@ async function handleToolsCall(
       break
     }
 
-    case 'kitsu_get_schema': {
+    case 'arche_get_schema': {
       send({
         jsonrpc: '2.0',
         id,
@@ -183,19 +183,19 @@ async function handleToolsCall(
       break
     }
 
-    case 'kitsu_get_guidance': {
+    case 'arche_get_guidance': {
       const family = args.family as string | undefined
       send({
         jsonrpc: '2.0',
         id,
         result: {
-          tool: '@kitsu/create',
+          tool: '@arche/create',
           version: '0.2.0',
           family: family || 'all',
           guidance: [
-            'Use kitsu_plan_project first to validate config before creating.',
-            'kitsu_create_project requires projectName. It scaffolds into ./<projectName>.',
-            'Use kitsu_get_schema to introspect available options at any time.',
+            'Use arche_plan_project first to validate config before creating.',
+            'arche_create_project requires projectName. It scaffolds into ./<projectName>.',
+            'Use arche_get_schema to introspect available options at any time.',
             'Set install=false for agent safety (long-running bun install).',
             'Family determines template source: fullstack (full monorepo), next (standalone Next.js), backend (Express API), etc.',
             'For non-fullstack families, only projectName and family are required; other options are ignored.',
@@ -248,7 +248,7 @@ export function startMcpServer(): void {
     result: {
       protocolVersion: '2024-11-05',
       capabilities: { tools: {} },
-      serverInfo: { name: '@kitsu/create', version: '0.2.0' },
+      serverInfo: { name: '@arche/create', version: '0.2.0' },
     },
   })
 

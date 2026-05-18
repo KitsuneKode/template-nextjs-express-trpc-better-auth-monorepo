@@ -465,7 +465,7 @@ export async function applyDatabaseTransform(
     await writeFile_(
       join(destinationDir, 'packages/store/src/index.ts'),
       `// No database configured — placeholder export
-// Add a database or ORM via the CLI: create-kitsu-stack --database=postgres
+// Add a database or ORM via the CLI: create-arche --database=postgres
 export const prisma = null as unknown as import('./generated/client').PrismaClient
 `,
     )

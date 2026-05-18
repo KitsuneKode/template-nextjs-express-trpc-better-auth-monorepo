@@ -62,7 +62,7 @@ describe('MCP Server', () => {
     expect(result.protocolVersion).toBe('2024-11-05')
     expect(result.serverInfo).toBeDefined()
     const serverInfo = result.serverInfo as Record<string, unknown>
-    expect(serverInfo.name).toBe('@kitsu/create')
+    expect(serverInfo.name).toBe('@arche/create')
   })
 
   it('responds to tools/list', async () => {
@@ -77,19 +77,19 @@ describe('MCP Server', () => {
     const tools = result.tools as Record<string, unknown>[]
     expect(tools.length).toBeGreaterThanOrEqual(4)
     const toolNames = tools.map((t) => t.name)
-    expect(toolNames).toContain('kitsu_plan_project')
-    expect(toolNames).toContain('kitsu_create_project')
-    expect(toolNames).toContain('kitsu_get_schema')
-    expect(toolNames).toContain('kitsu_get_guidance')
+    expect(toolNames).toContain('arche_plan_project')
+    expect(toolNames).toContain('arche_create_project')
+    expect(toolNames).toContain('arche_get_schema')
+    expect(toolNames).toContain('arche_get_guidance')
   })
 
-  it('responds to kitsu_get_schema', async () => {
+  it('responds to arche_get_schema', async () => {
     const responses = await mcpExchange([
       {
         jsonrpc: '2.0',
         id: 2,
         method: 'tools/call',
-        params: { name: 'kitsu_get_schema', arguments: {} },
+        params: { name: 'arche_get_schema', arguments: {} },
       },
     ])
 
@@ -104,13 +104,13 @@ describe('MCP Server', () => {
     expect(result.required).toContain('projectName')
   })
 
-  it('responds to kitsu_get_guidance', async () => {
+  it('responds to arche_get_guidance', async () => {
     const responses = await mcpExchange([
       {
         jsonrpc: '2.0',
         id: 3,
         method: 'tools/call',
-        params: { name: 'kitsu_get_guidance', arguments: {} },
+        params: { name: 'arche_get_guidance', arguments: {} },
       },
     ])
 
@@ -121,16 +121,16 @@ describe('MCP Server', () => {
     const result = guidanceResp.result as Record<string, unknown>
     expect(result.guidance).toBeDefined()
     expect(Array.isArray(result.guidance)).toBe(true)
-    expect(result.tool).toBe('@kitsu/create')
+    expect(result.tool).toBe('@arche/create')
   })
 
-  it('responds to kitsu_get_guidance with family', async () => {
+  it('responds to arche_get_guidance with family', async () => {
     const responses = await mcpExchange([
       {
         jsonrpc: '2.0',
         id: 4,
         method: 'tools/call',
-        params: { name: 'kitsu_get_guidance', arguments: { family: 'next' } },
+        params: { name: 'arche_get_guidance', arguments: { family: 'next' } },
       },
     ])
 
@@ -140,14 +140,14 @@ describe('MCP Server', () => {
     expect(result.family).toBe('next')
   })
 
-  it('responds to kitsu_plan_project', async () => {
+  it('responds to arche_plan_project', async () => {
     const responses = await mcpExchange([
       {
         jsonrpc: '2.0',
         id: 5,
         method: 'tools/call',
         params: {
-          name: 'kitsu_plan_project',
+          name: 'arche_plan_project',
           arguments: { projectName: 'test-project', family: 'backend' },
         },
       },
@@ -189,13 +189,13 @@ describe('MCP Server', () => {
     expect(resp.error?.code).toBe(-32601)
   })
 
-  it('requires projectName for kitsu_create_project', async () => {
+  it('requires projectName for arche_create_project', async () => {
     const responses = await mcpExchange([
       {
         jsonrpc: '2.0',
         id: 8,
         method: 'tools/call',
-        params: { name: 'kitsu_create_project', arguments: {} },
+        params: { name: 'arche_create_project', arguments: {} },
       },
     ])
 

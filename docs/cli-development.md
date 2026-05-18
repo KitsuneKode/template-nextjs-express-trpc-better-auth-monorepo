@@ -1,6 +1,6 @@
 # CLI Development Guide
 
-This document is for developers working on the `@kitsu/create` CLI itself, not for
+This document is for developers working on the `@arche/create` CLI itself, not for
 users bootstrapping projects with the CLI.
 
 ## Overview
@@ -64,10 +64,10 @@ bun run link    # Builds and links globally
 
 # Test from anywhere
 cd /tmp
-create-kitsu-stack test-project
+create-arche test-project
 
 # Or using npx-style
-npx @kitsu/create test-project
+npx @arche/create test-project
 ```
 
 To unlink:
@@ -142,7 +142,7 @@ apps/cli/
    implement transforms in the scaffold pipeline
 5. Add family-specific generator content in `readme.ts` and `agent-docs.ts`
 6. Add a cleanup target if needed
-7. Add a scaffold smoke test in `tests/src/cli/create-kitsu-stack.test.ts`
+7. Add a scaffold smoke test in `tests/src/cli/create-arche.test.ts`
 
 ## Adding a New Feature Bundle
 
@@ -158,12 +158,12 @@ cd tests
 bun test
 
 # Run just the CLI tests
-bun test src/cli/create-kitsu-stack.test.ts
+bun test src/cli/create-arche.test.ts
 ```
 
 ### Test Structure
 
-- `src/cli/create-kitsu-stack.test.ts` — Schema tests, family-aware generator
+- `src/cli/create-arche.test.ts` — Schema tests, family-aware generator
   output tests, and scaffold smoke tests (fullstack + backend)
 - `src/toolings/` — Repo tooling script tests
 - `src/integration/` — Runtime integration tests (in progress)
@@ -172,7 +172,7 @@ bun test src/cli/create-kitsu-stack.test.ts
 
 ### Prerequisites
 
-1. npm account with access to `@kitsu` scope
+1. npm account with access to `@arche` scope
 2. Logged in: `npm login`
 
 ### Publishing
@@ -233,7 +233,7 @@ bun run dev -- my-app --yes 2>&1 | head -50
 - [ ] Oxlint linting standard (replace ESLint)
 - [ ] Fumadocs docs for monorepo family
 - [ ] Example templates (todo, chat, game)
-- [ ] `kitsu add` command for augmenting existing projects
+- [ ] `arche add` command for augmenting existing projects
 
 ## Related Documentation
 

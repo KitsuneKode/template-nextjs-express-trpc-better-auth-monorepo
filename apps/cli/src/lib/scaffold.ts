@@ -188,16 +188,16 @@ function shouldCopyPath(relativePath: string): boolean {
   return true
 }
 
-interface KitsuFilesManifest {
+interface ArcheFilesManifest {
   version: string
   include: string[]
 }
 
-async function loadManifest(sourceDir: string): Promise<KitsuFilesManifest | null> {
-  const manifestPath = join(sourceDir, '.kitsufiles.json')
+async function loadManifest(sourceDir: string): Promise<ArcheFilesManifest | null> {
+  const manifestPath = join(sourceDir, '.archefiles.json')
   try {
     const raw = await readFile(manifestPath, 'utf8')
-    return JSON.parse(raw) as KitsuFilesManifest
+    return JSON.parse(raw) as ArcheFilesManifest
   } catch {
     return null
   }
@@ -206,7 +206,7 @@ async function loadManifest(sourceDir: string): Promise<KitsuFilesManifest | nul
 async function copyWithManifest(
   destinationDir: string,
   sourceDir: string,
-  manifest: KitsuFilesManifest,
+  manifest: ArcheFilesManifest,
 ): Promise<void> {
   for (const relativePath of manifest.include) {
     const srcPath = join(sourceDir, relativePath)
@@ -283,9 +283,9 @@ async function writeGeneratedFile(
   await writeFile(filePath, content)
 }
 
-function buildKitsuConfig(options: ProjectConfig): string {
+function buildArcheConfig(options: ProjectConfig): string {
   const config = {
-    $schema: 'https://kitsunekode.in/schemas/kitsu.json',
+    $schema: 'https://kitsunekode.in/schemas/arche.json',
     version: '0.2.0',
     createdAt: new Date().toISOString(),
     family: options.family,
@@ -301,7 +301,7 @@ function buildKitsuConfig(options: ProjectConfig): string {
       includeShowcase: options.includeShowcase,
       presets: options.presets,
     },
-    reproducible: `npx @kitsu/create ${options.projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
+    reproducible: `npx @arche/create ${options.projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
   }
   return JSON.stringify(config, null, 2) + '\n'
 }
@@ -346,13 +346,13 @@ export async function scaffoldProject(
     )
   }
 
-  // Write kitsu.jsonc for reproducibility
-  await writeGeneratedFile(destinationDir, 'kitsu.jsonc', buildKitsuConfig(options))
+  // Write arche.json for reproducibility
+  await writeGeneratedFile(destinationDir, 'arche.json', buildArcheConfig(options))
 
   // Apply bundle transforms (realtime, growth, infra, ai)
   const bundleFiles = applyBundleTransforms(destinationDir, options)
 
-  const generatedFiles: string[] = ['kitsu.jsonc', ...bundleFiles]
+  const generatedFiles: string[] = ['arche.json', ...bundleFiles]
 
   // Family-aware env generation
   const hasServer = !shouldStripServer(family)

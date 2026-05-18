@@ -13,7 +13,7 @@ export interface HistoryEntry {
   reproducible: string
 }
 
-const HISTORY_DIR = join(homedir(), '.kitsu')
+const HISTORY_DIR = join(homedir(), '.arche')
 const HISTORY_FILE = join(HISTORY_DIR, 'history.json')
 
 function ensureHistoryDir(): void {

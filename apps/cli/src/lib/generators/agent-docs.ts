@@ -99,7 +99,7 @@ export function buildRootAgentsMd(config: ProjectConfig): string {
 navigation:
   entry: AGENTS.md
   version: generated
-  generator: '@kitsu/create@0.2.0'
+  generator: '@arche/create@0.2.0'
   stack:
     family: ${config.family}
     backend: ${config.backend}
@@ -151,7 +151,7 @@ export function buildContextMd(config: ProjectConfig): string {
   const family = config.family
 
   const descriptions: Record<string, string> = {
-    fullstack: `A full-stack TypeScript monorepo scaffolded with @kitsu/create.
+    fullstack: `A full-stack TypeScript monorepo scaffolded with @arche/create.
 
 ## Architecture
 
@@ -175,7 +175,7 @@ export function buildContextMd(config: ProjectConfig): string {
 ## Environment Variables
 
 See \`apps/server/.env.example\` and \`apps/web/.env.example\` for required variables.`,
-    next: `A standalone Next.js application scaffolded with @kitsu/create.
+    next: `A standalone Next.js application scaffolded with @arche/create.
 
 ## Architecture
 
@@ -190,7 +190,7 @@ ${config.presets.includes('auth') ? '- Auth config: `lib/auth`\n' : ''}
 ## Environment Variables
 
 See \`.env.example\` at the project root.`,
-    backend: `An API service scaffolded with @kitsu/create.
+    backend: `An API service scaffolded with @arche/create.
 
 ## Architecture
 
@@ -208,7 +208,7 @@ See \`.env.example\` at the project root.`,
 ## Environment Variables
 
 See \`.env.example\` for required variables.`,
-    convex: `A Next.js + Convex application scaffolded with @kitsu/create.
+    convex: `A Next.js + Convex application scaffolded with @arche/create.
 
 ## Architecture
 
@@ -224,7 +224,7 @@ See \`.env.example\` for required variables.`,
 - App pages: \`app/\``,
   }
 
-  const description = descriptions[family] ?? `A ${family} project scaffolded with @kitsu/create.`
+  const description = descriptions[family] ?? `A ${family} project scaffolded with @arche/create.`
 
   return `# ${name} — Context
 

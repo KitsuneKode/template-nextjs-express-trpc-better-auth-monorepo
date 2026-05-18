@@ -33,7 +33,7 @@ cannot be named without a reference to 'better-auth/dist/client/path-to-object.m
 **What I tested**:
 
 ```bash
-npx @kitsu/create test-kitsu-app --yes --no-install
+npx @arche/create test-arche-app --yes --no-install
 bun install
 bun run build
 ```
@@ -62,7 +62,7 @@ Fix the following environment variables:
 **What should happen:**
 
 ```bash
-npx @kitsu/create my-app --yes
+npx @arche/create my-app --yes
 # Should create: .env (for local dev)
 # Should create: .env.example (for sharing)
 ```
@@ -70,7 +70,7 @@ npx @kitsu/create my-app --yes
 **What actually happens:**
 
 ```bash
-npx @kitsu/create my-app --yes
+npx @arche/create my-app --yes
 # Generates AGENTS.md, docker-compose.yml, CI files
 # Does NOT generate .env files
 # User must manually copy and configure
@@ -86,7 +86,7 @@ npx @kitsu/create my-app --yes
 
 **What we documented:**
 
-> Users can scaffold with `npx create-kitsu-stack my-app` and have a working app
+> Users can scaffold with `npx create-arche my-app` and have a working app
 
 **What actually happens:**
 
@@ -150,7 +150,7 @@ npx @kitsu/create my-app --yes
 
 ```bash
 # CLI scaffolds fine
-npx create-kitsu-stack my-app --yes
+npx create-arche my-app --yes
 
 # If you manually create .env:
 cp .env.example .env
@@ -349,7 +349,7 @@ You should see a working app now.
 ### What I Expected
 
 ```
-npx create-kitsu-stack my-app
+npx create-arche my-app
 cd my-app
 bun run dev
 # → App running on localhost:3000 ✅
@@ -358,7 +358,7 @@ bun run dev
 ### What Actually Happened
 
 ```
-npx create-kitsu-stack my-app
+npx create-arche my-app
 cd my-app
 bun install
 bun run dev
