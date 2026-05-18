@@ -13,27 +13,27 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
-    "@bull-board/api": "^6.10.0",
-    "@bull-board/express": "^6.10.0",
+    "@bull-board/api": "^7.1.5",
+    "@bull-board/express": "^7.1.5",
     "@template/auth": "workspace:*",
     "@template/backend-common": "workspace:*",
     "@template/store": "workspace:*",
     "@template/trpc": "workspace:*",
-    "bullmq": "^5.48.1",
+    "bullmq": "^5.76.10",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "express-rate-limit": "^7.5.1",
+    "express-rate-limit": "^8.5.2",
     "helmet": "^8.1.0"
   },
   "devDependencies": {
     "@template/typescript-config": "workspace:*",
-    "@types/bun": "1.3.9",
+    "@types/bun": "1.3.14",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }

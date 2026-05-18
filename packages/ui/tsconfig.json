@@ -1,6 +1,7 @@
 {
   "extends": "@template/typescript-config/react-library.json",
   "compilerOptions": {
+    "types": ["@types/node"],
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {

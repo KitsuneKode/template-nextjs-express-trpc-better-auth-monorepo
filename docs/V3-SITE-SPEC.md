@@ -6,14 +6,14 @@ For the UI agent building the new face of Arche at `arche.kitsunelabs.xyz`.
 
 ## Brand
 
-| Key | Value |
-|-----|-------|
-| Product name | Arche |
-| Tagline | The beginning of every project |
-| CLI command | `npx arche create my-app` |
-| Domain | `arche.kitsunelabs.xyz` |
-| Repo | `github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo` |
-| CLI package | `@arche/create` |
+| Key          | Value                                                                       |
+| ------------ | --------------------------------------------------------------------------- |
+| Product name | Arche                                                                       |
+| Tagline      | The beginning of every project                                              |
+| CLI command  | `npx arche create my-app`                                                   |
+| Domain       | `arche.kitsunelabs.xyz`                                                     |
+| Repo         | `github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo` |
+| CLI package  | `@arche/create`                                                             |
 
 ### Design Tokens
 
@@ -39,6 +39,7 @@ Shadow:     shadow-2xl shadow-black/20 (cards)
 ### 1. `/` — Landing
 
 **Hero section**
+
 ```
 Headline: "Arche"
 Subhead: "One command. Full-stack TypeScript monorepo. Auth, database, API, frontend — wired and ready."
@@ -51,6 +52,7 @@ Three badges below CTA:
 ```
 
 **Feature grid** (3×2)
+
 ```
 Create — "Pick a family. Answer 5 prompts. Get a working monorepo in seconds."
 Extend — "Add realtime WebSocket, AI bundles, analytics, or S3 storage post-scaffold."
@@ -61,6 +63,7 @@ Agent-First — "Every project ships with AGENTS.md, CLAUDE.md, and IDE rules fi
 ```
 
 **Family selector preview** (interactive tabs or static grid)
+
 ```
 Show 6 most popular families as pills/cards:
   [fullstack] [next] [backend] [polyglot] [rust] [mobile]
@@ -72,23 +75,24 @@ Clicking shows what that family includes.
 
 Full comparison table. Each row is a family, columns show what ships:
 
-| Family | Frontend | Backend | DB | Auth | tRPC | Docker | CI |
-|--------|----------|---------|-----|------|------|--------|----|
-| fullstack | Next.js | Express/Hono | Postgres/SQLite/MongoDB | Better Auth | ✓ | ✓ | ✓ |
-| next | Next.js | — | — | Optional | — | — | — |
-| backend | — | Express/Hono | Postgres/SQLite | — | — | ✓ | ✓ |
-| polyglot | Next.js | Go/Rust/Python | — | — | — | — | — |
-| rust | — | Rust (Axum) | — | — | — | — | — |
-| solana | — | — | — | — | — | — | — |
-| mobile | Expo/RN | — | — | — | — | — | — |
-| convex | Next.js | Convex | Convex | Convex | — | — | — |
-| worker | — | — | — | — | — | — | — |
-| lib | — | — | — | — | — | — | — |
-| cli | — | — | — | — | — | — | — |
+| Family    | Frontend | Backend        | DB                      | Auth        | tRPC | Docker | CI  |
+| --------- | -------- | -------------- | ----------------------- | ----------- | ---- | ------ | --- |
+| fullstack | Next.js  | Express/Hono   | Postgres/SQLite/MongoDB | Better Auth | ✓    | ✓      | ✓   |
+| next      | Next.js  | —              | —                       | Optional    | —    | —      | —   |
+| backend   | —        | Express/Hono   | Postgres/SQLite         | —           | —    | ✓      | ✓   |
+| polyglot  | Next.js  | Go/Rust/Python | —                       | —           | —    | —      | —   |
+| rust      | —        | Rust (Axum)    | —                       | —           | —    | —      | —   |
+| solana    | —        | —              | —                       | —           | —    | —      | —   |
+| mobile    | Expo/RN  | —              | —                       | —           | —    | —      | —   |
+| convex    | Next.js  | Convex         | Convex                  | Convex      | —    | —      | —   |
+| worker    | —        | —              | —                       | —           | —    | —      | —   |
+| lib       | —        | —              | —                       | —           | —    | —      | —   |
+| cli       | —        | —              | —                       | —           | —    | —      | —   |
 
 ### 3. `/docs` — Quick start
 
 **3-step flow**
+
 ```
 1. Install    npx arche create my-app --yes
 2. Start      cd my-app && bun dev
@@ -96,6 +100,7 @@ Full comparison table. Each row is a family, columns show what ships:
 ```
 
 **Stack diagram** (visual)
+
 ```
 ┌─────────────────────────────────────┐
 │ apps/web (Next.js)                  │
@@ -113,6 +118,7 @@ Full comparison table. Each row is a family, columns show what ships:
 ```
 
 **Command reference table**
+
 ```
 bun dev               Start all workspaces
 bun run build         Production build
@@ -132,7 +138,7 @@ Each example is a tab with description + syntax-highlighted code block.
 Tab: "tRPC Procedure"
   Shows: router, procedure, protected middleware, input validation
 
-Tab: "Auth Provider"  
+Tab: "Auth Provider"
   Shows: Better Auth config with Google + GitHub providers
 
 Tab: "Prisma Schema"
@@ -151,25 +157,25 @@ Tab: "Monorepo Structure"
 
 ### New (build from scratch)
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `Hero` | `components/arche/hero.tsx` | Landing hero with terminal block |
-| `TerminalBlock` | `components/arche/terminal-block.tsx` | Copyable CLI command display |
-| `FeatureGrid` | `components/arche/feature-grid.tsx` | 3×2 feature cards |
-| `FamilyTable` | `components/arche/family-table.tsx` | Comparison table with checkmarks |
-| `StackDiagram` | `components/arche/stack-diagram.tsx` | Visual monorepo flow |
-| `CommandTable` | `components/arche/command-table.tsx` | Reference table |
-| `CodeExample` | `components/arche/code-example.tsx` | Tabbed code snippets |
-| `NavArche` | `components/shell/nav-arche.tsx` | Minimal nav: logo + Families/Docs/Examples links |
-| `FooterArche` | `components/shell/footer-arche.tsx` | GitHub link + credit |
+| Component       | Location                              | Purpose                                          |
+| --------------- | ------------------------------------- | ------------------------------------------------ |
+| `Hero`          | `components/arche/hero.tsx`           | Landing hero with terminal block                 |
+| `TerminalBlock` | `components/arche/terminal-block.tsx` | Copyable CLI command display                     |
+| `FeatureGrid`   | `components/arche/feature-grid.tsx`   | 3×2 feature cards                                |
+| `FamilyTable`   | `components/arche/family-table.tsx`   | Comparison table with checkmarks                 |
+| `StackDiagram`  | `components/arche/stack-diagram.tsx`  | Visual monorepo flow                             |
+| `CommandTable`  | `components/arche/command-table.tsx`  | Reference table                                  |
+| `CodeExample`   | `components/arche/code-example.tsx`   | Tabbed code snippets                             |
+| `NavArche`      | `components/shell/nav-arche.tsx`      | Minimal nav: logo + Families/Docs/Examples links |
+| `FooterArche`   | `components/shell/footer-arche.tsx`   | GitHub link + credit                             |
 
 ### Keep from existing
 
-| Component | Reason |
-|-----------|--------|
-| `providers.tsx` | Theme + TRPC provider shell |
-| `route-top-loader.tsx` | Navigation progress bar |
-| UI primitives (tabs, accordion, button) | shadcn components |
+| Component                               | Reason                      |
+| --------------------------------------- | --------------------------- |
+| `providers.tsx`                         | Theme + TRPC provider shell |
+| `route-top-loader.tsx`                  | Navigation progress bar     |
+| UI primitives (tabs, accordion, button) | shadcn components           |
 
 ### Remove (template showcase content)
 

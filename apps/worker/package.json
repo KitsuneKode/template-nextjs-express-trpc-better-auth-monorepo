@@ -16,13 +16,13 @@
     "@template/backend-common": "workspace:*",
     "@template/common": "workspace:*",
     "@template/store": "workspace:*",
-    "bullmq": "^5.48.1"
+    "bullmq": "^5.76.10"
   },
   "devDependencies": {
     "@template/typescript-config": "workspace:*",
-    "@types/bun": "1.3.9"
+    "@types/bun": "1.3.14"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
