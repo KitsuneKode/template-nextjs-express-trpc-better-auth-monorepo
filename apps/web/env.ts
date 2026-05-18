@@ -15,7 +15,7 @@ export const env = createEnv({
   extends: [clientEnv],
   client: {
     NEXT_PUBLIC_SITE_NAME: z.string().default('My App'),
-    NEXT_PUBLIC_SITE_URL: z.string().url(),
+    NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
     NEXT_PUBLIC_SITE_DESCRIPTION: z.string().default('Full-stack TypeScript application'),
     NEXT_PUBLIC_APP_URL: z.string().url(),
     NEXT_PUBLIC_API_URL: z.string().url(),
@@ -28,7 +28,7 @@ export const env = createEnv({
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   emptyStringAsUndefined: true,
-  skipValidation: process.env.CI === 'true',
+  skipValidation: !!process.env.CI || !!process.env.VERCEL,
 })
 
 export type Env = typeof env

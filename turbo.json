@@ -1,7 +1,17 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": ["NODE_ENV", "DATABASE_URL", "NEXT_PUBLIC_APP_URL", "NEXT_PUBLIC_API_URL"],
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_API_URL",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_SITE_NAME",
+    "NEXT_PUBLIC_SITE_DESCRIPTION",
+    "CI",
+    "VERCEL"
+  ],
   "globalPassThroughEnv": [
     "PORT",
     "REDIS_URL",
