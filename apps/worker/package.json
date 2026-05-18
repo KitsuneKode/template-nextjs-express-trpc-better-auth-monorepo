@@ -4,7 +4,7 @@
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
-    "check-types": "tsc -noEmit",
+    "check-types": "tsc --noEmit",
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --minify --sourcemap",
     "dev": "bun run --hot src/index.ts",
     "start": "bun run dist/server.js",

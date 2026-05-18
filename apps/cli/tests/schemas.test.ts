@@ -208,42 +208,45 @@ describe('Zod schemas', () => {
     const allFamilies = FamilySchema.options
 
     describe('hasBackendOptions', () => {
-      it('returns true for fullstack and backend', () => {
+      it('returns true for fullstack, backend, and polyglot', () => {
         expect(hasBackendOptions('fullstack')).toBe(true)
         expect(hasBackendOptions('backend')).toBe(true)
+        expect(hasBackendOptions('polyglot')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
           expect(hasBackendOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasDatabaseOptions', () => {
-      it('returns true for fullstack and backend', () => {
+      it('returns true for fullstack, backend, and polyglot', () => {
         expect(hasDatabaseOptions('fullstack')).toBe(true)
         expect(hasDatabaseOptions('backend')).toBe(true)
+        expect(hasDatabaseOptions('polyglot')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
           expect(hasDatabaseOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasOrmOptions', () => {
-      it('returns true for fullstack and backend', () => {
+      it('returns true for fullstack, backend, and polyglot', () => {
         expect(hasOrmOptions('fullstack')).toBe(true)
         expect(hasOrmOptions('backend')).toBe(true)
+        expect(hasOrmOptions('polyglot')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
           expect(hasOrmOptions(f)).toBe(false)
         }
       })

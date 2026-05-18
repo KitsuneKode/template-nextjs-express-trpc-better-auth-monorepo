@@ -27,7 +27,9 @@ import {
   applyBundleTransforms,
 } from './generators'
 import { pmInstallParts } from './pm'
-import { sanitizeProjectName } from './slug'
+import { sanitizeProjectName as _sanitizeProjectName } from './slug'
+
+export { sanitizeProjectName } from './slug'
 import { runCommand, tryCommand } from './spawn'
 
 export interface ScaffoldResult {
@@ -333,7 +335,7 @@ export async function scaffoldProject(
   options: ProjectConfig,
   dryRun = false,
 ): Promise<ScaffoldResult> {
-  const packageName = sanitizeProjectName(options.projectName)
+  const packageName = _sanitizeProjectName(options.projectName)
   const destinationDir = resolve(options.destinationDir)
   const family = options.family
   const pm = options.packageManager ?? 'bun'

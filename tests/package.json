@@ -8,10 +8,16 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage"
   },
+  "dependencies": {
+    "@template/auth": "workspace:*",
+    "@template/server": "workspace:*",
+    "@template/store": "workspace:*",
+    "@template/trpc": "workspace:*"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }

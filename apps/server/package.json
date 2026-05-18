@@ -3,8 +3,11 @@
   "private": true,
   "type": "module",
   "module": "src/server.ts",
+  "exports": {
+    "./app": "./src/app.ts"
+  },
   "scripts": {
-    "check-types": "tsc -noEmit",
+    "check-types": "tsc --noEmit",
     "build": "bun build ./src/app.ts --outdir ./dist --target bun --minify --sourcemap",
     "build:vercel": "bun build ./src/app.ts --outdir ./dist --target bun --minify --sourcemap",
     "dev": "bun run --watch src/server.ts",

@@ -217,12 +217,11 @@ describe('scaffold smoke tests', () => {
 
     expect(result.packageName).toBe('smoke-backend')
     expect(existsSync(join(backendDir, 'package.json'))).toBe(true)
-    expect(existsSync(join(backendDir, 'apps/server'))).toBe(true)
-    expect(existsSync(join(backendDir, 'apps/server/.env'))).toBe(true)
+    // Backend family is a standalone project (not a monorepo with apps/server)
+    expect(existsSync(join(backendDir, 'src'))).toBe(true)
+    expect(existsSync(join(backendDir, '.env.example'))).toBe(true)
     expect(existsSync(join(backendDir, 'docker-compose.yml'))).toBe(true)
     expect(existsSync(join(backendDir, 'AGENTS.md'))).toBe(true)
     expect(existsSync(join(backendDir, 'CONTEXT.md'))).toBe(true)
-    // Backend family should have server env but not web env
-    expect(existsSync(join(backendDir, 'apps/web/.env'))).toBe(false)
   })
 })

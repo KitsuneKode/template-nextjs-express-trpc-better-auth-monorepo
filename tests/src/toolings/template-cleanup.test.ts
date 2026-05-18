@@ -12,10 +12,9 @@ describe('template-cleanup', () => {
   it('always appends doc cleanup actions', async () => {
     const actions = await buildCleanupPlan(['seed'])
     const paths = actions.map((action) => action.path)
-    // CLI docs and start-fresh should be removed in every plan
+    // CLI-only docs should be removed in every plan
     expect(paths).toContain('docs/cli-development.md')
-    expect(paths).toContain('docs/bootstrap-cli.md')
-    expect(paths).toContain('docs/start-fresh.md')
+    expect(paths).toContain('docs/archive')
     // Agent and architecture docs should be rewritten
     expect(paths).toContain('AGENTS.md')
     expect(paths).toContain('CLAUDE.md')
