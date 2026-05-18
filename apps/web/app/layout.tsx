@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
-import '@template/ui/globals.css'
 import { Toaster } from 'sonner'
+import '@template/ui/globals.css'
 import { Providers } from '@/components/providers'
 import { NavbarSwitcher } from '@/components/shell/navbar-switcher'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'
+import config from '@/env'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://template.kitsunekode.com'),
+  metadataBase: new URL(config.NEXT_PUBLIC_SITE_URL),
   title: {
     default: 'Next.js Monorepo Template',
     template: '%s | Next.js Monorepo Template',
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
   },
+  robots: { index: true, follow: true },
 }
 
 export default function RootLayout({

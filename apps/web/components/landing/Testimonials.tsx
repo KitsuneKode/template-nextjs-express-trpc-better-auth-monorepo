@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight, Quote } from '@template/ui/components/icons'
 import { motion, AnimatePresence } from 'motion/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 const testimonials = [
   {
@@ -34,13 +34,13 @@ const testimonials = [
 export const Testimonials = () => {
   const [current, setCurrent] = useState(0)
 
-  const next = () => {
+  const next = useCallback(() => {
     setCurrent((prev) => (prev + 1) % testimonials.length)
-  }
+  }, [])
 
-  const prev = () => {
+  const prev = useCallback(() => {
     setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)
-  }
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(next, 5000)

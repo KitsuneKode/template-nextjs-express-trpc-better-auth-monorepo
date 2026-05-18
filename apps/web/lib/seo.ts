@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
+import { env } from '@/env'
 
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'My App'
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-const SITE_DESCRIPTION =
-  process.env.NEXT_PUBLIC_SITE_DESCRIPTION || 'A full-stack TypeScript application'
+const SITE_NAME = env.NEXT_PUBLIC_SITE_NAME
+const SITE_URL = env.NEXT_PUBLIC_SITE_URL
+const SITE_DESCRIPTION = env.NEXT_PUBLIC_SITE_DESCRIPTION
 
 type BuildMetadataParams = {
   title: string
