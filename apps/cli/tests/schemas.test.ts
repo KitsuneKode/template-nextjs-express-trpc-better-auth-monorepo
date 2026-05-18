@@ -99,7 +99,7 @@ describe('checkCompatibility', () => {
       addons: [],
       bundles: ['realtime'],
       includeWorker: false,
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(result.warnings.some((w: string) => w.includes('Realtime bundle'))).toBe(true)
   })
@@ -121,9 +121,9 @@ describe('checkCompatibility', () => {
     expect(result.warnings.some((w: string) => w.includes('Database selection'))).toBe(true)
   })
 
-  it('no warnings for ts-turbo with backend and database', () => {
+  it('no warnings for fullstack with backend and database', () => {
     const result = checkCompatibility({
-      family: 'ts-turbo',
+      family: 'fullstack',
       backend: 'express-bun',
       database: 'postgres',
       orm: 'prisma',
@@ -208,42 +208,42 @@ describe('Zod schemas', () => {
     const allFamilies = FamilySchema.options
 
     describe('hasBackendOptions', () => {
-      it('returns true for ts-turbo and backend', () => {
-        expect(hasBackendOptions('ts-turbo')).toBe(true)
+      it('returns true for fullstack and backend', () => {
+        expect(hasBackendOptions('fullstack')).toBe(true)
         expect(hasBackendOptions('backend')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'ts-turbo' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend') continue
           expect(hasBackendOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasDatabaseOptions', () => {
-      it('returns true for ts-turbo and backend', () => {
-        expect(hasDatabaseOptions('ts-turbo')).toBe(true)
+      it('returns true for fullstack and backend', () => {
+        expect(hasDatabaseOptions('fullstack')).toBe(true)
         expect(hasDatabaseOptions('backend')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'ts-turbo' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend') continue
           expect(hasDatabaseOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasOrmOptions', () => {
-      it('returns true for ts-turbo and backend', () => {
-        expect(hasOrmOptions('ts-turbo')).toBe(true)
+      it('returns true for fullstack and backend', () => {
+        expect(hasOrmOptions('fullstack')).toBe(true)
         expect(hasOrmOptions('backend')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'ts-turbo' || f === 'backend') continue
+          if (f === 'fullstack' || f === 'backend') continue
           expect(hasOrmOptions(f)).toBe(false)
         }
       })
@@ -263,26 +263,26 @@ describe('Zod schemas', () => {
     })
 
     describe('familySupportsWorker', () => {
-      it('returns true only for ts-turbo', () => {
-        expect(familySupportsWorker('ts-turbo')).toBe(true)
+      it('returns true only for fullstack', () => {
+        expect(familySupportsWorker('fullstack')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'ts-turbo') continue
+          if (f === 'fullstack') continue
           expect(familySupportsWorker(f)).toBe(false)
         }
       })
     })
 
     describe('familySupportsShowcase', () => {
-      it('returns true only for ts-turbo', () => {
-        expect(familySupportsShowcase('ts-turbo')).toBe(true)
+      it('returns true only for fullstack', () => {
+        expect(familySupportsShowcase('fullstack')).toBe(true)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'ts-turbo') continue
+          if (f === 'fullstack') continue
           expect(familySupportsShowcase(f)).toBe(false)
         }
       })

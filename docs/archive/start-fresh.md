@@ -1,7 +1,7 @@
 # Start Fresh
 
-Use this file when turning the template into a real product and you do not want
-to preserve the marketing/demo experience.
+Use this archived file when turning the template into a real product and you do
+not want to preserve the marketing/demo experience.
 
 ## Recommended Order
 

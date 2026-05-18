@@ -21,7 +21,7 @@ const FAMILY_DIRS: Record<string, string[]> = {
   worker: ['package.json', 'tsconfig.json', ...PRODUCTION_FILES],
 }
 
-const families = FamilySchema.options.filter((f) => f !== 'ts-turbo')
+const families = FamilySchema.options.filter((f) => f !== 'fullstack')
 
 describe('template stubs', () => {
   for (const family of families) {
@@ -63,8 +63,8 @@ describe('template stubs', () => {
     })
   }
 
-  it('ts-turbo has no template stub (falls back to ROOT_DIR)', () => {
-    expect(existsSync(join(TEMPLATES_DIR, 'ts-turbo'))).toBe(false)
+  it('fullstack has no template stub (falls back to ROOT_DIR)', () => {
+    expect(existsSync(join(TEMPLATES_DIR, 'fullstack'))).toBe(false)
   })
 })
 

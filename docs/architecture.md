@@ -3,7 +3,7 @@
 This file describes the real runtime flow across workspaces so agents can avoid
 guessing from folder names alone.
 
-This repo is a **ts-turbo family** template — the default full-stack TypeScript
+This repo is a **fullstack family** template — the default full-stack TypeScript
 monorepo. For other family architectures (next, backend, convex, rust, etc.),
 see [template-variants.md](./template-variants.md).
 
@@ -50,11 +50,11 @@ see [template-variants.md](./template-variants.md).
 
 ## Template-Only Surfaces
 
-See `docs/start-fresh.md` for the full list of template-only surfaces that can
-be removed when turning this template into a product.
+See `docs/archive/README.md` and `docs/commands.md` for scaffold and cleanup
+guidance when turning this template into a product.
 
 ## Current Scaffold Status
 
 - `apps/worker` has logging and Redis wiring but no real background job system.
 - `tests` contains repo tooling and CLI tests, but not broad runtime coverage yet.
-- All 11 CLI families are defined but only `ts-turbo` has a dedicated template source.
+- All 11 CLI families are defined but only `fullstack` has a dedicated template source.

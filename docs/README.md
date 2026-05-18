@@ -1,8 +1,8 @@
 # Repository Docs
 
 This repository is a Bun + Turborepo template with a real Next.js frontend,
-Express backend, Better Auth, Prisma, tRPC, shared UI, and a large amount of
-template showcase content.
+Express backend, Better Auth, Prisma, tRPC, shared UI, and template showcase
+content.
 
 Start here before searching the repo.
 
@@ -11,7 +11,7 @@ Start here before searching the repo.
 1. Open the nearest local `AGENTS.md`.
 2. Use `docs/commands.md` for commands and `docs/env.md` for env vars.
 3. Use `docs/architecture.md` if the change crosses workspaces.
-4. Use `docs/start-fresh.md` to turn the template into a new product.
+4. Use `docs/archive/README.md` for scaffold and cleanup entry points.
 
 ## Workspace Map
 
@@ -19,7 +19,7 @@ Start here before searching the repo.
   Next.js App Router frontend. Real runtime wiring lives in
   `app/layout.tsx`, `components/providers.tsx`, `trpc/client.tsx`,
   `trpc/server.tsx`, and `utils/config.ts`.
-  Template-only content: see `docs/start-fresh.md`.
+  Template-only content is described in `docs/archive/README.md`.
 
 - `apps/server`
   Express service. `src/app.ts` mounts Better Auth, JSON middleware, tRPC, and
@@ -60,8 +60,7 @@ Start here before searching the repo.
   Shared TS base configs extended by apps and packages.
 
 - `toolings/scripts`
-  Repo utility scripts for scope migration, redundancy auditing, and
-  start-fresh cleanup.
+  Repo utility scripts for scope migration, redundancy auditing, and cleanup.
 
 - `tests`
   Test workspace for repo tooling and future broader coverage. It now contains
@@ -71,4 +70,4 @@ Start here before searching the repo.
 ## Start-Fresh Bias
 
 If the goal is a new product instead of a preserved template showcase, read
-`docs/start-fresh.md` before editing UI routes.
+`docs/archive/README.md` before editing UI routes.

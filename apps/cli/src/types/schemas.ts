@@ -5,7 +5,7 @@ import { z } from 'zod'
 // =============================================================================
 
 export const FamilySchema = z.enum([
-  'ts-turbo',
+  'fullstack',
   'next',
   'backend',
   'rust',
@@ -116,7 +116,7 @@ export const ProjectConfigSchema = z.object({
   projectName: z.string().min(1),
   destinationDir: z.string().min(1),
   // NEW: family model
-  family: FamilySchema.default('ts-turbo'),
+  family: FamilySchema.default('fullstack'),
   bundles: z.array(BundleSchema).default(['product']),
   packageManager: PackageManagerSchema.default('bun'),
   // EXISTING (kept for backward compat with generators)
@@ -177,7 +177,7 @@ export type CLIArgs = z.infer<typeof CLIArgsSchema>
 // =============================================================================
 
 export const FAMILY_LABELS: Record<Family, string> = {
-  'ts-turbo': 'Full-stack TypeScript monorepo',
+  fullstack: 'Full-stack TypeScript monorepo',
   next: 'Standalone Next.js app',
   backend: 'API-only service',
   rust: 'Rust API service',
@@ -199,15 +199,15 @@ export const BUNDLE_LABELS: Record<Bundle, string> = {
 }
 
 export function hasBackendOptions(family: Family): boolean {
-  return family === 'ts-turbo' || family === 'backend'
+  return family === 'fullstack' || family === 'backend'
 }
 
 export function hasDatabaseOptions(family: Family): boolean {
-  return family === 'ts-turbo' || family === 'backend'
+  return family === 'fullstack' || family === 'backend'
 }
 
 export function hasOrmOptions(family: Family): boolean {
-  return family === 'ts-turbo' || family === 'backend'
+  return family === 'fullstack' || family === 'backend'
 }
 
 export function hasPresetOptions(family: Family): boolean {
@@ -215,11 +215,11 @@ export function hasPresetOptions(family: Family): boolean {
 }
 
 export function familySupportsWorker(family: Family): boolean {
-  return family === 'ts-turbo'
+  return family === 'fullstack'
 }
 
 export function familySupportsShowcase(family: Family): boolean {
-  return family === 'ts-turbo'
+  return family === 'fullstack'
 }
 
 // =============================================================================
@@ -303,29 +303,29 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
   if (
     config.bundles?.includes('realtime') &&
     !config.includeWorker &&
-    config.family === 'ts-turbo'
+    config.family === 'fullstack'
   ) {
     warnings.push('Realtime bundle works best with worker enabled (--worker).')
   }
-  if (config.bundles?.includes('ai') && config.family !== 'ts-turbo' && config.family !== 'next') {
-    warnings.push('AI bundle is designed for ts-turbo or next families.')
+  if (config.bundles?.includes('ai') && config.family !== 'fullstack' && config.family !== 'next') {
+    warnings.push('AI bundle is designed for fullstack or next families.')
   }
 
   // Backend + family validation
-  if (config.family && config.family !== 'ts-turbo' && config.family !== 'backend') {
+  if (config.family && config.family !== 'fullstack' && config.family !== 'backend') {
     if (config.backend && config.backend !== 'none') {
       warnings.push(
-        `Backend selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+        `Backend selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
       )
     }
     if (config.database && config.database !== 'none') {
       warnings.push(
-        `Database selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+        `Database selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
       )
     }
     if (config.orm && config.orm !== 'none') {
       warnings.push(
-        `ORM selection is only applicable to ts-turbo and backend families. Ignored for ${config.family}.`,
+        `ORM selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
       )
     }
   }

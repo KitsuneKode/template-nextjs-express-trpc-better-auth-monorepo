@@ -17,7 +17,7 @@ function baseConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
   return {
     projectName: 'test-app',
     destinationDir: '/tmp/test-app',
-    family: 'ts-turbo',
+    family: 'fullstack',
     bundles: ['product'],
     packageManager: 'bun',
     database: 'postgres',
@@ -51,13 +51,13 @@ describe('project name sanitization', () => {
 })
 
 describe('cleanup targets', () => {
-  it('strips showcase and worker when opted out for ts-turbo', () => {
+  it('strips showcase and worker when opted out for fullstack', () => {
     expect(
       buildCleanupTargets({
         includeShowcase: false,
         includeWorker: false,
         testing: 'none',
-        family: 'ts-turbo',
+        family: 'fullstack',
       }),
     ).toEqual(['readme', 'showcase', 'seed', 'worker', 'tests'])
   })
@@ -96,7 +96,7 @@ describe('server env', () => {
 })
 
 describe('family-aware readme', () => {
-  it('includes ts-turbo stack details for ts-turbo family', () => {
+  it('includes fullstack stack details for fullstack family', () => {
     const readme = buildReadme(baseConfig())
     expect(readme).toContain('full-stack typescript monorepo')
     expect(readme).toContain('tRPC')
@@ -114,7 +114,7 @@ describe('family-aware readme', () => {
 })
 
 describe('family-aware agent docs', () => {
-  it('includes ts-turbo key dirs for ts-turbo family', () => {
+  it('includes fullstack key dirs for fullstack family', () => {
     const agents = buildRootAgentsMd(baseConfig())
     expect(agents).toContain('apps/web')
     expect(agents).toContain('packages/trpc')
@@ -130,7 +130,7 @@ describe('family-aware agent docs', () => {
 })
 
 describe('family-aware context', () => {
-  it('includes ts-turbo architecture sections for ts-turbo family', () => {
+  it('includes fullstack architecture sections for fullstack family', () => {
     const ctx = buildContextMd(baseConfig())
     expect(ctx).toContain('tRPC')
     expect(ctx).toContain('Next.js')
@@ -165,17 +165,17 @@ describe('family-aware context', () => {
 })
 
 describe('scaffold smoke tests', () => {
-  const tsTurboDir = '/tmp/opencode/test-ts-turbo-scaffold'
+  const tsTurboDir = '/tmp/opencode/test-fullstack-scaffold'
   const backendDir = '/tmp/opencode/test-backend-scaffold'
 
-  it('scaffolds a ts-turbo project and produces expected files', async () => {
+  it('scaffolds a fullstack project and produces expected files', async () => {
     try {
       Bun.spawnSync(['rm', '-rf', tsTurboDir])
     } catch {}
 
     const result = await scaffoldProject(
       baseConfig({
-        projectName: 'smoke-ts-turbo',
+        projectName: 'smoke-fullstack',
         destinationDir: tsTurboDir,
         includeShowcase: true,
         includeWorker: true,
@@ -186,7 +186,7 @@ describe('scaffold smoke tests', () => {
       }),
     )
 
-    expect(result.packageName).toBe('smoke-ts-turbo')
+    expect(result.packageName).toBe('smoke-fullstack')
     expect(existsSync(join(tsTurboDir, 'package.json'))).toBe(true)
     expect(existsSync(join(tsTurboDir, 'apps/server'))).toBe(true)
     expect(existsSync(join(tsTurboDir, 'apps/web'))).toBe(true)

@@ -34,7 +34,7 @@ const TOOLS = [
       type: 'object',
       properties: {
         projectName: { type: 'string' },
-        family: { type: 'string', enum: FamilySchema.options, default: 'ts-turbo' },
+        family: { type: 'string', enum: FamilySchema.options, default: 'fullstack' },
         backend: {
           type: 'string',
           enum: ['express-bun', 'hono-bun', 'none'],
@@ -65,7 +65,7 @@ const TOOLS = [
           type: 'string',
           description: 'Output directory (defaults to ./<projectName>)',
         },
-        family: { type: 'string', enum: FamilySchema.options, default: 'ts-turbo' },
+        family: { type: 'string', enum: FamilySchema.options, default: 'fullstack' },
         backend: {
           type: 'string',
           enum: ['express-bun', 'hono-bun', 'none'],
@@ -132,7 +132,7 @@ async function handleToolsCall(
           errors: result.errors,
           plannedConfig: {
             projectName: args.projectName || 'unnamed',
-            family: args.family || 'ts-turbo',
+            family: args.family || 'fullstack',
             backend: args.backend || 'express-bun',
             database: args.database || 'postgres',
             orm: args.orm || 'prisma',
@@ -197,8 +197,8 @@ async function handleToolsCall(
             'kitsu_create_project requires projectName. It scaffolds into ./<projectName>.',
             'Use kitsu_get_schema to introspect available options at any time.',
             'Set install=false for agent safety (long-running bun install).',
-            'Family determines template source: ts-turbo (full monorepo), next (standalone Next.js), backend (Express API), etc.',
-            'For non-ts-turbo families, only projectName and family are required; other options are ignored.',
+            'Family determines template source: fullstack (full monorepo), next (standalone Next.js), backend (Express API), etc.',
+            'For non-fullstack families, only projectName and family are required; other options are ignored.',
           ],
         },
       })
@@ -216,7 +216,7 @@ function buildConfig(args: Record<string, unknown>): ProjectConfig {
     destinationDir:
       (args.destinationDir as string) ||
       resolve(process.cwd(), (args.projectName as string) || 'project'),
-    family: (args.family as Family) || 'ts-turbo',
+    family: (args.family as Family) || 'fullstack',
     backend: (args.backend as ProjectConfig['backend']) || 'express-bun',
     database: (args.database as ProjectConfig['database']) || 'postgres',
     orm: (args.orm as ProjectConfig['orm']) || 'prisma',

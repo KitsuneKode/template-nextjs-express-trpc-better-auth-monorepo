@@ -15,7 +15,7 @@ The old single-variant matrix is retired in favor of a family-first model.
 
 ## Families
 
-- `ts-turbo`
+- `fullstack`
 - `next`
 - `backend`
 - `rust`

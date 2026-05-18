@@ -44,6 +44,14 @@ export function pmExec(pm: PackageManager, pkg: string): string {
   return `${executor} ${pkg}`
 }
 
+export function pmExecParts(pm: PackageManager): string[] {
+  return PM_MAP[pm].exec.split(' ')
+}
+
+export function pmInstallParts(pm: PackageManager): string[] {
+  return PM_MAP[pm].install.split(' ')
+}
+
 /** Return a package-manager-aware script override map given the base bun scripts */
 export function adaptScripts(
   scripts: Record<string, string>,

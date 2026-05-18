@@ -7,8 +7,8 @@ users bootstrapping projects with the CLI.
 
 The CLI lives in `apps/cli` and is designed to:
 
-1. Prompt for the **project family** (ts-turbo, next, backend, etc.)
-2. Prompt for family-specific options (backend/database/orm for ts-turbo, presets for next)
+1. Prompt for the **project family** (fullstack, next, backend, etc.)
+2. Prompt for family-specific options (backend/database/orm for fullstack, presets for next)
 3. Prompt for **feature bundles** (product, realtime, growth, infra, AI)
 4. Copy the template source for the selected family
 5. Apply family-specific transforms
@@ -20,19 +20,19 @@ The CLI lives in `apps/cli` and is designed to:
 The CLI uses a family-first approach. Each family represents a distinct project
 archetype with its own template source, defaults, and transforms:
 
-| Family     | Description                    | Transform Pipeline              |
-| ---------- | ------------------------------ | ------------------------------- |
-| `ts-turbo` | Full-stack TypeScript monorepo | Full (backend + database + ORM) |
-| `next`     | Standalone Next.js app         | Minimal (presets only)          |
-| `backend`  | API-only service               | Full (backend + database + ORM) |
-| `rust`     | Rust API service               | Minimal (stub)                  |
-| `solana`   | Solana program                 | Minimal (stub)                  |
-| `convex`   | Next.js + Convex               | Minimal (stub)                  |
-| `worker`   | Background job worker          | Minimal (stub)                  |
-| `lib`      | Generic TypeScript package     | Minimal (stub)                  |
-| `cli`      | CLI package                    | Minimal (stub)                  |
-| `mobile`   | Expo mobile app                | Minimal (stub)                  |
-| `polyglot` | Multi-language monorepo        | Minimal (stub)                  |
+| Family      | Description                    | Transform Pipeline              |
+| ----------- | ------------------------------ | ------------------------------- |
+| `fullstack` | Full-stack TypeScript monorepo | Full (backend + database + ORM) |
+| `next`      | Standalone Next.js app         | Minimal (presets only)          |
+| `backend`   | API-only service               | Full (backend + database + ORM) |
+| `rust`      | Rust API service               | Minimal (stub)                  |
+| `solana`    | Solana program                 | Minimal (stub)                  |
+| `convex`    | Next.js + Convex               | Minimal (stub)                  |
+| `worker`    | Background job worker          | Minimal (stub)                  |
+| `lib`       | Generic TypeScript package     | Minimal (stub)                  |
+| `cli`       | CLI package                    | Minimal (stub)                  |
+| `mobile`    | Expo mobile app                | Minimal (stub)                  |
+| `polyglot`  | Multi-language monorepo        | Minimal (stub)                  |
 
 ## Local Development
 
@@ -99,11 +99,11 @@ apps/cli/
 │   │       ├── deployment.ts # Config-aware deployment guide
 │   │       ├── readme.ts     # Family-aware README generator
 │   │       ├── agent-docs.ts # Family-aware AGENTS.md, CONTEXT.md
-│   │       └── showcase.ts   # SHOWCASE.mdx (ts-turbo only)
+│   │       └── showcase.ts   # SHOWCASE.mdx (fullstack only)
 │   ├── types/
 │   │   └── schemas.ts        # Zod schemas, family/bundle types, validators
 │   └── templates/            # Per-family template sources (future)
-│       └── ts-turbo/         # (defaults to repo root)
+│       └── fullstack/         # (defaults to repo root)
 ├── tests/
 │   ├── scaffold.test.ts      # Scaffold + file-generation tests
 │   ├── schemas.test.ts       # Schema validation + compatibility tests
@@ -164,7 +164,7 @@ bun test src/cli/create-kitsu-stack.test.ts
 ### Test Structure
 
 - `src/cli/create-kitsu-stack.test.ts` — Schema tests, family-aware generator
-  output tests, and scaffold smoke tests (ts-turbo + backend)
+  output tests, and scaffold smoke tests (fullstack + backend)
 - `src/toolings/` — Repo tooling script tests
 - `src/integration/` — Runtime integration tests (in progress)
 
@@ -224,7 +224,7 @@ bun run dev -- my-app --yes 2>&1 | head -50
 - [x] Family-aware README, AGENTS.md, CONTEXT.md generators
 - [x] Feature bundle system (product, realtime, growth, infra, AI)
 - [x] Oxfmt formatting standard
-- [x] Scaffold smoke tests (ts-turbo + backend)
+- [x] Scaffold smoke tests (fullstack + backend)
 - [ ] Per-family template sources
 - [ ] CI + pre-commit fully migrated to oxfmt
 

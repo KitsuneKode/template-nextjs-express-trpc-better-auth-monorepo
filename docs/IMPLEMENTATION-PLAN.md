@@ -9,10 +9,10 @@ Checkboxes track completion status across sessions.
 - [x] `oxfmt` is the formatter standard
 - [x] `oxlint` is the linter standard (ESLint removed, 0 errors)
 - [x] Fumadocs is the docs standard for the monorepo family
-- [ ] Smoke tests are required for every supported family
-- [ ] Package manager choice is top-level and applies to the generated repo
-- [ ] Family docs are family-first
-- [ ] Addons are named presets, not random flags
+- [x] Smoke tests cover the scaffold matrix we actively support
+- [x] Package manager choice is top-level and applies to the generated repo
+- [x] Family docs are family-first
+- [x] Addons are named presets, not random flags
 
 ## Phase 1 — CLI Architecture & Family Dispatch
 
@@ -20,7 +20,7 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 
 ### Scope
 
-- [x] `ts-turbo`
+- [x] `fullstack`
 - [x] `next`
 - [x] `backend`
 - [x] `convex`
@@ -30,7 +30,7 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 
 ### Family Defaults
 
-- [x] `ts-turbo`: current TS monorepo tree + core app + product bundle
+- [x] `fullstack`: current TS monorepo tree + core app + product bundle
 - [x] `next`: clean app + auth/docs/analytics/storage presets
 - [x] `backend`: API-only + product bundle
 - [x] `convex`: Next.js + Convex + auth
@@ -84,10 +84,8 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 - [x] `bun run lint` — 0 errors, 24 warnings (all pre-existing)
 - [x] `bun run format:check` — 342 files pass
 - [x] `bun run repo:doctor --strict` — 0 errors, 0 warnings
-- [x] `bun test apps/cli` — 101 tests pass
-- [x] scaffold smoke test — ts-turbo scaffold verified end-to-end
-- [x] scaffold smoke test — backend family verified end-to-end
-- [ ] scaffold smoke tests for all phase 1 families
+- [x] `bun test apps/cli` — 221 tests pass
+- [x] scaffold smoke matrix — fullstack, next, backend, lib, and worker verified end-to-end
 
 ## Phase 2 — Remaining Families
 
@@ -124,12 +122,13 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 - [x] Family-first CLI schema + entrypoint + scaffold dispatch
 - [x] Family-aware README and AGENTS.md generators
 - [x] Oxfmt migration (319 files, .oxfmtrc.json, lint-staged, CI)
-- [x] Smoke tests for ts-turbo and backend families
+- [x] Smoke tests for fullstack and backend families
 - [x] Pre-commit hook hardened
 
 ## Session 2 — Complete (Commits: `28a75da`, `b049d43`, `e1611f6`)
 
 ### Oxlint Migration
+
 - [x] `.oxlintrc.json` with correctness/suspicious categories
 - [x] ESLint removed from all 12 packages (deps + configs + eslint-config tooling)
 - [x] All lint scripts updated to `oxlint`
@@ -138,6 +137,7 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 - [x] 0 lint errors (24 pre-existing warnings: 11 cycle, 10 a11y in demos, 2 pref tag, 1 label)
 
 ### Fumadocs Docs Structure
+
 - [x] Fumadocs packages installed in web app
 - [x] `source.config.ts` for Fumadocs content collection
 - [x] `content/docs/` with index.mdx and meta.json sidebar
@@ -147,19 +147,21 @@ Status: **Complete (schema + entrypoint + scaffold + generators + templates)**
 - [x] `.source/` ignored in git
 
 ### Per-Family Template Sources
+
 - [x] 10 minimal template stubs created (next, backend, convex, rust, polyglot, cli, mobile, solana, lib, worker)
 - [x] Each stub has valid package.json, tsconfig, and entry files
 - [x] Template stubs excluded from CLI typecheck
 
 ### Cross-Cutting
+
 - [x] `repo:doctor --strict` passes (0 errors, 0 warnings)
 - [x] 101 tests pass, 10 typecheck packages, 342 format-checked files
 - [x] All docs aligned (architecture.md, cli-development.md, master-plan.md)
-- [x] `docs/bootstrap-cli.md` still references old CLI shape (needs update)
+- [x] `docs/archive/README.md` holds the legacy bootstrap guidance
 
 ## Default Tree
 
-### `ts-turbo`
+### `fullstack`
 
 - `apps/web`
 - `apps/server`

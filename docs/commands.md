@@ -23,12 +23,12 @@
 
 ## Template Operations
 
-- `bun run rename-scope:dry` — Preview replacing `@template/*` package names with the root package name.
+- `bun run rename-scope:dry` — Preview replacing package names with the current root package name.
 - `bun run rename-scope` — Apply the scope rename across the repo.
 - `bun run repo:doctor` — Audit the repo for stale scaffolding, broken exports, placeholder files, and doc drift.
 - `bun run repo:doctor:strict` — Fail on warnings and errors for CI or pre-release checks.
-- `bun run template:clean:dry` — Preview the start-fresh cleanup plan for removing showcase code and optional workspaces.
-- `bun run template:clean` — Apply the recommended start-fresh cleanup plan.
+- `bun run template:clean:dry` — Preview the cleanup plan for removing showcase code and optional workspaces.
+- `bun run template:clean` — Apply the recommended cleanup plan.
 
 ## Commit Validation
 

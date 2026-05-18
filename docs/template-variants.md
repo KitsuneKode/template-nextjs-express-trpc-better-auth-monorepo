@@ -4,7 +4,7 @@ This document replaces the old variant matrix with the new family-first model.
 
 ## Families
 
-1. `ts-turbo`
+1. `fullstack`
 2. `next`
 3. `backend`
 4. `rust`
@@ -24,7 +24,7 @@ This document replaces the old variant matrix with the new family-first model.
 - Package manager is chosen at the top level of the generated repo
 - Smoke tests are required for supported families
 
-## `ts-turbo`
+## `fullstack`
 
 The default TypeScript monorepo family.
 
