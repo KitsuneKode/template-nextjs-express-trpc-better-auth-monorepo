@@ -198,8 +198,9 @@ function syntaxHighlight(code: string) {
   return html.replace(combinedRegex, (match, ...args) => {
     // Find which group matched
     for (let i = 0; i < patterns.length; i++) {
-      if (args[i]) {
-        return `<span class="${patterns[i].class}">${match}</span>`
+      const pattern = patterns[i]
+      if (pattern && args[i]) {
+        return `<span class="${pattern.class}">${match}</span>`
       }
     }
     return match

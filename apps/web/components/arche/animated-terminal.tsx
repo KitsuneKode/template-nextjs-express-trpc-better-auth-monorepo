@@ -28,13 +28,13 @@ export function AnimatedTerminal() {
     const runSequence = async () => {
       // Step 0: Typing animation for the initial command
       if (currentStep === 0) {
-        const command = terminalSteps[0].text
+        const command = terminalSteps[0]!.text
         for (let i = 0; i <= command.length; i++) {
           if (!isSubscribed) return
           setTypedCommand(command.slice(0, i))
           await new Promise((r) => setTimeout(r, 40)) // Typing speed
         }
-        await new Promise((r) => setTimeout(r, terminalSteps[0].delay))
+        await new Promise((r) => setTimeout(r, terminalSteps[0]!.delay))
         if (!isSubscribed) return
         setIsTyping(false)
         setCurrentStep(1)
@@ -43,7 +43,7 @@ export function AnimatedTerminal() {
 
       // Subsequent steps
       if (currentStep > 0 && currentStep < terminalSteps.length) {
-        await new Promise((r) => setTimeout(r, terminalSteps[currentStep - 1].delay))
+        await new Promise((r) => setTimeout(r, terminalSteps[currentStep - 1]!.delay))
         if (!isSubscribed) return
         setCurrentStep((prev) => prev + 1)
       }
@@ -73,7 +73,7 @@ export function AnimatedTerminal() {
           {/* Step 0: Typing Command */}
           <div className="flex items-center gap-3 text-white">
             <span className="text-zinc-400">~</span>
-            <span>{isTyping ? typedCommand : terminalSteps[0].text}</span>
+            <span>{isTyping ? typedCommand : terminalSteps[0]!.text}</span>
             {isTyping && (
               <motion.span
                 animate={{ opacity: [1, 0] }}
