@@ -353,7 +353,8 @@ async function main(): Promise<void> {
   let includeShowcase = false
   let includeWorker = false
 
-  if (family === 'fullstack' || family === 'backend') {
+  if (family === 'fullstack' || family === 'backend' || family === 'polyglot') {
+    const isPolyglot = family === 'polyglot'
     backend = args.yes
       ? (args.backend ?? 'express-bun')
       : await promptIfNeeded(args.backend, async () => {
@@ -367,6 +368,25 @@ async function main(): Promise<void> {
                 hint: 'production-ready, current default',
               },
               { label: 'Hono (Bun)', value: 'hono-bun', hint: 'lightweight, edge-ready' },
+              ...(isPolyglot
+                ? [
+                    {
+                      label: 'Rust (Axum)',
+                      value: 'rust-axum' as const,
+                      hint: 'high-performance, experimental',
+                    },
+                    {
+                      label: 'Go (Fiber)',
+                      value: 'go-fiber' as const,
+                      hint: 'fast, lightweight, experimental',
+                    },
+                    {
+                      label: 'Python (FastAPI)',
+                      value: 'python-fastapi' as const,
+                      hint: 'rapid development, experimental',
+                    },
+                  ]
+                : []),
               { label: 'None', value: 'none', hint: 'no backend' },
             ],
           })

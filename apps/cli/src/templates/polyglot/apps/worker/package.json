@@ -2,9 +2,13 @@
   "name": "@acme/polyglot-worker",
   "private": true,
   "scripts": {
-    "start": "bun run src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "lint": "oxlint",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/bun": "^1"
+    "@types/bun": "^1",
+    "typescript": "^5"
   }
 }

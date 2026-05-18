@@ -45,6 +45,8 @@ const EXCLUDED_SEGMENTS = new Set([
   '.claude',
   '.cursor',
   '.vscode',
+  '.opencode',
+  '.codebuddy',
   'logs',
 ])
 
@@ -90,8 +92,23 @@ function resolveTemplateSource(family: Family): string {
   return ROOT_DIR
 }
 
-/** Only fullstack gets the full backend/database/ORM transform pipeline */
+/** Monorepo families have the full apps/packages/ structure */
+function isMonorepoFamily(family: Family): boolean {
+  return family === 'fullstack' || family === 'polyglot'
+}
+
+/** Monorepo families get the full backend/database/ORM transform pipeline */
 function hasTransformPipeline(family: Family): boolean {
+  return family === 'fullstack' || family === 'polyglot'
+}
+
+/** Only monorepo families need rename-scope (they use @template/* scope) */
+function needsRenameScope(family: Family): boolean {
+  return family === 'fullstack'
+}
+
+/** Only monorepo families need template-cleanup (they carry showcase/seed/worker) */
+function needsTemplateCleanup(family: Family): boolean {
   return family === 'fullstack'
 }
 
@@ -214,7 +231,7 @@ async function copyWithManifest(
     try {
       const srcStat = await stat(srcPath)
       if (srcStat.isDirectory()) {
-        await mkdir(destPath, { recursive: true })
+        await cp(srcPath, destPath, { recursive: true })
       } else {
         await mkdir(dirname(destPath), { recursive: true })
         await cp(srcPath, destPath)
@@ -252,6 +269,12 @@ async function updateRootPackageJson(
   options: ProjectConfig,
 ): Promise<void> {
   const packageJsonPath = join(destinationDir, 'package.json')
+  try {
+    await access(packageJsonPath)
+  } catch {
+    // Non-JS families (rust, solana) have no package.json — nothing to update
+    return
+  }
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as Record<string, unknown>
   packageJson.name = packageName
 
@@ -329,12 +352,16 @@ export async function scaffoldProject(
     await applyOrmTransform(destinationDir, options)
   }
 
-  runCommand(['bun', join(TOOLINGS_DIR, 'rename-scope.ts'), '--quiet'], {
-    cwd: destinationDir,
-  })
+  // Run rename-scope only for monorepo families that use @template/* scope
+  if (needsRenameScope(family)) {
+    runCommand(['bun', join(TOOLINGS_DIR, 'rename-scope.ts'), '--quiet'], {
+      cwd: destinationDir,
+    })
+  }
 
+  // Run template-cleanup only for monorepo families that carry showcase/seed/worker
   const cleanupTargets = buildCleanupTargets(options)
-  if (cleanupTargets.length > 0) {
+  if (needsTemplateCleanup(family) && cleanupTargets.length > 0) {
     runCommand(
       [
         'bun',
@@ -349,24 +376,27 @@ export async function scaffoldProject(
   // Write arche.json for reproducibility
   await writeGeneratedFile(destinationDir, 'arche.json', buildArcheConfig(options))
 
-  // Apply bundle transforms (realtime, growth, infra, ai)
-  const bundleFiles = applyBundleTransforms(destinationDir, options)
+  // Apply bundle transforms (realtime, growth, infra, ai) — monorepo only
+  const bundleFiles = isMonorepoFamily(family) ? applyBundleTransforms(destinationDir, options) : []
 
   const generatedFiles: string[] = ['arche.json', ...bundleFiles]
 
-  // Family-aware env generation
+  const monorepo = isMonorepoFamily(family)
   const hasServer = !shouldStripServer(family)
   const hasWeb = !shouldStripWeb(family)
 
-  if (hasServer) {
+  // Server env: only for monorepo families (standalone templates ship their own .env)
+  if (hasServer && monorepo) {
     const serverEnvContent = buildServerEnv(options)
-    await writeGeneratedFile(destinationDir, 'apps/server/.env.example', serverEnvContent)
-    generatedFiles.push('apps/server/.env.example')
-    await writeGeneratedFile(destinationDir, 'apps/server/.env', serverEnvContent)
-    generatedFiles.push('apps/server/.env')
+    const serverDir = family === 'polyglot' ? 'apps/api' : 'apps/server'
+    await writeGeneratedFile(destinationDir, `${serverDir}/.env.example`, serverEnvContent)
+    generatedFiles.push(`${serverDir}/.env.example`)
+    await writeGeneratedFile(destinationDir, `${serverDir}/.env`, serverEnvContent)
+    generatedFiles.push(`${serverDir}/.env`)
   }
 
-  if (hasWeb) {
+  // Web env: only for monorepo families
+  if (hasWeb && monorepo) {
     const webEnvContent = buildWebEnv()
     await writeGeneratedFile(destinationDir, 'apps/web/.env.example', webEnvContent)
     generatedFiles.push('apps/web/.env.example')
@@ -379,15 +409,17 @@ export async function scaffoldProject(
     await writeGeneratedFile(destinationDir, 'docker-compose.yml', renderDockerCompose(options))
     generatedFiles.push('docker-compose.yml')
 
-    await writeGeneratedFile(
-      destinationDir,
-      'docker-compose.prod.yml',
-      renderDockerComposeProd(options),
-    )
-    generatedFiles.push('docker-compose.prod.yml')
+    if (monorepo) {
+      await writeGeneratedFile(
+        destinationDir,
+        'docker-compose.prod.yml',
+        renderDockerComposeProd(options),
+      )
+      generatedFiles.push('docker-compose.prod.yml')
 
-    await writeGeneratedFile(destinationDir, 'nginx/nginx.conf', renderNginxConfig(options))
-    generatedFiles.push('nginx/nginx.conf')
+      await writeGeneratedFile(destinationDir, 'nginx/nginx.conf', renderNginxConfig(options))
+      generatedFiles.push('nginx/nginx.conf')
+    }
   }
 
   // GitHub Actions CI (config-aware: adapts to testing/runtime)
@@ -415,16 +447,18 @@ export async function scaffoldProject(
   const cursorFiles = writeCursorRules(destinationDir, options)
   generatedFiles.push(...cursorFiles)
 
-  // Generate .claude/rules/ directory for path-scoped agent rules
-  if (hasServer) {
-    await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
-    generatedFiles.push('.claude/rules/store.md')
-  }
-  if (hasWeb) {
-    await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
-    generatedFiles.push('.claude/rules/web.md')
-    await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
-    generatedFiles.push('.claude/rules/trpc.md')
+  // Generate .claude/rules/ directory for path-scoped agent rules (monorepo only)
+  if (monorepo) {
+    if (hasServer) {
+      await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
+      generatedFiles.push('.claude/rules/store.md')
+    }
+    if (hasWeb) {
+      await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
+      generatedFiles.push('.claude/rules/web.md')
+      await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
+      generatedFiles.push('.claude/rules/trpc.md')
+    }
   }
 
   // SHOWCASE.mdx (portfolio-ready) — only fullstack has showcase
@@ -454,7 +488,7 @@ export async function scaffoldProject(
   return {
     destinationDir,
     packageName,
-    cleanupTargets,
+    cleanupTargets: needsTemplateCleanup(family) ? cleanupTargets : [],
     generatedFiles,
   }
 }

@@ -6,9 +6,11 @@
  * backend is selected, this generator rewrites the relevant files.
  */
 
-import { readFile, writeFile, rm, mkdir } from 'node:fs/promises'
+import { readFile, writeFile, rm, mkdir, stat } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 import type { ProjectConfig } from '../../types/schemas'
+import { sanitizeProjectName } from '../slug'
+import { buildServerEnv } from './env'
 
 // =============================================================================
 // Hono on Bun
@@ -211,6 +213,220 @@ export const createCaller = createCallerFactory(appRouter)
 }
 
 // =============================================================================
+// Rust / Axum
+// =============================================================================
+
+function rustAxumCargoToml(projectName: string): string {
+  const safeName = sanitizeProjectName(projectName).replace(/-/g, '_')
+  return `[package]
+name = "${safeName}-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "sqlite", "migrate"] }
+dotenvy = "0.15"
+uuid = { version = "1", features = ["v4"] }
+`
+}
+
+function rustAxumMainRs(): string {
+  return `use axum::{routing::get, Router};
+use tower_http::cors::{Any, CorsLayer};
+use tracing::info;
+
+mod config;
+mod routes;
+
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::fmt::init();
+
+    dotenvy::dotenv().ok();
+
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".to_string());
+    let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "http://localhost:3000".to_string());
+
+    let cors = CorsLayer::new()
+        .allow_origin(frontend_url.parse::<axum::http::HeaderValue>().ok().map(|v| [v]).unwrap_or_default())
+        .allow_methods(Any)
+        .allow_headers(Any);
+
+    let app = Router::new()
+        .route("/health", get(routes::health))
+        .layer(cors);
+
+    let addr = format!("0.0.0.0:{}", port);
+    info!("Server listening on http://{}", addr);
+
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+`
+}
+
+function rustAxumConfigRs(): string {
+  return `use std::env;
+
+pub struct Config {
+    pub port: u16,
+    pub database_url: String,
+    pub frontend_url: String,
+}
+
+impl Config {
+    pub fn from_env() -> Self {
+        Self {
+            port: env::var("PORT")
+                .unwrap_or_else(|_| "3001".to_string())
+                .parse()
+                .unwrap_or(3001),
+            database_url: env::var("DATABASE_URL")
+                .unwrap_or_else(|_| "postgresql://postgres:postgres@localhost:5432/app".to_string()),
+            frontend_url: env::var("FRONTEND_URL")
+                .unwrap_or_else(|_| "http://localhost:3000".to_string()),
+        }
+    }
+}
+`
+}
+
+function rustAxumRoutesRs(): string {
+  return `use axum::Json;
+use serde_json::{json, Value};
+
+pub async fn health() -> Json<Value> {
+    Json(json!({
+        "status": "ok"
+    }))
+}
+`
+}
+
+function rustAxumReadme(projectName: string): string {
+  return `# ${projectName} API
+
+Rust API service built with [Axum](https://github.com/tokio-rs/axum).
+
+## Prerequisites
+
+- [Rust](https://rustup.rs/) (stable)
+- [PostgreSQL](https://www.postgresql.org/) (or SQLite)
+
+## Quick Start
+
+\`\`\`sh
+cp .env.example .env
+cargo run
+\`\`\`
+
+## Build
+
+\`\`\`sh
+cargo build --release
+\`\`\`
+
+The binary will be at \`target/release/${sanitizeProjectName(projectName).replace(/-/g, '_')}-api\`.
+`
+}
+
+// =============================================================================
+// Go / Fiber (stub — experimental)
+// =============================================================================
+
+function goFiberStub(): Record<string, string> {
+  return {
+    'go.mod': `module api
+
+go 1.22
+
+require (
+\tgithub.com/gofiber/fiber/v3 v3.0.0-beta
+\tgithub.com/joho/godotenv v1.5
+)
+`,
+    'main.go': `package main
+
+import (
+\t"log"
+\t"os"
+
+\t"github.com/gofiber/fiber/v3"
+\t"github.com/joho/godotenv"
+)
+
+func main() {
+\tgodotenv.Load()
+
+\tapp := fiber.New()
+
+\tapp.Get("/health", func(c fiber.Ctx) error {
+\t\treturn c.JSON(fiber.Map{
+\t\t\t"status": "ok",
+\t\t})
+\t})
+
+\tport := os.Getenv("PORT")
+\tif port == "" {
+\t\tport = "3001"
+\t}
+
+\tlog.Fatal(app.Listen(":" + port))
+}
+`,
+  }
+}
+
+// =============================================================================
+// Python / FastAPI (stub — experimental)
+// =============================================================================
+
+function pythonFastapiStub(): Record<string, string> {
+  return {
+    'requirements.txt': `fastapi==0.115
+uvicorn[standard]==0.34
+pydantic==2.10
+python-dotenv==1.0
+`,
+    'main.py': `from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
+import uvicorn
+
+load_dotenv()
+
+app = FastAPI(title="API", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:3000")],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", "3001"))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+`,
+  }
+}
+
+// =============================================================================
 // Public API
 // =============================================================================
 
@@ -246,6 +462,23 @@ async function patchPackageJson(
 }
 
 /**
+ * Detect the server directory based on the project layout.
+ * - fullstack: apps/server/
+ * - polyglot: apps/api/
+ * - default: apps/server/
+ */
+async function detectServerDir(destinationDir: string): Promise<string> {
+  // Check for polyglot layout first
+  try {
+    await stat(join(destinationDir, 'apps', 'api'))
+    return 'apps/api'
+  } catch {
+    // fall through
+  }
+  return 'apps/server'
+}
+
+/**
  * Apply backend-specific transformations to the scaffolded project.
  * Called after template copy and cleanup, before env/docker/ci generation.
  */
@@ -255,27 +488,78 @@ export async function applyBackendTransform(
 ): Promise<void> {
   if (config.backend === 'express-bun') return // default, no transformation needed
 
+  const serverDir = await detectServerDir(destinationDir)
+
   if (config.backend === 'hono-bun') {
     // 1. Rewrite server app files
-    await writeFile_(join(destinationDir, 'apps/server/src/app.ts'), honoAppTs())
-    await writeFile_(join(destinationDir, 'apps/server/src/server.ts'), honoServerTs())
+    await writeFile_(join(destinationDir, serverDir, 'src/app.ts'), honoAppTs())
+    await writeFile_(join(destinationDir, serverDir, 'src/server.ts'), honoServerTs())
 
     // 2. Remove Express middleware files (not applicable to Hono)
-    await rm(join(destinationDir, 'apps/server/src/middlewares'), {
+    await rm(join(destinationDir, serverDir, 'src/middlewares'), {
       recursive: true,
       force: true,
     })
 
     // 3. Patch server package.json
-    await patchPackageJson(join(destinationDir, 'apps/server/package.json'), honoPackageJsonPatch())
+    await patchPackageJson(join(destinationDir, serverDir, 'package.json'), honoPackageJsonPatch())
 
-    // 4. Rewrite tRPC package for fetch-based context
-    await writeFile_(join(destinationDir, 'packages/trpc/src/trpc.ts'), trpcContextFetch())
-    await writeFile_(join(destinationDir, 'packages/trpc/src/index.ts'), trpcIndexFetch())
+    // 4. Rewrite tRPC package for fetch-based context (fullstack only)
+    const trpcSrcDir = join(destinationDir, 'packages', 'trpc', 'src')
+    try {
+      await stat(trpcSrcDir)
+      await writeFile_(join(destinationDir, 'packages/trpc/src/trpc.ts'), trpcContextFetch())
+      await writeFile_(join(destinationDir, 'packages/trpc/src/index.ts'), trpcIndexFetch())
+    } catch {
+      // tRPC package not present — standalone or polyglot without tRPC
+    }
 
     return
   }
 
-  // Future backends: go-fiber, rust-axum, python-fastapi, fastify-node
-  // These would be implemented similarly with their own templates.
+  if (config.backend === 'rust-axum') {
+    const projectName = config.projectName
+    const apiDir = join(destinationDir, 'services', 'api')
+
+    // Remove the existing JS server workspace
+    await rm(join(destinationDir, serverDir), { recursive: true, force: true })
+
+    // Create Rust/Axum service
+    await writeFile_(join(apiDir, 'Cargo.toml'), rustAxumCargoToml(projectName))
+    await writeFile_(join(apiDir, 'src', 'main.rs'), rustAxumMainRs())
+    await writeFile_(join(apiDir, 'src', 'config.rs'), rustAxumConfigRs())
+    await writeFile_(join(apiDir, 'src', 'routes.rs'), rustAxumRoutesRs())
+    await writeFile_(join(apiDir, '.env.example'), buildServerEnv(config))
+    await writeFile_(join(apiDir, 'README.md'), rustAxumReadme(projectName))
+
+    return
+  }
+
+  if (config.backend === 'go-fiber') {
+    const apiDir = join(destinationDir, 'services', 'api')
+
+    await rm(join(destinationDir, serverDir), { recursive: true, force: true })
+
+    const stubs = goFiberStub()
+    for (const [file, content] of Object.entries(stubs)) {
+      await writeFile_(join(apiDir, file), content)
+    }
+    await writeFile_(join(apiDir, '.env.example'), buildServerEnv(config))
+
+    return
+  }
+
+  if (config.backend === 'python-fastapi') {
+    const apiDir = join(destinationDir, 'services', 'api')
+
+    await rm(join(destinationDir, serverDir), { recursive: true, force: true })
+
+    const stubs = pythonFastapiStub()
+    for (const [file, content] of Object.entries(stubs)) {
+      await writeFile_(join(apiDir, file), content)
+    }
+    await writeFile_(join(apiDir, '.env.example'), buildServerEnv(config))
+
+    return
+  }
 }

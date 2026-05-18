@@ -2,12 +2,20 @@
   "name": "@acme/polyglot-web",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build"
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "next": "^16",
     "react": "^19",
     "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "typescript": "^5"
   }
 }

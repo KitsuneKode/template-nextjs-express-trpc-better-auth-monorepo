@@ -199,15 +199,15 @@ export const BUNDLE_LABELS: Record<Bundle, string> = {
 }
 
 export function hasBackendOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend'
+  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
 }
 
 export function hasDatabaseOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend'
+  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
 }
 
 export function hasOrmOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend'
+  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
 }
 
 export function hasPresetOptions(family: Family): boolean {
@@ -312,20 +312,21 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
   }
 
   // Backend + family validation
-  if (config.family && config.family !== 'fullstack' && config.family !== 'backend') {
+  const backendFamilies: Family[] = ['fullstack', 'backend', 'polyglot']
+  if (config.family && !backendFamilies.includes(config.family)) {
     if (config.backend && config.backend !== 'none') {
       warnings.push(
-        `Backend selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
+        `Backend selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
       )
     }
     if (config.database && config.database !== 'none') {
       warnings.push(
-        `Database selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
+        `Database selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
       )
     }
     if (config.orm && config.orm !== 'none') {
       warnings.push(
-        `ORM selection is only applicable to fullstack and backend families. Ignored for ${config.family}.`,
+        `ORM selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
       )
     }
   }

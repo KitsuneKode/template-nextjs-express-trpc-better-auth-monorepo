@@ -2,13 +2,19 @@
   "name": "@acme/polyglot",
   "private": true,
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "services/*"
   ],
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build"
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint:fix",
+    "check-types": "turbo check-types",
+    "clean": "find . -name node_modules -o -name .next -o -name .turbo -o -name dist -o -name target -type d -prune | xargs rm -rf"
   },
   "devDependencies": {
-    "turbo": "^2"
+    "turbo": "^2",
+    "typescript": "^5"
   }
 }

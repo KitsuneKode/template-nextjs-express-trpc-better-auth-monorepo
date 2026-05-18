@@ -129,6 +129,81 @@ async function addAgentDocs(baseDir: string, config: ProjectConfig): Promise<str
   return files
 }
 
+async function addWebsocketStub(baseDir: string, _config: ProjectConfig): Promise<string[]> {
+  const files: string[] = []
+  const wsDir = 'packages/websocket'
+  const content = `// WebSocket server stub
+import { WebSocketServer } from 'ws'
+
+export function createWSServer(port = 3002) {
+  const wss = new WebSocketServer({ port })
+  console.log(\`WebSocket server running on port \${port}\`)
+  wss.on('connection', (ws) => {
+    ws.on('message', (data) => {
+      ws.send(\`Echo: \${data}\`)
+    })
+  })
+  return wss
+}
+`
+  writeGeneratedFile(baseDir, `${wsDir}/src/index.ts`, content)
+  files.push(`${wsDir}/src/index.ts`)
+
+  const pkgJson = JSON.stringify(
+    {
+      name: '@app/websocket',
+      private: true,
+      type: 'module',
+      scripts: { dev: 'tsx watch src/index.ts', build: 'tsc' },
+      dependencies: { ws: '^8' },
+      devDependencies: { '@types/ws': '^8', tsx: '^4', typescript: '^5' },
+    },
+    null,
+    2,
+  )
+  writeGeneratedFile(baseDir, `${wsDir}/package.json`, pkgJson + '\n')
+  files.push(`${wsDir}/package.json`)
+
+  const tsconfig = JSON.stringify(
+    {
+      extends: '@template/typescript-config/backend.json',
+      include: ['src'],
+      exclude: ['node_modules', 'dist'],
+    },
+    null,
+    2,
+  )
+  writeGeneratedFile(baseDir, `${wsDir}/tsconfig.json`, tsconfig + '\n')
+  files.push(`${wsDir}/tsconfig.json`)
+
+  return files
+}
+
+async function addFeatureStub(
+  baseDir: string,
+  feature: string,
+  _config: ProjectConfig,
+): Promise<string[]> {
+  const dir = `packages/${feature}`
+  const content = `// ${feature} stub — add your implementation here\nexport const placeholder = true\n`
+  writeGeneratedFile(baseDir, `${dir}/src/index.ts`, content)
+
+  const pkgJson = JSON.stringify(
+    {
+      name: `@app/${feature}`,
+      private: true,
+      type: 'module',
+      scripts: { dev: 'tsx watch src/index.ts', build: 'tsc' },
+      devDependencies: { tsx: '^4', typescript: '^5' },
+    },
+    null,
+    2,
+  )
+  writeGeneratedFile(baseDir, `${dir}/package.json`, pkgJson + '\n')
+
+  return [`${dir}/src/index.ts`, `${dir}/package.json`]
+}
+
 const FEATURE_HANDLERS: Record<
   string,
   (baseDir: string, config: ProjectConfig) => Promise<string[]>
@@ -137,6 +212,12 @@ const FEATURE_HANDLERS: Record<
   ci: addCi,
   env: addEnvFiles,
   'agent-docs': addAgentDocs,
+  websocket: addWebsocketStub,
+  worker: async (baseDir, config) => addFeatureStub(baseDir, 'worker', config),
+  analytics: async (baseDir, config) => addFeatureStub(baseDir, 'analytics', config),
+  email: async (baseDir, config) => addFeatureStub(baseDir, 'email', config),
+  s3: async (baseDir, config) => addFeatureStub(baseDir, 's3', config),
+  payments: async (baseDir, config) => addFeatureStub(baseDir, 'payments', config),
 }
 
 /**

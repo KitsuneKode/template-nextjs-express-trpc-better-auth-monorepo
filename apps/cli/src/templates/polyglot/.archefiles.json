@@ -2,9 +2,22 @@
   "version": "0.2.0",
   "include": [
     "README.md",
+    "package.json",
+    "turbo.json",
+    "AGENTS.md",
+    ".env.example",
     "apps/api/package.json",
+    "apps/api/tsconfig.json",
+    "apps/api/src/app.ts",
+    "apps/api/src/server.ts",
     "apps/web/package.json",
+    "apps/web/tsconfig.json",
+    "apps/web/next.config.js",
+    "apps/web/app/layout.tsx",
+    "apps/web/app/page.tsx",
     "apps/worker/package.json",
-    "package.json"
+    "apps/worker/tsconfig.json",
+    "apps/worker/src/index.ts",
+    ".oxlintrc.json"
   ]
 }

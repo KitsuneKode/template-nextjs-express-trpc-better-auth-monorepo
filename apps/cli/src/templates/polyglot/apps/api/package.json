@@ -4,13 +4,19 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "oxlint",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "cors": "^2",
     "express": "^5"
   },
   "devDependencies": {
+    "@types/cors": "^2",
     "@types/express": "^5",
+    "tsx": "^4",
     "typescript": "^5"
   }
 }
