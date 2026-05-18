@@ -1,136 +1,57 @@
-import { ArrowRight } from '@template/ui/components/icons'
-import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
-import Link from 'next/link'
-import { PremiumHero } from '@/components/landing-premium/hero/premium-hero'
-import { PremiumSiteShell } from '@/components/landing-premium/primitives/premium-site-shell'
-import { SectionShell } from '@/components/landing-premium/primitives/section-shell'
-import { ArchitectureMap } from '@/components/landing-premium/sections/architecture-map'
-import { PremiumMetrics } from '@/components/landing-premium/sections/premium-metrics'
-import { ProofTabs } from '@/components/landing-premium/sections/proof-tabs'
-import { QuickStartTimeline } from '@/components/landing-premium/sections/quickstart-timeline'
-import { StackGrid } from '@/components/landing-premium/sections/stack-grid'
-import { Footer } from '@/components/landing/Footer'
-import { Architecture } from '@/components/sections/architecture'
-import { Features } from '@/components/sections/features'
-import { Hero } from '@/components/sections/hero'
-import { LiveDemos } from '@/components/sections/live-demos'
-import { Metrics } from '@/components/sections/metrics'
-import { QuickStart } from '@/components/sections/quick-start'
-import { resolveSiteDesign, SITE_DESIGN_COOKIE_NAME } from '@/lib/site-design'
+import { AnimatedTerminal } from '@/components/arche/animated-terminal'
+import { ArchitectureGraph } from '@/components/arche/architecture-graph'
+import { FeatureGrid } from '@/components/arche/feature-grid'
+import { Navbar } from '@/components/arche/navbar'
 
-export const metadata: Metadata = {
-  title: 'Next.js Monorepo Template | Better Auth + Prisma + tRPC',
-  description:
-    'Production-ready full-stack monorepo template with Better Auth, Prisma ORM, tRPC, Next.js 16, and Upstash Redis. Type-safe, scalable, and developer-friendly.',
-  keywords: [
-    'Next.js',
-    'Monorepo',
-    'tRPC',
-    'Prisma',
-    'Better Auth',
-    'Turborepo',
-    'TypeScript',
-    'Full-Stack',
-    'Template',
-  ],
-  authors: [{ name: 'KitsuneKode' }],
-  openGraph: {
-    title: 'Next.js Monorepo Template | Better Auth + Prisma + tRPC',
-    description:
-      'Production-ready full-stack monorepo template. Stop configuring and start shipping.',
-    type: 'website',
-    locale: 'en_US',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Kitsune Stack Template social preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Next.js Monorepo Template',
-    description:
-      'Production-ready full-stack monorepo template with Better Auth, Prisma, and tRPC.',
-    images: ['/twitter-image'],
-  },
-}
-
-export default async function Page() {
-  const cookieStore = await cookies()
-  const design = resolveSiteDesign(cookieStore.get(SITE_DESIGN_COOKIE_NAME)?.value)
-
-  if (design === 'design2') {
-    return (
-      <PremiumSiteShell>
-        <PremiumHero startHref="/#quick-start" demosHref="/demo" />
-        <PremiumMetrics />
-
-        <SectionShell
-          id="stack"
-          eyebrow="Technology Stack"
-          title="Opinionated engineering choices, intentionally integrated."
-          description="Every layer is wired to reduce long-term integration debt: typed boundaries, shared UI primitives, and stable operational defaults."
-        >
-          <StackGrid />
-        </SectionShell>
-
-        <SectionShell
-          id="proof"
-          eyebrow="Functional Proof"
-          title="Proof of capability before your first custom feature."
-          description="The baseline includes working patterns you can evaluate immediately: authentication, API contracts, data persistence, and realtime support."
-        >
-          <ProofTabs />
-          <div className="mt-6">
-            <Link
-              href="/demo"
-              className="group inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/3 px-4 py-2 text-xs font-semibold tracking-[0.14em] text-[#e5d5c0] uppercase transition-colors hover:bg-white/8"
-            >
-              Open full demos page
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-        </SectionShell>
-
-        <SectionShell
-          id="quick-start"
-          eyebrow="Quick Start"
-          title="From clone to shipping without ceremony."
-          description="Use the same onboarding flow your team will follow in real projects, including shared shadcn component setup in packages/ui."
-        >
-          <QuickStartTimeline />
-        </SectionShell>
-
-        <SectionShell
-          id="architecture"
-          eyebrow="Architecture"
-          title="Monorepo topology built for clear ownership boundaries."
-          description="Apps and packages are split by responsibility so teams can scale scope without coupling every delivery stream."
-          className="pb-12"
-        >
-          <ArchitectureMap />
-        </SectionShell>
-      </PremiumSiteShell>
-    )
-  }
-
+export default function LandingPage() {
   return (
-    <main className="relative flex min-h-screen flex-col overflow-x-hidden bg-[#0A0A0A] text-[#EDEDED] selection:bg-[#D9AB72]/30 selection:text-white">
-      <div className="pointer-events-none fixed inset-0 -z-10 flex justify-center">
-        <div className="absolute top-[-20%] h-150 w-150 rounded-full bg-[#D9AB72]/3 blur-[120px]" />
-      </div>
+    <main className="min-h-screen bg-black font-sans text-white selection:bg-white selection:text-black">
+      <Navbar />
 
-      <Hero />
-      <Metrics />
-      <Features />
-      <LiveDemos mode="mock" />
-      <QuickStart />
-      <Architecture />
-      <Footer />
+      <div className="mx-auto flex min-h-[calc(100vh-56px)] max-w-[1200px] flex-col border-r border-l border-zinc-800">
+        {/* Hero Area */}
+        <section className="relative overflow-hidden border-b border-zinc-800 bg-black p-6 md:p-16">
+          {/* Subtle Grid Background */}
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]" />
+
+          <div className="relative z-10 flex flex-col items-start">
+            <div className="mb-8 inline-flex items-center gap-2 border border-zinc-800 bg-black px-3 py-1 text-xs font-bold tracking-wider uppercase shadow-[4px_4px_0_0_rgba(39,39,42,1)]">
+              <span className="size-1.5 animate-pulse rounded-full bg-green-500" />
+              Status: Production Ready
+            </div>
+
+            <h1 className="mb-8 flex flex-col items-start gap-2 text-6xl leading-[0.9] font-black tracking-tighter uppercase md:text-[90px]">
+              <span className="bg-white px-4 py-2 text-black shadow-[8px_8px_0_0_rgba(255,255,255,0.1)]">
+                Engineer
+              </span>
+              <span className="text-white">Without Setup.</span>
+            </h1>
+
+            <p className="mb-16 max-w-2xl text-xl leading-snug font-medium text-zinc-400 md:text-2xl">
+              A high-performance TypeScript monorepo. Database, authentication, API, and frontend
+              structurally unified.
+            </p>
+
+            {/* Simulated CLI Terminal */}
+            <AnimatedTerminal />
+          </div>
+        </section>
+
+        {/* Feature Grid */}
+        <FeatureGrid />
+
+        {/* Interactive Architecture Graph */}
+        <ArchitectureGraph />
+
+        {/* Bottom Banner */}
+        <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-900 p-4 font-mono text-xs font-bold tracking-widest text-zinc-400 uppercase">
+          <div>Next.js 15</div>
+          <div>Express</div>
+          <div className="hidden sm:block">tRPC</div>
+          <div className="hidden md:block">Prisma</div>
+          <div className="hidden md:block">Bun</div>
+        </div>
+      </div>
     </main>
   )
 }

@@ -3,38 +3,22 @@ import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 import '@template/ui/globals.css'
 import { Providers } from '@/components/providers'
-import { NavbarSwitcher } from '@/components/shell/navbar-switcher'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'
-import config from '@/env'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(config.NEXT_PUBLIC_SITE_URL),
+  metadataBase: new URL('https://arche.kitsunelabs.xyz'),
   title: {
-    default: 'Next.js Monorepo Template',
-    template: '%s | Next.js Monorepo Template',
+    default: 'Arche — The beginning of every project',
+    template: '%s | Arche',
   },
   description:
-    'Production-ready full-stack monorepo template with Better Auth, Prisma ORM, tRPC, Next.js 15, and Upstash Redis.',
+    'Full-stack TypeScript monorepo template. One command to auth, database, API, and frontend. Built with Next.js, Express, Better Auth, Prisma, and tRPC.',
   openGraph: {
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Kitsune Stack Template social preview',
-      },
-    ],
+    images: [{ url: '/brand/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/twitter-image'],
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.svg', type: 'image/svg+xml' },
-    ],
-    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+    images: ['/brand/og-image.png'],
   },
   robots: { index: true, follow: true },
 }
@@ -50,10 +34,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <RouteTopLoader />
         </Suspense>
-        <Providers>
-          <NavbarSwitcher />
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
         <Toaster theme="dark" position="bottom-right" className="font-sans" />
       </body>
     </html>
