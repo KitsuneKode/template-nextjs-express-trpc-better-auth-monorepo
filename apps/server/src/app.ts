@@ -4,10 +4,10 @@ import { expressMiddleWare } from '@template/trpc'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'
-import { default as helmet } from 'helmet'
 import { serverAdapter as bullBoardAdapter } from '@/admin/bull-board'
 import { noCache } from '@/middlewares/cache-middleware'
 import { authRateLimit, apiRateLimit } from '@/middlewares/rate-limit-middleware'
+import { securityHeaders } from '@/middlewares/security-headers-middleware'
 import { timingMiddleWare } from '@/middlewares/timing-middleware'
 import { tracingMiddleware } from '@/middlewares/tracing-middleware'
 import { config } from '@/utils/config'
@@ -15,7 +15,7 @@ import { config } from '@/utils/config'
 const app = express()
 
 app.use(tracingMiddleware)
-app.use(helmet())
+app.use(securityHeaders)
 app.use(compression())
 
 app.use(
