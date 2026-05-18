@@ -7,7 +7,7 @@
  */
 
 import type { ProjectConfig } from '../../types/schemas'
-import { sanitizeProjectName } from '../scaffold'
+import { sanitizeProjectName } from '../slug'
 
 function jsonLd(name: string, created: string): string {
   return JSON.stringify(

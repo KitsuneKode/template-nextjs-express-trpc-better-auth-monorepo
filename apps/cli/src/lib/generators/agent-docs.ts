@@ -1,15 +1,15 @@
 import type { ProjectConfig } from '../../types/schemas'
-import { sanitizeProjectName } from '../scaffold'
+import { sanitizeProjectName } from '../slug'
 
 function hasServer(family: string): boolean {
-  return family === 'ts-turbo' || family === 'backend' || family === 'rust'
+  return family === 'fullstack' || family === 'backend' || family === 'rust'
 }
 
 function keyDirs(config: ProjectConfig): string[] {
   const { family, includeWorker } = config
   const dirs: string[] = []
 
-  if (family === 'ts-turbo') {
+  if (family === 'fullstack') {
     dirs.push('`apps/web` — Next.js frontend')
     dirs.push('`apps/server` — Express API server')
     if (includeWorker) dirs.push('`apps/worker` — Background job processing')
@@ -60,7 +60,7 @@ function commandsForFamily(family: string, pm: string): string[] {
     `- \`${run} check-types\` — Type check all packages`,
   ]
 
-  if (family === 'ts-turbo' || family === 'backend') {
+  if (family === 'fullstack' || family === 'backend') {
     cmds.push(`- \`${run} db:generate\` — Generate database client`)
     cmds.push(`- \`${run} db:migrate\` — Run database migrations`)
   }
@@ -76,7 +76,7 @@ function agentPrompt(family: string): string[] {
     'Update SHOWCASE.mdx when adding significant features.',
   ]
 
-  if (family === 'ts-turbo') {
+  if (family === 'fullstack') {
     prompts.push(
       'When adding a new tRPC procedure: create the router, add to _app.ts, update trpc.md rule.',
     )
@@ -151,7 +151,7 @@ export function buildContextMd(config: ProjectConfig): string {
   const family = config.family
 
   const descriptions: Record<string, string> = {
-    'ts-turbo': `A full-stack TypeScript monorepo scaffolded with @kitsu/create.
+    fullstack: `A full-stack TypeScript monorepo scaffolded with @kitsu/create.
 
 ## Architecture
 

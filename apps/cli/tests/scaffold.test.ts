@@ -3,7 +3,8 @@ import { renderGithubActionsWorkflow } from '../src/lib/generators/ci'
 import { renderDeploymentGuide } from '../src/lib/generators/deployment'
 import { renderDockerCompose } from '../src/lib/generators/docker'
 import { buildServerEnv, buildWebEnv } from '../src/lib/generators/env'
-import { sanitizeProjectName, buildCleanupTargets } from '../src/lib/scaffold'
+import { buildCleanupTargets } from '../src/lib/scaffold'
+import { sanitizeProjectName } from '../src/lib/slug'
 import type { ProjectConfig } from '../src/types/schemas'
 
 /** Helper to build a minimal ProjectConfig for testing generators */
@@ -66,7 +67,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: true,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('readme')
   })
@@ -76,7 +77,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: false,
       includeWorker: true,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('showcase')
     expect(targets).toContain('seed')
@@ -87,7 +88,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: false,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('worker')
   })
@@ -97,7 +98,7 @@ describe('buildCleanupTargets', () => {
       includeShowcase: true,
       includeWorker: true,
       testing: 'none',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('tests')
   })
@@ -107,41 +108,41 @@ describe('buildCleanupTargets', () => {
       includeShowcase: false,
       includeWorker: false,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('readme')
   })
 })
 
 describe('buildCleanupTargets — family awareness', () => {
-  it('ts-turbo with full options strips nothing extra', () => {
+  it('fullstack with full options strips nothing extra', () => {
     const targets = buildCleanupTargets({
       includeShowcase: true,
       includeWorker: true,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toEqual(['readme'])
   })
 
-  it('ts-turbo without showcase strips showcase and seed', () => {
+  it('fullstack without showcase strips showcase and seed', () => {
     const targets = buildCleanupTargets({
       includeShowcase: false,
       includeWorker: true,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('showcase')
     expect(targets).toContain('seed')
     expect(targets).not.toContain('worker')
   })
 
-  it('ts-turbo without worker strips worker', () => {
+  it('fullstack without worker strips worker', () => {
     const targets = buildCleanupTargets({
       includeShowcase: true,
       includeWorker: false,
       testing: 'bun',
-      family: 'ts-turbo',
+      family: 'fullstack',
     })
     expect(targets).toContain('worker')
   })
@@ -168,7 +169,7 @@ describe('buildCleanupTargets — family awareness', () => {
     expect(targets).toContain('worker')
   })
 
-  it('non-ts-turbo families always strip worker', () => {
+  it('non-fullstack families always strip worker', () => {
     for (const family of [
       'backend',
       'next',
@@ -191,7 +192,7 @@ describe('buildCleanupTargets — family awareness', () => {
     }
   })
 
-  it('non-ts-turbo families always strip showcase and seed', () => {
+  it('non-fullstack families always strip showcase and seed', () => {
     for (const family of [
       'backend',
       'next',

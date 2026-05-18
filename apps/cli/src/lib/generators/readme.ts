@@ -1,9 +1,9 @@
 import type { ProjectConfig } from '../../types/schemas'
-import { sanitizeProjectName } from '../scaffold'
+import { sanitizeProjectName } from '../slug'
 
 function familyLabel(family: string): string {
   const labels: Record<string, string> = {
-    'ts-turbo': 'Full-stack TypeScript Monorepo',
+    fullstack: 'Full-stack TypeScript Monorepo',
     next: 'Standalone Next.js App',
     backend: 'API Service',
     rust: 'Rust API Service',
@@ -35,7 +35,7 @@ function commandsForFamily(family: string): string {
 | \`bun run lint\` | Lint all packages |
 | \`bun run check-types\` | Type check all packages |`
 
-  if (family === 'ts-turbo') {
+  if (family === 'fullstack') {
     return `| \`bun dev\` | Start all dev servers |
 | \`bun run db:generate\` | Generate database client |
 | \`bun run db:migrate\` | Run database migrations |
@@ -68,7 +68,7 @@ function stackForFamily(config: ProjectConfig): string {
   const { family, backend, database, orm } = config
   const lines: string[] = []
 
-  if (family === 'ts-turbo') {
+  if (family === 'fullstack') {
     lines.push('- **Frontend**: Next.js')
     lines.push(`- **Backend**: ${backendLabel(backend)}`)
     lines.push('- **API**: tRPC')
@@ -116,7 +116,7 @@ function stackForFamily(config: ProjectConfig): string {
 }
 
 function hasShowcase(config: ProjectConfig): boolean {
-  return config.includeShowcase && config.family === 'ts-turbo'
+  return config.includeShowcase && config.family === 'fullstack'
 }
 
 export function buildReadme(config: ProjectConfig): string {
@@ -146,6 +146,21 @@ bun dev
 | Command | Description |
 |---------|-------------|
 ${commands}
+
+## Agent Setup
+
+For MCP-capable agents, register this server:
+
+\`\`\`json
+{
+  "mcpServers": {
+    "@kitsu/create": {
+      "command": "bunx",
+      "args": ["@kitsu/create", "mcp"]
+    }
+  }
+}
+\`\`\`
 
 ${showcase ? `## Portfolio\n\nThis project is portfolio-ready. When you're ready to showcase it:\n1. Fill in \`SHOWCASE.mdx\` at the project root\n2. Push to GitHub — the portfolio will auto-sync\n\n` : ''}See \`CONTEXT.md\` for architecture details and \`AGENTS.md\` for agent navigation.
 `

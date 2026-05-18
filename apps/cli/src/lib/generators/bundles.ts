@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import type { ProjectConfig, Bundle } from '../../types/schemas'
+import type { ProjectConfig } from '../../types/schemas'
 
 function realtimeBundle(dest: string): string[] {
   const files: string[] = []

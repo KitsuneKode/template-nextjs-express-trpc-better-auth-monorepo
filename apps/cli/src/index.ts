@@ -16,7 +16,8 @@ import pc from 'picocolors'
 import { addFeature } from './lib/add'
 import { createProject, validateConfig } from './lib/create'
 import { recordHistory, printHistory } from './lib/history'
-import { scaffoldProject, sanitizeProjectName } from './lib/scaffold'
+import { scaffoldProject } from './lib/scaffold'
+import { sanitizeProjectName } from './lib/slug'
 import { startMcpServer } from './mcp'
 import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
 import {
@@ -41,7 +42,7 @@ ${pc.bold('Usage:')}
   bunx ${PKG_NAME} [project-name] [family] [options]
 
 ${pc.bold('Families:')}
-  ts-turbo    Full-stack TypeScript monorepo (default)
+  fullstack    Full-stack TypeScript monorepo (default)
   next        Standalone Next.js app
   backend     API-only service
   rust        Rust API service
@@ -217,7 +218,7 @@ async function promptIfNeeded<T>(value: T | undefined, prompt: () => Promise<T>)
 }
 
 const FAMILIES: Family[] = [
-  'ts-turbo',
+  'fullstack',
   'next',
   'backend',
   'rust',
@@ -255,8 +256,11 @@ async function main(): Promise<void> {
 
   // kitsu create-json <json-string> — non-interactive JSON config
   if (args._command === 'create-json' && args._jsonConfig) {
+    const config = args._jsonConfig as ProjectConfig
+    const destinationDir =
+      config.destinationDir || resolve(process.cwd(), config.projectName || 'project')
     const result = await createProject({
-      config: args._jsonConfig as ProjectConfig,
+      config: { ...config, destinationDir },
       dryRun: args.dryRun,
     })
     console.log(JSON.stringify(result, null, 2))
@@ -323,7 +327,7 @@ async function main(): Promise<void> {
   // --- Family selection ---
 
   const family: Family = args.yes
-    ? (args.family ?? 'ts-turbo')
+    ? (args.family ?? 'fullstack')
     : await promptIfNeeded(args.family, async () => {
         const value = await select({
           message: 'Project family',
@@ -349,7 +353,7 @@ async function main(): Promise<void> {
   let includeShowcase = false
   let includeWorker = false
 
-  if (family === 'ts-turbo' || family === 'backend') {
+  if (family === 'fullstack' || family === 'backend') {
     backend = args.yes
       ? (args.backend ?? 'express-bun')
       : await promptIfNeeded(args.backend, async () => {

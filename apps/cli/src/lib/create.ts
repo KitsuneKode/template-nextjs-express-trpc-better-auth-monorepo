@@ -1,11 +1,5 @@
-import type { ProjectConfig, Family } from '../types/schemas'
-import {
-  checkCompatibility,
-  FamilySchema,
-  hasBackendOptions,
-  hasDatabaseOptions,
-  hasOrmOptions,
-} from '../types/schemas'
+import type { ProjectConfig } from '../types/schemas'
+import { checkCompatibility, FamilySchema, ProjectConfigSchema } from '../types/schemas'
 import { scaffoldProject as scaffold, type ScaffoldResult } from './scaffold'
 
 export interface CreateOptions {
@@ -39,7 +33,8 @@ export function validateConfig(config: Partial<ProjectConfig>): ValidationResult
 
 /** Create a project from config. Supports dry-run mode. */
 export async function createProject(options: CreateOptions): Promise<CreateResult> {
-  const { config, dryRun = false } = options
+  const { config: rawConfig, dryRun = false } = options
+  const config = ProjectConfigSchema.parse(rawConfig)
 
   const { errors, warnings } = checkCompatibility(config)
   if (errors.length > 0) {
@@ -57,6 +52,19 @@ export async function createProject(options: CreateOptions): Promise<CreateResul
       'CLAUDE.md',
       'README.md',
     ]
+    if (config.bundles?.includes('realtime')) {
+      generatedFiles.push('apps/server/src/ws/handler.ts', 'packages/trpc/src/routers/realtime.ts')
+    }
+    if (config.bundles?.includes('growth')) {
+      generatedFiles.push('packages/analytics/src/index.ts', 'packages/analytics/package.json')
+    }
+    if (config.bundles?.includes('infra')) {
+      generatedFiles.push('packages/monitoring/src/index.ts', 'packages/monitoring/package.json')
+    }
+    if (config.bundles?.includes('ai')) {
+      generatedFiles.push('packages/ai/src/index.ts', 'packages/ai/package.json')
+    }
+    generatedFiles.push('.opencode/skills.json', '.cursor/rules/project.mdc')
     return {
       success: true,
       errors: [],
@@ -95,7 +103,7 @@ export function getSchema(): Record<string, unknown> {
         type: 'string',
         enum: FamilySchema.options,
         description: 'Project family determines template source and transforms',
-        default: 'ts-turbo',
+        default: 'fullstack',
       },
       backend: {
         type: 'string',

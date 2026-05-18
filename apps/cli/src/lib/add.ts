@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { join } from 'node:path'
 import type { ProjectConfig } from '../types/schemas'
 import { validateConfig } from './create'
 import { buildRootAgentsMd, buildContextMd, buildClaudeMd } from './generators/agent-docs'
@@ -60,7 +60,7 @@ function buildProjectConfig(
   params: Record<string, string>,
 ): ProjectConfig {
   const config = readProjectConfig(baseDir)
-  const family = (config?.family as ProjectConfig['family']) || 'ts-turbo'
+  const family = (config?.family as ProjectConfig['family']) || 'fullstack'
   const pm = (config?.packageManager as ProjectConfig['packageManager']) || 'bun'
 
   return {
@@ -165,7 +165,7 @@ export async function addFeature(options: AddOptions): Promise<AddResult> {
 
   const configFile = readProjectConfig(destinationDir)
   if (!configFile) {
-    warnings.push('No kitsu.jsonc found. Using ts-turbo defaults.')
+    warnings.push('No kitsu.jsonc found. Using fullstack defaults.')
   }
 
   const config = buildProjectConfig(destinationDir, feature, params)

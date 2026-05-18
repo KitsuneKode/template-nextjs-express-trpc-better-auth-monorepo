@@ -295,9 +295,6 @@ ${workerEntry}
 - \`packages/ui\`
   Shared UI components, styles, and shadcn generator config.
 
-- \`toolings/eslint-config\`
-  Shared ESLint presets for backend, Next.js, and shared React packages.
-
 - \`toolings/typescript-config\`
   Shared TS base configs extended by apps and packages.
 
@@ -492,22 +489,15 @@ function buildDocCleanupActions(targets: CleanupTarget[]): CleanupAction[] {
   actions.push(
     {
       type: 'remove',
-      path: 'docs/cli-development.md',
-      description: 'Remove CLI development docs (not relevant post-scaffold)',
+      path: 'docs/archive',
+      description: 'Remove archived template docs (not relevant post-scaffold)',
     },
     {
       type: 'remove',
-      path: 'docs/bootstrap-cli.md',
-      description: 'Remove CLI bootstrap docs (not relevant post-scaffold)',
+      path: 'docs/cli-development.md',
+      description: 'Remove CLI development docs (not relevant post-scaffold)',
     },
   )
-
-  // Always remove start-fresh.md (template-usage instructions, not relevant post-scaffold)
-  actions.push({
-    type: 'remove',
-    path: 'docs/start-fresh.md',
-    description: 'Remove start-fresh guide (not relevant post-scaffold)',
-  })
 
   // Rewrite root AGENTS.md to remove stale refs
   actions.push({

@@ -6,7 +6,7 @@
  */
 
 import type { ProjectConfig } from '../../types/schemas'
-import { sanitizeProjectName } from '../scaffold'
+import { sanitizeProjectName } from '../slug'
 
 /** Build DATABASE_URL for the selected database */
 function buildDatabaseUrl(config: ProjectConfig): string | null {

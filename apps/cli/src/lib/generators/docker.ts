@@ -11,7 +11,7 @@
  */
 
 import type { ProjectConfig } from '../../types/schemas'
-import { sanitizeProjectName } from '../scaffold'
+import { sanitizeProjectName } from '../slug'
 
 function buildDbService(config: ProjectConfig): { services: string[]; volumes: string[] } {
   const services: string[] = []

@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs'
 import { access, cp, mkdir, readdir, readFile, writeFile, stat } from 'node:fs/promises'
-import { basename, dirname, join, resolve, relative } from 'node:path'
+import { dirname, join, resolve, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Family, ProjectConfig, CleanupTarget, PackageManager } from '../types/schemas'
+import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
   renderDockerCompose,
   renderDockerComposeProd,
@@ -23,9 +23,11 @@ import {
   buildReadme,
   buildShowcaseMdx,
   writeSkillConfigs,
+  writeCursorRules,
   applyBundleTransforms,
 } from './generators'
-import { pmInstall } from './pm'
+import { pmInstallParts } from './pm'
+import { sanitizeProjectName } from './slug'
 import { runCommand, tryCommand } from './spawn'
 
 export interface ScaffoldResult {
@@ -49,8 +51,13 @@ const EXCLUDED_SEGMENTS = new Set([
 // Files that should not appear in scaffolded output
 const EXCLUDED_FILES = new Set([
   'bun.lock',
+  // Source AGENTS.md is a symlink → CLAUDE.md. Exclude to prevent
+  // writes from affecting the source repo. The pipeline regenerates all three.
+  'AGENTS.md',
+  'CLAUDE.md',
+  'CONTEXT.md',
   'docs/cli-development.md',
-  'docs/bootstrap-cli.md',
+  'docs/archive',
   // Never copy actual .env files — only .env.example
   '.env',
   'apps/server/.env',
@@ -71,23 +78,7 @@ const __dirname = dirname(__filename)
 // Bundled: apps/cli/dist/index.js (3 levels to root)
 const isBundled = __dirname.includes('/dist') || !__dirname.includes('/src/')
 const ROOT_DIR = resolve(__dirname, isBundled ? '../../..' : '../../../..')
-
-function slugify(value: string): string {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9._ -]/g, '')
-    .replace(/[._ ]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-}
-
-export function sanitizeProjectName(input: string): string {
-  const normalized = slugify(basename(input))
-  if (!normalized) {
-    throw new Error('Project name must contain at least one alphanumeric character.')
-  }
-  return normalized
-}
+const TOOLINGS_DIR = join(ROOT_DIR, 'toolings', 'scripts')
 
 /** Map family to template source directory. Falls back to ROOT_DIR. */
 function resolveTemplateSource(family: Family): string {
@@ -99,9 +90,9 @@ function resolveTemplateSource(family: Family): string {
   return ROOT_DIR
 }
 
-/** Families that get backend/database/ORM transforms from the ts-turbo pipeline */
+/** Only fullstack gets the full backend/database/ORM transform pipeline */
 function hasTransformPipeline(family: Family): boolean {
-  return family === 'ts-turbo' || family === 'backend'
+  return family === 'fullstack'
 }
 
 /** Families that should strip the web workspace */
@@ -116,7 +107,7 @@ function shouldStripServer(family: Family): boolean {
 
 /** Families that should strip the worker workspace */
 function shouldDefaultStripWorker(family: Family): boolean {
-  return family !== 'ts-turbo'
+  return family !== 'fullstack'
 }
 
 export function buildCleanupTargets(
@@ -124,8 +115,8 @@ export function buildCleanupTargets(
 ): CleanupTarget[] {
   const targets = new Set<CleanupTarget>(['readme'])
 
-  // Showcase is only relevant for ts-turbo
-  if (!options.includeShowcase || options.family !== 'ts-turbo') {
+  // Showcase is only relevant for fullstack
+  if (!options.includeShowcase || options.family !== 'fullstack') {
     targets.add('showcase')
     targets.add('seed')
   }
@@ -135,7 +126,7 @@ export function buildCleanupTargets(
     targets.add('worker')
   }
 
-  // Non-ts-turbo families strip worker by default
+  // Non-fullstack families strip worker by default
   if (shouldDefaultStripWorker(options.family)) {
     targets.add('worker')
   }
@@ -156,7 +147,25 @@ async function pathExists(path: string): Promise<boolean> {
   }
 }
 
-async function ensureDestinationAvailable(destinationDir: string): Promise<void> {
+function isSubPath(parent: string, child: string): boolean {
+  const rel = relative(parent, child)
+  if (!rel || rel === '..') return false
+  return !rel.startsWith('..') && !rel.startsWith('/')
+}
+
+async function ensureDestinationAvailable(
+  destinationDir: string,
+  sourceDir: string,
+): Promise<void> {
+  if (isSubPath(sourceDir, destinationDir)) {
+    throw new Error(
+      `Destination directory must be outside the template source.\n` +
+        `  Source: ${sourceDir}\n` +
+        `  Destination: ${destinationDir}\n` +
+        `Tip: Use a path one level above the monorepo, e.g. ~/projects/my-app`,
+    )
+  }
+
   if (!(await pathExists(destinationDir))) return
 
   const entries = await readdir(destinationDir)
@@ -224,7 +233,7 @@ async function copyTemplate(destinationDir: string, sourceDir: string): Promise<
     return
   }
 
-  // Fall back to exclusion-based copy (for ts-turbo which uses ROOT_DIR)
+  // Fall back to exclusion-based copy (for fullstack which uses ROOT_DIR)
   await cp(sourceDir, destinationDir, {
     recursive: true,
     filter: (sourcePath) => {
@@ -306,9 +315,8 @@ export async function scaffoldProject(
   const family = options.family
   const pm = options.packageManager ?? 'bun'
 
-  await ensureDestinationAvailable(destinationDir)
-
   const templateSource = resolveTemplateSource(family)
+  await ensureDestinationAvailable(destinationDir, templateSource)
   await copyTemplate(destinationDir, templateSource)
   await updateRootPackageJson(destinationDir, packageName, options)
 
@@ -321,7 +329,7 @@ export async function scaffoldProject(
     await applyOrmTransform(destinationDir, options)
   }
 
-  runCommand([pmExecTool(pm, 'bun'), 'toolings/scripts/rename-scope.ts', '--quiet'], {
+  runCommand(['bun', join(TOOLINGS_DIR, 'rename-scope.ts'), '--quiet'], {
     cwd: destinationDir,
   })
 
@@ -329,8 +337,8 @@ export async function scaffoldProject(
   if (cleanupTargets.length > 0) {
     runCommand(
       [
-        pmExecTool(pm, 'bun'),
-        'toolings/scripts/template-cleanup.ts',
+        'bun',
+        join(TOOLINGS_DIR, 'template-cleanup.ts'),
         `--remove=${cleanupTargets.join(',')}`,
         '--yes',
       ],
@@ -401,7 +409,11 @@ export async function scaffoldProject(
   generatedFiles.push('CLAUDE.md')
 
   // Agent skill configuration
-  writeSkillConfigs(destinationDir, options)
+  const skillFiles = writeSkillConfigs(destinationDir, options)
+  generatedFiles.push(...skillFiles)
+
+  const cursorFiles = writeCursorRules(destinationDir, options)
+  generatedFiles.push(...cursorFiles)
 
   // Generate .claude/rules/ directory for path-scoped agent rules
   if (hasServer) {
@@ -415,8 +427,8 @@ export async function scaffoldProject(
     generatedFiles.push('.claude/rules/trpc.md')
   }
 
-  // SHOWCASE.mdx (portfolio-ready) — only ts-turbo has showcase
-  if (options.includeShowcase && family === 'ts-turbo') {
+  // SHOWCASE.mdx (portfolio-ready) — only fullstack has showcase
+  if (options.includeShowcase && family === 'fullstack') {
     await writeGeneratedFile(destinationDir, 'SHOWCASE.mdx', buildShowcaseMdx(options))
     generatedFiles.push('SHOWCASE.mdx')
   }
@@ -436,7 +448,7 @@ export async function scaffoldProject(
   }
 
   if (options.installDependencies && !dryRun) {
-    runCommand([pmInstall(pm)], { cwd: destinationDir })
+    runCommand(pmInstallParts(pm), { cwd: destinationDir })
   }
 
   return {
@@ -445,11 +457,4 @@ export async function scaffoldProject(
     cleanupTargets,
     generatedFiles,
   }
-}
-
-/** Get the executable runner for a given package manager (bun vs npx vs pnpm dlx) */
-function pmExecTool(pm: PackageManager, defaultTool: string): string {
-  if (pm === 'bun') return 'bun'
-  if (pm === 'pnpm') return 'pnpm'
-  return 'npx'
 }
