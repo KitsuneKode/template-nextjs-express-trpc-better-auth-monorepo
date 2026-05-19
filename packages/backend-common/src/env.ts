@@ -38,9 +38,11 @@ export const serverEnv = createEnv({
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
   },
+  clientPrefix: undefined,
+  client: {},
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
-  skipValidation: process.env.CI === 'true',
+  skipValidation: !!process.env.CI || !!process.env.VERCEL,
 })
 
 export type ServerEnv = typeof serverEnv
