@@ -35,7 +35,9 @@
     "rename-scope:dry": "bun toolings/scripts/rename-scope.ts --dry-run",
     "rename-scope:verbose": "bun toolings/scripts/rename-scope.ts --verbose",
     "preinstall": "npx only-allow bun",
-    "postinstall": "bun db:generate",
+    "postinstall": "bun toolings/scripts/postinstall-generate.ts",
+    "docker:build": "docker build -f apps/server/Dockerfile .",
+    "docker:run": "docker run --rm -p 8080:8080 -e ENABLE_REDIS=false",
     "prepare": "husky",
     "lint-staged": "lint-staged"
   },

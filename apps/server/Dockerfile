@@ -1,43 +1,51 @@
-# Build from repository root:
+# Build from repository root (required for turbo prune + workspace layout):
+#   bun run docker:build
 #   docker build -f apps/server/Dockerfile .
 #
-# Uses turbo prune (see KitsuneKode/buzz8n docker/Dockerfile.server) so workspace
-# deps resolve correctly during `bun build`.
+# Render/Railway: docker context = repo root, dockerfilePath = apps/server/Dockerfile
 
 ARG BUN_VERSION=1.3.12
+
 FROM oven/bun:${BUN_VERSION} AS base
 WORKDIR /app
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
 
-# --- Prune monorepo to @template/server and its workspace dependencies ---
+# --- Prune to @template/server workspace closure ---
 FROM base AS pruner
 COPY . .
 RUN bunx turbo@2.9.14 prune @template/server --docker
 
-# --- Install deps from pruned lockfile (no Husky / git hooks) ---
-FROM base AS deps
-WORKDIR /app
-COPY --from=pruner /app/out/json/ .
-ENV CI=true
-ENV HUSKY=0
-# Pruned json/ has no turbo.json; root postinstall runs db:generate → turbo and would fail.
-RUN bun install --frozen-lockfile --ignore-scripts
-
-# --- Generate Prisma client + build server (turbo ^build graph) ---
+# --- Install + generate + build (buzz8n-style: json install, then full sources) ---
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=pruner /app/out/full/ .
+
+COPY --from=pruner /app/out/json/ .
+
 ENV CI=true
 ENV HUSKY=0
+ENV SKIP_POSTINSTALL=1
+ENV TURBO_TELEMETRY_DISABLED=1
+
+# out/json/ has no turbo.json; lifecycle scripts must not run here.
+RUN bun install --frozen-lockfile --ignore-scripts
+
+COPY --from=pruner /app/out/full/ .
+
 RUN bun run db:generate
 RUN bun run build --filter=@template/server
 
-# --- Production runtime ---
+# --- Runtime ---
 FROM oven/bun:${BUN_VERSION}-slim AS production
 WORKDIR /app/apps/server
+
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-# PORT is injected by Render at runtime; 8080 is a local `docker run` fallback only.
 ENV PORT=8080
 
 COPY --from=builder /app/apps/server/dist ./dist
@@ -46,4 +54,8 @@ COPY --from=builder /app/packages /app/packages
 COPY --from=builder /app/apps/server/package.json ./package.json
 
 EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD bun -e "fetch('http://127.0.0.1:'+(process.env.PORT||8080)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
 CMD ["bun", "./dist/server.js"]

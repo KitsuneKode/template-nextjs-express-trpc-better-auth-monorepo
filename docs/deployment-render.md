@@ -25,7 +25,13 @@ curl -sS "https://<your-service>.onrender.com/health"
 
 Do **not** set `PORT` manually. Health check path: `/health`.
 
-Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile). Bun matches [`.bun-version`](../.bun-version); `HUSKY=0` skips git hooks during install. If you see `lockfile had changes, but lockfile is frozen`, pull latest `main`.
+Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile). Test locally before pushing:
+
+```bash
+bun run docker:build
+```
+
+Bun matches [`.bun-version`](../.bun-version). Install uses `--ignore-scripts` (pruned `out/json/` has no `turbo.json`); `db:generate` runs after sources are copied. If you see `Could not find turbo.json` during **install**, pull latest `main`. If you see `lockfile had changes, but lockfile is frozen`, re-run `bun install` at repo root and commit `bun.lock`.
 
 ## Manual Docker service
 
