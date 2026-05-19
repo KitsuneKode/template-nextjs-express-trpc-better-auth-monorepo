@@ -10,7 +10,11 @@ export default {
 
   '**/*.md': ['oxfmt'],
 
-  '**/*.{json,yml,yaml}': ['oxfmt'],
+  '**/*.json': (files) => {
+    if (files.length === 0) return []
+    const escapedFiles = files.map((f) => `'${f.replace(/'/g, "'\\''")}'`).join(' ')
+    return [`oxfmt ${escapedFiles}`]
+  },
 
   'packages/store/prisma/schema.prisma': (file) => [`prisma format --schema ${file}`],
 }
