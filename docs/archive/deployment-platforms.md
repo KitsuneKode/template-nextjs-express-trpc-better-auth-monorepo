@@ -1,3 +1,5 @@
+> Historical; use [deployment.md](../deployment.md) for production deploy paths.
+
 # Deployment Platforms Guide
 
 **Recommended for this template:** Vercel (`apps/web`) + Render Blueprint ([deployment-render.md](./deployment-render.md)). Env matrix: [deployment-env.md](./deployment-env.md).

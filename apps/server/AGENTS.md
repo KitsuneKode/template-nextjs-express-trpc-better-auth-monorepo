@@ -46,6 +46,12 @@ Dependency direction: `routes → controllers → services → repositories → 
 - Middleware: `src/common/middleware/*`
 - Env: `src/common/env.ts` (re-exports `@template/backend-common/env`)
 
+## Deploy
+
+- Vercel: `src/vercel-handler.ts` — [docs/deployment-vercel.md](../../docs/deployment-vercel.md)
+- Render / Docker: `src/server.ts` — [docs/deployment-render.md](../../docs/deployment-render.md)
+- Hub: [docs/deployment.md](../../docs/deployment.md)
+
 ## Update When
 
 Route mounts, module layout, tRPC composition, middleware order, or startup behavior changes.

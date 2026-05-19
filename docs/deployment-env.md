@@ -1,47 +1,38 @@
-# Environment variables by platform
+# Production environment matrix
 
-One place to see what goes where. Avoid copying the entire backend `.env` onto Vercel.
+Canonical list for deploy targets. Step-by-step setup: [deployment.md](./deployment.md).
 
-## Vercel (`apps/web` only)
+Legend: **R** = required, **O** = optional, **—** = do not set, **auto** = platform sets.
 
-| Variable                       | Example                       |
-| ------------------------------ | ----------------------------- |
-| `NEXT_PUBLIC_APP_URL`          | `https://my-app.vercel.app`   |
-| `NEXT_PUBLIC_API_URL`          | `https://my-api.onrender.com` |
-| `NEXT_PUBLIC_SITE_URL`         | Same as app URL               |
-| `NEXT_PUBLIC_SITE_NAME`        | `My App`                      |
-| `NEXT_PUBLIC_SITE_DESCRIPTION` | Short tagline                 |
+| Variable                       | Web (Vercel)        | API (Vercel)       | API (Render)           | Worker (Render)      |
+| ------------------------------ | ------------------- | ------------------ | ---------------------- | -------------------- |
+| `NEXT_PUBLIC_APP_URL`          | R                   | —                  | —                      | —                    |
+| `NEXT_PUBLIC_API_URL`          | R                   | —                  | —                      | —                    |
+| `NEXT_PUBLIC_SITE_URL`         | O                   | —                  | —                      | —                    |
+| `NEXT_PUBLIC_SITE_NAME`        | O                   | —                  | —                      | —                    |
+| `NEXT_PUBLIC_SITE_DESCRIPTION` | O                   | —                  | —                      | —                    |
+| `DATABASE_URL`                 | —                   | R                  | R                      | R if jobs use Prisma |
+| `REDIS_URL`                    | —                   | R if queues        | R if queues            | R                    |
+| `ENABLE_REDIS`                 | —                   | O (default `true`) | O (default `true`)     | —                    |
+| `BETTER_AUTH_SECRET`           | —                   | R (32+ chars)      | R                      | —                    |
+| `BETTER_AUTH_URL`              | —                   | R (public API URL) | R                      | —                    |
+| `FRONTEND_URL`                 | —                   | R (Vercel web URL) | R                      | —                    |
+| `NODE_ENV`                     | auto / `production` | `production`       | `production`           | `production`         |
+| `HOST`                         | —                   | —                  | R (`0.0.0.0`)          | —                    |
+| `PORT`                         | —                   | —                  | **—** (Render injects) | —                    |
+| `RENDER`                       | —                   | —                  | auto                   | O                    |
+| `VERCEL`                       | auto on web         | auto on API        | —                      | —                    |
 
-No `DATABASE_URL`, `REDIS_URL`, or `BETTER_AUTH_SECRET` on the frontend project unless you also deploy the API on Vercel.
+## Notes
 
-## Render / Railway / Docker (`apps/server`)
-
-| Variable             | Required       | Notes                                                                    |
-| -------------------- | -------------- | ------------------------------------------------------------------------ |
-| `DATABASE_URL`       | Yes            | Postgres connection string                                               |
-| `REDIS_URL`          | If queues      | From Key Value / Redis plugin, or omit with `ENABLE_REDIS=false`         |
-| `ENABLE_REDIS`       | No             | Default `true`. Set `false` for API-only (no worker, no `/admin/queues`) |
-| `BETTER_AUTH_SECRET` | Yes            | 32+ random characters                                                    |
-| `BETTER_AUTH_URL`    | Yes            | Public API URL (`https://…`)                                             |
-| `FRONTEND_URL`       | Yes            | Vercel URL (CORS + auth)                                                 |
-| `HOST`               | Yes            | `0.0.0.0`                                                                |
-| `PORT`               | **Do not set** | Platform injects                                                         |
-| `NODE_ENV`           | Yes            | `production`                                                             |
-
-## Worker (`apps/worker` — second service)
-
-| Variable       | Required           |
-| -------------- | ------------------ |
-| `REDIS_URL`    | Yes                |
-| `DATABASE_URL` | If jobs use Prisma |
+- **Web project** must not receive `DATABASE_URL` or `BETTER_AUTH_SECRET` unless you also deploy the API on Vercel (Path A puts secrets on the **server** project only).
+- **`NEXT_PUBLIC_API_URL`** must match the public API origin (Path A: `*.vercel.app`; Path B: `*.onrender.com`).
+- **`ENABLE_REDIS=false`**: API-only, no `/admin/queues`, no worker. Omit `REDIS_URL` when disabled.
+- **OAuth** (optional on API): `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — both IDs required if either is set.
 
 ## Local development
-
-Copy:
 
 - `apps/web/.env.example` → `apps/web/.env.local`
 - `apps/server/.env.example` → `apps/server/.env`
 
-Run Postgres + Redis via `docker compose` (from CLI scaffold) or local installs.
-
-See [deployment-render.md](./deployment-render.md) for Render Blueprint steps.
+See [env.md](./env.md).

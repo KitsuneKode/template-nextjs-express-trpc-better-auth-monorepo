@@ -1,3 +1,5 @@
+> Historical; use [deployment.md](../deployment.md) for production deploy paths.
+
 # Kubernetes Deployment Guide
 
 For production systems at scale, Kubernetes orchestrates containers across multiple machines.
@@ -72,7 +74,7 @@ kubectl config current-context
 
 ## Docker Image Prerequisites
 
-Your app must be containerized. See `deployment-platforms.md` (Docker section).
+Your app must be containerized. See [deployment-platforms.md](./deployment-platforms.md) (Docker section).
 
 ```bash
 # Build image

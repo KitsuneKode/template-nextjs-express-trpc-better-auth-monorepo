@@ -28,8 +28,10 @@ Runtime flow across workspaces. For variant families (next, backend, rust), see 
 
 ## Deploy topology
 
-- Vercel: `apps/web`
-- Render Blueprint: [render.yaml](../render.yaml) — Docker API + Postgres + Key Value
+See [deployment.md](./deployment.md).
+
+- Path A: `apps/web` + `apps/server` on Vercel
+- Path B: `apps/web` on Vercel, `apps/server` on Render ([render.yaml](../render.yaml) or external DB URLs)
 
 ## Scaffold status
 

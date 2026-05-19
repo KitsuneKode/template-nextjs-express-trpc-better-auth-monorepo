@@ -1,28 +1,20 @@
-# Environment variables
+# Environment variables (local)
 
-**Canonical matrix (Vercel vs Render vs worker):** [deployment-env.md](./deployment-env.md)
+Production matrix (all deploy targets): [deployment-env.md](./deployment-env.md).
 
-## Client (Next.js / Vercel)
+## Local setup
 
-- `NEXT_PUBLIC_APP_URL` — frontend URL
-- `NEXT_PUBLIC_API_URL` — backend API URL
-- `NEXT_PUBLIC_SITE_URL` — metadata / OG base (often same as app URL)
-- `NODE_ENV` — `development` | `production`
+```bash
+cp apps/web/.env.example apps/web/.env.local
+cp apps/server/.env.example apps/server/.env
+```
 
-## Server (Express / Render)
+Run Postgres + Redis via `docker compose` (from CLI scaffold) or local installs.
 
-- `DATABASE_URL` — Postgres (required)
-- `BETTER_AUTH_SECRET` — 32+ characters (required)
-- `BETTER_AUTH_URL` — public API URL (required)
-- `FRONTEND_URL` — browser origin for CORS/auth (required)
-- `ENABLE_REDIS` — default `true`; set `false` for API-only (no queues, no `/admin/queues`)
-- `REDIS_URL` — required when `ENABLE_REDIS=true` (Blueprint wires from Key Value)
-- `HOST` — use `0.0.0.0` on Render
-- `PORT` — **do not set on Render** (platform injects)
+## Quick reference (development)
 
-## Optional OAuth
+**Web** (`apps/web/.env.local`): `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`.
 
-- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
-- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
+**Server** (`apps/server/.env`): `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `FRONTEND_URL`, `ENABLE_REDIS`, `REDIS_URL`, `PORT`, `HOST`.
 
-Examples: `apps/server/.env.example`, `apps/web/.env.example`.
+See `apps/server/.env.example` and `packages/backend-common/src/env.ts` for validation rules.

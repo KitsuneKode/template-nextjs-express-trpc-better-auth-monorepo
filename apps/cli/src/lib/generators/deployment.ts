@@ -28,43 +28,51 @@ function backendLabel(backend: ProjectConfig['backend']): string {
   }
 }
 
-/** Host recommendations per backend */
-function hostingHint(backend: ProjectConfig['backend']): string {
-  switch (backend) {
-    case 'express-bun':
-    case 'hono-bun':
-      return 'Railway, Fly.io, Render, or another Bun-friendly host'
-    case 'fastify-node':
-      return 'Railway, Fly.io, Render, or any Node.js host'
-    case 'go-fiber':
-      return 'Railway, Fly.io, Google Cloud Run, or any container host'
-    case 'rust-axum':
-    case 'rust-actix':
-      return 'Railway, Fly.io, or any container host'
-    case 'python-fastapi':
-      return 'Railway, Fly.io, Render, or any Python host'
-    case 'none':
-      return 'N/A (frontend only)'
-  }
-}
-
 export function renderDeploymentGuide(config: ProjectConfig): string {
   const workerLine = config.includeWorker
-    ? '- Deploy `apps/worker` as a separate Railway or container service if background jobs are required.'
-    : '- Worker deployment is not needed unless you add the workspace back later.'
+    ? '- **Path B:** deploy `apps/worker` on Render (or similar) with `REDIS_URL`.'
+    : '- Worker optional unless you enable background jobs.'
 
   const dockerLine = config.includeDocker
-    ? `- Local Docker services are available via \`docker-compose.yml\` for ${config.database === 'postgres' ? 'PostgreSQL and ' : config.database === 'mongodb' ? 'MongoDB and ' : ''}Redis.`
-    : `- Local Docker services were not generated; provide managed database and Redis endpoints manually.`
+    ? `- Local: \`docker compose\` for ${config.database === 'postgres' ? 'Postgres and ' : config.database === 'mongodb' ? 'MongoDB and ' : ''}Redis.`
+    : `- Provide managed Postgres and Redis URLs in production.`
 
-  const serverEnvVars =
-    config.backend !== 'none'
-      ? `- Server:
-  \`PORT\`, \`NODE_ENV\`, ${config.database !== 'none' ? '`DATABASE_URL`, ' : ''}\`REDIS_URL\`, \`FRONTEND_URL\`,
-  \`BETTER_AUTH_URL\`, \`BETTER_AUTH_SECRET\``
-      : ''
+  const serverBlock =
+    config.backend === 'express-bun' || config.backend === 'hono-bun'
+      ? `
+## Path A — Vercel (web + API)
+
+- Deploy \`apps/web\` and \`apps/server\` as **two Vercel projects**.
+- Server entry: \`apps/server/src/vercel-handler.ts\`; build: \`bun run build:vercel --filter=@template/server\`.
+- Set \`DATABASE_URL\`, \`BETTER_AUTH_*\`, \`FRONTEND_URL\`, \`REDIS_URL\` on the **server** project (Neon, Upstash, etc.).
+- Web: \`NEXT_PUBLIC_API_URL\` → server project URL.
+
+See template repo \`docs/deployment-vercel.md\` for full steps.
+
+## Path B — Vercel web + Render API
+
+- Deploy \`apps/web\` on Vercel; \`apps/server\` on Render Docker.
+- **B1:** Blueprint from repo \`render.yaml\` (Postgres + Redis wired).
+- **B2:** \`render.api-only.yaml\` + external \`DATABASE_URL\` / \`REDIS_URL\`.
+- Do **not** use \`bun run apps/server/dist/server.js\` from repo root on Render.
+
+See template repo \`docs/deployment-render.md\` for troubleshooting.
+
+${workerLine}
+`
+      : config.backend !== 'none'
+        ? `
+## Backend hosting
+
+Deploy \`apps/server\` to a container-friendly host (Railway, Fly.io, Render). Env matrix: same names as \`docs/deployment-env.md\` in the template repo.
+`
+        : ''
 
   return `# Deployment Guide
+
+Generated for **${config.projectName}** (${backendLabel(config.backend)}, ${config.database}, ${config.orm}).
+
+Production env matrix: copy from template [deployment-env.md](https://github.com/KitsuneKode/template-nextjs-express-trpc-better-auth-monorepo/blob/main/docs/deployment-env.md) or maintain \`docs/deployment-env.md\` in this repo.
 
 ## Stack
 
@@ -72,58 +80,25 @@ export function renderDeploymentGuide(config: ProjectConfig): string {
 - Database: ${config.database}
 - ORM: ${config.orm}
 
-## Recommended Split
+## Rollout order
 
-- Deploy \`apps/web\` to Vercel.
-${config.backend !== 'none' ? `- Deploy \`apps/server\` to ${hostingHint(config.backend)}.` : '- No backend server to deploy.'}
-${workerLine}
+1. Provision Postgres${config.database !== 'none' ? '' : ' (if applicable)'} and Redis (or \`ENABLE_REDIS=false\`).
+2. Deploy API; run migrations; verify \`/health\`.
+3. Deploy web with \`NEXT_PUBLIC_API_URL\` pointing at the API.
+${serverBlock}
+## Required environment variables
 
-## Required Environment Variables
+Use one matrix for all targets — see template \`docs/deployment-env.md\`:
 
-- Web:
-  \`NEXT_PUBLIC_APP_URL\`, \`NEXT_PUBLIC_API_URL\`
-${serverEnvVars}
+- **Web (Vercel):** \`NEXT_PUBLIC_APP_URL\`, \`NEXT_PUBLIC_API_URL\`
+- **API:** \`DATABASE_URL\`, \`BETTER_AUTH_SECRET\`, \`BETTER_AUTH_URL\`, \`FRONTEND_URL\`, \`REDIS_URL\` or \`ENABLE_REDIS=false\`
 
-## Local Services
+## Local services
 
 ${dockerLine}
 
-## Suggested Rollout Order
-
-1. ${config.database !== 'none' ? 'Deploy the database and Redis.' : 'Deploy Redis (or skip if not needed).'}
-2. ${config.backend !== 'none' ? 'Deploy the server and validate `/health`.' : 'Skip (no backend).'}
-3. Deploy the web app with the correct \`NEXT_PUBLIC_API_URL\`.
-4. Add CI gates before the first production release.
-
-## Deploy API to Render
-
-**Recommended:** Dashboard → **New Blueprint Instance** → repo root \`render.yaml\`.
-
-The blueprint creates Docker web service \`arche-template-api\`, Postgres, and internal Key Value (Redis). Do **not** use Native Bun with \`bun run apps/server/dist/server.js\` from repo root — Render’s default Bun 1.1 lacks APIs this template used to rely on.
-
-| Setting | Value |
-|---------|--------|
-| Runtime | **Docker** (from blueprint) |
-| Dockerfile | \`apps/server/Dockerfile\` (context = repo root) |
-| Health check | \`/health\` |
-| Welcome | \`GET /\` returns JSON index |
-
-After first deploy, set \`FRONTEND_URL\` (Vercel) and \`BETTER_AUTH_URL\` (this service’s public HTTPS URL).
-
-Full guide (failure causes, checklist, Vercel env): \`docs/deployment-render.md\` in the template repo.
-
-**Common failure causes:**
-
-1. **Native Bun 1.1** — use Docker blueprint or pin \`.bun-version\`; app Redis uses ioredis.
-2. **Missing Redis** — blueprint wires \`REDIS_URL\`; manual deploys must set it.
-3. **Wrong URLs** — \`BETTER_AUTH_URL\` and \`FRONTEND_URL\` must be production HTTPS, not localhost.
-4. **CORS** — \`FRONTEND_URL\` must match the browser origin exactly.
-
-After deploy: \`curl https://<your-service>.onrender.com/\` and \`curl .../health\`
-
 ## Notes
 
-This guide was generated by \`@arche/create\` for ${config.projectName}.
-Review it alongside the repo docs before production rollout.
+This guide was generated by \`@arche/create\`. For the full two-path hub, see the template [docs/deployment.md](https://github.com/KitsuneKode/template-nextjs-express-trpc-better-auth-monorepo/blob/main/docs/deployment.md).
 `
 }

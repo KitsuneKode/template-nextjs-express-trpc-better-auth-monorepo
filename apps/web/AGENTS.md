@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Next.js App Router frontend: runtime wiring + template showcase UI.
+Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Vercel; `NEXT_PUBLIC_API_URL` may point to a Vercel API (`*.vercel.app`) or Render API (`*.onrender.com`) — [docs/deployment.md](../../docs/deployment.md).
 
 ## Read first
 

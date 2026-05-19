@@ -47,7 +47,7 @@ This is a **decision tree** for navigating production documentation. Use this to
 ### Deployment
 
 - First time deploying? → Start here ↓ (read Deployment Checklist)
-- Deploying to specific platform? → `deployment-platforms.md` (Vercel, AWS, Heroku, etc.)
+- Deploying to production? → [deployment.md](./deployment.md) (Path A Vercel or Path B Render)
 - Kubernetes? → `deployment-kubernetes.md`
 - Docker locally? → `docs/README.md` + `docker-compose.yml`
 
@@ -114,7 +114,7 @@ template-variants.md ← (pick: Full Stack, Convex, Standalone, Backend-only)
     ↓
 [Ops] First Deployment (read all three)
     ├─→ deployment-checklist.md ← YOU ARE HERE
-    ├─→ deployment-platforms.md (pick Vercel/AWS/Heroku/etc)
+    ├─→ deployment.md (Path A or Path B)
     └─→ deployment-kubernetes.md (if self-hosted)
     ↓
 [Ops] Running in Production
@@ -285,7 +285,7 @@ Redis (for queues, caching)
 
 These docs are meant to **live and grow**. When you:
 
-- **Deploy successfully** → Add notes to `deployment-platforms.md`
+- **Deploy successfully** → Update [deployment.md](./deployment.md) if the path changes
 - **Hit production bug** → Add to `troubleshooting.md`
 - **Optimize something** → Add to `performance-optimization.md`
 - **Learn from incident** → Add to troubleshooting + monitoring docs
@@ -297,4 +297,4 @@ Docs that match reality = docs people use.
 
 ## Next: Go to Deployment
 
-→ Read: `deployment-checklist.md` (below) and `deployment-platforms.md`
+→ Read: [deployment.md](./deployment.md) and [deployment-env.md](./deployment-env.md)

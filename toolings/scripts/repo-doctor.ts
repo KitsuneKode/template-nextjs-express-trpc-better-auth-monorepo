@@ -288,6 +288,27 @@ async function resolveDocPath(docPath: string, sourceFile: string): Promise<bool
   return false
 }
 
+const ARCHIVED_DEPLOY_DOC = 'docs/deployment-platforms.md'
+
+async function checkActiveDeployDocLinks(): Promise<Finding[]> {
+  const findings: Finding[] = []
+  const activeDocs = await collectFiles('docs/*.md')
+  for (const path of activeDocs) {
+    if (path.startsWith('docs/archive/')) continue
+    const text = await Bun.file(path).text()
+    if (text.includes(ARCHIVED_DEPLOY_DOC) && !text.includes('archive/deployment-platforms')) {
+      findings.push({
+        severity: 'warn',
+        code: 'archived-deploy-doc-link',
+        path,
+        message: `Links to moved file "${ARCHIVED_DEPLOY_DOC}".`,
+        suggestion: 'Use docs/deployment.md or docs/archive/deployment-platforms.md.',
+      })
+    }
+  }
+  return findings
+}
+
 async function checkDocPathDrift(): Promise<Finding[]> {
   const findings: Finding[] = []
   const docFiles = await Promise.all(DOC_GLOBS.map((globPattern) => collectFiles(globPattern)))
@@ -321,6 +342,7 @@ export async function collectRepoDoctorFindings(): Promise<Finding[]> {
       ...(await checkSuspiciousPaths()),
       ...(await checkPackageExports()),
       ...(await checkDocPathDrift()),
+      ...(await checkActiveDeployDocLinks()),
     ].sort((a, b) => {
       const severityDiff = severityRank(a.severity) - severityRank(b.severity)
       if (severityDiff !== 0) return severityDiff

@@ -316,23 +316,24 @@ describe('renderDeploymentGuide', () => {
 
   it('includes worker deployment when enabled', () => {
     const output = renderDeploymentGuide(makeConfig({ includeWorker: true }))
-    expect(output).toContain('Deploy `apps/worker`')
+    expect(output).toContain('apps/worker')
   })
 
-  it('notes worker not needed when disabled', () => {
+  it('notes worker optional when disabled', () => {
     const output = renderDeploymentGuide(makeConfig({ includeWorker: false }))
-    expect(output).toContain('Worker deployment is not needed')
+    expect(output).toContain('Worker optional')
   })
 
   it('adapts to backend selection', () => {
     const express = renderDeploymentGuide(makeConfig({ backend: 'express-bun' }))
     expect(express).toContain('Express (Bun)')
+    expect(express).toContain('Path A')
 
     const hono = renderDeploymentGuide(makeConfig({ backend: 'hono-bun' }))
     expect(hono).toContain('Hono (Bun)')
 
     const none = renderDeploymentGuide(makeConfig({ backend: 'none' }))
-    expect(none).toContain('No backend server to deploy')
+    expect(none).toContain('None (frontend only)')
   })
 })
 

@@ -33,5 +33,8 @@ jobs:
       - name: Test
         run: bun test
 
+      - name: Build server for Vercel
+        run: bun run build:vercel --filter=@template/server
+
       - name: Docker smoke (server)
         run: docker build -f apps/server/Dockerfile .
