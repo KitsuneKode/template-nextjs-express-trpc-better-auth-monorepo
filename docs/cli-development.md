@@ -20,19 +20,19 @@ The CLI lives in `apps/cli` and is designed to:
 The CLI uses a family-first approach. Each family represents a distinct project
 archetype with its own template source, defaults, and transforms:
 
-| Family      | Description                    | Transform Pipeline              |
-| ----------- | ------------------------------ | ------------------------------- |
-| `fullstack` | Full-stack TypeScript monorepo | Full (backend + database + ORM) |
-| `next`      | Standalone Next.js app         | Minimal (presets only)          |
-| `backend`   | API-only service               | Full (backend + database + ORM) |
-| `rust`      | Rust API service               | Minimal (stub)                  |
-| `solana`    | Solana program                 | Minimal (stub)                  |
-| `convex`    | Next.js + Convex               | Minimal (stub)                  |
-| `worker`    | Background job worker          | Minimal (stub)                  |
-| `lib`       | Generic TypeScript package     | Minimal (stub)                  |
-| `cli`       | CLI package                    | Minimal (stub)                  |
-| `mobile`    | Expo mobile app                | Minimal (stub)                  |
-| `polyglot`  | Multi-language monorepo        | Minimal (stub)                  |
+| Family      | Description                    | Transforms | Bundles | rename-scope |
+| ----------- | ------------------------------ | ---------- | ------- | ------------ |
+| `fullstack` | Full-stack TypeScript monorepo | Yes        | Yes     | Yes          |
+| `next`      | Standalone Next.js app         | No         | No      | No           |
+| `backend`   | API-only service               | No         | No      | No           |
+| `rust`      | Rust API service               | No         | No      | No           |
+| `solana`    | Solana program                 | No         | No      | No           |
+| `convex`    | Next.js + Convex               | No         | No      | No           |
+| `worker`    | Background job worker          | No         | No      | No           |
+| `lib`       | Generic TypeScript package     | No         | No      | No           |
+| `cli`       | CLI package                    | No         | No      | No           |
+| `mobile`    | Expo mobile app                | No         | No      | No           |
+| `polyglot`  | Multi-language monorepo        | No         | No      | No           |
 
 ## Local Development
 
@@ -40,11 +40,11 @@ archetype with its own template source, defaults, and transforms:
 
 ```bash
 # From repository root
-bun run dev:cli -- my-test-app
+bun run dev:cli -- my-test-app --yes --dir=../projects
 
 # Or directly from apps/cli
 cd apps/cli
-bun run dev -- my-test-app
+bun run dev -- my-test-app --yes --dir=/tmp/projects
 ```
 
 ### Building the CLI
@@ -64,10 +64,11 @@ bun run link    # Builds and links globally
 
 # Test from anywhere
 cd /tmp
-create-arche test-project
+npx arche create test-project --dir=/tmp/projects
 
-# Or using npx-style
-npx @arche/create test-project
+# Aliases
+npx create-arche test-project --dir=/tmp/projects
+npx @arche/create test-project --dir=/tmp/projects
 ```
 
 To unlink:

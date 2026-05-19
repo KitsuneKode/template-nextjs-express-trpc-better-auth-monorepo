@@ -1,219 +1,56 @@
 <p align="center">
-  <img src="https://nextjs.org/static/favicon/favicon-32x32.png" alt="Next.js" width="32" />
-  <img src="https://expressjs.com/images/favicon.png" alt="Express" width="32" />
-  <img src="https://trpc.io/img/logo.svg" alt="tRPC" width="32" />
-  <img src="https://raw.githubusercontent.com/oven-sh/bun/main/assets/logo.svg" alt="Bun" width="32" />
-  <img src="https://www.prisma.io/favicon.ico" alt="Prisma" width="32" />
+  <strong>Arche</strong> — The beginning of every project
 </p>
 
 <p align="center">
-  <img src="./apps/web/public/brand/template-logo.svg" alt="Kitsune Stack Template logo" width="560" />
+  Full-stack TypeScript monorepo template and CLI.<br/>
+  Next.js, Express, tRPC, Better Auth, Prisma, Turborepo — wired and ready.
 </p>
 
-<h1 align="center">Next.js × Express × tRPC × Bun × Better Auth × Prisma × Turborepo Template</h1>
-
 <p align="center">
-  <b>Kickstart your next project with a modern, scalable, and type-safe monorepo template.</b><br/>
-  <i>Production-ready, batteries included, and easy to extend.</i>
+  <a href="https://arche.kitsunelabs.xyz">arche.kitsunelabs.xyz</a>
 </p>
 
 ---
 
-## 🧪 Use this template
+## Create a project
 
 ```sh
-bun create turbo@latest --example https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo
+npx arche create my-app
 cd my-app
 bun install
 bun dev
 ```
 
-> Requires Bun: [Bun](https://bun.sh)
-
-## 🛠️ Bootstrap CLI
-
-This repo now includes a purpose-built bootstrap CLI called
-`create-arche`.
+From this monorepo (development):
 
 ```sh
-bun run dev:cli -- my-app
+bun run dev:cli -- my-app --yes --dir=../projects
 ```
 
-See `docs/bootstrap-cli.md` for the current local workflow and generated
-features.
+> Scaffold **outside** the template repo when using defaults: use `--dir=../projects` or similar.
 
-## 🔗 Repository
+## Documentation
 
-- GitHub: [KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo](https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo)
+- CLI usage: [docs/bootstrap-cli.md](docs/bootstrap-cli.md)
+- CLI development: [docs/cli-development.md](docs/cli-development.md)
+- Portfolio `SHOWCASE.mdx`: [docs/portfolio-sync.md](docs/portfolio-sync.md)
 
----
-
-## 🚀 Features
-
-- **Full-Stack Ready:** Next.js frontend, Express backend, tRPC for typesafe APIs.
-- **Ultra-Fast Tooling:** Powered by Bun for rapid installs and scripts.
-- **Type Safety:** End-to-end TypeScript, including API contracts.
-- **Modular Auth:** Plug-and-play authentication package.
-- **Reusable UI:** Shared component library for consistent design.
-- **Monorepo Power:** Code sharing and easy scaling with Turborepo.
-- **Production Best Practices:** Pre-configured for real-world deployments.
-
----
-
-## 🗂️ Project Structure
+## Repository layout
 
 ```text
 apps/
-  server/     # Express backend (tRPC, Auth, Prisma)
-  web/        # Next.js frontend (tRPC client, UI)
-  cli/        # Bootstrap CLI (scaffolds new projects)
-  worker/     # Background job runner
-packages/
-  auth/       # Authentication logic (better-auth)
-  store/      # Prisma schema & DB access
-  trpc/       # tRPC routers & helpers
-  ui/         # Shared UI components
-  common/     # Shared types & utilities
-  backend-common/ # Backend-specific shared code
+  server/     Express + tRPC + Better Auth
+  web/        Next.js (marketing site + app)
+  cli/        @arche/create bootstrap CLI
+  worker/     Background jobs
+packages/     Shared auth, store, trpc, ui, …
 ```
 
----
+## Use as a template (without CLI)
 
-## ⚡ Quick Start
+```sh
+bun create turbo@latest --example https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo
+```
 
-1. **Install dependencies (with Bun):**
-
-   ```sh
-   bun install
-   ```
-
-2. **Start development (all apps/packages):**
-
-   ```sh
-   bun dev
-   ```
-
-3. **Build everything:**
-
-   ```sh
-   bun run build
-   ```
-
-4. Add shadcn component to your app
-
-   ```sh
-   bunx --bun shadcn@latest add <component-name> --c apps/web
-   ```
-
-5. Audit and clean the starter when you begin product work
-
-   ```sh
-   bun run repo:doctor
-   bun run template:clean:dry
-   ```
-
-6. Commit with the enforced Conventional Commit format
-
-   Example: `feat(auth): add google provider`
-
----
-
-## 🔧 Environment Setup
-
-### Local Development
-
-The template requires environment variables for both frontend and backend. We provide `.env.example` files as templates.
-
-1. **Setup frontend environment:**
-
-   ```sh
-   cp apps/web/.env.example apps/web/.env.local
-   ```
-
-   This file contains frontend-specific variables like `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL`.
-
-2. **Setup backend environment:**
-
-   ```sh
-   cp apps/server/.env.example apps/server/.env
-   ```
-
-   This file contains backend variables like `DATABASE_URL`, `PORT`, and authentication secrets.
-
-3. **Configure for your setup:**
-   - Update database URLs if using a custom Postgres instance
-   - Set `BETTER_AUTH_SECRET` to a secure random string (min 32 characters)
-   - For OAuth providers (GitHub, Google), add your client credentials
-
-4. **Start development:**
-
-   ```sh
-   bun dev
-   ```
-
-   This starts all services: frontend (port 3000), backend (port 8080), and database.
-
-### Environment Variables Reference
-
-**Frontend** (`apps/web/.env.local`):
-
-- `NEXT_PUBLIC_SITE_NAME` - Your app name
-- `NEXT_PUBLIC_APP_URL` - Frontend URL (local: `http://localhost:3000`)
-- `NEXT_PUBLIC_API_URL` - Backend API URL (local: `http://localhost:8080`)
-
-**Backend** (`apps/server/.env`):
-
-- `PORT` - Backend server port (default: 8080)
-- `DATABASE_URL` - Database connection string
-- `REDIS_URL` - Redis connection for caching
-- `BETTER_AUTH_SECRET` - Auth secret (must be at least 32 characters)
-- `BETTER_AUTH_URL` - Auth service URL
-
-See `apps/web/.env.example` and `apps/server/.env.example` for all available options.
-
----
-
-## 🛠️ Why Use This Template?
-
-- **Easy Initial Setup:** Get started in minutes, not hours.
-- **Type-Safe Everywhere:** No more guessing types between client and server.
-- **Scalable & Maintainable:** Modular structure for growing teams and projects.
-- **Modern Stack:** Stay up-to-date with the latest best practices.
-- **Ready for Production:** Sensible defaults and extensible configuration.
-
-## 🧹 Starter Hygiene
-
-- `bun run repo:doctor` audits stale scaffolding, broken package exports,
-  placeholder files, and doc drift.
-- `bun run template:clean:dry` previews the opinionated cleanup plan for teams
-  that want to strip demo and template baggage quickly.
-- `bun run template:clean` applies that cleanup plan.
-- `bun run commit:check` validates the latest commit message.
-
----
-
-## 📚 Learn More
-
-- [Next.js](https://nextjs.org/)
-- [Express.js](https://expressjs.com/)
-- [tRPC](https://trpc.io/)
-- [Bun](https://bun.sh/)
-- [Prisma](https://prisma.io/)
-- [Turborepo](https://turbo.build/)
-- [Better Auth](https://better-auth.com/)
-
----
-
-## 📝 Author
-
-- [@KitsunKode](https://x.com/KitsunKode)
-
----
-
-## 📄 License
-
-MIT
-
----
-
-> Want to contribute? Add badges, contribution guidelines, or a screenshot/demo section!
+Requires [Bun](https://bun.sh).

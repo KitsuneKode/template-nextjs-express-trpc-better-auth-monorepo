@@ -1,5 +1,7 @@
 # Honest Assessment: Template & CLI Status
 
+> **Superseded (2026):** Much of this doc predates the Arche remediation. See [bootstrap-cli.md](./bootstrap-cli.md) and run `bun test` in `apps/cli`. Env generation and family-gated transforms are implemented.
+
 **Bottom line first**: The CLI exists and scaffolds projects, but the **template itself doesn't build** and the **scaffolded apps won't build** without manual setup. We have docs for everything, but the reality is more problematic than the documentation suggests.
 
 ---
