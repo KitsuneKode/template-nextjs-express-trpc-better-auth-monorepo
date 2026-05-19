@@ -23,7 +23,7 @@ curl -sS "https://<your-service>.onrender.com/health"
 
 Do **not** set `PORT` manually. Health check path: `/health`.
 
-Docker builds pin Bun to [`.bun-version`](../.bun-version). If build fails with `lockfile had changes, but lockfile is frozen`, pull latest `main` (pinned `oven/bun:1.3.12` in [Dockerfile](../apps/server/Dockerfile)).
+Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile) (same approach as [buzz8n](https://github.com/KitsuneKode/buzz8n)). Bun matches [`.bun-version`](../.bun-version); `HUSKY=0` skips git hooks during install. If you see `lockfile had changes, but lockfile is frozen`, pull latest `main`.
 
 ## Variant B2 — API-only on Render (external DB/Redis)
 

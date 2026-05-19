@@ -1,0 +1,26 @@
+# Dependencies and build artifacts (reinstalled / rebuilt in image)
+node_modules
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+out
+
+# Git and local env
+.git
+.gitignore
+**/.env
+**/.env.*
+!**/.env.example
+
+# IDE and OS
+.cursor
+.vscode
+**/.DS_Store
+
+# Logs and test output
+**/*.log
+coverage
+
+# Docker prune output from local experiments
+turbo-prune-test

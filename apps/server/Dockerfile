@@ -1,40 +1,48 @@
 # Build from repository root:
 #   docker build -f apps/server/Dockerfile .
+#
+# Uses turbo prune (see KitsuneKode/buzz8n docker/Dockerfile.server) so workspace
+# deps resolve correctly during `bun build`.
 
-# Pin Bun to match .bun-version — floating `oven/bun:1` (e.g. 1.3.14) breaks frozen lockfile.
 ARG BUN_VERSION=1.3.12
 FROM oven/bun:${BUN_VERSION} AS base
 WORKDIR /app
 
+# --- Prune monorepo to @template/server and its workspace dependencies ---
+FROM base AS pruner
+COPY . .
+RUN bunx turbo@2.9.14 prune @template/server --docker
+
+# --- Install deps from pruned lockfile (no Husky / git hooks) ---
 FROM base AS deps
-COPY package.json bun.lock turbo.json ./
-COPY toolings toolings
-COPY packages packages
-# All workspace package.json files must exist before `bun install` at repo root.
-COPY apps/server/package.json apps/server/package.json
-COPY apps/web/package.json apps/web/package.json
-COPY apps/cli/package.json apps/cli/package.json
-COPY apps/worker/package.json apps/worker/package.json
-COPY tests/package.json tests/package.json
-COPY apps/server apps/server
+WORKDIR /app
+COPY --from=pruner /app/out/json/ .
 ENV CI=true
+ENV HUSKY=0
 RUN bun install --frozen-lockfile
 
-FROM base AS build
+# --- Generate Prisma client + build server (turbo ^build graph) ---
+FROM base AS builder
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY package.json bun.lock turbo.json ./
-COPY toolings toolings
-COPY apps/server apps/server
-COPY packages packages
+COPY --from=pruner /app/out/full/ .
+ENV CI=true
+ENV HUSKY=0
+RUN bun run db:generate
 RUN bun run build --filter=@template/server
 
+# --- Production runtime ---
 FROM oven/bun:${BUN_VERSION}-slim AS production
 WORKDIR /app/apps/server
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
-# PORT is injected by Render at runtime; 8080 is only a local `docker run` fallback.
+# PORT is injected by Render at runtime; 8080 is a local `docker run` fallback only.
 ENV PORT=8080
-COPY --from=build /app/apps/server/dist ./dist
-COPY --from=build /app/node_modules /app/node_modules
+
+COPY --from=builder /app/apps/server/dist ./dist
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/packages /app/packages
+COPY --from=builder /app/apps/server/package.json ./package.json
+
 EXPOSE 8080
 CMD ["bun", "./dist/server.js"]
