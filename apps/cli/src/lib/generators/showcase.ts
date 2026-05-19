@@ -1,24 +1,18 @@
 /**
- * SHOWCASE.mdx generator
- *
- * Generates a portfolio-ready SHOWCASE.mdx file at the project root.
- * Designed for LLM/agent modification: includes structured JSON-LD,
- * explicit agent sections, and regeneration hints.
+ * SHOWCASE.mdx generator — portfolio-ready markdown for kitsunekode.in sync.
  */
 
 import type { ProjectConfig } from '../../types/schemas'
 import { sanitizeProjectName } from '../slug'
 
-function jsonLd(name: string, created: string): string {
+function jsonLdBlock(name: string, description: string, created: string): string {
   return JSON.stringify(
     {
       '@context': 'https://schema.org',
       '@type': 'SoftwareSourceCode',
       name,
-      description: '',
-      programmingLanguage: ['TypeScript', 'Rust', 'Python'],
-      runtimePlatform: ['Bun', 'Node.js', 'Rust'],
-      operatingSystem: 'POSIX',
+      description,
+      programmingLanguage: ['TypeScript'],
       dateCreated: created,
       dateModified: created,
     },
@@ -30,87 +24,58 @@ function jsonLd(name: string, created: string): string {
 export function buildShowcaseMdx(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
   const created = new Date().toISOString().slice(0, 10)
-  const rawTags = [config.backend, config.database, config.orm, config.family]
+  const rawTags = [config.family, config.backend, config.database, config.orm]
   const tags = rawTags.filter((t): t is NonNullable<typeof t> => t != null && t !== 'none')
+  const stack = tags.join(', ')
 
   return `---
 title: ${name}
-type: project
-tags: [${tags.join(', ')}]
+type: fullstack
+tags: [${tags.map((t) => `"${t}"`).join(', ')}]
 featured: false
 created: ${created}
 updated: ${created}
 generator: '@arche/create@0.2.0'
-agent_hint: >
-  This file is structured for agent-assisted maintenance.
-  Fill in each section with project-specific details.
-  Update the 'updated' field in frontmatter on changes.
-  Keep the JSON-LD block in sync with the markdown content.
+portfolio: https://kitsunekode.in
 ---
-
-import { ProjectCard, TechBadge, MetricBadge } from './components'
-
-<script>
-  /** Agents: update this JSON-LD block when project metadata changes */
-  const projectMeta = ${jsonLd(name, created)}
-</script>
 
 # ${name}
 
-<ProjectCard title="${name}" tags={[${tags.map((t) => `'${t}'`).join(', ')}]} />
+> Fill in the overview below. The portfolio at [kitsunekode.in](https://kitsunekode.in) syncs this file from your GitHub repo.
 
 ## Overview
 
-{/* Describe what this project does in 2-3 sentences. Agents: read package.json and CONTEXT.md to synthesize this. */}
+<!-- 2–3 sentences: what the project does and who it is for -->
+
+## Tech stack
+
+${stack}
 
 ## Architecture
 
-{/* Agents: describe the architecture based on the project structure. Include key directories, data flow, auth strategy, deployment model. */}
+<!-- Key directories, auth flow, deployment -->
 
-### Tech Stack
+## Key features
 
-<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-  <TechBadge name="TypeScript" />
-  <TechBadge name="${config.backend === 'express-bun' ? 'Express' : config.backend === 'hono-bun' ? 'Hono' : config.backend}" />
-  <TechBadge name="${config.database === 'none' ? 'No DB' : config.database === 'postgres' ? 'PostgreSQL' : config.database}" />
-  <TechBadge name="${config.orm === 'prisma' ? 'Prisma' : config.orm === 'drizzle' ? 'Drizzle' : config.orm}" />
-  <TechBadge name="tRPC" />
-  <TechBadge name="Better Auth" />
-</div>
+- 
+- 
+- 
 
-## Key Features
-
-{/* Agents: extract features from package.json scripts, router files, and directory structure. Replace the list below. */}
-
-- Feature one
-- Feature two
-- Feature three
-
-## Metrics
-
-<div style={{ display: 'flex', gap: '1rem' }}>
-  <MetricBadge label="Routes" value="—" />
-  <MetricBadge label="DB Tables" value="—" />
-  <MetricBadge label="Tests" value="—" />
-</div>
-
-{/* Agents: update metric values using source analysis. Routes: count tRPC routers/procedures. Tables: count models in schema. Tests: count test files. */}
-
-## Recent Changes
-
-{/* Agents: append entries here when making significant modifications. Keep the 5 most recent. */}
-
-- ${created}: Project scaffolded with @arche/create
-
-## Getting Started
+## Getting started
 
 \`\`\`bash
 bun install
 bun dev
 \`\`\`
 
+## JSON-LD (SEO)
+
+\`\`\`json
+${jsonLdBlock(name, '', created)}
+\`\`\`
+
 ---
 
-*Maintained with @arche/create. Push changes to sync with portfolio at kitsunekode.in.*
+*Scaffolded with [Arche](https://arche.kitsunelabs.xyz) (\`npx arche create\`). Update \`updated\` in frontmatter when you edit this file.*
 `
 }

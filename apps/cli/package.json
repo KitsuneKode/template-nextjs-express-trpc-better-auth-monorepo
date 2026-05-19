@@ -1,7 +1,7 @@
 {
   "name": "@arche/create",
   "version": "0.2.0",
-  "description": "Bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
+  "description": "Arche — bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
   "keywords": [
     "better-auth",
     "boilerplate",
@@ -18,7 +18,7 @@
     "turborepo",
     "typescript"
   ],
-  "homepage": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo#readme",
+  "homepage": "https://arche.kitsunelabs.xyz",
   "bugs": {
     "url": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo/issues"
   },
@@ -31,6 +31,7 @@
   },
   "bin": {
     "@arche/create": "dist/index.js",
+    "arche": "dist/index.js",
     "create-arche": "dist/index.js"
   },
   "files": [

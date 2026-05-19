@@ -1,6 +1,65 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import type { ProjectConfig } from '../../types/schemas'
+
+function patchTrpcAppRouter(dest: string): string[] {
+  const appPath = join(dest, 'packages/trpc/src/routers/_app.ts')
+  try {
+    let content = readFileSync(appPath, 'utf8')
+    if (content.includes('realtimeRouter')) return []
+    content = content.replace(
+      "import { userRouter } from './user'",
+      "import { userRouter } from './user'\nimport { realtimeRouter } from './realtime'",
+    )
+    content = content.replace(
+      '  chat: chatRouter,',
+      '  chat: chatRouter,\n  realtime: realtimeRouter,',
+    )
+    writeFileSync(appPath, content)
+    return ['packages/trpc/src/routers/_app.ts']
+  } catch {
+    return []
+  }
+}
+
+function productBundle(dest: string): string[] {
+  const files: string[] = []
+  const gettingStarted = join(dest, 'docs/getting-started.md')
+  mkdirSync(dirname(gettingStarted), { recursive: true })
+  writeFileSync(
+    gettingStarted,
+    `# Getting Started
+
+This project was scaffolded with the **product** bundle (auth, database, API).
+
+## Core workspaces
+
+- \`apps/web\` — Next.js frontend
+- \`apps/server\` — Express API + tRPC + Better Auth
+- \`packages/store\` — Database (Prisma/Drizzle)
+- \`packages/trpc\` — Shared API routers
+- \`packages/auth\` — Better Auth configuration
+
+## Commands
+
+\`\`\`bash
+bun install
+bun dev
+bun run repo:doctor
+\`\`\`
+
+See \`AGENTS.md\` and \`CONTEXT.md\` for architecture details.
+`,
+  )
+  files.push('docs/getting-started.md')
+
+  const markerDir = join(dest, '.arche')
+  mkdirSync(markerDir, { recursive: true })
+  writeFileSync(join(markerDir, 'product-bundle'), 'applied\n')
+  files.push('.arche/product-bundle')
+
+  return files
+}
 
 function realtimeBundle(dest: string): string[] {
   const files: string[] = []
@@ -57,6 +116,7 @@ export const realtimeRouter = {
 `,
   )
   files.push('packages/trpc/src/routers/realtime.ts')
+  files.push(...patchTrpcAppRouter(dest))
 
   return files
 }
@@ -188,6 +248,7 @@ export { openai, generateText }
 }
 
 const BUNDLE_HANDLERS: Record<string, (dest: string) => string[]> = {
+  product: productBundle,
   realtime: realtimeBundle,
   growth: growthBundle,
   infra: infraBundle,
