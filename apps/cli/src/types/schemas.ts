@@ -72,6 +72,7 @@ export const BackendSchema = z
     'fastify-node',
     'go-fiber',
     'rust-axum',
+    'rust-actix',
     'python-fastapi',
     'none',
   ])
@@ -164,6 +165,7 @@ export const CLIArgsSchema = z.object({
   example: ExampleSchema.optional(),
   // Family-specific flags
   presets: z.array(NextPresetSchema).optional(),
+  dir: z.string().optional(),
   // Internal: subcommand dispatch
   _command: z.string().optional(),
   _jsonConfig: z.any().optional(),
@@ -198,16 +200,33 @@ export const BUNDLE_LABELS: Record<Bundle, string> = {
   ai: 'AI examples + Helpers + Docs',
 }
 
+/** Interactive / transform options apply only to the full monorepo template. */
 export function hasBackendOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
+  return family === 'fullstack'
 }
 
 export function hasDatabaseOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
+  return family === 'fullstack'
 }
 
 export function hasOrmOptions(family: Family): boolean {
-  return family === 'fullstack' || family === 'backend' || family === 'polyglot'
+  return family === 'fullstack'
+}
+
+export function familySupportsMonorepoTransforms(family: Family): boolean {
+  return family === 'fullstack'
+}
+
+export function familySupportsRenameScope(family: Family): boolean {
+  return family === 'fullstack'
+}
+
+export function familySupportsTemplateCleanup(family: Family): boolean {
+  return family === 'fullstack'
+}
+
+export function familySupportsBundles(family: Family): boolean {
+  return family === 'fullstack'
 }
 
 export function hasPresetOptions(family: Family): boolean {
@@ -220,6 +239,10 @@ export function familySupportsWorker(family: Family): boolean {
 
 export function familySupportsShowcase(family: Family): boolean {
   return family === 'fullstack'
+}
+
+export function isRustFrameworkBackend(backend: ProjectConfig['backend'] | undefined): boolean {
+  return backend === 'rust-axum' || backend === 'rust-actix'
 }
 
 // =============================================================================
@@ -256,8 +279,12 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
     errors.push('Drizzle does not support MongoDB. Use Mongoose or Prisma.')
   }
 
-  if (config.orm === 'mongoose' && config.database !== 'mongodb') {
-    errors.push('Mongoose ORM requires MongoDB as the database.')
+  if (config.orm === 'mongoose') {
+    errors.push('Mongoose ORM is not supported yet. Use Prisma or Drizzle with MongoDB.')
+  }
+
+  if (config.backend === 'fastify-node') {
+    errors.push('Fastify backend is not supported yet. Use express-bun or hono-bun.')
   }
 
   if (config.vectorDatabase === 'pgvector' && config.database !== 'postgres') {
@@ -292,8 +319,15 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
   if (config.family === 'solana' && config.backend !== 'none' && config.backend !== undefined) {
     warnings.push('Solana programs do not use a backend server. Backend will be ignored.')
   }
-  if (config.family === 'rust' && config.backend !== 'none' && config.backend !== undefined) {
-    warnings.push('Rust API projects use their own backend. Selected backend ignored.')
+  if (
+    config.family === 'rust' &&
+    config.backend &&
+    config.backend !== 'none' &&
+    !isRustFrameworkBackend(config.backend)
+  ) {
+    warnings.push(
+      'Rust family only supports rust-axum or rust-actix as backend. Other values are ignored.',
+    )
   }
   if (config.family === 'mobile' && config.backend === undefined) {
     // Mobile has its own concerns — no backend validation needed
@@ -311,22 +345,29 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
     warnings.push('AI bundle is designed for fullstack or next families.')
   }
 
+  if (config.presets && config.presets.length > 0 && config.family === 'next') {
+    warnings.push(
+      'Next.js presets (auth, docs, analytics, storage) are not generated yet — selection is recorded for future use.',
+    )
+  }
+
   // Backend + family validation
-  const backendFamilies: Family[] = ['fullstack', 'backend', 'polyglot']
+  const backendFamilies: Family[] = ['fullstack']
   if (config.family && !backendFamilies.includes(config.family)) {
-    if (config.backend && config.backend !== 'none') {
+    const rustFrameworkOk = config.family === 'rust' && isRustFrameworkBackend(config.backend)
+    if (config.backend && config.backend !== 'none' && !rustFrameworkOk) {
       warnings.push(
-        `Backend selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
+        `Backend selection is only applicable to the fullstack family. Ignored for ${config.family}.`,
       )
     }
     if (config.database && config.database !== 'none') {
       warnings.push(
-        `Database selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
+        `Database selection is only applicable to the fullstack family. Ignored for ${config.family}.`,
       )
     }
     if (config.orm && config.orm !== 'none') {
       warnings.push(
-        `ORM selection is only applicable to fullstack, backend, and polyglot families. Ignored for ${config.family}.`,
+        `ORM selection is only applicable to the fullstack family. Ignored for ${config.family}.`,
       )
     }
   }

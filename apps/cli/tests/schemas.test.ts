@@ -77,12 +77,20 @@ describe('checkCompatibility', () => {
     expect(result.errors.some((e: string) => e.includes('Drizzle'))).toBe(true)
   })
 
-  it('errors when Mongoose is used without MongoDB', () => {
+  it('errors when Mongoose is requested', () => {
     const result = checkCompatibility({
-      database: 'postgres',
+      database: 'mongodb',
       orm: 'mongoose',
     })
     expect(result.errors.some((e: string) => e.includes('Mongoose'))).toBe(true)
+  })
+
+  it('errors when fastify-node backend is requested', () => {
+    const result = checkCompatibility({
+      family: 'fullstack',
+      backend: 'fastify-node',
+    })
+    expect(result.errors.some((e: string) => e.includes('Fastify'))).toBe(true)
   })
 
   it('errors when ORM is set but database is none', () => {
@@ -208,45 +216,43 @@ describe('Zod schemas', () => {
     const allFamilies = FamilySchema.options
 
     describe('hasBackendOptions', () => {
-      it('returns true for fullstack, backend, and polyglot', () => {
+      it('returns true only for fullstack', () => {
         expect(hasBackendOptions('fullstack')).toBe(true)
-        expect(hasBackendOptions('backend')).toBe(true)
-        expect(hasBackendOptions('polyglot')).toBe(true)
+        expect(hasBackendOptions('backend')).toBe(false)
+        expect(hasBackendOptions('polyglot')).toBe(false)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
+          if (f === 'fullstack') continue
           expect(hasBackendOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasDatabaseOptions', () => {
-      it('returns true for fullstack, backend, and polyglot', () => {
+      it('returns true only for fullstack', () => {
         expect(hasDatabaseOptions('fullstack')).toBe(true)
-        expect(hasDatabaseOptions('backend')).toBe(true)
-        expect(hasDatabaseOptions('polyglot')).toBe(true)
+        expect(hasDatabaseOptions('backend')).toBe(false)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
+          if (f === 'fullstack') continue
           expect(hasDatabaseOptions(f)).toBe(false)
         }
       })
     })
 
     describe('hasOrmOptions', () => {
-      it('returns true for fullstack, backend, and polyglot', () => {
+      it('returns true only for fullstack', () => {
         expect(hasOrmOptions('fullstack')).toBe(true)
-        expect(hasOrmOptions('backend')).toBe(true)
-        expect(hasOrmOptions('polyglot')).toBe(true)
+        expect(hasOrmOptions('polyglot')).toBe(false)
       })
 
       it('returns false for all other families', () => {
         for (const f of allFamilies) {
-          if (f === 'fullstack' || f === 'backend' || f === 'polyglot') continue
+          if (f === 'fullstack') continue
           expect(hasOrmOptions(f)).toBe(false)
         }
       })

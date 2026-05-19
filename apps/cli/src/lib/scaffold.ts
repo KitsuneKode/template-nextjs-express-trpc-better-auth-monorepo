@@ -4,6 +4,13 @@ import { dirname, join, resolve, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
+  familySupportsBundles,
+  familySupportsMonorepoTransforms,
+  familySupportsRenameScope,
+  familySupportsTemplateCleanup,
+} from '../types/schemas'
+import { buildCleanupTargets } from './cleanup-targets'
+import {
   renderDockerCompose,
   renderDockerComposeProd,
   renderGithubActionsWorkflow,
@@ -12,6 +19,8 @@ import {
   buildWebEnv,
   renderDeploymentGuide,
   applyBackendTransform,
+  applyRustFamilyTransform,
+  renderGitignore,
   applyDatabaseTransform,
   applyOrmTransform,
   buildRootAgentsMd,
@@ -26,10 +35,15 @@ import {
   writeCursorRules,
   applyBundleTransforms,
 } from './generators'
-import { pmInstallParts } from './pm'
+import { planScaffold } from './plan-scaffold'
+import { adaptScripts, pmInstallParts } from './pm'
+import { buildReproducibleCommand } from './reproducible'
 import { sanitizeProjectName as _sanitizeProjectName } from './slug'
 
+export { buildCleanupTargets } from './cleanup-targets'
 export { sanitizeProjectName } from './slug'
+export { buildReproducibleCommand } from './reproducible'
+export { planScaffold } from './plan-scaffold'
 import { runCommand, tryCommand } from './spawn'
 
 export interface ScaffoldResult {
@@ -99,21 +113,6 @@ function isMonorepoFamily(family: Family): boolean {
   return family === 'fullstack' || family === 'polyglot'
 }
 
-/** Monorepo families get the full backend/database/ORM transform pipeline */
-function hasTransformPipeline(family: Family): boolean {
-  return family === 'fullstack' || family === 'polyglot'
-}
-
-/** Only monorepo families need rename-scope (they use @template/* scope) */
-function needsRenameScope(family: Family): boolean {
-  return family === 'fullstack'
-}
-
-/** Only monorepo families need template-cleanup (they carry showcase/seed/worker) */
-function needsTemplateCleanup(family: Family): boolean {
-  return family === 'fullstack'
-}
-
 /** Families that should strip the web workspace */
 function shouldStripWeb(family: Family): boolean {
   return family === 'backend'
@@ -122,39 +121,6 @@ function shouldStripWeb(family: Family): boolean {
 /** Families that should strip the server workspace */
 function shouldStripServer(family: Family): boolean {
   return family === 'next' || family === 'mobile'
-}
-
-/** Families that should strip the worker workspace */
-function shouldDefaultStripWorker(family: Family): boolean {
-  return family !== 'fullstack'
-}
-
-export function buildCleanupTargets(
-  options: Pick<ProjectConfig, 'includeShowcase' | 'includeWorker' | 'testing' | 'family'>,
-): CleanupTarget[] {
-  const targets = new Set<CleanupTarget>(['readme'])
-
-  // Showcase is only relevant for fullstack
-  if (!options.includeShowcase || options.family !== 'fullstack') {
-    targets.add('showcase')
-    targets.add('seed')
-  }
-
-  // Worker stripping
-  if (!options.includeWorker) {
-    targets.add('worker')
-  }
-
-  // Non-fullstack families strip worker by default
-  if (shouldDefaultStripWorker(options.family)) {
-    targets.add('worker')
-  }
-
-  if (options.testing === 'none') {
-    targets.add('tests')
-  }
-
-  return [...targets]
 }
 
 async function pathExists(path: string): Promise<boolean> {
@@ -326,15 +292,56 @@ function buildArcheConfig(options: ProjectConfig): string {
       includeShowcase: options.includeShowcase,
       presets: options.presets,
     },
-    reproducible: `npx @arche/create ${options.projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
+    reproducible: buildReproducibleCommand(options),
   }
   return JSON.stringify(config, null, 2) + '\n'
+}
+
+async function adaptPackageManagerScripts(
+  destinationDir: string,
+  pm: ProjectConfig['packageManager'],
+): Promise<void> {
+  if (pm === 'bun') return
+
+  async function walk(dir: string): Promise<void> {
+    let entries: string[]
+    try {
+      entries = await readdir(dir)
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      if (entry === 'node_modules' || entry === '.git') continue
+      const full = join(dir, entry)
+      const st = await stat(full)
+      if (st.isDirectory()) {
+        await walk(full)
+        continue
+      }
+      if (entry !== 'package.json') continue
+      try {
+        const raw = await readFile(full, 'utf8')
+        const pkg = JSON.parse(raw) as { scripts?: Record<string, string> }
+        if (!pkg.scripts) continue
+        pkg.scripts = adaptScripts(pkg.scripts, pm)
+        await writeFile(full, JSON.stringify(pkg, null, 2) + '\n')
+      } catch {
+        // skip invalid package.json
+      }
+    }
+  }
+
+  await walk(destinationDir)
 }
 
 export async function scaffoldProject(
   options: ProjectConfig,
   dryRun = false,
 ): Promise<ScaffoldResult> {
+  if (dryRun) {
+    return planScaffold(options)
+  }
+
   const packageName = _sanitizeProjectName(options.projectName)
   const destinationDir = resolve(options.destinationDir)
   const family = options.family
@@ -345,8 +352,11 @@ export async function scaffoldProject(
   await copyTemplate(destinationDir, templateSource)
   await updateRootPackageJson(destinationDir, packageName, options)
 
-  // Family-specific transforms
-  if (hasTransformPipeline(family)) {
+  if (family === 'rust') {
+    await applyRustFamilyTransform(destinationDir, options)
+  }
+
+  if (familySupportsMonorepoTransforms(family)) {
     await applyBackendTransform(destinationDir, options)
     if (options.orm !== 'drizzle') {
       await applyDatabaseTransform(destinationDir, options)
@@ -354,8 +364,7 @@ export async function scaffoldProject(
     await applyOrmTransform(destinationDir, options)
   }
 
-  // Run rename-scope only for monorepo families that use @template/* scope
-  if (needsRenameScope(family)) {
+  if (familySupportsRenameScope(family)) {
     runCommand(['bun', join(TOOLINGS_DIR, 'rename-scope.ts'), '--quiet'], {
       cwd: destinationDir,
     })
@@ -363,7 +372,7 @@ export async function scaffoldProject(
 
   // Run template-cleanup only for monorepo families that carry showcase/seed/worker
   const cleanupTargets = buildCleanupTargets(options)
-  if (needsTemplateCleanup(family) && cleanupTargets.length > 0) {
+  if (familySupportsTemplateCleanup(family) && cleanupTargets.length > 0) {
     runCommand(
       [
         'bun',
@@ -378,8 +387,11 @@ export async function scaffoldProject(
   // Write arche.json for reproducibility
   await writeGeneratedFile(destinationDir, 'arche.json', buildArcheConfig(options))
 
-  // Apply bundle transforms (realtime, growth, infra, ai) — monorepo only
-  const bundleFiles = isMonorepoFamily(family) ? applyBundleTransforms(destinationDir, options) : []
+  const bundleFiles = familySupportsBundles(family)
+    ? applyBundleTransforms(destinationDir, options)
+    : []
+
+  await adaptPackageManagerScripts(destinationDir, pm)
 
   const generatedFiles: string[] = ['arche.json', ...bundleFiles]
 
@@ -473,6 +485,9 @@ export async function scaffoldProject(
   await writeGeneratedFile(destinationDir, 'README.md', buildReadme(options))
   generatedFiles.push('README.md')
 
+  await writeGeneratedFile(destinationDir, '.gitignore', renderGitignore(options))
+  generatedFiles.push('.gitignore')
+
   // Deployment guide (config-aware: adapts to backend/database/docker)
   if (options.deployment !== 'none') {
     await writeGeneratedFile(destinationDir, 'docs/deployment.md', renderDeploymentGuide(options))
@@ -490,7 +505,7 @@ export async function scaffoldProject(
   return {
     destinationDir,
     packageName,
-    cleanupTargets: needsTemplateCleanup(family) ? cleanupTargets : [],
+    cleanupTargets: familySupportsTemplateCleanup(family) ? cleanupTargets : [],
     generatedFiles,
   }
 }

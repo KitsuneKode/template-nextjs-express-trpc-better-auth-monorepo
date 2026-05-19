@@ -41,44 +41,6 @@ export async function createProject(options: CreateOptions): Promise<CreateResul
     return { success: false, errors, warnings, dryRun }
   }
 
-  if (dryRun) {
-    const generatedFiles = [
-      'arche.json',
-      'apps/server/.env.example',
-      'docker-compose.yml',
-      '.github/workflows/ci.yml',
-      'AGENTS.md',
-      'CONTEXT.md',
-      'CLAUDE.md',
-      'README.md',
-    ]
-    if (config.bundles?.includes('realtime')) {
-      generatedFiles.push('apps/server/src/ws/handler.ts', 'packages/trpc/src/routers/realtime.ts')
-    }
-    if (config.bundles?.includes('growth')) {
-      generatedFiles.push('packages/analytics/src/index.ts', 'packages/analytics/package.json')
-    }
-    if (config.bundles?.includes('infra')) {
-      generatedFiles.push('packages/monitoring/src/index.ts', 'packages/monitoring/package.json')
-    }
-    if (config.bundles?.includes('ai')) {
-      generatedFiles.push('packages/ai/src/index.ts', 'packages/ai/package.json')
-    }
-    generatedFiles.push('.opencode/skills.json', '.cursor/rules/project.mdc')
-    return {
-      success: true,
-      errors: [],
-      warnings,
-      dryRun: true,
-      result: {
-        destinationDir: config.destinationDir,
-        packageName: config.projectName,
-        cleanupTargets: [],
-        generatedFiles,
-      },
-    }
-  }
-
   try {
     const result = await scaffold(config, dryRun)
     return { success: true, result, errors: [], warnings, dryRun: false }
@@ -113,6 +75,7 @@ export function getSchema(): Record<string, unknown> {
           'fastify-node',
           'go-fiber',
           'rust-axum',
+          'rust-actix',
           'python-fastapi',
           'none',
         ],

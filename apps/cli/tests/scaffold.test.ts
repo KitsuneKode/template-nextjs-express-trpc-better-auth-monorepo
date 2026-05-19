@@ -3,8 +3,9 @@ import { renderGithubActionsWorkflow } from '../src/lib/generators/ci'
 import { renderDeploymentGuide } from '../src/lib/generators/deployment'
 import { renderDockerCompose } from '../src/lib/generators/docker'
 import { buildServerEnv, buildWebEnv } from '../src/lib/generators/env'
+import { buildReproducibleCommand } from '../src/lib/reproducible'
 import { buildCleanupTargets } from '../src/lib/scaffold'
-import { sanitizeProjectName } from '../src/lib/slug'
+import { resolveDestinationDir, sanitizeProjectName } from '../src/lib/slug'
 import type { ProjectConfig } from '../src/types/schemas'
 
 /** Helper to build a minimal ProjectConfig for testing generators */
@@ -12,6 +13,9 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
   return {
     projectName: 'test-app',
     destinationDir: '/tmp/test-app',
+    family: 'fullstack',
+    bundles: ['product'],
+    packageManager: 'bun',
     database: 'postgres',
     vectorDatabase: 'none',
     orm: 'prisma',
@@ -30,6 +34,31 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     ...overrides,
   }
 }
+
+describe('resolveDestinationDir', () => {
+  it('places project under cwd by default', () => {
+    const { projectName, destinationDir } = resolveDestinationDir('my-app')
+    expect(projectName).toBe('my-app')
+    expect(destinationDir.endsWith('/my-app') || destinationDir.endsWith('\\my-app')).toBe(true)
+  })
+
+  it('uses --dir as parent directory', () => {
+    const { destinationDir } = resolveDestinationDir('my-app', '/tmp/projects')
+    expect(destinationDir).toBe('/tmp/projects/my-app')
+  })
+
+  it('treats --dir as full path when basename matches project slug', () => {
+    const { destinationDir } = resolveDestinationDir('my-app', '/tmp/projects/my-app')
+    expect(destinationDir).toBe('/tmp/projects/my-app')
+  })
+})
+
+describe('buildReproducibleCommand', () => {
+  it('uses arche create with family positional', () => {
+    const cmd = buildReproducibleCommand(makeConfig())
+    expect(cmd).toContain('npx arche create test-app fullstack --yes')
+  })
+})
 
 describe('sanitizeProjectName', () => {
   it('converts to lowercase slug', () => {
