@@ -1,13 +1,13 @@
-import { sleep } from 'bun'
 import type { NextFunction, Request, Response } from 'express'
 import { config } from '@/utils/config'
 import { logger } from '@/utils/logger'
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const timingMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
   const start = process.hrtime.bigint()
 
   if (config.NODE_ENV === 'development') {
-    // artificial delay in dev 100-500ms
     const waitMs = Math.floor(Math.random() * 400) + 100
     await sleep(waitMs)
   }
