@@ -57,6 +57,15 @@ Deploy `apps/worker` as a second Render service with `REDIS_URL` (+ `DATABASE_UR
 
 Do **not** rely on Render Key Value for this template.
 
+### `Redis connection failed` / exits after `listening`
+
+Blueprint defaults to **`ENABLE_REDIS=false`** (API-only). If you see Redis errors right after listen:
+
+1. **Dashboard → Environment** → set `ENABLE_REDIS=false` and redeploy (no Upstash needed for v1), **or**
+2. Set a valid Upstash URL: `REDIS_URL=rediss://default:...@...upstash.io:6379` and `ENABLE_REDIS=true`.
+
+A bad or placeholder `REDIS_URL` with `ENABLE_REDIS=true` crashes the process after bind.
+
 Wrong start command for Native Bun (discouraged):
 
 ```bash

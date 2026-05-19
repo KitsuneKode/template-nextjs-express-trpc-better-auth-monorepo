@@ -21,10 +21,10 @@ services:
         value: 'true'
       - key: DATABASE_URL
         sync: false
+      - key: ENABLE_REDIS
+        value: 'false'
       - key: REDIS_URL
         sync: false
-      - key: ENABLE_REDIS
-        value: 'true'
       - key: FRONTEND_URL
         sync: false
       - key: BETTER_AUTH_URL
