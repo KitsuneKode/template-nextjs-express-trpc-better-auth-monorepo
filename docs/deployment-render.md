@@ -44,6 +44,8 @@ curl -sS "https://<your-service>.onrender.com/health"
 
 The blueprint does **not** set `PORT`. Render injects `PORT` at runtime; the server reads `process.env.PORT` (see `apps/server/src/server.ts`).
 
+Docker builds pin Bun to `.bun-version` (see `apps/server/Dockerfile`). If you see `lockfile had changes, but lockfile is frozen`, redeploy after pulling latest `main`—do not use floating `oven/bun:1` without a patch tag.
+
 ## Manual Native Bun (no Docker)
 
 | Setting        | Value                                                    |
