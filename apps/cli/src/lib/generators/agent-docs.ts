@@ -29,8 +29,12 @@ function keyDirs(config: ProjectConfig): string[] {
     dirs.push('`app` — Next.js App Router pages')
     dirs.push('`convex` — Convex functions and schema')
   } else if (family === 'rust') {
-    dirs.push('`src` — Rust source')
-    dirs.push('`Cargo.toml` — Rust dependencies')
+    dirs.push('`src/app.rs` — Axum router composition')
+    dirs.push(
+      '`src/modules/<feature>/` — routes, handler, service, repository, dto, mapper, policy',
+    )
+    dirs.push('`src/common` patterns live in `error.rs`, `config.rs`, `state.rs`, `middleware/`')
+    dirs.push('`migrations/` — SQL migrations (when sqlx enabled)')
   } else if (family === 'worker') {
     dirs.push('`src` — Worker source')
     dirs.push('`src/queue.ts` — Queue definitions')
@@ -65,6 +69,16 @@ function commandsForFamily(family: string, pm: string): string[] {
     cmds.push(`- \`${run} db:migrate\` — Run database migrations`)
   }
 
+  if (family === 'rust') {
+    return [
+      '- `cargo run` — Start API',
+      '- `cargo test` — Tests',
+      '- `cargo fmt` — Format',
+      '- `cargo clippy -- -D warnings` — Lint',
+      '- `sqlx migrate run` — Apply migrations (when database enabled)',
+    ]
+  }
+
   return cmds
 }
 
@@ -75,6 +89,14 @@ function agentPrompt(family: string): string[] {
     'Run `bun run repo:doctor` after structural changes to verify consistency.',
     'Update SHOWCASE.mdx when adding significant features.',
   ]
+
+  if (family === 'rust') {
+    prompts.push(
+      'New features: add `src/modules/<name>/` with routes → handler → service → repository; keep handlers thin.',
+    )
+    prompts.push('Never return `model` structs from handlers — map to DTOs in `mapper.rs`.')
+    prompts.push('PATCH DTOs use `Option` fields; reject empty patches in the service layer.')
+  }
 
   if (family === 'fullstack') {
     prompts.push(
@@ -166,7 +188,7 @@ export function buildContextMd(config: ProjectConfig): string {
 ## Key Entry Points
 
 - Server app setup: \`apps/server/src/app.ts\`
-- tRPC context and procedures: \`packages/trpc/src/trpc.ts\`
+- tRPC context and procedures: \`apps/server/src/modules/trpc/trpc.ts\`
 - Database schema: \`packages/store/prisma/schema.prisma\`${config.orm === 'drizzle' ? '\n- Database schema: `packages/store/src/schema.ts`' : ''}
 - Auth configuration: \`packages/auth/src/index.ts\`
 - Frontend providers: \`apps/web/components/providers.tsx\`
@@ -208,6 +230,46 @@ See \`.env.example\` at the project root.`,
 ## Environment Variables
 
 See \`.env.example\` for required variables.`,
+    rust: `A Rust API service scaffolded with @arche/create.
+
+## Architecture
+
+Layered modules under \`src/modules/<feature>/\`:
+
+\`\`\`
+routes → handler → service → repository → db
+              ↓         ↓
+            dto      policy / mapper
+\`\`\`
+
+- **routes.rs** — URL + HTTP method wiring only (no DB, no business rules)
+- **handler.rs** — HTTP extraction/response (Axum types allowed here only)
+- **service.rs** — business logic; framework-agnostic inputs
+- **repository.rs** — sqlx queries only
+- **dto.rs** — API request/response shapes (serde)
+- **model.rs** — internal/DB records (never return directly)
+- **mapper.rs** — model → response DTO
+- **policy.rs** — pure permission checks
+
+## HTTP semantics
+
+- POST create, GET read/list, PATCH partial update, DELETE remove
+- Do not use PUT unless implementing full replacement
+
+## Errors
+
+Use \`AppError\` and consistent JSON: \`{ "error": { "code", "message" } }\`
+
+## Key entry points
+
+- \`src/main.rs\` — startup
+- \`src/app.rs\` — router + middleware
+- \`src/state.rs\` — shared AppState (pool + config)
+- \`src/modules/health\` — health check
+${config.example === 'posts' ? '- `src/modules/posts` — example CRUD module\n' : ''}
+## Environment
+
+See \`.env.example\` (\`PORT\`, \`DATABASE_URL\`, \`RUST_LOG\`).`,
     convex: `A Next.js + Convex application scaffolded with @arche/create.
 
 ## Architecture
@@ -291,7 +353,7 @@ Key files:
 
 export function buildTrpcRulesMd(): string {
   return `---
-paths: ["packages/trpc/**", "apps/server/src/app.ts"]
+paths: ["apps/server/src/modules/**", "apps/server/src/app.ts", "packages/trpc/src/index.ts"]
 ---
 
 tRPC routers live in \`packages/trpc/src/routers/\`. Each router is a separate

@@ -89,6 +89,10 @@ describe('template stub file integrity', () => {
 
   it('rust has src/ with main.rs', () => {
     expect(existsSync(join(TEMPLATES_DIR, 'rust', 'src', 'main.rs'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'rust', 'src', 'app.rs'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'rust', 'src', 'modules', 'posts', 'service.rs'))).toBe(
+      true,
+    )
   })
 
   it('solana has src/ with lib.rs', () => {

@@ -25,6 +25,7 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     includeCi: true,
     initializeGit: true,
     installDependencies: true,
+    rustAuth: 'placeholder',
     ...overrides,
   }
 }
@@ -49,7 +50,11 @@ describe('applyOrmTransform', () => {
     await mkdir(join(tempDir, 'packages/store/prisma/migrations'), { recursive: true })
     await mkdir(join(tempDir, 'packages/store/src/generated'), { recursive: true })
     await mkdir(join(tempDir, 'packages/auth/src'), { recursive: true })
-    await mkdir(join(tempDir, 'packages/trpc/src/routers'), { recursive: true })
+    await mkdir(join(tempDir, 'packages/trpc/src'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/modules/trpc'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/modules/post'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/modules/chat'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/modules/user'), { recursive: true })
 
     // Mock files
     await writeFile(
@@ -98,7 +103,7 @@ describe('applyOrmTransform', () => {
       "import { prismaAdapter } from 'better-auth/adapters/prisma'\nprovider: 'postgresql'\n",
     )
     await writeFile(
-      join(tempDir, 'packages/trpc/src/trpc.ts'),
+      join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'),
       "import { prisma as db } from '@template/store'\n",
     )
     await writeFile(
@@ -106,15 +111,15 @@ describe('applyOrmTransform', () => {
       "export { expressMiddleWare } from './trpc'\n",
     )
     await writeFile(
-      join(tempDir, 'packages/trpc/src/routers/post.ts'),
+      join(tempDir, 'apps/server/src/modules/post/post.trpc.ts'),
       "import { prisma } from '@template/store'\nprisma.post.findMany()\n",
     )
     await writeFile(
-      join(tempDir, 'packages/trpc/src/routers/chat.ts'),
+      join(tempDir, 'apps/server/src/modules/chat/chat.trpc.ts'),
       "import { prisma } from '@template/store'\nprisma.message.findMany()\n",
     )
     await writeFile(
-      join(tempDir, 'packages/trpc/src/routers/user.ts'),
+      join(tempDir, 'apps/server/src/modules/user/user.trpc.ts'),
       "import { prisma } from '@template/store'\nprisma.user.findMany()\n",
     )
   })
@@ -223,7 +228,7 @@ describe('applyOrmTransform', () => {
 
     it('rewrites tRPC context for Express + Drizzle', async () => {
       await applyOrmTransform(tempDir, config)
-      const trpc = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      const trpc = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
       expect(trpc).toContain("import { db } from '@template/store'")
       expect(trpc).toContain("from '@trpc/server/adapters/express'")
       expect(trpc).not.toContain('prisma')
@@ -232,7 +237,10 @@ describe('applyOrmTransform', () => {
     it('rewrites tRPC routers with Drizzle query API', async () => {
       await applyOrmTransform(tempDir, config)
 
-      const postRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/post.ts'), 'utf8')
+      const postRouter = await readFile(
+        join(tempDir, 'apps/server/src/modules/post/post.trpc.ts'),
+        'utf8',
+      )
       expect(postRouter).toContain("from '@template/store'")
       expect(postRouter).toContain('db.query.post')
       expect(postRouter).toContain('db.insert(post)')
@@ -240,12 +248,18 @@ describe('applyOrmTransform', () => {
       expect(postRouter).toContain('db.delete(post)')
       expect(postRouter).not.toContain('prisma')
 
-      const chatRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/chat.ts'), 'utf8')
+      const chatRouter = await readFile(
+        join(tempDir, 'apps/server/src/modules/chat/chat.trpc.ts'),
+        'utf8',
+      )
       expect(chatRouter).toContain('db.query.message')
       expect(chatRouter).toContain('db.insert(message)')
       expect(chatRouter).not.toContain('prisma')
 
-      const userRouter = await readFile(join(tempDir, 'packages/trpc/src/routers/user.ts'), 'utf8')
+      const userRouter = await readFile(
+        join(tempDir, 'apps/server/src/modules/user/user.trpc.ts'),
+        'utf8',
+      )
       expect(userRouter).toContain('db.query.user')
       expect(userRouter).not.toContain('prisma')
     })
@@ -299,30 +313,29 @@ describe('applyOrmTransform', () => {
 
     it('rewrites tRPC context for fetch-based backend', async () => {
       await applyOrmTransform(tempDir, config)
-      const trpc = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      const trpc = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
       expect(trpc).toContain("import { db } from '@template/store'")
       expect(trpc).toContain('{ headers }: { headers: Headers }')
       expect(trpc).not.toContain('@trpc/server/adapters/express')
       expect(trpc).not.toContain('prisma')
     })
 
-    it('rewrites tRPC index for fetch-based backend', async () => {
+    it('does not rewrite packages/trpc index (contract re-export lives in template)', async () => {
+      const before = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
       await applyOrmTransform(tempDir, config)
-      const index = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
-      expect(index).not.toContain('expressMiddleWare')
-      expect(index).toContain('createTRPCContext')
-      expect(index).toContain('createCallerFactory')
+      const after = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
+      expect(after).toBe(before)
     })
   })
 
   describe('drizzle + express backend', () => {
     const config = makeConfig({ orm: 'drizzle', database: 'postgres', backend: 'express-bun' })
 
-    it('rewrites tRPC index with Express middleware export', async () => {
+    it('does not rewrite packages/trpc index on express backend', async () => {
+      const before = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
       await applyOrmTransform(tempDir, config)
-      const index = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
-      expect(index).toContain('expressMiddleWare')
-      expect(index).toContain('createExpressMiddleware')
+      const after = await readFile(join(tempDir, 'packages/trpc/src/index.ts'), 'utf8')
+      expect(after).toBe(before)
     })
   })
 })

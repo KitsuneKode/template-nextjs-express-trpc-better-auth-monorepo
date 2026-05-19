@@ -20,6 +20,7 @@ import {
   renderDeploymentGuide,
   applyBackendTransform,
   applyRustFamilyTransform,
+  applyRustScaffoldTransform,
   renderGitignore,
   applyDatabaseTransform,
   applyOrmTransform,
@@ -291,6 +292,8 @@ function buildArcheConfig(options: ProjectConfig): string {
       includeWorker: options.includeWorker,
       includeShowcase: options.includeShowcase,
       presets: options.presets,
+      example: options.example,
+      rustAuth: options.rustAuth,
     },
     reproducible: buildReproducibleCommand(options),
   }
@@ -352,8 +355,10 @@ export async function scaffoldProject(
   await copyTemplate(destinationDir, templateSource)
   await updateRootPackageJson(destinationDir, packageName, options)
 
+  let rustGeneratedFiles: string[] = []
   if (family === 'rust') {
     await applyRustFamilyTransform(destinationDir, options)
+    rustGeneratedFiles = await applyRustScaffoldTransform(destinationDir, options)
   }
 
   if (familySupportsMonorepoTransforms(family)) {
@@ -393,7 +398,7 @@ export async function scaffoldProject(
 
   await adaptPackageManagerScripts(destinationDir, pm)
 
-  const generatedFiles: string[] = ['arche.json', ...bundleFiles]
+  const generatedFiles: string[] = ['arche.json', ...bundleFiles, ...rustGeneratedFiles]
 
   const monorepo = isMonorepoFamily(family)
   const hasServer = !shouldStripServer(family)
@@ -498,7 +503,7 @@ export async function scaffoldProject(
     tryCommand(['git', 'init', '-b', 'main'], { cwd: destinationDir })
   }
 
-  if (options.installDependencies && !dryRun) {
+  if (options.installDependencies && !dryRun && family !== 'rust') {
     runCommand(pmInstallParts(pm), { cwd: destinationDir })
   }
 

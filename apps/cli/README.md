@@ -30,6 +30,13 @@ npx @arche/create my-app          # scoped alias
 
 Backend / database / ORM transforms apply to **fullstack** only.
 
+**Rust family** — standalone Axum API with layered modules (`handler` → `service` → `repository`):
+
+```sh
+npx arche create my-api rust --yes --dir=/tmp/projects
+cd /tmp/projects/my-api && cargo run
+```
+
 ## Development
 
 ```sh

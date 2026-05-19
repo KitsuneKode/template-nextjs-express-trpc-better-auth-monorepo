@@ -6,7 +6,13 @@
 
 import type { ProjectConfig } from '../../types/schemas'
 
+import { renderRustCi } from './rust'
+
 export function renderGithubActionsWorkflow(config: ProjectConfig): string {
+  if (config.family === 'rust') {
+    return renderRustCi(config)
+  }
+
   const testStep =
     config.testing !== 'none'
       ? `      - name: Run tests

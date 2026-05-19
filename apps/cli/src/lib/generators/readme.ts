@@ -61,6 +61,15 @@ ${common}`
 ${common}`
   }
 
+  if (family === 'rust') {
+    return `| \`cargo run\` | Start API server |
+| \`cargo test\` | Run tests |
+| \`cargo fmt\` | Format Rust sources |
+| \`cargo clippy -- -D warnings\` | Lint with Clippy |
+| \`sqlx migrate run\` | Apply SQL migrations (when database enabled) |
+| \`docker compose up -d\` | Start Postgres (when Docker + postgres) |`
+  }
+
   return `| \`bun dev\` | Start development |
 ${common}`
 }
@@ -94,7 +103,14 @@ function stackForFamily(config: ProjectConfig): string {
     lines.push('- **Runtime**: Bun')
   } else if (family === 'rust') {
     lines.push('- **Language**: Rust')
-    lines.push('- **Runtime**: Native binary')
+    lines.push('- **Framework**: Axum')
+    if (config.database === 'postgres') lines.push('- **Database**: PostgreSQL (sqlx)')
+    else if (config.database === 'sqlite') lines.push('- **Database**: SQLite (sqlx)')
+    else lines.push('- **Database**: none (API-only)')
+    if (config.example === 'posts') lines.push('- **Example module**: posts (layered CRUD)')
+    lines.push(
+      `- **Auth**: ${config.rustAuth === 'placeholder' ? 'placeholder Bearer demo' : 'none'}`,
+    )
   } else if (family === 'worker') {
     lines.push('- **Queue**: BullMQ + Redis')
     lines.push('- **Runtime**: Bun')
@@ -138,8 +154,7 @@ ${stack}
 ## Quick Start
 
 \`\`\`bash
-bun install
-bun dev
+${config.family === 'rust' ? 'cp .env.example .env\ncargo run' : 'bun install\nbun dev'}
 \`\`\`
 
 ## Commands

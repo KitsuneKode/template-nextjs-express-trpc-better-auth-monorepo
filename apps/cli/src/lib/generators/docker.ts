@@ -67,7 +67,13 @@ function buildRedisService(config: ProjectConfig): { services: string[]; volumes
   }
 }
 
+import { renderRustDockerCompose } from './rust'
+
 export function renderDockerCompose(config: ProjectConfig): string {
+  if (config.family === 'rust') {
+    return renderRustDockerCompose(config)
+  }
+
   const { services: dbServices, volumes: dbVolumes } = buildDbService(config)
   const { services: redisServices, volumes: redisVolumes } = buildRedisService(config)
 

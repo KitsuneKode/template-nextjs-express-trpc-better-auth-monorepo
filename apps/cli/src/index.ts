@@ -29,6 +29,7 @@ import {
   hasBackendOptions,
   hasDatabaseOptions,
   hasOrmOptions,
+  hasRustDatabaseOptions,
   familySupportsShowcase,
   familySupportsWorker,
   PackageManagerSchema,
@@ -395,33 +396,67 @@ async function main(): Promise<void> {
   let presets: ProjectConfig['presets'] = []
   let includeShowcase = false
   let includeWorker = false
-  let rustFramework: ProjectConfig['backend'] = 'rust-axum'
+  const rustFramework: ProjectConfig['backend'] = 'rust-axum'
+  let rustDatabase: ProjectConfig['database'] = 'postgres'
+  let rustExample: ProjectConfig['example'] = 'posts'
+  let rustAuth: ProjectConfig['rustAuth'] = 'placeholder'
 
   if (family === 'rust') {
-    rustFramework = args.yes
-      ? ((args.backend as ProjectConfig['backend'] | undefined) ?? 'rust-axum')
-      : await promptIfNeeded(args.backend as ProjectConfig['backend'] | undefined, async () => {
+    rustDatabase = args.yes
+      ? (args.database ?? 'postgres')
+      : await promptIfNeeded(args.database, async () => {
           const value = await select({
-            message: 'Rust web framework',
-            initialValue: 'rust-axum',
+            message: 'Database (sqlx)',
+            initialValue: 'postgres',
             options: [
-              {
-                label: 'Axum',
-                value: 'rust-axum' as const,
-                hint: 'Tokio ecosystem — default template',
-              },
-              {
-                label: 'Actix Web',
-                value: 'rust-actix' as const,
-                hint: 'Mature actor model, high throughput',
-              },
+              { label: 'PostgreSQL', value: 'postgres', hint: 'recommended' },
+              { label: 'SQLite', value: 'sqlite', hint: 'file-based, good for local dev' },
+              { label: 'None', value: 'none', hint: 'API-only, no sqlx' },
             ],
           })
           if (isCancel(value)) {
             cancel('Project creation cancelled.')
             process.exit(0)
           }
-          return value as ProjectConfig['backend']
+          return value as ProjectConfig['database']
+        })
+
+    rustExample = args.yes
+      ? args.example === 'none'
+        ? 'none'
+        : 'posts'
+      : await promptIfNeeded(args.example === 'none' ? 'none' : undefined, async () => {
+          const value = await confirm({
+            message: 'Include example posts module (routes → handler → service → repository)?',
+            initialValue: true,
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value ? ('posts' as const) : ('none' as const)
+        })
+
+    rustAuth = args.yes
+      ? 'placeholder'
+      : await promptIfNeeded(undefined, async () => {
+          const value = await select({
+            message: 'Auth scaffold',
+            initialValue: 'placeholder',
+            options: [
+              {
+                label: 'Placeholder CurrentUser',
+                value: 'placeholder' as const,
+                hint: 'Bearer demo header for learning',
+              },
+              { label: 'None', value: 'none' as const, hint: 'no auth helpers' },
+            ],
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['rustAuth']
         })
   }
 
@@ -691,7 +726,7 @@ async function main(): Promise<void> {
       })
 
   const installDependencies = args.yes
-    ? (args.install ?? true)
+    ? (args.install ?? family !== 'rust')
     : await promptIfNeeded(args.install, async () => {
         const installCmd =
           packageManager === 'pnpm'
@@ -717,12 +752,17 @@ async function main(): Promise<void> {
     bundles,
     packageManager,
     backend: family === 'rust' ? rustFramework : hasBackendOptions(family) ? backend : 'none',
-    database: hasDatabaseOptions(family) ? database : 'none',
+    database: hasRustDatabaseOptions(family)
+      ? rustDatabase
+      : hasDatabaseOptions(family)
+        ? database
+        : 'none',
     orm: hasOrmOptions(family) ? orm : 'none',
     vectorDatabase: 'none',
     runtime: 'bun',
     addons: [],
-    example: 'none',
+    example: family === 'rust' ? rustExample : 'none',
+    rustAuth: family === 'rust' ? rustAuth : 'placeholder',
     includeShowcase,
     includeWorker,
     testing,

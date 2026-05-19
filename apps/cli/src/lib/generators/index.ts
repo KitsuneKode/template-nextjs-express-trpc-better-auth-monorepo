@@ -13,6 +13,12 @@ export { renderGithubActionsWorkflow } from './ci'
 export { renderDeploymentGuide } from './deployment'
 export { applyBackendTransform, applyRustFamilyTransform } from './backend'
 export { renderGitignore } from './gitignore'
+export {
+  applyRustScaffoldTransform,
+  renderRustCi,
+  renderRustDockerCompose,
+  renderRustDockerfile,
+} from './rust'
 export { applyDatabaseTransform } from './database'
 export { applyOrmTransform } from './orm'
 export {

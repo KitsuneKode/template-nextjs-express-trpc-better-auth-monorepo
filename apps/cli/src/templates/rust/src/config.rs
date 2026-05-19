@@ -1,21 +1,20 @@
 use std::env;
 
+#[derive(Clone, Debug)]
 pub struct Config {
     pub port: u16,
-    pub database_url: String,
-    pub frontend_url: String,
+    pub database_url: Option<String>,
 }
 
 impl Config {
     pub fn from_env() -> Self {
-        Self {
-            port: env::var("PORT")
-                .unwrap_or_else(|_| "8080".to_string())
-                .parse()
-                .unwrap_or(8080),
-            database_url: env::var("DATABASE_URL").unwrap_or_default(),
-            frontend_url: env::var("FRONTEND_URL")
-                .unwrap_or_else(|_| "http://localhost:3000".to_string()),
-        }
+        let port = env::var("PORT")
+            .ok()
+            .and_then(|p| p.parse().ok())
+            .unwrap_or(3001);
+
+        let database_url = env::var("DATABASE_URL").ok().filter(|s| !s.is_empty());
+
+        Self { port, database_url }
     }
 }

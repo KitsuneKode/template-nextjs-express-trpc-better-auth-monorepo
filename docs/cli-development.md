@@ -25,7 +25,7 @@ archetype with its own template source, defaults, and transforms:
 | `fullstack` | Full-stack TypeScript monorepo | Yes        | Yes     | Yes          |
 | `next`      | Standalone Next.js app         | No         | No      | No           |
 | `backend`   | API-only service               | No         | No      | No           |
-| `rust`      | Rust API service               | No         | No      | No           |
+| `rust`      | Axum API (module-first)        | Yes (sqlx) | No      | No           |
 | `solana`    | Solana program                 | No         | No      | No           |
 | `convex`    | Next.js + Convex               | No         | No      | No           |
 | `worker`    | Background job worker          | No         | No      | No           |
@@ -33,6 +33,15 @@ archetype with its own template source, defaults, and transforms:
 | `cli`       | CLI package                    | No         | No      | No           |
 | `mobile`    | Expo mobile app                | No         | No      | No           |
 | `polyglot`  | Multi-language monorepo        | No         | No      | No           |
+
+**Rust family** (`templates/rust/`): standalone project with `routes → handler → service → repository`.
+Prompts cover database (postgres | sqlite | none), optional `posts` example module, and auth placeholder.
+See `src/lib/generators/rust.ts` and `.archefiles.json`.
+
+```bash
+npx arche create my-api rust --yes --dir=/tmp/projects
+cd /tmp/projects/my-api && cargo run
+```
 
 ## Local Development
 

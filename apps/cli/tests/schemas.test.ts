@@ -121,12 +121,22 @@ describe('checkCompatibility', () => {
     expect(result.warnings.some((w: string) => w.includes('Backend selection'))).toBe(true)
   })
 
-  it('warns when family is rust and database is set', () => {
+  it('does not warn when family is rust and database is postgres', () => {
     const result = checkCompatibility({
       family: 'rust',
       database: 'postgres',
+      example: 'posts',
     })
-    expect(result.warnings.some((w: string) => w.includes('Database selection'))).toBe(true)
+    expect(result.warnings.some((w: string) => w.includes('Database selection'))).toBe(false)
+  })
+
+  it('warns when rust posts example is used without a database', () => {
+    const result = checkCompatibility({
+      family: 'rust',
+      database: 'none',
+      example: 'posts',
+    })
+    expect(result.warnings.some((w: string) => w.includes('Posts example'))).toBe(true)
   })
 
   it('no warnings for fullstack with backend and database', () => {

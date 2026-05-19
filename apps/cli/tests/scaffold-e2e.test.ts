@@ -36,6 +36,7 @@ e2eDescribe('scaffold e2e', () => {
         initializeGit: false,
         installDependencies: false,
         presets: [],
+        rustAuth: 'placeholder',
       }
 
       const result = await createProject({ config, dryRun: false })

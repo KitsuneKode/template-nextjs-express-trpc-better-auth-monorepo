@@ -235,6 +235,7 @@ function buildConfig(args: Record<string, unknown>): ProjectConfig {
     includeWorker: false,
     bundles: ['product'],
     presets: [],
+    rustAuth: 'placeholder',
   }
 }
 

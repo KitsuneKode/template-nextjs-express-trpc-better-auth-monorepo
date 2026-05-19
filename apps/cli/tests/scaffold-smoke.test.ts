@@ -28,6 +28,7 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     initializeGit: false,
     installDependencies: false,
     presets: [],
+    rustAuth: 'placeholder',
     ...overrides,
   }
 }

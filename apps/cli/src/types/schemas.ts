@@ -96,9 +96,14 @@ export type AddonType = z.infer<typeof AddonSchema>
 // =============================================================================
 
 export const ExampleSchema = z
-  .enum(['none', 'todo', 'chat', 'game', 'ai'])
+  .enum(['none', 'todo', 'chat', 'game', 'ai', 'posts'])
   .describe('Example application to scaffold')
 export type ExampleType = z.infer<typeof ExampleSchema>
+
+export const RustAuthSchema = z
+  .enum(['none', 'placeholder'])
+  .describe('Rust family auth style (placeholder CurrentUser extractor)')
+export type RustAuthStyle = z.infer<typeof RustAuthSchema>
 
 // =============================================================================
 // Next.js Presets
@@ -138,6 +143,8 @@ export const ProjectConfigSchema = z.object({
   installDependencies: z.boolean().default(true),
   // Family-specific (flattened for dispatch)
   presets: z.array(NextPresetSchema).default([]),
+  /** Rust family: optional CurrentUser extractor stub */
+  rustAuth: RustAuthSchema.default('placeholder'),
 })
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>
 
@@ -211,6 +218,17 @@ export function hasDatabaseOptions(family: Family): boolean {
 
 export function hasOrmOptions(family: Family): boolean {
   return family === 'fullstack'
+}
+
+/** Rust family: postgres, sqlite, or API-only (none). */
+export function hasRustDatabaseOptions(family: Family): boolean {
+  return family === 'rust'
+}
+
+export function rustUsesSqlx(config: Pick<ProjectConfig, 'family' | 'database'>): boolean {
+  return (
+    config.family === 'rust' && (config.database === 'postgres' || config.database === 'sqlite')
+  )
 }
 
 export function familySupportsMonorepoTransforms(family: Family): boolean {
@@ -345,6 +363,17 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
     warnings.push('AI bundle is designed for fullstack or next families.')
   }
 
+  if (
+    config.family === 'rust' &&
+    config.example === 'posts' &&
+    config.database !== 'postgres' &&
+    config.database !== 'sqlite'
+  ) {
+    warnings.push(
+      'Posts example module requires postgres or sqlite. Disable the example or pick a database.',
+    )
+  }
+
   if (config.presets && config.presets.length > 0 && config.family === 'next') {
     warnings.push(
       'Next.js presets (auth, docs, analytics, storage) are not generated yet — selection is recorded for future use.',
@@ -360,9 +389,19 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
         `Backend selection is only applicable to the fullstack family. Ignored for ${config.family}.`,
       )
     }
-    if (config.database && config.database !== 'none') {
+    const rustDbOk = config.family === 'rust' && hasRustDatabaseOptions(config.family)
+    if (config.database && config.database !== 'none' && !rustDbOk) {
       warnings.push(
         `Database selection is only applicable to the fullstack family. Ignored for ${config.family}.`,
+      )
+    }
+    if (
+      config.family === 'rust' &&
+      config.database &&
+      !['postgres', 'sqlite', 'none'].includes(config.database)
+    ) {
+      warnings.push(
+        `Rust family supports postgres, sqlite, or none. "${config.database}" will be treated as none.`,
       )
     }
     if (config.orm && config.orm !== 'none') {

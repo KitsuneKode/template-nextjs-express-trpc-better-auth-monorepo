@@ -85,6 +85,7 @@ function buildProjectConfig(
     initializeGit: false,
     installDependencies: false,
     presets: [],
+    rustAuth: 'placeholder',
   }
 }
 

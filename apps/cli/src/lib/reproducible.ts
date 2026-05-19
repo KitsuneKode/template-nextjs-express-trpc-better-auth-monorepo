@@ -23,6 +23,7 @@ export function buildReproducibleCommand(
     | 'includeDocker'
     | 'includeCi'
     | 'deployment'
+    | 'example'
   >,
 ): string {
   const parts = ['npx', 'arche', 'create', config.projectName, config.family, '--yes']
@@ -31,7 +32,10 @@ export function buildReproducibleCommand(
     parts.push(`--pm=${config.packageManager}`)
   }
   if (config.family === 'rust') {
-    if (config.backend === 'rust-actix') parts.push('--backend=rust-actix')
+    if (config.database && config.database !== 'postgres') {
+      parts.push(`--database=${config.database}`)
+    }
+    if (config.example === 'none') parts.push('--example=none')
   } else if (familySupportsMonorepoTransforms(config.family)) {
     if (config.backend !== 'express-bun') parts.push(`--backend=${config.backend}`)
     if (config.database !== 'postgres') parts.push(`--database=${config.database}`)

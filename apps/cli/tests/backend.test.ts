@@ -25,6 +25,7 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     includeCi: true,
     initializeGit: true,
     installDependencies: true,
+    rustAuth: 'placeholder',
     ...overrides,
   }
 }
@@ -49,7 +50,8 @@ describe('applyBackendTransform', () => {
     await mkdir(tempDir, { recursive: true })
 
     // Create mock template files that would exist after copy
-    await mkdir(join(tempDir, 'apps/server/src/middlewares'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/common/middleware'), { recursive: true })
+    await mkdir(join(tempDir, 'apps/server/src/modules/trpc'), { recursive: true })
     await mkdir(join(tempDir, 'packages/trpc/src'), { recursive: true })
 
     // Mock Express app.ts
@@ -64,7 +66,7 @@ describe('applyBackendTransform', () => {
     )
     // Mock middleware
     await writeFile(
-      join(tempDir, 'apps/server/src/middlewares/error-handler.ts'),
+      join(tempDir, 'apps/server/src/common/middleware/error-handler.ts'),
       'export function errorHandler() {}\n',
     )
     // Mock server package.json
@@ -87,7 +89,7 @@ describe('applyBackendTransform', () => {
     )
     // Mock tRPC trpc.ts
     await writeFile(
-      join(tempDir, 'packages/trpc/src/trpc.ts'),
+      join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'),
       'import { createExpressMiddleware } from "@trpc/server/adapters/express"\n',
     )
     // Mock tRPC index.ts
@@ -124,10 +126,10 @@ describe('applyBackendTransform', () => {
       expect(content).toContain('app.fetch')
     })
 
-    it('removes Express middlewares directory', async () => {
-      expect(await pathExists(join(tempDir, 'apps/server/src/middlewares'))).toBe(true)
+    it('removes Express middleware directories', async () => {
+      expect(await pathExists(join(tempDir, 'apps/server/src/common/middleware'))).toBe(true)
       await applyBackendTransform(tempDir, makeConfig({ backend: 'hono-bun' }))
-      expect(await pathExists(join(tempDir, 'apps/server/src/middlewares'))).toBe(false)
+      expect(await pathExists(join(tempDir, 'apps/server/src/common/middleware'))).toBe(false)
     })
 
     it('patches server package.json (adds hono, removes express/cors)', async () => {
@@ -149,7 +151,7 @@ describe('applyBackendTransform', () => {
 
     it('rewrites tRPC for fetch-based context', async () => {
       await applyBackendTransform(tempDir, makeConfig({ backend: 'hono-bun' }))
-      const trpcTs = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      const trpcTs = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
       expect(trpcTs).toContain('{ headers: Headers }')
       expect(trpcTs).toContain('createTRPCContext')
       expect(trpcTs).not.toContain('createExpressMiddleware')
@@ -175,7 +177,7 @@ describe('applyBackendTransform', () => {
 
     it('tRPC context includes session and db', async () => {
       await applyBackendTransform(tempDir, makeConfig({ backend: 'hono-bun' }))
-      const trpcTs = await readFile(join(tempDir, 'packages/trpc/src/trpc.ts'), 'utf8')
+      const trpcTs = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
       expect(trpcTs).toContain('session')
       expect(trpcTs).toContain('db')
       expect(trpcTs).toContain('auth.api.getSession')

@@ -1,11 +1,4 @@
 {
-  "version": "0.2.0",
-  "include": [
-    "Cargo.toml",
-    "src/main.rs",
-    "src/config.rs",
-    "src/routes.rs",
-    ".env.example",
-    "README.md"
-  ]
+  "version": "0.3.0",
+  "include": ["Cargo.toml", "src/", "migrations/", ".env.example", "README.md"]
 }
