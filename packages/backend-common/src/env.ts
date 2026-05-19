@@ -13,6 +13,8 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
+import { envBooleanSchema } from './utils/env-boolean'
+
 export const serverEnv = createEnv({
   server: {
     // Core
@@ -23,7 +25,7 @@ export const serverEnv = createEnv({
     DATABASE_URL: z.string().url(),
 
     // Redis / BullMQ — set ENABLE_REDIS=false for API-only (no worker, no /admin/queues)
-    ENABLE_REDIS: z.coerce.boolean().default(true),
+    ENABLE_REDIS: envBooleanSchema(true).default(true),
     REDIS_URL: z.string().url().optional(),
 
     // Frontend reference

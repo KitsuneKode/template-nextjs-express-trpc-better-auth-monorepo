@@ -1,8 +1,9 @@
 import { serverEnv } from '../env'
+import { envBoolean } from './env-boolean'
 
 /** Background jobs (BullMQ) and /admin/queues require Redis when enabled. */
 export function isRedisEnabled(): boolean {
-  return serverEnv.ENABLE_REDIS
+  return envBoolean(serverEnv.ENABLE_REDIS, true)
 }
 
 export function resolveRedisUrl(): string | undefined {

@@ -22,7 +22,7 @@
     "./config-schema": "./src/utils/config-schema.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "bun test",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "check-types": "tsc --noEmit"
