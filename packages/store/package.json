@@ -7,8 +7,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "db:generate": "bunx --bun prisma generate",
-    "db:migrate": "bunx --bun prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
     "db:seed": "bun run src/scripts/seed.ts",
     "db:studio": "prisma studio",
     "db:deploy": "prisma deploy",

@@ -29,9 +29,12 @@ ENV SKIP_POSTINSTALL=1
 ENV TURBO_TELEMETRY_DISABLED=1
 
 # out/json/ has no turbo.json; lifecycle scripts must not run here.
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,target=/root/.bun/install/cache \
+  bun install --frozen-lockfile --ignore-scripts
 
 COPY --from=pruner /app/out/full/ .
+# out/full/ omits bun.lock; keep the lockfile from out/json/ for turbo + reproducible installs
+COPY --from=pruner /app/out/json/bun.lock ./bun.lock
 
 RUN bun run db:generate
 RUN bun run build --filter=@template/server
