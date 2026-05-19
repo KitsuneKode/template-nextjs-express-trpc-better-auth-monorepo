@@ -1,7 +1,6 @@
 import type { ProjectConfig } from '../types/schemas'
 import {
   familySupportsBundles,
-  familySupportsMonorepoTransforms,
   familySupportsShowcase,
   familySupportsTemplateCleanup,
 } from '../types/schemas'
@@ -73,11 +72,7 @@ export function planScaffold(options: ProjectConfig): ScaffoldResult {
     }
   }
 
-  generatedFiles.push('.opencode/skills.json', '.cursor/rules/project.mdc')
-
-  if (monorepo && familySupportsMonorepoTransforms(family)) {
-    generatedFiles.push('.claude/rules/store.md', '.claude/rules/web.md', '.claude/rules/trpc.md')
-  }
+  generatedFiles.push('.opencode/skills.json')
 
   return {
     destinationDir: options.destinationDir,

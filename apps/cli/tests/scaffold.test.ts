@@ -328,6 +328,8 @@ describe('renderDeploymentGuide', () => {
     const express = renderDeploymentGuide(makeConfig({ backend: 'express-bun' }))
     expect(express).toContain('Express (Bun)')
     expect(express).toContain('Path A')
+    expect(express).toContain('Path C')
+    expect(express).toContain('Neon')
 
     const hono = renderDeploymentGuide(makeConfig({ backend: 'hono-bun' }))
     expect(hono).toContain('Hono (Bun)')

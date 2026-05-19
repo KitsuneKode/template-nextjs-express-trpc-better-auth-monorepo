@@ -8,7 +8,7 @@
 - Health endpoint now checks database connectivity
 - Request ID tracing middleware for log correlation
 - Prisma query logging in development mode
-- Agent documentation generation (AGENTS.md, CONTEXT.md, .claude/rules/) for scaffolded projects
+- Agent documentation generation (AGENTS.md, CONTEXT.md, CLAUDE.md) for scaffolded projects
 - SHOWCASE.mdx generator for portfolio-ready scaffolding
 - Project README generation with stack summary and portfolio webhook note
 - Config file support (`~/.arche`, `arche.json`)
@@ -17,7 +17,7 @@
 - Portfolio metadata in scaffolded `package.json`
 - Template CI workflow (`.github/workflows/ci.yml`)
 - Integration tests for auth, post CRUD, and server health
-- `.claude/rules/` for CLI and tests workspaces
+- Scaffolded projects use root `AGENTS.md` only (no `.cursor/rules/` or `.claude/rules/`)
 - `database=none` now properly strips Prisma artifacts
 
 ### Fixed

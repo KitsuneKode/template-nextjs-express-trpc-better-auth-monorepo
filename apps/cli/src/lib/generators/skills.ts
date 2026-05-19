@@ -82,100 +82,6 @@ ${matching.join('\n')}
 `
 }
 
-interface CursorRule {
-  fileName: string
-  description: string
-  globs: string
-  content: string
-}
-
-function buildCursorRules(config: ProjectConfig): CursorRule[] {
-  const rules: CursorRule[] = []
-
-  rules.push({
-    fileName: 'project.mdc',
-    description: 'Project overview and agent navigation',
-    globs: '*',
-    content: `This is a ${config.family} project scaffolded with @arche/create.
-
-Key information:
-- Family: ${config.family}
-- Package manager: ${config.packageManager ?? 'bun'}
-- Backend: ${config.backend}
-- Database: ${config.database}
-- ORM: ${config.orm}
-
-Before making changes:
-1. Read the relevant source files first
-2. Run lint and typecheck after changes
-3. Keep documentation in sync
-`,
-  })
-
-  if (config.family === 'fullstack' || config.family === 'backend') {
-    rules.push({
-      fileName: 'database.mdc',
-      description: 'Database schema and migration patterns',
-      globs: '**/*.{prisma,sql,ts}',
-      content: `Database: ${config.database} via ${config.orm}
-Schema: packages/store/prisma/schema.prisma
-
-After schema changes:
-- Run \`bun run db:generate\` to regenerate the client
-- Run \`bun run db:migrate\` to create a migration
-
-The Prisma client is re-exported from packages/store/src/index.ts.
-`,
-    })
-
-    rules.push({
-      fileName: 'auth.mdc',
-      description: 'Better Auth configuration and patterns',
-      globs: '**/*.{ts,tsx}',
-      content: `Auth: Better Auth with session-based authentication
-Config: packages/auth/src/index.ts
-tRPC context: apps/server/src/modules/trpc/trpc.ts
-
-Use \`protectedProcedure\` for authenticated tRPC endpoints.
-Use \`publicProcedure\` for open endpoints.
-
-Auth routes are mounted at /api/auth/* in apps/server/src/app.ts.
-`,
-    })
-  }
-
-  if (config.family === 'fullstack') {
-    rules.push({
-      fileName: 'trpc.mdc',
-      description: 'tRPC router patterns and conventions',
-      globs: '**/*.{ts,tsx}',
-      content: `tRPC procedures: apps/server/src/modules/<feature>/*.trpc.ts
-Compose: apps/server/src/modules/trpc/app.router.ts
-Context: apps/server/src/modules/trpc/trpc.ts
-
-Each router is a plain object satisfying TRPCRouterRecord.
-Import and register in src/routers/_app.ts.
-
-Use \`protectedProcedure\` for authenticated, \`publicProcedure\` for open.
-`,
-    })
-  }
-
-  if (config.database === 'postgres' && config.orm === 'prisma') {
-    rules.push({
-      fileName: 'postgres.mdc',
-      description: 'PostgreSQL with Prisma patterns',
-      globs: '**/*.{prisma,ts}',
-      content: `PostgreSQL via Prisma ORM.
-Use \`bunx prisma studio\` for local database inspection.
-Seed data: packages/store/src/scripts/seed.ts
-`,
-    })
-  }
-
-  return rules
-}
-
 /** Write skill configuration files to the scaffolded project */
 export function writeSkillConfigs(destinationDir: string, config: ProjectConfig): string[] {
   const matching = RECOMMENDED_SKILLS.filter((s) => s.condition(config))
@@ -201,29 +107,6 @@ export function writeSkillConfigs(destinationDir: string, config: ProjectConfig)
       ) + '\n',
     )
     generatedFiles.push('.opencode/skills.json')
-  }
-
-  return generatedFiles
-}
-
-/** Write Cursor editor rules (.cursor/rules/*.mdc) */
-export function writeCursorRules(destinationDir: string, config: ProjectConfig): string[] {
-  const rules = buildCursorRules(config)
-  if (rules.length === 0) return []
-
-  const rulesDir = join(destinationDir, '.cursor/rules')
-  if (!existsSync(rulesDir)) mkdirSync(rulesDir, { recursive: true })
-  const generatedFiles: string[] = []
-
-  for (const rule of rules) {
-    const content = `---
-description: ${rule.description}
-globs: "${rule.globs}"
----
-${rule.content}
-`
-    writeFileSync(join(rulesDir, rule.fileName), content)
-    generatedFiles.push(join('.cursor/rules', rule.fileName))
   }
 
   return generatedFiles

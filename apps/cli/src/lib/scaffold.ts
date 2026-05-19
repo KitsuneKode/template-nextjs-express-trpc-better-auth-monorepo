@@ -27,13 +27,9 @@ import {
   buildRootAgentsMd,
   buildContextMd,
   buildClaudeMd,
-  buildStoreRulesMd,
-  buildWebRulesMd,
-  buildTrpcRulesMd,
   buildReadme,
   buildShowcaseMdx,
   writeSkillConfigs,
-  writeCursorRules,
   applyBundleTransforms,
 } from './generators'
 import { planScaffold } from './plan-scaffold'
@@ -462,23 +458,6 @@ export async function scaffoldProject(
   // Agent skill configuration
   const skillFiles = writeSkillConfigs(destinationDir, options)
   generatedFiles.push(...skillFiles)
-
-  const cursorFiles = writeCursorRules(destinationDir, options)
-  generatedFiles.push(...cursorFiles)
-
-  // Generate .claude/rules/ directory for path-scoped agent rules (monorepo only)
-  if (monorepo) {
-    if (hasServer) {
-      await writeGeneratedFile(destinationDir, '.claude/rules/store.md', buildStoreRulesMd(options))
-      generatedFiles.push('.claude/rules/store.md')
-    }
-    if (hasWeb) {
-      await writeGeneratedFile(destinationDir, '.claude/rules/web.md', buildWebRulesMd())
-      generatedFiles.push('.claude/rules/web.md')
-      await writeGeneratedFile(destinationDir, '.claude/rules/trpc.md', buildTrpcRulesMd())
-      generatedFiles.push('.claude/rules/trpc.md')
-    }
-  }
 
   // SHOWCASE.mdx (portfolio-ready) — only fullstack has showcase
   if (options.includeShowcase && family === 'fullstack') {

@@ -113,7 +113,10 @@ describe('scaffold smoke matrix', () => {
 
         if (entry.family === 'fullstack') {
           expect(existsSync(join(destinationDir, '.opencode/skills.json'))).toBe(true)
-          expect(existsSync(join(destinationDir, '.cursor/rules/project.mdc'))).toBe(true)
+          expect(existsSync(join(destinationDir, 'AGENTS.md'))).toBe(true)
+          expect(existsSync(join(destinationDir, 'CLAUDE.md'))).toBe(true)
+          expect(existsSync(join(destinationDir, '.cursor/rules'))).toBe(false)
+          expect(existsSync(join(destinationDir, '.claude/rules'))).toBe(false)
         }
 
         if (entry.family === 'next') {

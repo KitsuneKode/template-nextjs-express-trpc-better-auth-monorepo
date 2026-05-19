@@ -1,10 +1,6 @@
 import type { ProjectConfig } from '../../types/schemas'
 import { sanitizeProjectName } from '../slug'
 
-function hasServer(family: string): boolean {
-  return family === 'fullstack' || family === 'backend' || family === 'rust'
-}
-
 function keyDirs(config: ProjectConfig): string[] {
   const { family, includeWorker } = config
   const dirs: string[] = []
@@ -156,6 +152,8 @@ ${cmds.join('\n')}
 
 {/* These instructions are for AI agents modifying this project. */}
 
+- Use this file and the nearest workspace \`AGENTS.md\` — do not add \`.cursor/rules/\` or \`.claude/rules/\`.
+
 ${prompts.map((p) => `- ${p}`).join('\n')}
 
 ## Maintenance
@@ -295,73 +293,10 @@ ${description}
 }
 
 export function buildClaudeMd(): string {
-  return `# Navigation
+  return `# Claude Code
 
-Read \`AGENTS.md\` first for the project map and commands.
-Use \`CONTEXT.md\` for architecture decisions and stack details.
-SHOWCASE.mdx is the portfolio-facing description — keep it in sync.
-`
-}
+Read **[AGENTS.md](./AGENTS.md)** — canonical agent map, stack, and commands.
 
-export function buildStoreRulesMd(config: ProjectConfig): string {
-  if (!hasServer(config.family)) {
-    return `# store
-
-Database configuration lives here.`
-  }
-
-  if (config.orm === 'drizzle') {
-    return `---
-paths: ["packages/store/**"]
----
-
-Drizzle schema at \`packages/store/src/schema.ts\`. After schema changes:
-1. \`bunx drizzle-kit generate\` — generate migration
-2. \`bunx drizzle-kit migrate\` — apply migration
-
-The Drizzle client is re-exported from \`src/index.ts\` as the store package.
-`
-  }
-
-  return `---
-paths: ["packages/store/**"]
----
-
-Prisma schema at \`prisma/schema.prisma\`. After schema changes:
-1. \`bun run db:generate\` — regenerate client
-2. \`bun run db:migrate\` — create migration
-
-Seed data in \`src/scripts/seed.ts\`. The Prisma client is re-exported from \`src/index.ts\`.
-`
-}
-
-export function buildWebRulesMd(): string {
-  return `---
-paths: ["apps/web/**"]
----
-
-Next.js App Router.
-
-- RSC / server actions: \`const api = await trpcCaller()\` from \`trpc/server.tsx\` (in-process \`createCaller\`).
-- Client components: tRPC React hooks from \`trpc/client.tsx\` (HTTP to API).
-- Prefetch + \`HydrateClient\` for client-bound queries.
-
-Key files: \`app/layout.tsx\`, \`components/providers.tsx\`, \`trpc/client.tsx\`, \`trpc/server.tsx\`.
-`
-}
-
-export function buildTrpcRulesMd(): string {
-  return `---
-paths: ["apps/server/src/modules/**", "apps/server/src/app.ts", "packages/trpc/src/index.ts"]
----
-
-Module-first tRPC:
-
-- Procedures: \`apps/server/src/modules/<feature>/*.trpc.ts\` (\`satisfies TRPCRouterRecord\`)
-- Compose in \`apps/server/src/modules/trpc/app.router.ts\`
-- Context: \`apps/server/src/modules/trpc/trpc.ts\` (session + Prisma)
-- \`packages/trpc\` re-exports \`AppRouter\` and \`createCaller\` only
-
-Deploy API with Render Blueprint (\`render.yaml\`), not Native Bun from repo root. Env: \`docs/deployment-env.md\`.
+Use the nearest workspace \`AGENTS.md\` when editing a specific app or package. Use \`CONTEXT.md\` for architecture notes. Do not add \`.cursor/rules/\` or \`.claude/rules/\`.
 `
 }
