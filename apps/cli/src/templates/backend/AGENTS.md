@@ -2,16 +2,35 @@
 
 ## Purpose
 
-Express API backend for this project.
+Express API with module-first layout.
+
+## Structure
+
+```
+src/
+  app.ts
+  server.ts
+  common/          # errors, validate, env, shared middleware
+  db/              # database client (add when using an ORM)
+  modules/
+    <feature>/
+      <feature>.routes.ts
+      <feature>.controller.ts
+      <feature>.service.ts
+      <feature>.repository.ts   # optional
+      <feature>.dto.ts          # optional (Zod)
+```
+
+Dependency direction: `routes → controllers → services → repositories → db`
 
 ## Read First
 
-- `src/app.ts` — Express app setup and route mounting
-- `src/server.ts` — server entrypoint
-- `package.json` — scripts and dependencies
+- `src/app.ts` — mounts module routers
+- `src/modules/health/` — example module
+- `src/common/middleware/error-handler.ts`
 
 ## Owns
 
-- REST / tRPC route handlers
-- Auth configuration and middleware
-- Business logic and data access
+- REST route handlers and HTTP wiring
+- Business logic in `*.service.ts`
+- Data access in `*.repository.ts`

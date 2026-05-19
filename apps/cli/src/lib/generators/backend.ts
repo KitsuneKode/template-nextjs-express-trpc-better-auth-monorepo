@@ -21,7 +21,7 @@ function honoAppTs(): string {
 import { cors } from 'hono/cors'
 import { auth } from '@template/auth/server'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import { appRouter, createTRPCContext } from '@template/trpc'
+import { appRouter, createTRPCContext } from '@template/server/trpc'
 import { config } from './utils/config'
 
 const app = new Hono()
@@ -122,7 +122,7 @@ function honoPackageJsonPatch(): {
 // tRPC adapter swap
 // =============================================================================
 
-/** Rewrite packages/trpc/src/trpc.ts for fetch-based context */
+/** Rewrite apps/server/src/modules/trpc/trpc.ts for fetch-based context */
 function trpcContextFetch(): string {
   return `import { initTRPC, TRPCError } from '@trpc/server'
 import { auth, fromNodeHeaders } from '@template/auth/server'
@@ -199,16 +199,10 @@ export const protectedProcedure = t.procedure
 `
 }
 
-/** Rewrite packages/trpc/src/index.ts for fetch-based adapter */
+/** Keep @template/trpc as a thin re-export for web clients */
 function trpcIndexFetch(): string {
-  return `export { appRouter, type AppRouter } from './routers/_app'
-export type { RouterInputs, RouterOutputs } from './routers/_app'
-export { createTRPCContext, createCallerFactory } from './trpc'
-
-import { appRouter } from './routers/_app'
-import { createCallerFactory } from './trpc'
-
-export const createCaller = createCallerFactory(appRouter)
+  return `export type { AppRouter, RouterInputs, RouterOutputs } from '@template/server/trpc'
+export { appRouter, createCaller, createTRPCContext, createCallerFactory } from '@template/server/trpc'
 `
 }
 
@@ -574,8 +568,12 @@ export async function applyBackendTransform(
     await writeFile_(join(destinationDir, serverDir, 'src/app.ts'), honoAppTs())
     await writeFile_(join(destinationDir, serverDir, 'src/server.ts'), honoServerTs())
 
-    // 2. Remove Express middleware files (not applicable to Hono)
+    // 2. Remove Express-only middleware (not applicable to Hono)
     await rm(join(destinationDir, serverDir, 'src/middlewares'), {
+      recursive: true,
+      force: true,
+    })
+    await rm(join(destinationDir, serverDir, 'src/common/middleware'), {
       recursive: true,
       force: true,
     })
@@ -587,7 +585,10 @@ export async function applyBackendTransform(
     const trpcSrcDir = join(destinationDir, 'packages', 'trpc', 'src')
     try {
       await stat(trpcSrcDir)
-      await writeFile_(join(destinationDir, 'packages/trpc/src/trpc.ts'), trpcContextFetch())
+      await writeFile_(
+        join(destinationDir, 'apps/server/src/modules/trpc/trpc.ts'),
+        trpcContextFetch(),
+      )
       await writeFile_(join(destinationDir, 'packages/trpc/src/index.ts'), trpcIndexFetch())
     } catch {
       // tRPC package not present — standalone or polyglot without tRPC
@@ -650,15 +651,11 @@ export async function applyBackendTransform(
   }
 }
 
-/** Patch standalone \`rust\` family template (Axum default) to Actix when selected. */
+/** Rust family uses the Axum module scaffold; Actix applies only to fullstack backend swaps. */
 export async function applyRustFamilyTransform(
-  destinationDir: string,
+  _destinationDir: string,
   config: ProjectConfig,
 ): Promise<void> {
   if (config.family !== 'rust' || config.backend !== 'rust-actix') return
-
-  const root = destinationDir
-  await writeFile_(join(root, 'Cargo.toml'), rustActixCargoToml(config.projectName))
-  await writeFile_(join(root, 'src', 'main.rs'), rustActixMainRs())
-  await writeFile_(join(root, 'README.md'), rustActixReadme(config.projectName))
+  // Module-first rust template is Axum-only. Fullstack can still select rust-actix for services/api.
 }

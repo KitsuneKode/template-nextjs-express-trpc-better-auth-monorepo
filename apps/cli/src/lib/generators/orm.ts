@@ -386,7 +386,7 @@ export type Session = typeof auth.$Infer.Session
 // tRPC context rewrite
 // =============================================================================
 
-/** Rewrite packages/trpc/src/trpc.ts for Drizzle (Express backend) */
+/** Rewrite apps/server/src/modules/trpc/trpc.ts for Drizzle (Express backend) */
 function drizzleTrpcContextExpress(): string {
   return `import { auth, fromNodeHeaders } from '@template/auth/server'
 import * as trpcExpress from '@trpc/server/adapters/express'
@@ -459,7 +459,7 @@ export const protectedProcedure = t.procedure
 `
 }
 
-/** Rewrite packages/trpc/src/trpc.ts for Drizzle (Hono/fetch backend) */
+/** Rewrite apps/server/src/modules/trpc/trpc.ts for Drizzle (Hono/fetch backend) */
 function drizzleTrpcContextFetch(): string {
   return `import { initTRPC, TRPCError } from '@trpc/server'
 import { auth, fromNodeHeaders } from '@template/auth/server'
@@ -536,7 +536,7 @@ export const protectedProcedure = t.procedure
 // =============================================================================
 
 function drizzlePostRouter(): string {
-  return `import { protectedProcedure, publicProcedure } from '../trpc'
+  return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
 import { db, post, user } from '@template/store'
 import { eq } from 'drizzle-orm'
@@ -608,7 +608,7 @@ export const postRouter = {
 }
 
 function drizzleChatRouter(): string {
-  return `import { protectedProcedure, publicProcedure } from '../trpc'
+  return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
 import { db, message } from '@template/store'
 import { z } from 'zod'
@@ -635,7 +635,7 @@ export const chatRouter = {
 }
 
 function drizzleUserRouter(): string {
-  return `import { protectedProcedure, publicProcedure } from '../trpc'
+  return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
 import { db, user } from '@template/store'
 import { eq } from 'drizzle-orm'
@@ -656,38 +656,6 @@ export const userRouter = {
       })
     }),
 } satisfies TRPCRouterRecord
-`
-}
-
-/** Rewrite packages/trpc/src/index.ts for Drizzle (Express backend) */
-function drizzleTrpcIndexExpress(): string {
-  return `export { appRouter, type AppRouter } from './routers/_app'
-export type { RouterInputs, RouterOutputs } from './routers/_app'
-export { createTRPCContext, createCallerFactory } from './trpc'
-
-import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { appRouter } from './routers/_app'
-import { createTRPCContext, createCallerFactory } from './trpc'
-
-export const expressMiddleWare = createExpressMiddleware({
-  router: appRouter,
-  createContext: createTRPCContext,
-})
-
-export const createCaller = createCallerFactory(appRouter)
-`
-}
-
-/** Rewrite packages/trpc/src/index.ts for Drizzle (fetch backend) */
-function drizzleTrpcIndexFetch(): string {
-  return `export { appRouter, type AppRouter } from './routers/_app'
-export type { RouterInputs, RouterOutputs } from './routers/_app'
-export { createTRPCContext, createCallerFactory } from './trpc'
-
-import { appRouter } from './routers/_app'
-import { createCallerFactory } from './trpc'
-
-export const createCaller = createCallerFactory(appRouter)
 `
 }
 
@@ -787,16 +755,21 @@ export async function applyOrmTransform(
 
     // 8. Rewrite tRPC context
     const trpcContext = isFetchBackend ? drizzleTrpcContextFetch() : drizzleTrpcContextExpress()
-    await writeFile_(join(destinationDir, 'packages/trpc/src/trpc.ts'), trpcContext)
+    await writeFile_(join(destinationDir, 'apps/server/src/modules/trpc/trpc.ts'), trpcContext)
 
-    // 9. Rewrite tRPC index (adapter-aware)
-    const trpcIndex = isFetchBackend ? drizzleTrpcIndexFetch() : drizzleTrpcIndexExpress()
-    await writeFile_(join(destinationDir, 'packages/trpc/src/index.ts'), trpcIndex)
-
-    // 10. Rewrite tRPC routers
-    await writeFile_(join(destinationDir, 'packages/trpc/src/routers/post.ts'), drizzlePostRouter())
-    await writeFile_(join(destinationDir, 'packages/trpc/src/routers/chat.ts'), drizzleChatRouter())
-    await writeFile_(join(destinationDir, 'packages/trpc/src/routers/user.ts'), drizzleUserRouter())
+    // 9. Rewrite feature tRPC routers (module-first)
+    await writeFile_(
+      join(destinationDir, 'apps/server/src/modules/post/post.trpc.ts'),
+      drizzlePostRouter(),
+    )
+    await writeFile_(
+      join(destinationDir, 'apps/server/src/modules/chat/chat.trpc.ts'),
+      drizzleChatRouter(),
+    )
+    await writeFile_(
+      join(destinationDir, 'apps/server/src/modules/user/user.trpc.ts'),
+      drizzleUserRouter(),
+    )
 
     return
   }

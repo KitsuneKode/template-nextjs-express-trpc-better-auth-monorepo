@@ -134,7 +134,7 @@ The Prisma client is re-exported from packages/store/src/index.ts.
       globs: '**/*.{ts,tsx}',
       content: `Auth: Better Auth with session-based authentication
 Config: packages/auth/src/index.ts
-tRPC context: packages/trpc/src/trpc.ts
+tRPC context: apps/server/src/modules/trpc/trpc.ts
 
 Use \`protectedProcedure\` for authenticated tRPC endpoints.
 Use \`publicProcedure\` for open endpoints.
@@ -150,7 +150,7 @@ Auth routes are mounted at /api/auth/* in apps/server/src/app.ts.
       description: 'tRPC router patterns and conventions',
       globs: '**/*.{ts,tsx}',
       content: `tRPC routers: packages/trpc/src/routers/
-Context: packages/trpc/src/trpc.ts
+Context: apps/server/src/modules/trpc/trpc.ts
 
 Each router is a plain object satisfying TRPCRouterRecord.
 Import and register in src/routers/_app.ts.
