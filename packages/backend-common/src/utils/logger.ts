@@ -37,6 +37,27 @@ function formatTimestamp(ts: string) {
  * Create a new logger instance tagged with `serviceName`
  */
 export function createLogger(serviceName: string) {
+  const isVercel = process.env.VERCEL === '1'
+  const isDev = process.env.NODE_ENV !== 'production'
+  const loggerTransports: transports.StreamTransportInstance[] = []
+
+  // Serverless filesystems are read-only; log to stdout instead.
+  if (!isVercel) {
+    loggerTransports.push(
+      new transports.File({
+        filename: path.join('logs', 'error.log'),
+        level: 'error',
+      }),
+      new transports.File({
+        filename: path.join('logs', 'server.log'),
+      }),
+    )
+  }
+
+  if (isDev || isVercel) {
+    loggerTransports.push(new transports.Console())
+  }
+
   const logger = winstonCreateLogger({
     defaultMeta: { service: serviceName },
     format: combine(
@@ -46,20 +67,8 @@ export function createLogger(serviceName: string) {
       splat(),
       baseFormat,
     ),
-    transports: [
-      new transports.File({
-        filename: path.join('logs', 'error.log'),
-        level: 'error',
-      }),
-      new transports.File({
-        filename: path.join('logs', 'server.log'),
-      }),
-    ],
+    transports: loggerTransports,
   })
-
-  if (process.env.NODE_ENV !== 'production') {
-    logger.add(new transports.Console())
-  }
 
   return logger
 }

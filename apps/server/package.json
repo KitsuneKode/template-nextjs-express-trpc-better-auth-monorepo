@@ -2,7 +2,8 @@
   "name": "@template/server",
   "private": true,
   "type": "module",
-  "module": "src/server.ts",
+  "main": "src/vercel-handler.ts",
+  "module": "src/vercel-handler.ts",
   "exports": {
     "./app": "./src/app.ts"
   },

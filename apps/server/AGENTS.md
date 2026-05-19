@@ -39,15 +39,17 @@ health endpoint.
 
 ## Vercel Deployment
 
-Required environment variable in Vercel project:
+Required environment variable in Vercel project (all environments: Production, Preview, Development):
 
 ```
-VERCEL_ENABLE_EXPERIMENTAL_BUILD_MODE=1
+VERCEL_EXPERIMENTAL_BACKENDS=1
 ```
 
-This enables experimental build mode which properly handles TypeScript path aliases and module resolution for bundled Express apps with many dependencies. Without this, deployments may fail with `ResolveMessage {}`.
+Set the value to exactly `1` with no trailing newline. This enables experimental build mode which resolves TypeScript path aliases (`@/`, workspace packages) during the Vercel build. Without it, cold starts fail with `ResolveMessage {}` and `Bun process exited with exit status: 1`.
 
-Entry point for Vercel: `src/vercel-handler.ts` (adds error handlers and `require` shim before loading app).
+Set `package.json` `main` to `src/vercel-handler.ts` (Bun `require` shim, then dynamic import of `./app`). Do not use `src/server.ts` (cluster/listen) or rely on `dist/` from `build:vercel` — Vercel bundles from source.
+
+Winston file logging under `logs/` is disabled on Vercel (`VERCEL=1`); logs go to stdout only.
 
 ## Update When
 
