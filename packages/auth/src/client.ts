@@ -9,6 +9,6 @@ import { createAuthClient } from 'better-auth/react' // make sure to import from
  * Better Auth files that can't be serialized to .d.ts files.
  * See: https://github.com/better-auth/better-auth/issues
  */
-export const authClient: any = createAuthClient({
+export const authClient = createAuthClient({
   baseURL: env.NEXT_PUBLIC_APP_URL,
-})
+}) as ReturnType<typeof createAuthClient>
