@@ -12,13 +12,10 @@ paths = [
   '''packages/backend-common/src/utils/env-boolean\.test\.ts$''',
   '''docs/''',
 ]
-
-[allowlist.regexes]
-description = "Documentation placeholders"
 regexes = [
   '''dev-secret-change-in-production''',
   '''replace-with-a-long-random-secret''',
   '''change-me-to-a-random-secret''',
   '''your-secret-key''',
-  '''01234567890123456789012345678901''',
+  '''local-dev-only-not-a-real-better-auth-secret''',
 ]

@@ -16,10 +16,17 @@ Do **not** use `generateValue: true` in git if you want secrets created only in 
 ## Local scan
 
 ```bash
-gitleaks detect --source .
+gitleaks detect --source . --redact=100
 ```
 
-CI runs the same on every push/PR (`.github/workflows/gitleaks.yml`).
+Do **not** use `gitleaks -v` / `--verbose` in shared logs — it prints finding details.  
+Do **not** run `git show <commit>:path` on files known to contain secrets.
+
+CI runs a redacted scan on every push/PR (`.github/workflows/gitleaks.yml`).
+
+## Public `main` on GitHub
+
+The current remote `main` tip does **not** include `wrangler.json` or production credentials. The leak was only on a **local** branch; purge with `git filter-repo` locally, then force-push rewritten history. Rotate Neon/auth credentials if those values were ever used in production.
 
 ## If something leaked
 

@@ -36,7 +36,7 @@ describe('envBoolean', () => {
 describe('isRedisEnabled with RENDER skipValidation', () => {
   const baseEnv = {
     DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
-    BETTER_AUTH_SECRET: '01234567890123456789012345678901',
+    BETTER_AUTH_SECRET: 'local-dev-only-not-a-real-better-auth-secret',
     BETTER_AUTH_URL: 'http://localhost:8080',
     FRONTEND_URL: 'http://localhost:3000',
     ENABLE_REDIS: 'false',
