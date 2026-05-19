@@ -15,10 +15,18 @@ Root [`render.yaml`](../render.yaml) creates a Docker web service only (no Rende
    - `REDIS_URL` — Upstash (or `ENABLE_REDIS=false`)
    - `FRONTEND_URL` — Vercel web URL (**required**)
    - `BETTER_AUTH_URL` — `https://<arche-template-api>.onrender.com` (optional if unset: uses Render’s `RENDER_EXTERNAL_URL`)
+   - `BETTER_AUTH_SECRET` — 32+ random chars (**dashboard only**; blueprint uses `sync: false`, not committed)
 4. Migrate: `bun run db:migrate` with production `DATABASE_URL`.
 5. Vercel web: `NEXT_PUBLIC_API_URL` = same API URL — [deployment-env.md](./deployment-env.md).
 
 ```bash
+# Live smoke (120s timeout per request — cold start on free tier)
+bun run test:deploy
+bun run test:deploy:all   # Render + Vercel template URLs
+
+# Another host
+RENDER_API_URL=https://<your-service>.onrender.com bun run test:deploy
+
 curl -sS "https://<your-service>.onrender.com/"
 curl -sS "https://<your-service>.onrender.com/health"
 ```

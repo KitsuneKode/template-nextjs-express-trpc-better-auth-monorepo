@@ -1,0 +1,24 @@
+title = "Arche gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Known safe placeholders in examples and tests"
+paths = [
+  '''apps/server/\.env\.example$''',
+  '''apps/cli/src/templates/.+\.env\.example$''',
+  '''apps/web/\.env\.example$''',
+  '''packages/backend-common/src/utils/env-boolean\.test\.ts$''',
+  '''docs/''',
+]
+
+[allowlist.regexes]
+description = "Documentation placeholders"
+regexes = [
+  '''dev-secret-change-in-production''',
+  '''replace-with-a-long-random-secret''',
+  '''change-me-to-a-random-secret''',
+  '''your-secret-key''',
+  '''01234567890123456789012345678901''',
+]
