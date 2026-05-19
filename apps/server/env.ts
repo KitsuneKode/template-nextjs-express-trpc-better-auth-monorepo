@@ -15,9 +15,11 @@ export const serverEnv = createEnv({
     // Add server-specific variables here
     // Example: LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   },
+  clientPrefix: undefined,
+  client: {},
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
-  skipValidation: process.env.CI === 'true',
+  skipValidation: !!process.env.CI || !!process.env.VERCEL,
 })
 
 export type ServerEnv = typeof serverEnv

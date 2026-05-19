@@ -1,8 +1,9 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from './generated/client'
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-})
+
+const connectionString =
+  process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/template'
+const adapter = new PrismaPg({ connectionString })
 
 const globalForPrisma = global as unknown as {
   prisma: PrismaClient

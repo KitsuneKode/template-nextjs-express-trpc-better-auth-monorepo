@@ -4,7 +4,7 @@ import { expressMiddleWare } from '@template/trpc'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'
-import { serverAdapter as bullBoardAdapter } from '@/admin/bull-board'
+import { getServerAdapter } from '@/admin/bull-board'
 import { noCache } from '@/middlewares/cache-middleware'
 import { authRateLimit, apiRateLimit } from '@/middlewares/rate-limit-middleware'
 import { securityHeaders } from '@/middlewares/security-headers-middleware'
@@ -26,7 +26,10 @@ app.use(
   }),
 )
 
-app.use('/admin/queues', bullBoardAdapter.getRouter())
+app.use('/admin/queues', (req, res, next) => {
+  const adapter = getServerAdapter().getRouter()
+  return adapter(req, res, next)
+})
 
 app.all('/api/auth/*splat', timingMiddleWare, authRateLimit, toNodeHandler(auth))
 
