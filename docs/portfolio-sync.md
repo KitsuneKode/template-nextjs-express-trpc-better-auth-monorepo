@@ -7,7 +7,7 @@ Arche can generate portfolio-ready projects for [kitsunekode.in](https://kitsune
 When you scaffold with `--showcase` (fullstack only):
 
 - `SHOWCASE.mdx` at the project root — plain markdown frontmatter, no custom React imports
-- `package.json#portfolio` metadata (`type`, `tags`, `featured`)
+- `package.json` → `portfolio` field on **scaffolded** projects (`type`, `tags`, `featured`) — not on this template repo root
 
 ## Frontmatter contract
 

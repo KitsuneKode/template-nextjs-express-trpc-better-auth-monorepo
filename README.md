@@ -9,6 +9,10 @@
 
 <p align="center">
   <a href="https://arche.kitsunelabs.xyz">arche.kitsunelabs.xyz</a>
+  ·
+  <a href="https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo/actions/workflows/ci.yml">
+    <img src="https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo/actions/workflows/ci.yml/badge.svg" alt="CI" />
+  </a>
 </p>
 
 ---
@@ -32,6 +36,7 @@ bun run dev:cli -- my-app --yes --dir=../projects
 
 ## Documentation
 
+- **Deploy:** [docs/deployment.md](docs/deployment.md) · [production playbook](docs/production-playbook.md)
 - CLI usage: [docs/bootstrap-cli.md](docs/bootstrap-cli.md)
 - CLI development: [docs/cli-development.md](docs/cli-development.md)
 - Portfolio `SHOWCASE.mdx`: [docs/portfolio-sync.md](docs/portfolio-sync.md)
