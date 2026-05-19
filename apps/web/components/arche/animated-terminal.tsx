@@ -5,14 +5,14 @@ import { motion } from 'motion/react'
 import { useState, useEffect } from 'react'
 
 const terminalSteps = [
-  { text: 'bunx --bun arche create my-app', type: 'command', delay: 800 },
+  { text: 'npx arche create my-app', type: 'command', delay: 800 },
   { text: '? Which family would you like to use?', type: 'prompt', delay: 600 },
   { text: '❯ Fullstack (Next.js + Express + tRPC)', type: 'select', delay: 400 },
   { text: '✔ Fullstack family selected', type: 'success', delay: 300 },
   { text: '? Do you want to initialize a git repository?', type: 'prompt', delay: 500 },
   { text: '❯ Yes', type: 'select', delay: 300 },
   { text: '✔ Git initialized', type: 'success', delay: 300 },
-  { text: '⠋ Scaffolding project from KitsuneKode/template...', type: 'loading', delay: 800 },
+  { text: '⠋ Scaffolding fullstack monorepo...', type: 'loading', delay: 800 },
   { text: '✔ Project created successfully!', type: 'success', delay: 0 },
 ]
 

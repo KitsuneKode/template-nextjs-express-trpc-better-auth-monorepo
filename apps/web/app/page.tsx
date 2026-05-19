@@ -22,14 +22,14 @@ export default function LandingPage() {
 
             <h1 className="mb-8 flex flex-col items-start gap-2 text-6xl leading-[0.9] font-black tracking-tighter uppercase md:text-[90px]">
               <span className="bg-white px-4 py-2 text-black shadow-[8px_8px_0_0_rgba(255,255,255,0.1)]">
-                Engineer
+                Arche
               </span>
-              <span className="text-white">Without Setup.</span>
+              <span className="text-white">The beginning.</span>
             </h1>
 
             <p className="mb-16 max-w-2xl text-xl leading-snug font-medium text-zinc-400 md:text-2xl">
-              A high-performance TypeScript monorepo. Database, authentication, API, and frontend
-              structurally unified.
+              One command. Full-stack TypeScript monorepo — auth, database, API, and frontend wired
+              and ready.
             </p>
 
             {/* Simulated CLI Terminal */}

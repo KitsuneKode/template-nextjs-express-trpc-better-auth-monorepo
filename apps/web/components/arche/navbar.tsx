@@ -34,18 +34,6 @@ export function Navbar() {
           >
             Examples
           </a>
-          <a
-            href="/showcase"
-            className={`px-2 py-1 transition-colors ${pathname.startsWith('/showcase') ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-          >
-            Showcase
-          </a>
-          <a
-            href="/blog"
-            className={`px-2 py-1 transition-colors ${pathname.startsWith('/blog') ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-          >
-            Blog
-          </a>
         </div>
         <a
           href="https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo"
