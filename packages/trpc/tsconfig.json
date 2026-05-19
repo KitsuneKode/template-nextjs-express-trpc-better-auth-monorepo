@@ -1,7 +1,16 @@
 {
   "extends": "@template/typescript-config/backend.json",
   "compilerOptions": {
-    "types": ["bun"]
+    "ignoreDeprecations": "6.0",
+    "types": ["bun"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../../apps/server/src/*"],
+      "@template/server/trpc": ["../../apps/server/src/modules/trpc/index.ts"],
+      "@template/store/*": ["../store/src/*"],
+      "@template/auth/*": ["../auth/src/*"],
+      "@template/backend-common/*": ["../backend-common/src/*"]
+    }
   },
   "exclude": ["node_modules"]
 }

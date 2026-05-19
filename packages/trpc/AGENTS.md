@@ -2,40 +2,25 @@
 
 ## Purpose
 
-`packages/trpc` centralizes the real API contract for the repo.
+`@template/trpc` is the **client-facing API contract** for web and workers.
+
+Implementation lives in `apps/server/src/modules` (module-first). This package re-exports types and callers only.
 
 ## Read First
 
-- `src/index.ts`
-- `src/trpc.ts`
-- `src/routers/_app.ts`
-- `src/routers/auth.ts`
-- `src/routers/post.ts`
-- `src/routers/chat.ts`
+- `src/index.ts` — re-exports from `@template/server/trpc`
+- `apps/server/src/modules/trpc/app.router.ts` — router composition
+- `apps/server/src/modules/trpc/trpc.ts` — context and procedures
 
-## Owns
+## Boundary
 
-- tRPC context creation
-- public and protected procedures
-- Express middleware export
-- server-side caller factory
-- app router composition
-
-## Common Tasks
-
-- add or edit API procedures:
-  `src/routers/*`
-- change auth/session context:
-  `src/trpc.ts`
-- change exported middleware or types:
-  `src/index.ts`
-
-## Cleanup Notes
-
-- Routers currently call Prisma directly through `@template/store`.
-- This package contains the real API contract, not template code.
+| Layer           | Location                                         |
+| --------------- | ------------------------------------------------ |
+| Business logic  | `apps/server/src/modules/<feature>/*.service.ts` |
+| tRPC procedures | `apps/server/src/modules/<feature>/*.trpc.ts`    |
+| App router      | `apps/server/src/modules/trpc/app.router.ts`     |
+| Web imports     | `@template/trpc` (`AppRouter`, `createCaller`)   |
 
 ## Update When
 
-Update this file when router composition, context shape, auth guarding, or
-exported API helpers change.
+Exported types, router composition, or re-export paths change.
