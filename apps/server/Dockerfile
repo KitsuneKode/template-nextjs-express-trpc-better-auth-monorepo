@@ -1,24 +1,28 @@
+# Build from repository root:
+#   docker build -f apps/server/Dockerfile .
+
 FROM oven/bun:1 AS base
 WORKDIR /app
 
 FROM base AS deps
-COPY package.json bun.lock* ./
+COPY package.json bun.lock ./
 COPY apps/server/package.json apps/server/package.json
 COPY packages packages
+COPY apps/server apps/server
 RUN bun install --frozen-lockfile
 
 FROM base AS build
-COPY tsconfig.json ./
-COPY apps/server/tsconfig.json apps/server/tsconfig.json
-COPY apps/server/src apps/server/src
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages ./packages
-RUN bun build ./apps/server/src/server.ts --outdir ./apps/server/dist --target bun --minify --sourcemap
+COPY package.json bun.lock ./
+COPY apps/server apps/server
+COPY packages packages
+RUN bun run build --filter=@template/server
 
 FROM oven/bun:1-slim AS production
-WORKDIR /app
-COPY --from=build /app/apps/server/dist ./dist
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /app/apps/server
 ENV NODE_ENV=production
-EXPOSE 3001
-CMD ["bun", "run", "dist/server.js"]
+ENV HOST=0.0.0.0
+COPY --from=build /app/apps/server/dist ./dist
+COPY --from=build /app/node_modules /app/node_modules
+EXPOSE 8080
+CMD ["bun", "./dist/server.js"]

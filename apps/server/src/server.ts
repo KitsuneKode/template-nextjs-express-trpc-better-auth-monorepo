@@ -6,26 +6,28 @@
 
 import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
 import { validateEnvironment } from '@template/backend-common/validate-env'
-import { prisma } from '@template/store'
 import app from './app'
-import { redis } from './lib/redis'
-import { config } from './utils/config'
-import { logger } from './utils/logger'
+import { env } from './common/env'
+import { logger } from './common/logger'
+import { prisma } from './db/index.js'
+import { connectRedis, redis } from './db/redis.js'
 
-// Validate environment on startup
 validateEnvironment('server')
 
-const PORT = config.PORT
+const PORT = env.PORT
+const HOST = process.env.HOST ?? '0.0.0.0'
 
-const server = app.listen(PORT, () => {
+await connectRedis()
+
+const server = app.listen(PORT, HOST, () => {
   logger.info({
+    host: HOST,
     port: PORT,
     environment: process.env.NODE_ENV,
     timestamp: new Date().toISOString(),
   })
 })
 
-// Register shutdown callbacks
 onShutdown(async () => {
   logger.info('Closing Prisma connection...')
   await prisma.$disconnect()
@@ -36,5 +38,4 @@ onShutdown(async () => {
   await redis.close()
 })
 
-// Setup graceful shutdown
 setupGracefulShutdown(server)

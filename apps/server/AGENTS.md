@@ -2,56 +2,50 @@
 
 ## Purpose
 
-`apps/server` is the Express service that exposes Better Auth, tRPC, and a
-health endpoint.
+`apps/server` is the Express service: Better Auth, tRPC, health, and Bull Board admin.
+
+## Module-first layout
+
+```
+src/
+  app.ts
+  server.ts
+  db/                 # prisma re-export, redis
+  common/             # errors, validate, env, middleware
+  modules/
+    <feature>/
+      *.routes.ts     # Express mounts
+      *.controller.ts # HTTP handlers (REST modules)
+      *.service.ts    # business logic
+      *.repository.ts # data access
+      *.dto.ts        # Zod schemas
+      *.policy.ts     # authorization rules
+      *.trpc.ts       # tRPC procedures (when applicable)
+```
+
+Dependency direction: `routes → controllers → services → repositories → db`
+
+## tRPC boundary
+
+- **HTTP / Express**: `apps/server/src/modules/*` and `src/app.ts`
+- **Client contract**: `@template/trpc` re-exports `AppRouter` and `createCaller` from `@template/server/trpc`
+- Add procedures in `modules/<feature>/<feature>.trpc.ts`, compose in `modules/trpc/app.router.ts`
 
 ## Read First
 
 - `src/app.ts`
 - `src/server.ts`
-- `src/utils/config.ts`
-- `src/middlewares/error-handler-middleware.ts`
-- `src/middlewares/timing-middleware.ts`
-- `src/lib/redis/index.ts`
-
-## Owns
-
-- Express app bootstrap
-- Better Auth route mount at `/api/auth/*splat`
-- tRPC route mount at `/api/trpc`
-- `/health` endpoint
-- process startup and cluster behavior
+- `src/common/env.ts`
+- `src/modules/trpc/app.router.ts`
+- `src/modules/health/health.routes.ts`
 
 ## Common Tasks
 
-- Route or middleware changes:
-  `src/app.ts`, `src/middlewares/*`
-- Startup, port, or process model changes:
-  `src/server.ts`
-- backend env or Redis wiring:
-  `src/utils/config.ts`, `src/lib/redis/index.ts`
-
-## Cleanup Notes
-
-- Keep this workspace for real backend logic even if most template UI is
-  removed.
-- Revisit `src/server.ts` if you do not want clustered startup.
-
-## Vercel Deployment
-
-Required environment variable in Vercel project (all environments: Production, Preview, Development):
-
-```
-VERCEL_EXPERIMENTAL_BACKENDS=1
-```
-
-Set the value to exactly `1` with no trailing newline. This enables experimental build mode which resolves TypeScript path aliases (`@/`, workspace packages) during the Vercel build. Without it, cold starts fail with `ResolveMessage {}` and `Bun process exited with exit status: 1`.
-
-Set `package.json` `main` to `src/vercel-handler.ts` (Bun `require` shim, then dynamic import of `./app`). Do not use `src/server.ts` (cluster/listen) or rely on `dist/` from `build:vercel` — Vercel bundles from source.
-
-Winston file logging under `logs/` is disabled on Vercel (`VERCEL=1`); logs go to stdout only.
+- New REST feature: add `src/modules/<name>/` with routes → controller → service → repository
+- New tRPC feature: add `*.trpc.ts` + wire in `modules/trpc/app.router.ts`
+- Middleware: `src/common/middleware/*`
+- Env: `src/common/env.ts` (re-exports `@template/backend-common/env`)
 
 ## Update When
 
-Update this file when route mounts, middleware order, config usage, or startup
-behavior changes.
+Route mounts, module layout, tRPC composition, middleware order, or startup behavior changes.

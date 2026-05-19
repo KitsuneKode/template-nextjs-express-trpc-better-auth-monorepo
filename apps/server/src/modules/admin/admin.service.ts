@@ -8,11 +8,10 @@ const QUEUE_NAMES = ['email', 'webhook', 'cleanup'] as const
 
 let serverAdapter: ExpressAdapter | null = null
 
-export function getServerAdapter(): ExpressAdapter {
+export function getAdminQueueAdapter(): ExpressAdapter {
   if (serverAdapter) return serverAdapter
 
   const connection = getBullConnection()
-
   const queues = QUEUE_NAMES.map((name) => new Queue(name, { connection }))
 
   serverAdapter = new ExpressAdapter()

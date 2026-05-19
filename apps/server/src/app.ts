@@ -1,16 +1,15 @@
-import { toNodeHandler, auth } from '@template/auth/server'
-import { prisma } from '@template/store'
-import { expressMiddleWare } from '@template/trpc'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'
-import { getServerAdapter } from '@/admin/bull-board'
-import { noCache } from '@/middlewares/cache-middleware'
-import { authRateLimit, apiRateLimit } from '@/middlewares/rate-limit-middleware'
-import { securityHeaders } from '@/middlewares/security-headers-middleware'
-import { timingMiddleWare } from '@/middlewares/timing-middleware'
-import { tracingMiddleware } from '@/middlewares/tracing-middleware'
-import { config } from '@/utils/config'
+import { env } from './common/env'
+import { errorHandler } from './common/middleware/error-handler'
+import { apiRateLimit } from './common/middleware/rate-limit'
+import { securityHeaders } from './common/middleware/security-headers'
+import { tracingMiddleware } from './common/middleware/tracing'
+import { adminRoutes } from './modules/admin/admin.routes'
+import { authRoutes } from './modules/auth/auth.routes'
+import { healthRoutes } from './modules/health/health.routes'
+import { trpcRoutes } from './modules/trpc/trpc.routes'
 
 const app = express()
 
@@ -20,35 +19,24 @@ app.use(compression())
 
 app.use(
   cors({
-    origin: config.FRONTEND_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   }),
 )
 
-app.use('/admin/queues', (req, res, next) => {
-  const adapter = getServerAdapter().getRouter()
-  return adapter(req, res, next)
-})
-
-app.all('/api/auth/*splat', timingMiddleWare, authRateLimit, toNodeHandler(auth))
+app.use('/admin/queues', adminRoutes)
+app.use('/api/auth', authRoutes)
 
 app.use(express.json({ limit: '1mb' }))
-app.use('/api/trpc', apiRateLimit, expressMiddleWare)
+app.use('/api/trpc', apiRateLimit, trpcRoutes)
 
-app.use('/health', noCache, async (req, res) => {
-  try {
-    await prisma.$queryRaw`SELECT 1`
-    res.json({ status: 'OK', database: 'connected' })
-  } catch {
-    res.status(503).json({ status: 'ERROR', database: 'disconnected' })
-  }
+app.use('/health', healthRoutes)
+
+app.all('/{*splat}', (_req, res) => {
+  res.status(404).json({ message: 'Not Found' })
 })
 
-app.all('/{*splat}', (req, res) => {
-  res.status(404).json({
-    message: 'Not Found',
-  })
-})
+app.use(errorHandler)
 
 export default app

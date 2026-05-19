@@ -5,7 +5,8 @@
   "main": "src/vercel-handler.ts",
   "module": "src/vercel-handler.ts",
   "exports": {
-    "./app": "./src/app.ts"
+    "./app": "./src/app.ts",
+    "./trpc": "./src/modules/trpc/index.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
@@ -22,12 +23,14 @@
     "@template/auth": "workspace:*",
     "@template/backend-common": "workspace:*",
     "@template/store": "workspace:*",
-    "@template/trpc": "workspace:*",
+    "@trpc/server": "^11.17.0",
     "bullmq": "^5.76.10",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.5.2"
+    "express-rate-limit": "^8.5.2",
+    "superjson": "^2.2.6",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@template/typescript-config": "workspace:*",

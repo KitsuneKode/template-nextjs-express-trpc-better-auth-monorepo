@@ -8,9 +8,9 @@
       "@template/store/*": ["../../packages/store/src/*"],
       "@template/auth/*": ["../../packages/auth/src/*"],
       "@template/trpc/*": ["../../packages/trpc/src/*"],
-      "@template/backend-common/*": ["../../packages/trpc/backend-common/src/*"],
-      "@template/common/*": ["../../packages/trpc/common/src/*"]
-    },
-    "outDir": "dist"
-  }
+      "@template/backend-common/*": ["../../packages/backend-common/src/*"],
+      "@template/common/*": ["../../packages/common/src/*"]
+    }
+  },
+  "include": ["src", "env.ts"]
 }

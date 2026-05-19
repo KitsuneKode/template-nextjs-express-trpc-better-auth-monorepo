@@ -1,13 +1,13 @@
 import type { NextFunction, Request, Response } from 'express'
-import { config } from '@/utils/config'
-import { logger } from '@/utils/logger'
+import { env } from '../env'
+import { logger } from '../logger'
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export const timingMiddleWare = async (req: Request, res: Response, next: NextFunction) => {
+export const timingMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const start = process.hrtime.bigint()
 
-  if (config.NODE_ENV === 'development') {
+  if (env.NODE_ENV === 'development') {
     const waitMs = Math.floor(Math.random() * 400) + 100
     await sleep(waitMs)
   }
