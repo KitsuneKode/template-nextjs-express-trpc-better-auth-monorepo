@@ -38,11 +38,13 @@ function formatTimestamp(ts: string) {
  */
 export function createLogger(serviceName: string) {
   const isVercel = process.env.VERCEL === '1'
+  const isRender = process.env.RENDER === 'true'
+  const isEphemeralFs = isVercel || isRender
   const isDev = process.env.NODE_ENV !== 'production'
   const loggerTransports: transports.StreamTransportInstance[] = []
 
-  // Serverless filesystems are read-only; log to stdout instead.
-  if (!isVercel) {
+  // Serverless / PaaS filesystems: avoid file logs; use stdout (Render log stream).
+  if (!isEphemeralFs) {
     loggerTransports.push(
       new transports.File({
         filename: path.join('logs', 'error.log'),
@@ -54,7 +56,7 @@ export function createLogger(serviceName: string) {
     )
   }
 
-  if (isDev || isVercel) {
+  if (isDev || isEphemeralFs) {
     loggerTransports.push(new transports.Console())
   }
 

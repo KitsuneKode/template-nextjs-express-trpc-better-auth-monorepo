@@ -1,0 +1,41 @@
+# Render Blueprint — API (apps/server)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy: connect repo → Render reads this file → add secrets in dashboard.
+# Web app (apps/web) stays on Vercel; point NEXT_PUBLIC_API_URL at the Render service URL.
+
+services:
+  - type: web
+    name: template-api
+    runtime: docker
+    dockerfilePath: ./apps/server/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: template-db
+          property: connectionString
+      - key: REDIS_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: RENDER
+        value: 'true'
+
+databases:
+  - name: template-db
+    plan: free
+    databaseName: template
+    user: template

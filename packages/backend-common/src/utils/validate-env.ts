@@ -10,16 +10,11 @@ export function validateEnvironment(env: 'server' | 'worker' | 'web'): void {
 
   // Common required vars for all backend services
   if (env === 'server' || env === 'worker') {
-    const required = ['BETTER_AUTH_SECRET', 'REDIS_URL']
+    const required = ['BETTER_AUTH_SECRET', 'REDIS_URL', 'DATABASE_URL']
     for (const key of required) {
       if (!process.env[key]) {
         errors.push(`Missing required: ${key}`)
       }
-    }
-
-    if (process.env.DATABASE_URL === undefined && process.env.DATABASE_URL === null) {
-      // DATABASE_URL can be empty for database=none, but should be explicitly set or omitted
-      // This is actually OK — just document it
     }
 
     // OAuth is optional, but if one is set, both should be
