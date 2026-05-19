@@ -310,6 +310,85 @@ pub async fn health() -> Json<Value> {
 `
 }
 
+// =============================================================================
+// Rust / Actix Web
+// =============================================================================
+
+function rustActixCargoToml(projectName: string): string {
+  const safeName = sanitizeProjectName(projectName).replace(/-/g, '_')
+  return `[package]
+name = "${safeName}-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4"
+actix-cors = "0.7"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+dotenvy = "0.15"
+`
+}
+
+function rustActixMainRs(): string {
+  return `use actix_cors::Cors;
+use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+
+#[get("/health")]
+async fn health() -> impl Responder {
+    HttpResponse::Ok().json(serde_json::json!({ "status": "ok" }))
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    tracing_subscriber::fmt::init();
+    dotenvy::dotenv().ok();
+
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".to_string());
+    let frontend_url =
+        std::env::var("FRONTEND_URL").unwrap_or_else(|_| "http://localhost:3000".to_string());
+
+    tracing::info!("Server listening on http://0.0.0.0:{}", port);
+
+    HttpServer::new(move || {
+        let cors = Cors::default()
+            .allowed_origin(&frontend_url)
+            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+            .allowed_headers(vec!["Authorization", "Content-Type"])
+            .supports_credentials();
+
+        App::new().wrap(cors).service(health)
+    })
+    .bind(("0.0.0.0", port.parse::<u16>().unwrap_or(3001)))?
+    .run()
+    .await
+}
+`
+}
+
+function rustActixReadme(projectName: string): string {
+  return `# ${projectName} API
+
+Rust API service built with [Actix Web](https://actix.rs/).
+
+## Prerequisites
+
+- [Rust](https://rustup.rs/) (stable)
+
+## Quick Start
+
+\`\`\`sh
+cp .env.example .env
+cargo run
+\`\`\`
+
+Server listens on \`PORT\` (default \`3001\`).
+`
+}
+
 function rustAxumReadme(projectName: string): string {
   return `# ${projectName} API
 
@@ -517,20 +596,27 @@ export async function applyBackendTransform(
     return
   }
 
-  if (config.backend === 'rust-axum') {
+  if (config.backend === 'rust-axum' || config.backend === 'rust-actix') {
     const projectName = config.projectName
     const apiDir = join(destinationDir, 'services', 'api')
+    const useActix = config.backend === 'rust-actix'
 
-    // Remove the existing JS server workspace
     await rm(join(destinationDir, serverDir), { recursive: true, force: true })
+    await mkdir(join(apiDir, 'src'), { recursive: true })
 
-    // Create Rust/Axum service
-    await writeFile_(join(apiDir, 'Cargo.toml'), rustAxumCargoToml(projectName))
-    await writeFile_(join(apiDir, 'src', 'main.rs'), rustAxumMainRs())
-    await writeFile_(join(apiDir, 'src', 'config.rs'), rustAxumConfigRs())
-    await writeFile_(join(apiDir, 'src', 'routes.rs'), rustAxumRoutesRs())
+    if (useActix) {
+      await writeFile_(join(apiDir, 'Cargo.toml'), rustActixCargoToml(projectName))
+      await writeFile_(join(apiDir, 'src', 'main.rs'), rustActixMainRs())
+      await writeFile_(join(apiDir, 'README.md'), rustActixReadme(projectName))
+    } else {
+      await writeFile_(join(apiDir, 'Cargo.toml'), rustAxumCargoToml(projectName))
+      await writeFile_(join(apiDir, 'src', 'main.rs'), rustAxumMainRs())
+      await writeFile_(join(apiDir, 'src', 'config.rs'), rustAxumConfigRs())
+      await writeFile_(join(apiDir, 'src', 'routes.rs'), rustAxumRoutesRs())
+      await writeFile_(join(apiDir, 'README.md'), rustAxumReadme(projectName))
+    }
+
     await writeFile_(join(apiDir, '.env.example'), buildServerEnv(config))
-    await writeFile_(join(apiDir, 'README.md'), rustAxumReadme(projectName))
 
     return
   }
@@ -562,4 +648,17 @@ export async function applyBackendTransform(
 
     return
   }
+}
+
+/** Patch standalone \`rust\` family template (Axum default) to Actix when selected. */
+export async function applyRustFamilyTransform(
+  destinationDir: string,
+  config: ProjectConfig,
+): Promise<void> {
+  if (config.family !== 'rust' || config.backend !== 'rust-actix') return
+
+  const root = destinationDir
+  await writeFile_(join(root, 'Cargo.toml'), rustActixCargoToml(config.projectName))
+  await writeFile_(join(root, 'src', 'main.rs'), rustActixMainRs())
+  await writeFile_(join(root, 'README.md'), rustActixReadme(config.projectName))
 }

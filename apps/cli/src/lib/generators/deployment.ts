@@ -19,6 +19,7 @@ function backendLabel(backend: ProjectConfig['backend']): string {
     case 'go-fiber':
       return 'Go Fiber'
     case 'rust-axum':
+    case 'rust-actix':
       return 'Rust Axum'
     case 'python-fastapi':
       return 'Python FastAPI'
@@ -38,6 +39,7 @@ function hostingHint(backend: ProjectConfig['backend']): string {
     case 'go-fiber':
       return 'Railway, Fly.io, Google Cloud Run, or any container host'
     case 'rust-axum':
+    case 'rust-actix':
       return 'Railway, Fly.io, or any container host'
     case 'python-fastapi':
       return 'Railway, Fly.io, Render, or any Python host'

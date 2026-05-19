@@ -25,6 +25,7 @@ function backendLabel(backend: string): string {
     'fastify-node': 'Fastify (Node)',
     'go-fiber': 'Go Fiber',
     'rust-axum': 'Rust Axum',
+    'rust-actix': 'Rust Actix Web',
     'python-fastapi': 'Python FastAPI',
   }
   return labels[backend] ?? backend

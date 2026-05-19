@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import {
   cancel,
   confirm,
@@ -16,8 +16,9 @@ import pc from 'picocolors'
 import { addFeature } from './lib/add'
 import { createProject, validateConfig } from './lib/create'
 import { recordHistory, printHistory } from './lib/history'
+import { buildReproducibleCommand } from './lib/reproducible'
 import { scaffoldProject } from './lib/scaffold'
-import { sanitizeProjectName } from './lib/slug'
+import { resolveDestinationDir, sanitizeProjectName } from './lib/slug'
 import { startMcpServer } from './mcp'
 import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
 import {
@@ -28,18 +29,37 @@ import {
   hasBackendOptions,
   hasDatabaseOptions,
   hasOrmOptions,
+  familySupportsShowcase,
+  familySupportsWorker,
+  PackageManagerSchema,
 } from './types/schemas'
 
 const PKG_NAME = '@arche/create'
 const PKG_VERSION = '0.2.0'
+const SITE_URL = 'https://arche.kitsunelabs.xyz'
+
+const SUBCOMMANDS = new Set(['mcp', 'create-json', 'validate', 'add', 'history', 'create'])
+
+/** Support `arche create my-app` and legacy `arche my-app` / `create-arche my-app`. */
+function normalizeArgv(argv: string[]): string[] {
+  if (argv[0] === 'create') {
+    return argv.slice(1)
+  }
+  if (argv.length === 0) return argv
+  if (argv[0] && !SUBCOMMANDS.has(argv[0]) && !argv[0].startsWith('-')) {
+    return argv
+  }
+  return argv
+}
 
 function printHelp(): void {
   console.log(`
-${pc.cyan(PKG_NAME)} v${PKG_VERSION}
+${pc.cyan('arche')} / ${pc.cyan(PKG_NAME)} v${PKG_VERSION}
 
 ${pc.bold('Usage:')}
-  npx ${PKG_NAME} [project-name] [family] [options]
-  bunx ${PKG_NAME} [project-name] [family] [options]
+  npx arche create [project-name] [family] [options]
+  bunx arche create [project-name] [family] [options]
+  npx create-arche [project-name] [family] [options]
 
 ${pc.bold('Families:')}
   fullstack    Full-stack TypeScript monorepo (default)
@@ -56,6 +76,9 @@ ${pc.bold('Families:')}
 
 ${pc.bold('Options:')}
   --yes              Skip prompts, use defaults
+  --dir=<path>       Output parent directory (default: current directory)
+  --output=<path>    Alias for --dir
+  --family=<name>    Project family (or pass as second positional argument)
   --pm=<pm>          Package manager: bun, pnpm, npm (default: bun)
   --bundle=<b>       Feature bundle: product, realtime, growth, infra, ai
   --git              Initialize git repository (default: yes)
@@ -73,9 +96,9 @@ ${pc.bold('Options:')}
   --tests=<mode>     Testing setup: bun, none (default: bun)
   --deployment=<m>   Deployment guide: vercel-railway, none (default: vercel-railway)
   --dry-run           Preview without writing files
-  --backend=<b>      Backend: express-bun, hono-bun, none (default: express-bun)
+  --backend=<b>      Backend: express-bun, hono-bun, rust-axum, rust-actix, go-fiber, python-fastapi, none
   --database=<d>     Database: postgres, sqlite, mongodb, none (default: postgres)
-  --orm=<o>          ORM: prisma, drizzle, mongoose, none (default: prisma)
+  --orm=<o>          ORM: prisma, drizzle, none (default: prisma)
   -v, --version      Show version number
   -h, --help         Show this help message
 
@@ -88,10 +111,13 @@ ${pc.bold('Subcommands:')}
 
 ${pc.bold('Examples:')}
   ${pc.dim('# Interactive mode')}
-  npx ${PKG_NAME} my-app
+  npx arche create my-app
+
+  ${pc.dim('# Scaffold outside the template repo')}
+  npx arche create my-app --yes --dir=/tmp/projects
 
   ${pc.dim('# Non-interactive with JSON')}
-  npx ${PKG_NAME} create-json '{"projectName":"my-app","family":"backend","backend":"hono-bun"}'
+  npx arche create-json '{"projectName":"my-app","destinationDir":"/tmp/my-app","family":"fullstack"}'
 
   ${pc.dim('# Validate without writing')}
   npx ${PKG_NAME} validate '{"projectName":"my-app","database":"mongodb","orm":"prisma"}'
@@ -100,13 +126,13 @@ ${pc.bold('Examples:')}
   npx ${PKG_NAME} my-app --yes --dry-run
 
   ${pc.dim('# Specify family')}
-  npx ${PKG_NAME} my-app backend --bundle=product --yes
+  npx arche create my-app backend --bundle=product --yes
 
   ${pc.dim('# Skip Docker and CI')}
   npx ${PKG_NAME} my-app --no-docker --no-ci
 
 ${pc.bold('Documentation:')}
-  https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo
+  ${SITE_URL}
 `)
 }
 
@@ -207,6 +233,17 @@ function parseArgs(argv: string[]): CLIArgs {
       const val = arg.slice('--bundle='.length)
       parsed.bundles = val.split(',').filter(Boolean) as CLIArgs['bundles']
     }
+    if (arg.startsWith('--family=')) {
+      const val = arg.slice('--family='.length)
+      const result = FamilySchema.safeParse(val)
+      if (result.success) parsed.family = result.data
+    }
+    if (arg.startsWith('--dir=')) {
+      parsed.dir = arg.slice('--dir='.length)
+    }
+    if (arg.startsWith('--output=')) {
+      parsed.dir = arg.slice('--output='.length)
+    }
   }
 
   return parsed
@@ -234,7 +271,7 @@ const FAMILIES: Family[] = [
 const BUNDLES: Bundle[] = ['product', 'realtime', 'growth', 'infra', 'ai']
 
 async function main(): Promise<void> {
-  const args = parseArgs(process.argv.slice(2))
+  const args = parseArgs(normalizeArgv(process.argv.slice(2)))
 
   if (args.version) {
     console.log(PKG_VERSION)
@@ -256,9 +293,14 @@ async function main(): Promise<void> {
 
   // arche create-json <json-string> — non-interactive JSON config
   if (args._command === 'create-json' && args._jsonConfig) {
-    const config = args._jsonConfig as ProjectConfig
-    const destinationDir =
-      config.destinationDir || resolve(process.cwd(), config.projectName || 'project')
+    const raw = args._jsonConfig as ProjectConfig
+    const { projectName, destinationDir } = raw.destinationDir
+      ? {
+          projectName: sanitizeProjectName(raw.projectName || 'project'),
+          destinationDir: resolve(raw.destinationDir),
+        }
+      : resolveDestinationDir(raw.projectName || 'project', args.dir)
+    const config = { ...raw, projectName, destinationDir } as ProjectConfig
     const result = await createProject({
       config: { ...config, destinationDir },
       dryRun: args.dryRun,
@@ -296,7 +338,9 @@ async function main(): Promise<void> {
     }
   }
 
-  intro(pc.cyan(PKG_NAME))
+  intro(
+    `${pc.cyan('Arche')} ${pc.dim(`v${PKG_VERSION}`)} — production-ready scaffolds\n${pc.dim(SITE_URL)}`,
+  )
 
   // --- Project name ---
 
@@ -321,8 +365,7 @@ async function main(): Promise<void> {
     return String(value)
   })
 
-  const projectName = sanitizeProjectName(rawProjectName)
-  const destinationDir = resolve(process.cwd(), projectName)
+  const { projectName, destinationDir } = resolveDestinationDir(rawProjectName, args.dir)
 
   // --- Family selection ---
 
@@ -352,9 +395,37 @@ async function main(): Promise<void> {
   let presets: ProjectConfig['presets'] = []
   let includeShowcase = false
   let includeWorker = false
+  let rustFramework: ProjectConfig['backend'] = 'rust-axum'
 
-  if (family === 'fullstack' || family === 'backend' || family === 'polyglot') {
-    const isPolyglot = family === 'polyglot'
+  if (family === 'rust') {
+    rustFramework = args.yes
+      ? ((args.backend as ProjectConfig['backend'] | undefined) ?? 'rust-axum')
+      : await promptIfNeeded(args.backend as ProjectConfig['backend'] | undefined, async () => {
+          const value = await select({
+            message: 'Rust web framework',
+            initialValue: 'rust-axum',
+            options: [
+              {
+                label: 'Axum',
+                value: 'rust-axum' as const,
+                hint: 'Tokio ecosystem — default template',
+              },
+              {
+                label: 'Actix Web',
+                value: 'rust-actix' as const,
+                hint: 'Mature actor model, high throughput',
+              },
+            ],
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as ProjectConfig['backend']
+        })
+  }
+
+  if (hasBackendOptions(family)) {
     backend = args.yes
       ? (args.backend ?? 'express-bun')
       : await promptIfNeeded(args.backend, async () => {
@@ -368,25 +439,26 @@ async function main(): Promise<void> {
                 hint: 'production-ready, current default',
               },
               { label: 'Hono (Bun)', value: 'hono-bun', hint: 'lightweight, edge-ready' },
-              ...(isPolyglot
-                ? [
-                    {
-                      label: 'Rust (Axum)',
-                      value: 'rust-axum' as const,
-                      hint: 'high-performance, experimental',
-                    },
-                    {
-                      label: 'Go (Fiber)',
-                      value: 'go-fiber' as const,
-                      hint: 'fast, lightweight, experimental',
-                    },
-                    {
-                      label: 'Python (FastAPI)',
-                      value: 'python-fastapi' as const,
-                      hint: 'rapid development, experimental',
-                    },
-                  ]
-                : []),
+              {
+                label: 'Rust (Axum)',
+                value: 'rust-axum' as const,
+                hint: 'experimental — replaces apps/server with services/api',
+              },
+              {
+                label: 'Rust (Actix Web)',
+                value: 'rust-actix' as const,
+                hint: 'experimental — Actix in services/api',
+              },
+              {
+                label: 'Go (Fiber)',
+                value: 'go-fiber' as const,
+                hint: 'experimental — replaces apps/server with services/api',
+              },
+              {
+                label: 'Python (FastAPI)',
+                value: 'python-fastapi' as const,
+                hint: 'experimental — replaces apps/server with services/api',
+              },
               { label: 'None', value: 'none', hint: 'no backend' },
             ],
           })
@@ -454,26 +526,7 @@ async function main(): Promise<void> {
         })
   }
 
-  if (family === 'next') {
-    presets = args.yes
-      ? (args.presets ?? [])
-      : await promptIfNeeded(args.presets, async () => {
-          const value = await multiselect({
-            message: 'Next.js presets',
-            options: [
-              { label: 'Auth (Better Auth)', value: 'auth', hint: 'authentication setup' },
-              { label: 'Docs (Fumadocs)', value: 'docs', hint: 'documentation site' },
-              { label: 'Analytics', value: 'analytics', hint: 'analytics integration' },
-              { label: 'Storage', value: 'storage', hint: 'file/object storage setup' },
-            ],
-          })
-          if (isCancel(value)) {
-            cancel('Project creation cancelled.')
-            process.exit(0)
-          }
-          return value as ProjectConfig['presets']
-        })
-  }
+  presets = args.presets ?? []
 
   // --- Bundle selection ---
 
@@ -487,6 +540,7 @@ async function main(): Promise<void> {
             value: b,
             hint: BUNDLE_LABELS[b],
           })),
+          initialValues: ['product'],
           required: false,
         })
         if (isCancel(value)) {
@@ -497,6 +551,56 @@ async function main(): Promise<void> {
       })
 
   // --- Project structure prompts ---
+
+  if (familySupportsShowcase(family)) {
+    includeShowcase = args.yes
+      ? (args.includeShowcase ?? false)
+      : await promptIfNeeded(args.includeShowcase, async () => {
+          const value = await confirm({
+            message: 'Keep showcase landing routes and demo content?',
+            initialValue: false,
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value
+        })
+  }
+
+  if (familySupportsWorker(family)) {
+    includeWorker = args.yes
+      ? (args.includeWorker ?? false)
+      : await promptIfNeeded(args.includeWorker, async () => {
+          const value = await confirm({
+            message: 'Include the background worker workspace?',
+            initialValue: false,
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value
+        })
+  }
+
+  const packageManager = args.yes
+    ? (args.packageManager ?? 'bun')
+    : await promptIfNeeded(args.packageManager, async () => {
+        const value = await select({
+          message: 'Package manager',
+          initialValue: 'bun',
+          options: PackageManagerSchema.options.map((pm) => ({
+            label: pm,
+            value: pm,
+          })),
+        })
+        if (isCancel(value)) {
+          cancel('Project creation cancelled.')
+          process.exit(0)
+        }
+        return value as ProjectConfig['packageManager']
+      })
 
   const testing = args.yes
     ? (args.testing ?? 'bun')
@@ -589,8 +693,14 @@ async function main(): Promise<void> {
   const installDependencies = args.yes
     ? (args.install ?? true)
     : await promptIfNeeded(args.install, async () => {
+        const installCmd =
+          packageManager === 'pnpm'
+            ? 'pnpm install'
+            : packageManager === 'npm'
+              ? 'npm install'
+              : 'bun install'
         const value = await confirm({
-          message: 'Run bun install after generation?',
+          message: `Run ${installCmd} after generation?`,
           initialValue: true,
         })
         if (isCancel(value)) {
@@ -605,8 +715,8 @@ async function main(): Promise<void> {
     projectName,
     family,
     bundles,
-    packageManager: args.packageManager ?? 'bun',
-    backend: hasBackendOptions(family) ? backend : 'none',
+    packageManager,
+    backend: family === 'rust' ? rustFramework : hasBackendOptions(family) ? backend : 'none',
     database: hasDatabaseOptions(family) ? database : 'none',
     orm: hasOrmOptions(family) ? orm : 'none',
     vectorDatabase: 'none',
@@ -638,10 +748,11 @@ async function main(): Promise<void> {
   note(
     [
       `Project: ${pc.bold(projectName)}`,
+      `Output: ${destinationDir}`,
       `Family: ${options.family}`,
       `Bundles: ${options.bundles.join(', ') || 'none'}`,
       `Package manager: ${options.packageManager}`,
-      hasBackendOptions(family) ? `Backend: ${options.backend}` : null,
+      family === 'rust' || hasBackendOptions(family) ? `Backend: ${options.backend}` : null,
       hasDatabaseOptions(family) ? `Database: ${options.database}` : null,
       hasOrmOptions(family) ? `ORM: ${options.orm}` : null,
       presets.length > 0 ? `Presets: ${presets.join(', ')}` : null,
@@ -677,7 +788,7 @@ async function main(): Promise<void> {
       backend: options.backend,
       database: options.database,
       orm: options.orm,
-      reproducible: `npx ${PKG_NAME} ${projectName} --yes --family=${options.family} --backend=${options.backend} --database=${options.database} --orm=${options.orm}`,
+      reproducible: buildReproducibleCommand(options),
     })
 
     note(
@@ -690,12 +801,28 @@ async function main(): Promise<void> {
       'Result',
     )
 
+    const cdPath = relative(process.cwd(), result.destinationDir) || '.'
+    const installHint =
+      options.packageManager === 'pnpm'
+        ? 'pnpm install'
+        : options.packageManager === 'npm'
+          ? 'npm install'
+          : 'bun install'
+    const repro = buildReproducibleCommand(options)
+    const devCmd =
+      options.family === 'rust'
+        ? 'cargo run'
+        : options.family === 'backend'
+          ? `${options.packageManager === 'npm' ? 'npm' : options.packageManager} run dev --filter=server`
+          : 'bun dev'
     outro(
-      `Next steps:\n` +
-        `  cd ${projectName}\n` +
-        `${options.installDependencies ? '' : '  bun install\n'}` +
-        `  bun run repo:doctor\n` +
-        `  bun dev`,
+      `${pc.green('Project ready.')}\n\n` +
+        `${pc.bold('Next steps')}\n` +
+        `  cd ${cdPath}\n` +
+        `${options.installDependencies ? '' : `  ${installHint}\n`}` +
+        `  ${devCmd}\n\n` +
+        `${pc.dim('Reproduce this scaffold:')}\n` +
+        `  ${repro}`,
     )
   } catch (error) {
     step.stop('Project generation failed.')
