@@ -584,10 +584,26 @@ docker-compose exec db pg_dump -U user myapp > backup.sql
 
 ---
 
+## Render (API + Postgres + Redis)
+
+For this monorepo’s Express API (`apps/server`), use the root **Blueprint** — not a Native Bun web service.
+
+| Resource     | Blueprint name         | Purpose                           |
+| ------------ | ---------------------- | --------------------------------- |
+| Web (Docker) | `arche-template-api`   | API (`/health`, `/api/trpc`, `/`) |
+| Postgres     | `arche-template-db`    | `DATABASE_URL`                    |
+| Key Value    | `arche-template-redis` | `REDIS_URL`                       |
+
+**Step-by-step and failure causes:** [deployment-render.md](./deployment-render.md)
+
+Frontend on Vercel: set `NEXT_PUBLIC_API_URL` to the Render service URL.
+
+---
+
 ## Quick Decision Tree
 
 **Q: Want serverless + minimal DevOps?**
-→ Vercel (frontend) + Railway/Render (backend)
+→ Vercel (frontend) + Railway/Render (backend) — see [deployment-render.md](./deployment-render.md) for this template
 
 **Q: Need global distribution + high traffic?**
 → Fly.io or AWS (CloudFront + ECS)

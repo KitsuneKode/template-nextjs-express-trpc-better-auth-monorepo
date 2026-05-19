@@ -8,10 +8,10 @@ Express API with module-first layout (`src/modules/*`).
 
 ## Render
 
-1. Provision **Postgres** + **Redis** (or Upstash) on Render.
-2. **Recommended:** root `render.yaml` (Docker, `apps/server/Dockerfile`, context = repo root).
-3. **Native Bun:** root directory `.`, build `bun install && bun run build --filter=@template/server`, start `cd apps/server && bun run start`. Repo `.bun-version` pins Bun (avoid Render default 1.1.x).
-4. Set `FRONTEND_URL`, `BETTER_AUTH_URL` (public API URL), `BETTER_AUTH_SECRET`, `DATABASE_URL`, `REDIS_URL`.
-5. Verify: `curl https://<service>.onrender.com/health`
+**Full guide:** [docs/deployment-render.md](../../docs/deployment-render.md) (why deploys failed, new Blueprint steps, env checklist).
 
-See generated `docs/deployment.md` after scaffold, or `../../docs/deployment-platforms.md`.
+1. **Recommended:** Dashboard → **New Blueprint Instance** → repo root [`render.yaml`](../../render.yaml) (Docker + Postgres + Key Value).
+2. After deploy: set `FRONTEND_URL` (Vercel) and `BETTER_AUTH_URL` (this service’s `https://…onrender.com`).
+3. Verify: `curl https://<service>.onrender.com/` and `curl https://<service>.onrender.com/health`
+
+Native Bun is documented in the deployment guide but discouraged vs Docker.

@@ -97,46 +97,29 @@ ${dockerLine}
 
 ## Deploy API to Render
 
-Use the repo \`render.yaml\` blueprint or create a **Web Service** manually:
+**Recommended:** Dashboard → **New Blueprint Instance** → repo root \`render.yaml\`.
+
+The blueprint creates Docker web service \`arche-template-api\`, Postgres, and internal Key Value (Redis). Do **not** use Native Bun with \`bun run apps/server/dist/server.js\` from repo root — Render’s default Bun 1.1 lacks APIs this template used to rely on.
 
 | Setting | Value |
 |---------|--------|
-| Root directory | \`.\` (monorepo root) |
-| Runtime | Docker **or** Native with Bun |
-| Dockerfile | \`apps/server/Dockerfile\` (dockerContext: repo root) |
+| Runtime | **Docker** (from blueprint) |
+| Dockerfile | \`apps/server/Dockerfile\` (context = repo root) |
 | Health check | \`/health\` |
+| Welcome | \`GET /\` returns JSON index |
 
-**Native Bun (no Docker):**
+After first deploy, set \`FRONTEND_URL\` (Vercel) and \`BETTER_AUTH_URL\` (this service’s public HTTPS URL).
 
-\`\`\`bash
-# Build
-bun install
-bun run build --filter=@template/server
-
-# Start
-cd apps/server && HOST=0.0.0.0 bun run start
-\`\`\`
-
-**Required secrets on Render** (Dashboard → Environment):
-
-- \`DATABASE_URL\` — from Render Postgres (or external Neon)
-- \`REDIS_URL\` — Render Key Value / Upstash / external Redis (**required** for queues + rate limits)
-- \`FRONTEND_URL\` — your Vercel URL (e.g. \`https://my-app.vercel.app\`)
-- \`BETTER_AUTH_URL\` — this API's public URL (e.g. \`https://template-api.onrender.com\`)
-- \`BETTER_AUTH_SECRET\` — 32+ char random string
-- \`PORT\` — set by Render automatically (do not hardcode in service settings)
-- \`RENDER=true\` — set automatically on Render
+Full guide (failure causes, checklist, Vercel env): \`docs/deployment-render.md\` in the template repo.
 
 **Common failure causes:**
 
-1. **Service never becomes healthy** — API must listen on \`0.0.0.0\` and \`process.env.PORT\` (fixed in \`apps/server/src/server.ts\`).
-2. **Crash on boot** — missing \`REDIS_URL\` or \`DATABASE_URL\`; check Logs tab.
-3. **Redis connection at import** — Redis connects during startup, not at module import.
-4. **CORS errors** — \`FRONTEND_URL\` must exactly match the browser origin (scheme + host).
-5. **Auth callbacks** — \`BETTER_AUTH_URL\` must be the public API URL, not localhost.
-6. **Build without Prisma client** — run \`bun install\` at repo root (postinstall runs \`db:generate\`).
+1. **Native Bun 1.1** — use Docker blueprint or pin \`.bun-version\`; app Redis uses ioredis.
+2. **Missing Redis** — blueprint wires \`REDIS_URL\`; manual deploys must set it.
+3. **Wrong URLs** — \`BETTER_AUTH_URL\` and \`FRONTEND_URL\` must be production HTTPS, not localhost.
+4. **CORS** — \`FRONTEND_URL\` must match the browser origin exactly.
 
-After deploy: \`curl https://<your-service>.onrender.com/health\`
+After deploy: \`curl https://<your-service>.onrender.com/\` and \`curl .../health\`
 
 ## Notes
 
