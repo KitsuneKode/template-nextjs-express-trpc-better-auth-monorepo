@@ -11,7 +11,8 @@ Start here before searching the repo.
 1. Open the nearest local `AGENTS.md`.
 2. Use `docs/commands.md` for commands and `docs/env.md` for env vars.
 3. Use `docs/architecture.md` if the change crosses workspaces.
-4. Use `docs/archive/README.md` for scaffold and cleanup entry points.
+4. Use `docs/deployment-render.md` for Render API deploys and "No open ports detected" failures.
+5. Use `docs/archive/README.md` for scaffold and cleanup entry points.
 
 ## Workspace Map
 

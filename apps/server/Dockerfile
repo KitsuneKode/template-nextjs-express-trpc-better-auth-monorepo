@@ -25,6 +25,7 @@ FROM oven/bun:1-slim AS production
 WORKDIR /app/apps/server
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
+# PORT is injected by Render at runtime; 8080 is only a local `docker run` fallback.
 ENV PORT=8080
 COPY --from=build /app/apps/server/dist ./dist
 COPY --from=build /app/node_modules /app/node_modules

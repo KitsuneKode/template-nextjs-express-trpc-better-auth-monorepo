@@ -57,6 +57,15 @@ export function validateEnvironment(env: 'server' | 'worker' | 'web'): void {
     errors.forEach((e) => console.error(`   - ${e}`))
     console.error('')
     console.error('📋 Check your .env file and ensure all required variables are set.')
+    if (process.env.RENDER) {
+      console.error('')
+      console.error(
+        'Render: use the root render.yaml Blueprint (Docker + Postgres + Key Value) or set every variable above in Dashboard → Environment.',
+      )
+      console.error(
+        'Native Bun start command: cd apps/server && HOST=0.0.0.0 bun run start (not bun apps/server/dist/server.js from repo root).',
+      )
+    }
     process.exit(1)
   }
 }
