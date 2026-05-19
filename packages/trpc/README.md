@@ -1,7 +1,8 @@
 # tRPC Package
 
-This package contains the shared API contract for the repo.
+Client-facing API contract for web and workers.
 
-- Start with `AGENTS.md` in this folder.
-- Use `src/trpc.ts` for context and procedures.
-- Use `src/routers/_app.ts` for router composition.
+- Start with [AGENTS.md](./AGENTS.md).
+- Implementation: `apps/server/src/modules/<feature>/*.trpc.ts`
+- Composition: `apps/server/src/modules/trpc/app.router.ts`
+- This package re-exports `AppRouter`, `createCaller`, and middleware from `@template/server/trpc`.

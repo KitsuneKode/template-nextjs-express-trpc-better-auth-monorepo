@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Kitsune Stack - Master Plan
 
 This document tracks the current build direction for the template and CLI.

@@ -1,14 +1,7 @@
-# Render Blueprint — Arche monorepo API (apps/server)
-# https://render.com/docs/blueprint-spec
-#
-# Recommended: Dashboard → Blueprints → New Blueprint Instance → this repo.
-# Delete any old Native Bun web service that used `bun run apps/server/dist/server.js`.
-# Web frontend stays on Vercel; set NEXT_PUBLIC_API_URL to the Render service URL.
-#
-# Native Bun alternative (manual service, not this blueprint block):
-#   runtime: bun | root: . | build: bun install && bun run build --filter=@template/server
-#   start: cd apps/server && HOST=0.0.0.0 bun run start
-#   Do NOT set PORT in the dashboard — Render injects it. See docs/deployment-render.md.
+# Render Blueprint — API + Postgres + Redis (one-click)
+# Dashboard → Blueprints → New Blueprint Instance → connect repo
+# Web stays on Vercel (NEXT_PUBLIC_API_URL → arche-template-api URL)
+# Manual Native Bun is supported but easy to misconfigure — see docs/deployment-render.md
 
 services:
   - type: keyvalue

@@ -340,14 +340,13 @@ export function buildWebRulesMd(): string {
 paths: ["apps/web/**"]
 ---
 
-Next.js App Router. Server components use prefetch with tRPC query options
-and wrap children in HydrateClient. Client components use the tRPC React hooks.
+Next.js App Router.
 
-Key files:
-- \`app/layout.tsx\` — root layout and providers
-- \`components/providers.tsx\` — theme + tRPC provider
-- \`trpc/client.tsx\` — browser tRPC client
-- \`trpc/server.tsx\` — server-side tRPC caller
+- RSC / server actions: \`const api = await trpcCaller()\` from \`trpc/server.tsx\` (in-process \`createCaller\`).
+- Client components: tRPC React hooks from \`trpc/client.tsx\` (HTTP to API).
+- Prefetch + \`HydrateClient\` for client-bound queries.
+
+Key files: \`app/layout.tsx\`, \`components/providers.tsx\`, \`trpc/client.tsx\`, \`trpc/server.tsx\`.
 `
 }
 
@@ -356,11 +355,13 @@ export function buildTrpcRulesMd(): string {
 paths: ["apps/server/src/modules/**", "apps/server/src/app.ts", "packages/trpc/src/index.ts"]
 ---
 
-tRPC routers live in \`packages/trpc/src/routers/\`. Each router is a separate
-file exporting a plain object \`satisfies TRPCRouterRecord\`. Import and register
-in \`src/routers/_app.ts\`.
+Module-first tRPC:
 
-Context resolves in \`src/trpc.ts\` from Better Auth session + database access.
-Use \`protectedProcedure\` for authenticated endpoints, \`publicProcedure\` for open ones.
+- Procedures: \`apps/server/src/modules/<feature>/*.trpc.ts\` (\`satisfies TRPCRouterRecord\`)
+- Compose in \`apps/server/src/modules/trpc/app.router.ts\`
+- Context: \`apps/server/src/modules/trpc/trpc.ts\` (session + Prisma)
+- \`packages/trpc\` re-exports \`AppRouter\` and \`createCaller\` only
+
+Deploy API with Render Blueprint (\`render.yaml\`), not Native Bun from repo root. Env: \`docs/deployment-env.md\`.
 `
 }

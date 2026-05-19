@@ -5,6 +5,7 @@
  */
 
 import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
+import { isRedisEnabled } from '@template/backend-common/redis-enabled'
 import { validateEnvironment } from '@template/backend-common/validate-env'
 import app from './app'
 import { env } from './common/env'
@@ -64,13 +65,17 @@ async function main(): Promise<void> {
     instance.on('error', reject)
   })
 
-  try {
-    await connectRedis()
-    logger.info('Redis connected')
-  } catch (error) {
-    logStartupFailure('Redis connection failed (check REDIS_URL)', error)
-    server.close()
-    process.exit(1)
+  if (isRedisEnabled()) {
+    try {
+      await connectRedis()
+      logger.info('Redis connected')
+    } catch (error) {
+      logStartupFailure('Redis connection failed (check REDIS_URL)', error)
+      server.close()
+      process.exit(1)
+    }
+  } else {
+    logger.info('Redis disabled (ENABLE_REDIS=false) — no BullMQ or /admin/queues')
   }
 
   onShutdown(async () => {
@@ -78,10 +83,12 @@ async function main(): Promise<void> {
     await prisma.$disconnect()
   })
 
-  onShutdown(async () => {
-    logger.info('Closing Redis connection...')
-    await redis.close()
-  })
+  if (isRedisEnabled()) {
+    onShutdown(async () => {
+      logger.info('Closing Redis connection...')
+      await redis.close()
+    })
+  }
 
   setupGracefulShutdown(server)
 }

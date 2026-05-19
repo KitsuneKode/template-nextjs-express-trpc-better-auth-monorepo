@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Critical Assessment & Improvement Opportunities
 
 Using grill-me methodology to examine what we've built and where we can improve.

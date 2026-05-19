@@ -2,50 +2,30 @@
 
 ## Purpose
 
-`apps/web` is the Next.js App Router frontend. It contains both real runtime
-wiring and a large amount of template showcase UI.
+Next.js App Router frontend: runtime wiring + template showcase UI.
 
-## Read First
+## Read first
 
-- `app/layout.tsx`
-- `app/page.tsx`
+- `app/layout.tsx` — metadata (`metadataBase` from `NEXT_PUBLIC_SITE_URL`)
+- `trpc/server.tsx` — `trpcCaller` for RSC; HTTP `trpc` proxy for client components
+- `trpc/client.tsx` — browser client
 - `components/providers.tsx`
-- `trpc/client.tsx`
-- `trpc/server.tsx`
-- `utils/config.ts`
+- `env.ts`
+
+## Data fetching (tRPC)
+
+- **Server Components / server actions:** `const api = await trpcCaller()` then `api.<router>.<proc>()`. Uses `createCaller` in-process (session + Prisma)—no HTTP loopback to the API.
+- **Client components:** hooks via `trpc` from `@/trpc/client` (HTTP to `NEXT_PUBLIC_API_URL`).
+- **Prefetch + hydrate:** `prefetch()` + `HydrateClient` for client-bound queries.
 
 ## Owns
 
-- App Router pages and layouts
-- tRPC client and server-side caller helpers
-- theme/providers setup
-- template landing, premium landing, demo pages, and blog presentation
+- App Router pages, marketing/demo routes, providers, public assets
 
-## Common Tasks
+## Template cleanup
 
-- Product shell or metadata changes:
-  `app/layout.tsx`, `app/page.tsx`
-- Data fetching and typed API usage:
-  `trpc/*`
-- Shared provider setup:
-  `components/providers.tsx`
-- Marketing/demo edits:
-  `components/landing*`, `components/sections`, `components/demos`
+If starting fresh: `app/demo`, `app/landing`, `components/demos`, `components/landing*`, `lib/demo-data.ts`.
 
-## Cleanup Notes
+## Update when
 
-If starting from scratch, review these first:
-
-- `app/demo`
-- `app/landing`
-- `components/demos`
-- `components/landing`
-- `components/landing-premium`
-- `components/sections`
-- `lib/demo-data.ts`
-- `public/brand`
-
-## Update When
-
-Update this file when route topology, provider wiring, tRPC client setup, or
-the template/demo split changes.
+Routes, providers, tRPC wiring, or env names change.

@@ -1,19 +1,19 @@
 /**
  * BullMQ-compatible Redis connection factory.
- *
- * BullMQ requires an ioredis-compatible connection. This module wraps
- * the shared Redis configuration into an IORedis instance for BullMQ.
  */
 
 import IORedis from 'ioredis'
-import { backendConfig, workerConfig } from '../utils/config'
+import { resolveRedisUrl } from '../utils/redis-enabled'
 
 let bullConnection: IORedis | null = null
 
 export function getBullConnection(): IORedis {
   if (bullConnection) return bullConnection
 
-  const url = backendConfig.REDIS_URL || 'redis://localhost:6379'
+  const url = resolveRedisUrl()
+  if (!url) {
+    throw new Error('BullMQ requires REDIS_URL (queues are disabled when ENABLE_REDIS=false)')
+  }
 
   bullConnection = new IORedis(url, {
     maxRetriesPerRequest: null,
@@ -23,12 +23,12 @@ export function getBullConnection(): IORedis {
   return bullConnection
 }
 
-/**
- * Creates a separate connection for worker processes.
- * Workers should use this to avoid sharing event loop with the server.
- */
+/** Separate connection for worker processes. */
 export function createWorkerBullConnection(): IORedis {
-  const url = workerConfig.REDIS_URL || 'redis://localhost:6379'
+  const url = resolveRedisUrl()
+  if (!url) {
+    throw new Error('Worker requires REDIS_URL')
+  }
 
   return new IORedis(url, {
     maxRetriesPerRequest: null,

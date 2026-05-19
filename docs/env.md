@@ -1,26 +1,28 @@
-# Environment Variables
+# Environment variables
 
-## Client (Next.js)
+**Canonical matrix (Vercel vs Render vs worker):** [deployment-env.md](./deployment-env.md)
 
-- `NEXT_PUBLIC_APP_URL` — Frontend URL
-- `NEXT_PUBLIC_API_URL` — Backend API URL
-- `NODE_ENV` — Environment (development/production)
+## Client (Next.js / Vercel)
 
-## Server (Express)
+- `NEXT_PUBLIC_APP_URL` — frontend URL
+- `NEXT_PUBLIC_API_URL` — backend API URL
+- `NEXT_PUBLIC_SITE_URL` — metadata / OG base (often same as app URL)
+- `NODE_ENV` — `development` | `production`
 
-- `PORT` — Server port
-- `FRONTEND_URL` — Allowed frontend origin
-- `DATABASE_URL` — PostgreSQL connection string
-- `REDIS_URL` — Redis connection string
-- `BETTER_AUTH_URL` — Auth server URL
-- `BETTER_AUTH_SECRET` — Auth secret key
-- `NODE_ENV` — Environment
+## Server (Express / Render)
 
-## Optional Social Auth
+- `DATABASE_URL` — Postgres (required)
+- `BETTER_AUTH_SECRET` — 32+ characters (required)
+- `BETTER_AUTH_URL` — public API URL (required)
+- `FRONTEND_URL` — browser origin for CORS/auth (required)
+- `ENABLE_REDIS` — default `true`; set `false` for API-only (no queues, no `/admin/queues`)
+- `REDIS_URL` — required when `ENABLE_REDIS=true` (Blueprint wires from Key Value)
+- `HOST` — use `0.0.0.0` on Render
+- `PORT` — **do not set on Render** (platform injects)
 
-- `GITHUB_CLIENT_ID` — GitHub OAuth client ID
-- `GITHUB_CLIENT_SECRET` — GitHub OAuth client secret
-- `GOOGLE_CLIENT_ID` — Google OAuth client ID
-- `GOOGLE_CLIENT_SECRET` — Google OAuth client secret
+## Optional OAuth
 
-`apps/server/.env.example` is the safe example source for the backend keys.
+- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
+
+Examples: `apps/server/.env.example`, `apps/web/.env.example`.

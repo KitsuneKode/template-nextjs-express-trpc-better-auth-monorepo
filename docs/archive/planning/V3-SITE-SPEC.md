@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Arche v3 — Site Redesign Guidelines
 
 For the UI agent building the new face of Arche at `arche.kitsunelabs.xyz`.

@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Production Deployment Checklist
 
 Use this checklist the first time you deploy to production. It covers security, performance, monitoring, and incident response.

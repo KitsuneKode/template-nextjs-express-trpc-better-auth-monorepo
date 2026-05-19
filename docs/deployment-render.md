@@ -1,16 +1,41 @@
 # Deploy API to Render
 
-This guide covers the Express API in `apps/server` on [Render](https://render.com). The web app (`apps/web`) stays on Vercel; point `NEXT_PUBLIC_API_URL` at the Render service URL.
+Web on Vercel, API on Render. Env matrix: [deployment-env.md](./deployment-env.md).
+
+## Your error: `Missing required: REDIS_URL`
+
+You are on a **manual Native Bun** service without Redis wired. Fix **one** of these:
+
+1. **Recommended:** Delete that service → **Blueprints → New Blueprint Instance** → this repo → applies [`render.yaml`](../render.yaml) (Postgres + Redis + Docker API).
+2. **Keep manual service:** Render Dashboard → **Key Value** → create instance → copy **Internal Redis URL** → Environment → `REDIS_URL` = that value → redeploy.
+3. **API only (no queues):** Environment → `ENABLE_REDIS=false` → redeploy (no `/admin/queues`, worker won't work).
+
+Also fix **Start command** to:
+
+```bash
+cd apps/server && HOST=0.0.0.0 bun run start
+```
+
+Not `bun run apps/server/dist/server.js` from the repo root.
 
 ## Recommended: Blueprint (Docker)
 
 Use the root [`render.yaml`](../render.yaml) so Postgres, Key Value (Redis), and the API are provisioned together.
 
-1. **Dashboard → Blueprints → New Blueprint Instance** → connect this repo.
-2. After the first deploy, set in **Environment** (sync: false in the blueprint):
+1. **Stop or delete** any old manual Native Bun service so names and env do not conflict.
+2. **Dashboard → Blueprints → New Blueprint Instance** → connect this repo.
+3. After the first deploy, set in **Environment** (sync: false in the blueprint):
    - `FRONTEND_URL` — Vercel URL (e.g. `https://my-app.vercel.app`)
    - `BETTER_AUTH_URL` — public API URL (e.g. `https://arche-template-api.onrender.com`)
-3. Redeploy if needed, then verify:
+4. Run database migrations against Blueprint Postgres (Render shell or local with copied `DATABASE_URL`):
+
+```bash
+bun run db:migrate
+```
+
+5. On Vercel (`apps/web`): `NEXT_PUBLIC_API_URL` = same API URL; `NEXT_PUBLIC_APP_URL` = Vercel URL. See [deployment-env.md](./deployment-env.md).
+
+6. Redeploy if needed, then verify:
 
 ```bash
 curl -sS "https://<your-service>.onrender.com/"

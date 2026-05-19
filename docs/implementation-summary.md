@@ -1,6 +1,8 @@
 # Implementation Guide: When to Use Which Doc
 
-This is the **decision tree** for navigating all production documentation. Use this to find the right guide for your situation.
+> **Note:** For current architecture and deploy paths, prefer [architecture.md](./architecture.md), [deployment-render.md](./deployment-render.md), and root [AGENTS.md](../AGENTS.md). Planning-era docs are in [archive/planning/](./archive/planning/).
+
+This is a **decision tree** for navigating production documentation. Use this to find the right guide for your situation.
 
 ## Quick Routing
 
@@ -9,7 +11,7 @@ This is the **decision tree** for navigating all production documentation. Use t
 ### Getting Started
 
 - Scaffolding a new project? → `template-variants.md` (pick your type) → Get started guide in that variant doc
-- Deploying to production for the first time? → `deployment-checklist.md` (this page, below)
+- Deploying to production for the first time? → [deployment-render.md](./deployment-render.md) + [deployment-env.md](./deployment-env.md)
 - Running locally? → `docs/README.md` (repo level) + specific template variant
 
 ### Building Features

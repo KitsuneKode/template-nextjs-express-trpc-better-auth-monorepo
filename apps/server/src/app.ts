@@ -1,3 +1,4 @@
+import { isRedisEnabled } from '@template/backend-common/redis-enabled'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'
@@ -26,7 +27,9 @@ app.use(
   }),
 )
 
-app.use('/admin/queues', adminRoutes)
+if (isRedisEnabled()) {
+  app.use('/admin/queues', adminRoutes)
+}
 app.use('/api/auth', authRoutes)
 
 app.use(express.json({ limit: '1mb' }))

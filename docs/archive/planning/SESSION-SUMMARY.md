@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Session Summary: Full-Stack Template to Production-Ready
 
 ## What We Built

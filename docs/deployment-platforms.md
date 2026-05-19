@@ -1,5 +1,9 @@
 # Deployment Platforms Guide
 
+**Recommended for this template:** Vercel (`apps/web`) + Render Blueprint ([deployment-render.md](./deployment-render.md)). Env matrix: [deployment-env.md](./deployment-env.md).
+
+The sections below compare other platforms. Use them when you intentionally leave the default stack.
+
 Choose your deployment strategy: serverless, managed containers, or self-hosted.
 
 ## Platform Comparison

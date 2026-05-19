@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Implementation Plan
 
 This plan turns the agreed CLI/family design into an implementation sequence.

@@ -1,3 +1,5 @@
+> Historical; do not use for implementation. See docs/README.md and AGENTS.md.
+
 # Comprehensive Fix Plan: All Issues + Solutions
 
 ## Executive Summary

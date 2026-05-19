@@ -4,9 +4,10 @@ import { Toaster } from 'sonner'
 import '@template/ui/globals.css'
 import { Providers } from '@/components/providers'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'
+import { env } from '@/env'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://arche.kitsunelabs.xyz'),
+  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
     default: 'Arche — The beginning of every project',
     template: '%s | Arche',

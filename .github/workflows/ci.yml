@@ -32,3 +32,6 @@ jobs:
 
       - name: Test
         run: bun test
+
+      - name: Docker smoke (server)
+        run: docker build -f apps/server/Dockerfile .

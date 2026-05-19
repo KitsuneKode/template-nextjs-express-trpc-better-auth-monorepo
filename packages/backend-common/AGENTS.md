@@ -1,38 +1,26 @@
 # Backend Common Notes
 
-## Purpose
+Shared backend utilities for `apps/server` and `apps/worker`.
 
-`packages/backend-common` holds shared backend utilities used by both the server
-and the worker.
+## Read first
 
-## Read First
-
-- `src/utils/config.ts`
-- `src/utils/logger.ts`
-- `src/redis/index.ts`
-- `package.json`
+- `src/env.ts` — `serverEnv` (t3-env)
+- `src/utils/validate-env.ts` — startup validation
+- `src/utils/redis-enabled.ts` — `ENABLE_REDIS`, `resolveRedisUrl`
+- `src/redis/index.ts` — ioredis client
+- `package.json` — subpath exports
 
 ## Owns
 
-- backend env validation
-- worker env validation
-- shared winston logger factory
-- shared Bun Redis client helper
+- Backend env schema and validation
+- Redis (ioredis) and Bull connection helpers
+- Winston logger factory
 
-## Common Tasks
+## Common tasks
 
-- add or rename backend env keys:
-  `src/utils/config.ts`
-- change log format or file output:
-  `src/utils/logger.ts`
-- change Redis connection creation:
-  `src/redis/index.ts`
+- New env keys: `src/env.ts` + `validate-env.ts` + `apps/server/.env.example`
+- Redis behavior: `src/redis/index.ts`, `redis-enabled.ts`
 
-## Notes
+## Update when
 
-- `src/index.ts` is effectively empty; meaningful imports use subpath exports.
-
-## Update When
-
-Update this file when env schemas, log behavior, Redis wiring, or package
-exports change.
+Env schemas, Redis wiring, logger, or exports change.

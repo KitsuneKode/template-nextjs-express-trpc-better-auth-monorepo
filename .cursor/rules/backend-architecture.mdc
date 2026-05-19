@@ -3,37 +3,31 @@ description: Backend architecture overview for server, worker, store, and trpc
 ---
 # Backend Architecture
 
-## Server (Express)
+See [apps/server/AGENTS.md](mdc:apps/server/AGENTS.md) and [docs/architecture.md](mdc:docs/architecture.md).
+
+## Server (Express, module-first)
 
 - Entry: [apps/server/src/server.ts](mdc:apps/server/src/server.ts)
-- App setup: [apps/server/src/app.ts](mdc:apps/server/src/app.ts)
-- Middlewares: [apps/server/src/middlewares](mdc:apps/server/src/middlewares)
-- Routes/controllers/services live under [apps/server/src](mdc:apps/server/src)
-- Redis utils: [apps/server/src/lib/redis/index.ts](mdc:apps/server/src/lib/redis/index.ts)
+- App: [apps/server/src/app.ts](mdc:apps/server/src/app.ts)
+- Features: [apps/server/src/modules](mdc:apps/server/src/modules)
+- tRPC composition: [apps/server/src/modules/trpc/app.router.ts](mdc:apps/server/src/modules/trpc/app.router.ts)
 
-Use the shared logger and config from [packages/backend-common](mdc:packages/backend-common/src/index.ts).
+## tRPC boundary
 
-## Worker
+- Procedures: `apps/server/src/modules/<feature>/*.trpc.ts`
+- Client types: [packages/trpc/src/index.ts](mdc:packages/trpc/src/index.ts) (re-export only)
 
-- Entry: [apps/worker/src/index.ts](mdc:apps/worker/src/index.ts)
-- Redis helpers: [apps/worker/src/redis/index.ts](mdc:apps/worker/src/redis/index.ts)
-- Logger: [apps/worker/src/utils/logger.ts](mdc:apps/worker/src/utils/logger.ts)
+## Worker / store
 
-## Store (Prisma)
+- Worker: [apps/worker/src/index.ts](mdc:apps/worker/src/index.ts)
+- Prisma: [packages/store/prisma/schema.prisma](mdc:packages/store/prisma/schema.prisma)
 
-- Schema: [packages/store/prisma/schema.prisma](mdc:packages/store/prisma/schema.prisma)
-- Programmatic access: [packages/store/src/index.ts](mdc:packages/store/src/index.ts)
-- Migrations: [packages/store/prisma/migrations](mdc:packages/store/prisma/migrations)
+## Shared backend
 
-## TRPC
-
-- Server routers: [packages/trpc/src/routers/_app.ts](mdc:packages/trpc/src/routers/_app.ts)
-- Auth/user routers: [packages/trpc/src/routers](mdc:packages/trpc/src/routers)
-- TRPC server setup helpers: [packages/trpc/src/trpc.ts](mdc:packages/trpc/src/trpc.ts)
+- Env, Redis, logging: [packages/backend-common](mdc:packages/backend-common/AGENTS.md)
 
 ## Guidelines
 
-- Keep business logic in services and packages; keep route handlers thin.
-- Validate inputs at TRPC boundary using Zod schemas in [packages/common/src/types/zod-schema.ts](mdc:packages/common/src/types/zod-schema.ts).
-- Centralize config and logging via shared packages.
-
+- Thin routes/controllers; logic in services and repositories.
+- Validate at tRPC/HTTP boundaries with Zod.
+- Use `@template/backend-common` for env and Redis—not raw `process.env` in app code.

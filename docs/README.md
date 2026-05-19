@@ -1,74 +1,50 @@
-# Repository Docs
+# Repository docs
 
-This repository is a Bun + Turborepo template with a real Next.js frontend,
-Express backend, Better Auth, Prisma, tRPC, shared UI, and template showcase
-content.
+Bun + Turborepo template: Next.js, Express, Better Auth, Prisma, tRPC, shared UI.
 
-Start here before searching the repo.
+**Agents:** start at root [AGENTS.md](../AGENTS.md), then this index.
 
-## How To Navigate
+## Navigate
 
-1. Open the nearest local `AGENTS.md`.
-2. Use `docs/commands.md` for commands and `docs/env.md` for env vars.
-3. Use `docs/architecture.md` if the change crosses workspaces.
-4. Use `docs/deployment-render.md` for Render API deploys and "No open ports detected" failures.
-5. Use `docs/archive/README.md` for scaffold and cleanup entry points.
+| Need             | Doc                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Commands         | [commands.md](./commands.md)                                                             |
+| Env vars         | [env.md](./env.md) → [deployment-env.md](./deployment-env.md)                            |
+| Architecture     | [architecture.md](./architecture.md)                                                     |
+| Render deploy    | [deployment-render.md](./deployment-render.md)                                           |
+| Other platforms  | [deployment-platforms.md](./deployment-platforms.md)                                     |
+| Troubleshooting  | [troubleshooting.md](./troubleshooting.md)                                               |
+| CLI development  | [cli-development.md](./cli-development.md)                                               |
+| Bootstrap CLI    | [bootstrap-cli.md](./bootstrap-cli.md)                                                   |
+| Portfolio sync   | [portfolio-sync.md](./portfolio-sync.md)                                                 |
+| E2E / monitoring | [e2e-testing.md](./e2e-testing.md), [monitoring-debugging.md](./monitoring-debugging.md) |
 
-## Workspace Map
+Historical planning docs: [archive/planning/](./archive/planning/).
 
-- `apps/web`
-  Next.js App Router frontend. Real runtime wiring lives in
-  `app/layout.tsx`, `components/providers.tsx`, `trpc/client.tsx`,
-  `trpc/server.tsx`, and `utils/config.ts`.
-  Template-only content is described in `docs/archive/README.md`.
+## Workspace map
 
-- `apps/server`
-  Express service. `src/app.ts` mounts Better Auth, JSON middleware, tRPC, and
-  `/health`. `src/server.ts` handles process startup and clustering.
+- **`apps/web`** — Next.js App Router; `trpc/client.tsx`, `trpc/server.tsx` (`trpcCaller`), `app/layout.tsx`
+- **`apps/server`** — Express; module-first `src/modules/*`; tRPC in `*.trpc.ts`
+- **`apps/cli`** — `@arche/create` scaffold; see `apps/cli/CLI-SPEC.md`
+- **`apps/worker`** — background jobs (requires Redis when used)
+- **`packages/trpc`** — client contract; re-exports `AppRouter` / `createCaller` from server (not `src/routers/`)
+- **`packages/store`** — Prisma
+- **`packages/auth`** — Better Auth
+- **`packages/backend-common`** — `serverEnv`, ioredis, logging
+- **`packages/ui`** — shared components
+- **`toolings/*`** — shared TS config and repo scripts
 
-- `apps/cli`
-  Bun-native bootstrap CLI for generating a cleaned project from this template.
-  Generation logic lives in `src/lib/scaffold.ts`.
+## Start fresh
 
-- `apps/worker`
-  Worker scaffold. Logging and Redis helpers exist, but `src/index.ts` is still
-  placeholder logic.
+Template showcase UI cleanup: [archive/start-fresh.md](./archive/start-fresh.md).
 
-- `packages/auth`
-  Better Auth server and client wrappers. Server setup lives in `src/index.ts`.
-  Client setup lives in `src/client.ts`.
+## Commands (quick)
 
-- `packages/trpc`
-  Shared tRPC context, procedure helpers, middleware, and routers. Real app
-  router lives in `src/routers/_app.ts`.
+```bash
+bun install
+bun dev
+bun run repo:doctor
+bun run db:migrate
+```
 
-- `packages/store`
-  Prisma schema, migrations, generated client output, and seed data.
-
-- `packages/common`
-  Shared config-loading utilities and client logger.
-
-- `packages/backend-common`
-  Shared backend config, winston logger setup, and Bun Redis helper.
-
-- `packages/ui`
-  Shared UI components, styles, and shadcn generator config.
-
-- `.oxlintrc.json`
-  Repo-wide oxlint configuration replacing ESLint.
-
-- `toolings/typescript-config`
-  Shared TS base configs extended by apps and packages.
-
-- `toolings/scripts`
-  Repo utility scripts for scope migration, redundancy auditing, and cleanup.
-
-- `tests`
-  Test workspace for repo tooling and future broader coverage. It now contains
-  real Bun tests for the repo scripts, but it is not a full app-level safety
-  net yet.
-
-## Start-Fresh Bias
-
-If the goal is a new product instead of a preserved template showcase, read
-`docs/archive/README.md` before editing UI routes.
+Full list: [commands.md](./commands.md).

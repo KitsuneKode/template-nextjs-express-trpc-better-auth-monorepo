@@ -149,7 +149,8 @@ Auth routes are mounted at /api/auth/* in apps/server/src/app.ts.
       fileName: 'trpc.mdc',
       description: 'tRPC router patterns and conventions',
       globs: '**/*.{ts,tsx}',
-      content: `tRPC routers: packages/trpc/src/routers/
+      content: `tRPC procedures: apps/server/src/modules/<feature>/*.trpc.ts
+Compose: apps/server/src/modules/trpc/app.router.ts
 Context: apps/server/src/modules/trpc/trpc.ts
 
 Each router is a plain object satisfying TRPCRouterRecord.

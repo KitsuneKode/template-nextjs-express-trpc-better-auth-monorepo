@@ -14,6 +14,7 @@ import { makeQueryClient } from './query-client'
 
 export const getQueryClient = cache(makeQueryClient)
 
+/** In-process tRPC for RSC and server actions — prefer over HTTP `trpc` below. */
 export const trpcCaller = cache(async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -21,6 +22,7 @@ export const trpcCaller = cache(async () => {
   return createCaller({ session, db })
 })
 
+/** HTTP client for Client Components and prefetch/hydration — not for direct RSC data. */
 function getUrl() {
   const base = (() => {
     // if (typeof window !== 'undefined') return ''

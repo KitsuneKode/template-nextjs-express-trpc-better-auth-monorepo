@@ -1,6 +1,14 @@
 # Archive
 
-Historical documentation that is no longer part of the active docs surface.
+Historical or template-cleanup documentation—not part of the active agent surface.
 
-- `bootstrap-cli.md` - legacy bootstrap guidance
-- `start-fresh.md` - template cleanup guide
+## Planning (historical)
+
+Do not use for implementation. See [planning/](./planning/).
+
+## Other
+
+- [bootstrap-cli.md](./bootstrap-cli.md) — legacy bootstrap guidance
+- [start-fresh.md](./start-fresh.md) — template showcase cleanup
+
+Active docs index: [../README.md](../README.md).

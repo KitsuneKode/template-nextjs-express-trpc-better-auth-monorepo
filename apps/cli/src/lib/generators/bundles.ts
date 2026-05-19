@@ -3,20 +3,20 @@ import { dirname, join } from 'node:path'
 import type { ProjectConfig } from '../../types/schemas'
 
 function patchTrpcAppRouter(dest: string): string[] {
-  const appPath = join(dest, 'packages/trpc/src/routers/_app.ts')
+  const appPath = join(dest, 'apps/server/src/modules/trpc/app.router.ts')
   try {
     let content = readFileSync(appPath, 'utf8')
     if (content.includes('realtimeRouter')) return []
     content = content.replace(
-      "import { userRouter } from './user'",
-      "import { userRouter } from './user'\nimport { realtimeRouter } from './realtime'",
+      "import { userRouter } from '../user/user.trpc'",
+      "import { userRouter } from '../user/user.trpc'\nimport { realtimeRouter } from '../realtime/realtime.trpc'",
     )
     content = content.replace(
       '  chat: chatRouter,',
       '  chat: chatRouter,\n  realtime: realtimeRouter,',
     )
     writeFileSync(appPath, content)
-    return ['packages/trpc/src/routers/_app.ts']
+    return ['apps/server/src/modules/trpc/app.router.ts']
   } catch {
     return []
   }
@@ -37,7 +37,7 @@ This project was scaffolded with the **product** bundle (auth, database, API).
 - \`apps/web\` — Next.js frontend
 - \`apps/server\` — Express API + tRPC + Better Auth
 - \`packages/store\` — Database (Prisma/Drizzle)
-- \`packages/trpc\` — Shared API routers
+- \`packages/trpc\` — API contract (re-exports server router)
 - \`packages/auth\` — Better Auth configuration
 
 ## Commands
@@ -92,15 +92,14 @@ export function handleWsClose(ws: ServerWebSocket<unknown>): void {
   )
   files.push('apps/server/src/ws/handler.ts')
 
-  // Add tRPC subscription router
-  const trpcDir = join(dest, 'packages/trpc/src/routers')
-  mkdirSync(trpcDir, { recursive: true })
+  const realtimeDir = join(dest, 'apps/server/src/modules/realtime')
+  mkdirSync(realtimeDir, { recursive: true })
   writeFileSync(
-    join(trpcDir, 'realtime.ts'),
-    `import { publicProcedure } from '../trpc'
-import type { TRPCRouterRecord } from '@trpc/server'
+    join(realtimeDir, 'realtime.trpc.ts'),
+    `import type { TRPCRouterRecord } from '@trpc/server'
 import { observable } from '@trpc/server/observable'
 import { EventEmitter } from 'node:events'
+import { publicProcedure } from '../trpc/trpc.js'
 
 const ee = new EventEmitter()
 
@@ -115,7 +114,7 @@ export const realtimeRouter = {
 } satisfies TRPCRouterRecord
 `,
   )
-  files.push('packages/trpc/src/routers/realtime.ts')
+  files.push('apps/server/src/modules/realtime/realtime.trpc.ts')
   files.push(...patchTrpcAppRouter(dest))
 
   return files

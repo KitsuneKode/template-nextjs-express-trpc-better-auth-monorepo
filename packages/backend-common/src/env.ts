@@ -22,8 +22,9 @@ export const serverEnv = createEnv({
     // Database
     DATABASE_URL: z.string().url(),
 
-    // Redis / Cache
-    REDIS_URL: z.string().url().default('redis://localhost:6379'),
+    // Redis / BullMQ — set ENABLE_REDIS=false for API-only (no worker, no /admin/queues)
+    ENABLE_REDIS: z.coerce.boolean().default(true),
+    REDIS_URL: z.string().url().optional(),
 
     // Frontend reference
     FRONTEND_URL: z.string().url().default('http://localhost:3000'),

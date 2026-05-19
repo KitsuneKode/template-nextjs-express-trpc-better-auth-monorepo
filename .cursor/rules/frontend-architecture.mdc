@@ -1,20 +1,19 @@
 ---
 description: Frontend architecture overview for Next.js App Router and TRPC client
 ---
-# Frontend Architecture (Next.js App Router)
+# Frontend Architecture
 
-- Root layout: [apps/web/app/layout.tsx](mdc:apps/web/app/layout.tsx)
-- Home page: [apps/web/app/page.tsx](mdc:apps/web/app/page.tsx)
-- Example routes: [apps/web/app/demo/page.tsx](mdc:apps/web/app/demo/page.tsx), [apps/web/app/chat/[roomId]/page.tsx](mdc:apps/web/app/chat/[roomId]/page.tsx)
+See [apps/web/AGENTS.md](mdc:apps/web/AGENTS.md).
+
+- Layout: [apps/web/app/layout.tsx](mdc:apps/web/app/layout.tsx)
 - Providers: [apps/web/components/providers.tsx](mdc:apps/web/components/providers.tsx)
-- TRPC client: [apps/web/trpc/client.tsx](mdc:apps/web/trpc/client.tsx), [apps/web/trpc/query-client.ts](mdc:apps/web/trpc/query-client.ts)
-- TRPC server helpers: [apps/web/trpc/server.tsx](mdc:apps/web/trpc/server.tsx)
+- tRPC browser client: [apps/web/trpc/client.tsx](mdc:apps/web/trpc/client.tsx)
+- tRPC server: [apps/web/trpc/server.tsx](mdc:apps/web/trpc/server.tsx) — use `trpcCaller` in RSC; `trpc` proxy for client components
 
 ## Guidelines
 
-- Favor Server Components; use Client Components only when necessary.
-- Use TRPC hooks from the generated client; do not fetch server endpoints directly.
-- Use shared UI components from [packages/ui/src](mdc:packages/ui/src).
-- For client logging, use [packages/common/src/utils/client-logger.ts](mdc:packages/common/src/utils/client-logger.ts).
-- Keep environment access within server components or server utilities; avoid leaking secrets to the client.
-
+- Prefer Server Components; client components only when needed.
+- RSC data: `const api = await trpcCaller()` then `api.user.getUser()` — no HTTP loopback.
+- Client hooks: `trpc` from `@/trpc/client` (or generated hooks), not raw fetch to `/api/trpc`.
+- Shared UI: [packages/ui/src](mdc:packages/ui/src).
+- Secrets stay server-side; only `NEXT_PUBLIC_*` on the client.
