@@ -19,7 +19,8 @@ WORKDIR /app
 COPY --from=pruner /app/out/json/ .
 ENV CI=true
 ENV HUSKY=0
-RUN bun install --frozen-lockfile
+# Pruned json/ has no turbo.json; root postinstall runs db:generate → turbo and would fail.
+RUN bun install --frozen-lockfile --ignore-scripts
 
 # --- Generate Prisma client + build server (turbo ^build graph) ---
 FROM base AS builder
