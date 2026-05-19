@@ -2,6 +2,15 @@
 
 Production matrix (all deploy targets): [deployment-env.md](./deployment-env.md).
 
+## Split by workspace
+
+| File                       | Workspace     | Purpose                                |
+| -------------------------- | ------------- | -------------------------------------- |
+| `apps/web/.env.example`    | Web (Next.js) | `NEXT_PUBLIC_*` URLs and site metadata |
+| `apps/server/.env.example` | API (Express) | `DATABASE_URL`, auth, Redis, `PORT`    |
+
+There is no single root `.env` — copy each example into `.env.local` (web) and `.env` (server).
+
 ## Local setup
 
 ```bash

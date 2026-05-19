@@ -1,14 +1,10 @@
-# Render Blueprint — API + Postgres + Redis (one-click)
+# Render Blueprint — Docker API only (Path B)
+# Postgres + Redis: external Neon + Upstash (paste DATABASE_URL / REDIS_URL)
 # Dashboard → Blueprints → New Blueprint Instance → connect repo
 # Web stays on Vercel (NEXT_PUBLIC_API_URL → arche-template-api URL)
-# Manual Native Bun is supported but easy to misconfigure — see docs/deployment-render.md
+# See docs/deployment-render.md
 
 services:
-  - type: keyvalue
-    name: arche-template-redis
-    plan: free
-    ipAllowList: []
-
   - type: web
     name: arche-template-api
     runtime: docker
@@ -24,23 +20,14 @@ services:
       - key: RENDER
         value: 'true'
       - key: DATABASE_URL
-        fromDatabase:
-          name: arche-template-db
-          property: connectionString
+        sync: false
       - key: REDIS_URL
-        fromService:
-          name: arche-template-redis
-          type: keyvalue
-          property: connectionString
+        sync: false
+      - key: ENABLE_REDIS
+        value: 'true'
       - key: FRONTEND_URL
         sync: false
       - key: BETTER_AUTH_URL
         sync: false
       - key: BETTER_AUTH_SECRET
         generateValue: true
-
-databases:
-  - name: arche-template-db
-    plan: free
-    databaseName: template
-    user: template

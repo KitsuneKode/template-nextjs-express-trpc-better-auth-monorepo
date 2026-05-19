@@ -4,6 +4,13 @@ Hub: [deployment.md](./deployment.md). Env matrix: [deployment-env.md](./deploym
 
 Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **external** (Neon, Vercel Postgres, Upstash, etc.) — paste URLs on the **server** project.
 
+## Troubleshooting (web build)
+
+**`Invalid URL` / `input: 'undefined'` in `app/layout.tsx` during build**
+
+- Cause: `NEXT_PUBLIC_SITE_URL` missing or set to a placeholder, and `skipValidation` on Vercel skipped Zod defaults.
+- Fix: set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` to your production web URL, or rely on the template’s `VERCEL_URL` fallback (see `apps/web/env.ts`). Do not set env values to the literal string `undefined`.
+
 ## Project 1 — Web (`apps/web`)
 
 | Setting        | Value                                        |
@@ -15,13 +22,13 @@ Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **exte
 
 ### Environment (web project)
 
-| Key                            | Example                                     |
-| ------------------------------ | ------------------------------------------- |
-| `NEXT_PUBLIC_APP_URL`          | `https://my-app.vercel.app`                 |
-| `NEXT_PUBLIC_API_URL`          | `https://my-api.vercel.app` (Project 2 URL) |
-| `NEXT_PUBLIC_SITE_URL`         | Same as app URL                             |
-| `NEXT_PUBLIC_SITE_NAME`        | `My App`                                    |
-| `NEXT_PUBLIC_SITE_DESCRIPTION` | Tagline                                     |
+| Key                            | Example                                                           |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_URL`          | `https://my-app.vercel.app`                                       |
+| `NEXT_PUBLIC_API_URL`          | `https://my-api.vercel.app` (Project 2 URL)                       |
+| `NEXT_PUBLIC_SITE_URL`         | Same as app URL (optional — falls back to `VERCEL_URL` on deploy) |
+| `NEXT_PUBLIC_SITE_NAME`        | `My App`                                                          |
+| `NEXT_PUBLIC_SITE_DESCRIPTION` | Tagline                                                           |
 
 ## Project 2 — API (`apps/server`)
 
@@ -77,9 +84,9 @@ Open the web URL; confirm auth and API calls. `BETTER_AUTH_URL` and `FRONTEND_UR
 ## Limits
 
 - Serverless timeouts and cold starts apply to Express on Vercel.
-- **Worker / BullMQ**: not supported on Vercel serverless. Use Path B ([deployment-render.md](./deployment-render.md)) for `apps/worker` and `/admin/queues`, or set `ENABLE_REDIS=false`.
+- **Worker / BullMQ**: not supported on Vercel serverless. Use Path B or C ([deployment-render.md](./deployment-render.md), [deployment-railway.md](./deployment-railway.md)) for `apps/worker` and `/admin/queues`, or set `ENABLE_REDIS=false`.
 
 ## Related
 
 - [apps/server/README.md](../apps/server/README.md)
-- Path B if you outgrow serverless: [deployment-render.md](./deployment-render.md)
+- Path B (Render) or Path C (Railway) if you outgrow serverless: [deployment-render.md](./deployment-render.md), [deployment-railway.md](./deployment-railway.md)

@@ -2,7 +2,7 @@
 
 # Deployment Platforms Guide
 
-**Recommended for this template:** Vercel (`apps/web`) + Render Blueprint ([deployment-render.md](./deployment-render.md)). Env matrix: [deployment-env.md](./deployment-env.md).
+**Recommended for this template:** Paths A–C in [deployment.md](../deployment.md) — Vercel and/or Render/Railway API with **external** Neon + Upstash URLs (not Render-managed Postgres/Redis). Env matrix: [deployment-env.md](../deployment-env.md).
 
 The sections below compare other platforms. Use them when you intentionally leave the default stack.
 

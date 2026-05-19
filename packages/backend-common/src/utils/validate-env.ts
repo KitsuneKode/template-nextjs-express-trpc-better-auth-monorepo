@@ -46,10 +46,13 @@ export function validateEnvironment(target: 'server' | 'worker' | 'web'): void {
 
   if (target === 'server') {
     if (!serverEnv.FRONTEND_URL) {
-      errors.push('Missing required: FRONTEND_URL')
+      errors.push('Missing required: FRONTEND_URL (Vercel web URL for CORS / auth callbacks)')
     }
-    if (!serverEnv.BETTER_AUTH_URL) {
-      errors.push('Missing required: BETTER_AUTH_URL')
+    const betterAuthUrl = serverEnv.BETTER_AUTH_URL || process.env.RENDER_EXTERNAL_URL
+    if (!betterAuthUrl) {
+      errors.push(
+        'Missing required: BETTER_AUTH_URL (on Render, set it or rely on RENDER_EXTERNAL_URL from the platform)',
+      )
     }
   }
 
@@ -70,11 +73,9 @@ export function validateEnvironment(target: 'server' | 'worker' | 'web'): void {
       console.error('')
       console.error('Render quick fixes:')
       console.error(
-        '  • Best: Blueprint from root render.yaml (Postgres + Redis wired automatically).',
+        '  • Blueprint: root render.yaml — set DATABASE_URL (Neon) and REDIS_URL (Upstash) in dashboard.',
       )
-      console.error(
-        '  • Manual service: add REDIS_URL from a Key Value instance, or ENABLE_REDIS=false (no queues).',
-      )
+      console.error('  • Or ENABLE_REDIS=false (no queues). See docs/deployment-render.md')
       console.error('  • Start: cd apps/server && HOST=0.0.0.0 bun run start')
       console.error('  • Do not set PORT in the dashboard — Render injects it.')
       console.error('  • See docs/deployment-render.md')

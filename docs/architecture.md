@@ -31,7 +31,8 @@ Runtime flow across workspaces. For variant families (next, backend, rust), see 
 See [deployment.md](./deployment.md).
 
 - Path A: `apps/web` + `apps/server` on Vercel
-- Path B: `apps/web` on Vercel, `apps/server` on Render ([render.yaml](../render.yaml) or external DB URLs)
+- Path B: `apps/web` on Vercel, `apps/server` on Render ([render.yaml](../render.yaml), Neon + Upstash)
+- Path C: `apps/web` on Vercel, `apps/server` on Railway ([railway.toml](../railway.toml), Neon + Upstash)
 
 ## Scaffold status
 

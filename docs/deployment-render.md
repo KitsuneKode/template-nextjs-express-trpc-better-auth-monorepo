@@ -1,19 +1,21 @@
 # Path B — Vercel web + Render API
 
-Hub: [deployment.md](./deployment.md). Env matrix: [deployment-env.md](./deployment-env.md).
+Hub: [deployment.md](./deployment.md). Default ops: [production-playbook.md](./production-playbook.md). Env matrix: [deployment-env.md](./deployment-env.md).
 
-`apps/web` stays on Vercel. `apps/server` runs on Render as **Docker** (recommended). Postgres and Redis can be Render-managed (Blueprint) or **external URLs** (Neon, Upstash).
+`apps/web` on Vercel. `apps/server` on Render as **Docker**. **Postgres and Redis are external** (Neon + Upstash) — paste `DATABASE_URL` and `REDIS_URL` in the Render dashboard.
 
-## Variant B1 — Blueprint (demo / one-click)
+## Blueprint (recommended)
 
-Root [`render.yaml`](../render.yaml) provisions API + Postgres + Key Value.
+Root [`render.yaml`](../render.yaml) creates a Docker web service only (no Render Postgres or Key Value).
 
 1. Stop or delete any old manual Native Bun service that conflicts.
 2. **Dashboard → Blueprints → New Blueprint Instance** → connect repo.
 3. After deploy, set **Environment** (sync: false in blueprint):
-   - `FRONTEND_URL` — Vercel web URL
-   - `BETTER_AUTH_URL` — `https://<arche-template-api>.onrender.com`
-4. Migrate: `bun run db:migrate` with Blueprint `DATABASE_URL`.
+   - `DATABASE_URL` — Neon (or other Postgres URL)
+   - `REDIS_URL` — Upstash (or `ENABLE_REDIS=false`)
+   - `FRONTEND_URL` — Vercel web URL (**required**)
+   - `BETTER_AUTH_URL` — `https://<arche-template-api>.onrender.com` (optional if unset: uses Render’s `RENDER_EXTERNAL_URL`)
+4. Migrate: `bun run db:migrate` with production `DATABASE_URL`.
 5. Vercel web: `NEXT_PUBLIC_API_URL` = same API URL — [deployment-env.md](./deployment-env.md).
 
 ```bash
@@ -23,17 +25,11 @@ curl -sS "https://<your-service>.onrender.com/health"
 
 Do **not** set `PORT` manually. Health check path: `/health`.
 
-Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile) (same approach as [buzz8n](https://github.com/KitsuneKode/buzz8n)). Bun matches [`.bun-version`](../.bun-version); `HUSKY=0` skips git hooks during install. If you see `lockfile had changes, but lockfile is frozen`, pull latest `main`.
+Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile). Bun matches [`.bun-version`](../.bun-version); `HUSKY=0` skips git hooks during install. If you see `lockfile had changes, but lockfile is frozen`, pull latest `main`.
 
-## Variant B2 — API-only on Render (external DB/Redis)
+## Manual Docker service
 
-Use [`render.api-only.yaml`](../render.api-only.yaml): Docker web service only. Set in dashboard:
-
-- `DATABASE_URL` — Neon / Supabase / etc.
-- `REDIS_URL` — Upstash / etc., or `ENABLE_REDIS=false`
-- `FRONTEND_URL`, `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`
-
-Same env names as Path A Vercel server — [deployment-vercel.md](./deployment-vercel.md).
+Same env as the blueprint — [deployment-vercel.md](./deployment-vercel.md) server table:
 
 | Setting      | Value                    |
 | ------------ | ------------------------ |
@@ -50,11 +46,10 @@ Deploy `apps/worker` as a second Render service with `REDIS_URL` (+ `DATABASE_UR
 
 ### `Missing required: REDIS_URL`
 
-Manual service without Redis. Fix one of:
+1. Set `REDIS_URL` from Upstash (external).
+2. Or `ENABLE_REDIS=false` (no queues, no `/admin/queues`).
 
-1. **Blueprint** from `render.yaml` (wires `REDIS_URL`).
-2. Add **Key Value** → paste internal URL as `REDIS_URL`.
-3. `ENABLE_REDIS=false` (no queues, no `/admin/queues`).
+Do **not** rely on Render Key Value for this template.
 
 Wrong start command for Native Bun (discouraged):
 
@@ -78,7 +73,7 @@ Not `bun run apps/server/dist/server.js` from repo root.
 | Build          | `bun install && bun run build --filter=@template/server` |
 | Start          | `cd apps/server && HOST=0.0.0.0 bun run start`           |
 
-Prefer Docker blueprint or B2.
+Prefer Docker blueprint.
 
 ## Endpoints
 
@@ -93,3 +88,4 @@ Prefer Docker blueprint or B2.
 
 - [apps/server/README.md](../apps/server/README.md)
 - Path A (all Vercel): [deployment-vercel.md](./deployment-vercel.md)
+- Path C (Railway API): [deployment-railway.md](./deployment-railway.md)

@@ -41,7 +41,10 @@ export const serverEnv = createEnv({
   },
   clientPrefix: undefined,
   client: {},
-  runtimeEnv: process.env,
+  runtimeEnv: {
+    ...process.env,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? process.env.RENDER_EXTERNAL_URL,
+  },
   emptyStringAsUndefined: true,
   skipValidation: !!process.env.CI || !!process.env.VERCEL || !!process.env.RENDER,
 })

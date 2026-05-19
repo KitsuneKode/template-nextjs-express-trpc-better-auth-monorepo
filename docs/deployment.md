@@ -1,66 +1,66 @@
 # Deployment hub
 
-Production setup for this template: **Next.js on Vercel** plus **Express API** on Vercel or Render. Postgres and Redis are always **connection URLs** on the API service (Neon, Upstash, Render-managed, etc.).
+Production setup for this template: **Next.js on Vercel** plus **Express API** on Vercel, Render, or Railway. **Postgres and Redis are always external connection URLs** on the API host (Neon + Upstash recommended).
 
-**Start here**, then open one path guide and the env matrix.
+**Start here**, then the [production playbook](./production-playbook.md) (KitsuneKode default) or a path guide, plus the env matrix.
 
-| Doc                                            | Purpose                                   |
-| ---------------------------------------------- | ----------------------------------------- |
-| [deployment-env.md](./deployment-env.md)       | Production env matrix (all projects)      |
-| [deployment-vercel.md](./deployment-vercel.md) | **Path A** — web + API on Vercel          |
-| [deployment-render.md](./deployment-render.md) | **Path B** — web on Vercel, API on Render |
-| [env.md](./env.md)                             | Local development only                    |
+| Doc                                                | Purpose                                            |
+| -------------------------------------------------- | -------------------------------------------------- |
+| [production-playbook.md](./production-playbook.md) | **Default ops** — Vercel + Render + Neon + Upstash |
+| [deployment-env.md](./deployment-env.md)           | Production env matrix (all projects)               |
+| [deployment-vercel.md](./deployment-vercel.md)     | **Path A** — web + API on Vercel                   |
+| [deployment-render.md](./deployment-render.md)     | **Path B** — web on Vercel, API on Render          |
+| [deployment-railway.md](./deployment-railway.md)   | **Path C** — web on Vercel, API on Railway         |
+| [env.md](./env.md)                                 | Local development only                             |
 
 ## Architecture
 
 ```text
-apps/web (Vercel)  --NEXT_PUBLIC_API_URL-->  apps/server (Vercel OR Render)
+apps/web (Vercel)  --NEXT_PUBLIC_API_URL-->  apps/server (Vercel | Render | Railway)
                                                     |
-                                    DATABASE_URL, REDIS_URL (any provider)
+                                    DATABASE_URL, REDIS_URL (Neon, Upstash, etc.)
 ```
 
-Optional: `apps/worker` on Render (Path B) when using BullMQ queues.
+Optional: `apps/worker` on Render or Railway when using BullMQ (`REDIS_URL` required).
 
 ## Choose a path
 
-| Question                                            | Path                                                   |
-| --------------------------------------------------- | ------------------------------------------------------ |
-| Want API + DB env on Vercel, minimal hosts?         | **A** — [deployment-vercel.md](./deployment-vercel.md) |
-| Need background worker, Bull Board, long-lived API? | **B** — [deployment-render.md](./deployment-render.md) |
-| Already use Neon + Upstash?                         | Either path — paste the same URLs on API host          |
+| Question                                    | Path                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| KitsuneKode product default?                | **B** — follow [production-playbook.md](./production-playbook.md) |
+| Want API + DB env on Vercel, minimal hosts? | **A** — [deployment-vercel.md](./deployment-vercel.md)            |
+| Prefer Render Docker + Blueprint?           | **B** — [deployment-render.md](./deployment-render.md)            |
+| Prefer Railway Docker?                      | **C** — [deployment-railway.md](./deployment-railway.md)          |
+| Already use Neon + Upstash?                 | Any path — paste the same URLs on the API host                    |
 
-|                  | Path A (Vercel native)              | Path B (Render API)                           |
-| ---------------- | ----------------------------------- | --------------------------------------------- |
-| `apps/web`       | Vercel                              | Vercel                                        |
-| `apps/server`    | Vercel (`vercel-handler`)           | Render Docker ([render.yaml](../render.yaml)) |
-| Postgres / Redis | External URLs on **server** project | Blueprint-managed **or** external URLs        |
-| `apps/worker`    | Not on Vercel                       | Optional Render service                       |
-| Tradeoffs        | Serverless limits, cold starts      | Better for queues and 24/7 API                |
+|                  | Path A (Vercel)           | Path B (Render)                               | Path C (Railway)                                 |
+| ---------------- | ------------------------- | --------------------------------------------- | ------------------------------------------------ |
+| `apps/web`       | Vercel                    | Vercel (recommended)                          | Vercel or Railway                                |
+| `apps/server`    | Vercel (`vercel-handler`) | Render Docker ([render.yaml](../render.yaml)) | Railway Docker ([railway.toml](../railway.toml)) |
+| Postgres / Redis | Neon + Upstash URLs       | Neon + Upstash URLs                           | Neon + Upstash URLs                              |
+| `apps/worker`    | Not on Vercel             | Optional Render service                       | Optional Railway service                         |
+| Tradeoffs        | Serverless limits         | Blueprint, free tier cold starts              | Simple Docker deploy, usage billing              |
 
-Render Postgres/Redis in the Blueprint are **convenience**, not a requirement. Path B also supports Docker-only + Neon/Upstash (same env names as Path A).
+Do **not** provision Render Postgres or Render Key Value for this template — use Neon and Upstash (or any URL-based provider).
 
-## Rollout order (both paths)
+## Rollout order (all paths)
 
-1. Provision Postgres (and Redis if `ENABLE_REDIS=true`).
+1. Provision **Neon** (Postgres) and **Upstash** (Redis), or set `ENABLE_REDIS=false` on the API.
 2. Deploy API; set `DATABASE_URL`, auth vars, `FRONTEND_URL` / `BETTER_AUTH_URL` — see [deployment-env.md](./deployment-env.md).
 3. Run migrations: `bun run db:migrate` with production `DATABASE_URL`.
 4. Verify API: `curl https://<api-host>/health`.
-5. Deploy web on Vercel; set `NEXT_PUBLIC_API_URL` to the API host.
+5. Deploy web; set `NEXT_PUBLIC_API_URL` to the API host.
 6. Smoke: sign-in, one tRPC call, check CORS if the browser blocks requests.
 
 ## Code entrypoints
 
-| Host            | File                                                                      | Role                               |
-| --------------- | ------------------------------------------------------------------------- | ---------------------------------- |
-| Vercel          | [apps/server/src/vercel-handler.ts](../apps/server/src/vercel-handler.ts) | Export Express `app` (no `listen`) |
-| Render / Docker | [apps/server/src/server.ts](../apps/server/src/server.ts)                 | `listen`, then Redis               |
+| Host                      | File                                                                      | Role                               |
+| ------------------------- | ------------------------------------------------------------------------- | ---------------------------------- |
+| Vercel                    | [apps/server/src/vercel-handler.ts](../apps/server/src/vercel-handler.ts) | Export Express `app` (no `listen`) |
+| Render / Railway / Docker | [apps/server/src/server.ts](../apps/server/src/server.ts)                 | `listen`, then Redis               |
 
 Same [apps/server/src/app.ts](../apps/server/src/app.ts) for routes, auth, and tRPC.
 
-## Optional: API-only on Render
-
-Use [render.api-only.yaml](../render.api-only.yaml) when Postgres and Redis live outside Render (Neon, Upstash). Details in [deployment-render.md](./deployment-render.md).
-
 ## Historical platform guides
 
-Multi-platform comparisons live in [archive/deployment-platforms.md](./archive/deployment-platforms.md) — not maintained for this template’s two paths.
+Multi-platform comparisons live in [archive/deployment-platforms.md](./archive/deployment-platforms.md) — not maintained for this template’s three paths.
