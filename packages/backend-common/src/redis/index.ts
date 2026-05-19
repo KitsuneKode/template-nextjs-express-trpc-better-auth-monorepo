@@ -1,17 +1,28 @@
-import { RedisClient } from 'bun'
+import IORedis from 'ioredis'
 import { backendConfig, workerConfig } from '../utils/config'
 
 type ServiceType = 'server' | 'worker'
 
-const getEnvironment = (service: ServiceType) => {
-  if (service == 'worker') {
-    return workerConfig.REDIS_URL
-  } else {
-    return backendConfig.REDIS_URL
-  }
+const getRedisUrl = (service: ServiceType): string => {
+  if (service === 'worker') return workerConfig.REDIS_URL
+  return backendConfig.REDIS_URL
 }
 
-export const redisClient = (service: ServiceType) => {
-  const url = getEnvironment(service)
-  return new RedisClient(url)
+/** Lifecycle Redis handle for server/worker boot. BullMQ uses `@template/backend-common/redis/bull`. */
+export type AppRedisClient = {
+  connect(): Promise<void>
+  close(): Promise<void>
+}
+
+export const redisClient = (service: ServiceType): AppRedisClient => {
+  const client = new IORedis(getRedisUrl(service), { lazyConnect: true })
+
+  return {
+    async connect() {
+      await client.connect()
+    },
+    async close() {
+      await client.quit()
+    },
+  }
 }
