@@ -48,9 +48,19 @@ Dependency direction: `routes → controllers → services → repositories → 
 
 ## Deploy
 
-- Vercel: `src/vercel-handler.ts` — [docs/deployment-vercel.md](../../docs/deployment-vercel.md)
-- Render / Docker: `src/server.ts` — [docs/deployment-render.md](../../docs/deployment-render.md)
-- Hub: [docs/deployment.md](../../docs/deployment.md)
+Playbook (default Path B): [docs/production-playbook.md](../../docs/production-playbook.md). Hub: [docs/deployment.md](../../docs/deployment.md).
+
+| Path        | Entry                                                | Build                                                                            |
+| ----------- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| A — Vercel  | `src/vercel-handler.ts`                              | `bun run build:vercel --filter=@template/server`                                 |
+| B — Render  | `src/server.ts` + [render.yaml](../../render.yaml)   | Docker (`apps/server/Dockerfile`); CI: `bun run build --filter=@template/server` |
+| C — Railway | `src/server.ts` + [railway.toml](../../railway.toml) | Same Docker image as Path B                                                      |
+
+- Path A: [docs/deployment-vercel.md](../../docs/deployment-vercel.md)
+- Path B: [docs/deployment-render.md](../../docs/deployment-render.md)
+- Path C: [docs/deployment-railway.md](../../docs/deployment-railway.md)
+
+Postgres/Redis always external (Neon + Upstash). Never Render-managed DB.
 
 ## Update When
 

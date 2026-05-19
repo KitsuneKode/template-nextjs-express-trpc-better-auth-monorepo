@@ -2,7 +2,11 @@
 
 ## Purpose
 
-Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Vercel; `NEXT_PUBLIC_API_URL` may point to a Vercel API (`*.vercel.app`) or Render API (`*.onrender.com`) — [docs/deployment.md](../../docs/deployment.md).
+Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Vercel; `NEXT_PUBLIC_API_URL` may point to Path A (`*.vercel.app`), Path B (`*.onrender.com`), or Path C (`*.up.railway.app`).
+
+- Production default: [docs/production-playbook.md](../../docs/production-playbook.md)
+- Deploy hub: [docs/deployment.md](../../docs/deployment.md)
+- Build: `bun run build --filter=@template/web` (Vercel uses app root `apps/web`)
 
 ## Read first
 
