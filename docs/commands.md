@@ -13,6 +13,8 @@
 - `bun run build` — Build the workspace.
 - `bun run lint` — Lint code and markdown.
 - `bun run check-types` — Run workspace type checks.
+- `bun run test:deploy` — Live API smoke (default Render). See [deploy-smoke.md](./deploy-smoke.md).
+- `bun run test:deploy:all` — Smoke Render + Vercel template URLs (Vercel skipped when deployment protection is on).
 
 ## Database
 

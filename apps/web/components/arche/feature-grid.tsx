@@ -22,7 +22,7 @@ export function FeatureGrid() {
     },
     {
       title: 'Scale Aware',
-      desc: 'Includes Docker Compose setups for your database and Redis cache, plus ready-to-deploy GitHub Actions CI workflows.',
+      desc: 'Three deploy paths (Vercel, Render, Railway) with Neon + Upstash, Docker API images, and post-deploy smoke via bun run test:deploy.',
       id: '05',
     },
     {

@@ -45,6 +45,13 @@ bun run db:migrate
 ## Smoke tests
 
 ```bash
+RAILWAY_API_URL=https://<your-api>.up.railway.app bun run test:deploy
+# or all paths: RAILWAY_API_URL=... bun run test:deploy:all
+```
+
+See [deploy-smoke.md](./deploy-smoke.md). Manual curl:
+
+```bash
 curl -sS "https://<your-api>.up.railway.app/health"
 curl -sS "https://<your-api>.up.railway.app/"
 ```

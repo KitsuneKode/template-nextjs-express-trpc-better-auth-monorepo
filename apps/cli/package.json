@@ -1,6 +1,6 @@
 {
   "name": "@arche/create",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Arche — bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
   "keywords": [
     "better-auth",

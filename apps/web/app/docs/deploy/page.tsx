@@ -6,6 +6,24 @@ export const metadata: Metadata = {
     'Deploy Arche with three production paths: Vercel (web + API), Render Docker, or Railway Docker — Neon + Upstash for data.',
 }
 
+const referenceHosts = [
+  {
+    path: 'Path A — Vercel API',
+    url: 'https://template-server-kitsunekode.vercel.app',
+    note: 'May require VERCEL_PROTECTION_BYPASS for automated smoke (deployment protection on *.vercel.app).',
+  },
+  {
+    path: 'Path B — Render API',
+    url: 'https://arche-template-api.onrender.com',
+    note: 'Blueprint service arche-template-api; ENABLE_REDIS=false by default.',
+  },
+  {
+    path: 'Path C — Railway API',
+    url: 'https://<your-service>.up.railway.app',
+    note: 'Deploy via railway.toml — set RAILWAY_API_URL after you generate a public domain.',
+  },
+] as const
+
 export default function DeployDocsPage() {
   return (
     <div className="flex h-full flex-col">
@@ -26,6 +44,43 @@ export default function DeployDocsPage() {
       </section>
 
       <section className="max-w-4xl space-y-16 p-6 md:p-12">
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold tracking-tight text-white uppercase">
+            Production reference URLs
+          </h2>
+          <p className="text-sm leading-relaxed font-medium text-zinc-400">
+            Point <code className="text-zinc-300">NEXT_PUBLIC_API_URL</code> at one API host. Use
+            the same host in Better Auth and CORS env vars.
+          </p>
+          <ul className="space-y-4 border border-zinc-800 bg-zinc-950/80">
+            {referenceHosts.map((host) => (
+              <li key={host.path} className="border-b border-zinc-800 p-4 last:border-b-0 md:p-6">
+                <div className="mb-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                  {host.path}
+                </div>
+                <code className="block font-mono text-sm text-green-400">{host.url}</code>
+                <p className="mt-2 text-xs leading-relaxed text-zinc-500">{host.note}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="space-y-6 border border-zinc-800 bg-zinc-900/50 p-8">
+          <h3 className="text-lg font-bold text-white uppercase">Post-deploy smoke</h3>
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Run locally after a deploy (not part of default CI). Validates{' '}
+            <code className="text-zinc-300">/</code> and{' '}
+            <code className="text-zinc-300">/health</code> including database connectivity.
+          </p>
+          <div className="space-y-2 border border-zinc-800 bg-black p-4 font-mono text-xs text-green-400">
+            <div>$ bun run test:deploy</div>
+            <div>$ bun run test:deploy:all</div>
+          </div>
+          <p className="text-xs text-zinc-500">
+            Docs: <code className="text-zinc-400">docs/deploy-smoke.md</code> in the template repo.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-4">
             <h2 className="text-xl font-bold tracking-tight text-white uppercase underline underline-offset-8">
@@ -53,7 +108,8 @@ export default function DeployDocsPage() {
             </h2>
             <p className="text-sm leading-relaxed font-medium text-zinc-400">
               Same split as Render: Vercel for web, Railway Docker for the API using{' '}
-              <code className="text-zinc-300">railway.toml</code>.
+              <code className="text-zinc-300">railway.toml</code>. Login:{' '}
+              <code className="text-zinc-300">npx @railway/cli login</code>.
             </p>
           </div>
         </div>
@@ -75,7 +131,8 @@ export default function DeployDocsPage() {
           </h2>
           <p className="leading-relaxed font-medium text-zinc-400">
             GitHub Actions runs format check, lint, typecheck, tests, Vercel server build, and a
-            Docker smoke build on every push to <code className="text-zinc-300">main</code>.
+            Docker smoke build on every push to <code className="text-zinc-300">main</code>. Live
+            deploy smoke stays manual — see <code className="text-zinc-300">test:deploy</code>.
           </p>
           <div className="flex items-center gap-4 border border-zinc-800 bg-zinc-900 p-6">
             <span className="size-4 animate-pulse bg-blue-500" />

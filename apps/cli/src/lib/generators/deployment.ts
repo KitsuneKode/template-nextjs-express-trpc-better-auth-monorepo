@@ -91,6 +91,7 @@ Production playbook (default Path B): [production-playbook.md](https://github.co
 1. Provision Neon (Postgres) and Upstash (Redis), or \`ENABLE_REDIS=false\`.
 2. Deploy API; run migrations; verify \`/health\`.
 3. Deploy web with \`NEXT_PUBLIC_API_URL\` pointing at the API.
+4. Smoke: \`bun run test:deploy\` (set \`RENDER_API_URL\`, \`RAILWAY_API_URL\`, or \`VERCEL_API_URL\`). See template \`docs/deploy-smoke.md\`.
 ${serverBlock}
 ## Required environment variables
 

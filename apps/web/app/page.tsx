@@ -45,7 +45,7 @@ export default function LandingPage() {
 
         {/* Bottom Banner */}
         <div className="flex items-center justify-between border-t border-zinc-800 bg-zinc-900 p-4 font-mono text-xs font-bold tracking-widest text-zinc-400 uppercase">
-          <div>Next.js 15</div>
+          <div>Next.js 16</div>
           <div>Express</div>
           <div className="hidden sm:block">tRPC</div>
           <div className="hidden md:block">Prisma</div>

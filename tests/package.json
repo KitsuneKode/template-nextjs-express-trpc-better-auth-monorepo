@@ -6,6 +6,8 @@
   "scripts": {
     "test:watch": "bun test --watch",
     "test": "bun test",
+    "test:deploy": "RUN_DEPLOY_SMOKE=1 bun test src/integration/deploy-smoke.test.ts",
+    "test:deploy:all": "RUN_DEPLOY_SMOKE=1 RENDER_API_URL=https://arche-template-api.onrender.com VERCEL_API_URL=https://template-server-kitsunekode.vercel.app bun test src/integration/deploy-smoke.test.ts",
     "test:coverage": "bun test --coverage"
   },
   "dependencies": {
