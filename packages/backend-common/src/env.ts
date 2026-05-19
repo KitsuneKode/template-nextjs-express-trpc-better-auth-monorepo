@@ -42,7 +42,7 @@ export const serverEnv = createEnv({
   client: {},
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
-  skipValidation: !!process.env.CI || !!process.env.VERCEL,
+  skipValidation: !!process.env.CI || !!process.env.VERCEL || !!process.env.RENDER,
 })
 
 export type ServerEnv = typeof serverEnv

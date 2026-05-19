@@ -37,6 +37,18 @@ health endpoint.
   removed.
 - Revisit `src/server.ts` if you do not want clustered startup.
 
+## Vercel Deployment
+
+Required environment variable in Vercel project:
+
+```
+VERCEL_ENABLE_EXPERIMENTAL_BUILD_MODE=1
+```
+
+This enables experimental build mode which properly handles TypeScript path aliases and module resolution for bundled Express apps with many dependencies. Without this, deployments may fail with `ResolveMessage {}`.
+
+Entry point for Vercel: `src/vercel-handler.ts` (adds error handlers and `require` shim before loading app).
+
 ## Update When
 
 Update this file when route mounts, middleware order, config usage, or startup
