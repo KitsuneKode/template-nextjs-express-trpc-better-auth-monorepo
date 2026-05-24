@@ -73,6 +73,29 @@ async function updatePackageJsonFiles(directory: string): Promise<void> {
   }
 }
 
+async function directoryExists(directory: string): Promise<boolean> {
+  try {
+    return (await stat(directory)).isDirectory()
+  } catch {
+    return false
+  }
+}
+
+async function workspacePackages(destinationDir: string, root: JsonPackage): Promise<string[]> {
+  const packages = Array.isArray(root.workspaces)
+    ? root.workspaces
+    : (root.workspaces?.packages ?? ['apps/*', 'packages/*', 'toolings/*'])
+
+  if (
+    (await directoryExists(join(destinationDir, 'services'))) &&
+    !packages.includes('services/*')
+  ) {
+    return [...packages, 'services/*']
+  }
+
+  return packages
+}
+
 export async function applyJavaScriptPackageManagerFoundation(
   destinationDir: string,
   packageManager: ProjectConfig['packageManager'],
@@ -100,9 +123,7 @@ export async function applyJavaScriptPackageManagerFoundation(
     return generatedFiles
   }
 
-  const packages = Array.isArray(root.workspaces)
-    ? root.workspaces
-    : (root.workspaces?.packages ?? ['apps/*', 'packages/*', 'toolings/*'])
+  const packages = await workspacePackages(destinationDir, root)
 
   if (packageManager === 'bun') {
     root.workspaces = { packages, catalog: DEFAULT_WORKSPACE_CATALOG }

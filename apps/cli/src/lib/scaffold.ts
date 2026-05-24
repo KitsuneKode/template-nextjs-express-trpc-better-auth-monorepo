@@ -133,6 +133,15 @@ function shouldStripServer(family: Family): boolean {
   return family === 'next' || family === 'mobile'
 }
 
+function backendUsesServiceApi(backend: ProjectConfig['backend']): boolean {
+  return (
+    backend === 'rust-axum' ||
+    backend === 'rust-actix' ||
+    backend === 'go-fiber' ||
+    backend === 'python-fastapi'
+  )
+}
+
 async function pathExists(path: string): Promise<boolean> {
   try {
     await access(path)
@@ -426,7 +435,7 @@ export async function scaffoldProject(
   ]
 
   const monorepo = isMonorepoFamily(family)
-  const hasServer = !shouldStripServer(family)
+  const hasServer = !shouldStripServer(family) && !backendUsesServiceApi(options.backend)
   const hasWeb = !shouldStripWeb(family)
 
   // Server env: only for monorepo families (standalone templates ship their own .env)

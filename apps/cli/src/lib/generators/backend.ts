@@ -231,6 +231,13 @@ uuid = { version = "1", features = ["v4"] }
 `
 }
 
+function rustCargoWorkspaceToml(): string {
+  return `[workspace]
+members = ["services/api"]
+resolver = "2"
+`
+}
+
 function rustAxumMainRs(): string {
   return `use axum::{routing::get, Router};
 use tower_http::cors::{Any, CorsLayer};
@@ -617,6 +624,7 @@ export async function applyBackendTransform(
       await writeFile_(join(apiDir, 'README.md'), rustAxumReadme(projectName))
     }
 
+    await writeFile_(join(destinationDir, 'Cargo.toml'), rustCargoWorkspaceToml())
     await writeFile_(join(apiDir, '.env.example'), buildServerEnv(config))
 
     return

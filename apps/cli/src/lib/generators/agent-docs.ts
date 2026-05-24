@@ -1,6 +1,15 @@
 import type { ProjectConfig } from '../../types/schemas'
 import { sanitizeProjectName } from '../slug'
 
+function usesServiceApi(config: ProjectConfig): boolean {
+  return (
+    config.backend === 'rust-axum' ||
+    config.backend === 'rust-actix' ||
+    config.backend === 'go-fiber' ||
+    config.backend === 'python-fastapi'
+  )
+}
+
 function keyDirs(config: ProjectConfig): string[] {
   const { family, includeWorker } = config
   const dirs: string[] = []
@@ -169,9 +178,34 @@ When modifying this project as an agent:
 export function buildGeneratedArchitectureMd(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
   const family = config.family
+  const serviceApi = usesServiceApi(config)
 
   const descriptions: Record<string, string> = {
-    fullstack: `A full-stack TypeScript monorepo scaffolded with @arche/create.
+    fullstack: serviceApi
+      ? `A full-stack monorepo scaffolded with @arche/create.
+
+## Architecture
+
+- **Frontend**: Next.js (App Router) in \`apps/web\`
+- **Backend**: ${config.backend} in \`services/api\`
+- **Database**: ${config.database}${config.orm !== 'none' ? ` via ${config.orm}` : ''}
+- **Auth boundary**: Keep auth/session verification explicit at the service boundary
+- **UI**: Shared component library at \`packages/ui\`
+- **JavaScript workspace**: Turborepo with Bun/pnpm package-manager support
+- **Rust workspace**: Cargo workspace at \`Cargo.toml\` with \`services/api\`
+
+## Key Entry Points
+
+- Rust API startup: \`services/api/src/main.rs\`
+- Rust API config: \`services/api/src/config.rs\`
+- Rust API routes: \`services/api/src/routes.rs\`
+- Frontend providers: \`apps/web/components/providers.tsx\`
+- Frontend API client boundary: keep fetch/client calls isolated from UI components
+
+## Environment Variables
+
+See \`services/api/.env.example\` and \`apps/web/.env.example\` for required variables.`
+      : `A full-stack TypeScript monorepo scaffolded with @arche/create.
 
 ## Architecture
 

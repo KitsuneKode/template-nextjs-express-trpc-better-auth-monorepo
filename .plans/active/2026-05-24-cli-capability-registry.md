@@ -110,8 +110,7 @@ Canonical agent-context slice completed on 2026-05-24:
 
 Still pending:
 
-- Implement and verify Rust Fullstack and Solana preset output before promoting
-  them to `Stable`.
+- Implement and verify Solana preset output before promoting it to `Stable`.
 
 Native workspace/support surface slice completed on 2026-05-24:
 
@@ -147,5 +146,21 @@ Preset configurator bridge slice completed on 2026-05-24:
 - Verified
   `bun test apps/cli/tests/preset-config.test.ts apps/cli/tests/registry.test.ts apps/cli/tests/schemas.test.ts apps/cli/tests/workspace-output.test.ts apps/cli/tests/scaffold-smoke.test.ts`:
   59 pass, 0 fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
+
+Rust-backed fullstack scaffold slice completed on 2026-05-24:
+
+- Fixed service-backend scaffolds so `apps/server` is not recreated by later
+  env generation after a Rust/Go/Python backend swap.
+- Added `services/*` to generated JavaScript workspace packages when a
+  service-backend directory exists.
+- Added a root Cargo workspace for Rust-backed fullstack output with
+  `services/api` as the first member.
+- Updated generated architecture context for service-backed fullstack projects
+  so agents read `services/api` instead of stale `apps/server` paths.
+- Verified
+  `bun test apps/cli/tests/preset-scaffold.test.ts apps/cli/tests/preset-config.test.ts apps/cli/tests/workspace-output.test.ts apps/cli/tests/scaffold-smoke.test.ts apps/cli/tests/rust-scaffold.test.ts`:
+  17 pass, 0 fail.
 - Verified `bun run --cwd apps/cli check-types`: pass.
 - Verified `bun run --cwd apps/cli lint`: pass.
