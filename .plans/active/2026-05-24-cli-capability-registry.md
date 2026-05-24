@@ -111,6 +111,24 @@ Canonical agent-context slice completed on 2026-05-24:
 Still pending:
 
 - Use the registry to drive the interactive preset-led configurator.
-- Render Bun/pnpm catalogs into actual scaffolded workspace output.
 - Implement and verify Rust Fullstack and Solana preset output before promoting
   them to `Stable`.
+
+Native workspace/support surface slice completed on 2026-05-24:
+
+- Fullstack Bun scaffolds now emit Bun-native workspace/catalog metadata and
+  centralized shared dependency references.
+- Fullstack pnpm scaffolds now emit `pnpm-workspace.yaml` catalogs, a pinned
+  pnpm package manager, and retain explicit Bun/Node engine support.
+- Generated root scripts normalize legacy Turbo shorthand into `turbo run`
+  delegation for filtered apps and database tasks.
+- Catalog values use this scaffold's selected dependency baseline; the
+  `t3code` reference supplies organization principles, not copied package
+  versions.
+- Current package-manager prompts and MCP schema now identify Bun as default,
+  pnpm as first-class, and npm as experimental.
+- Verified `bun test apps/cli/tests`: 255 pass, 1 pre-existing skipped E2E, 0
+  fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
+- Verified `bun run repo:doctor`: 0 errors, 0 warnings, 0 info.
