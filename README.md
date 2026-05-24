@@ -161,6 +161,7 @@ Target generated layouts are documented in
 bun install
 bun run dev:cli -- my-app --yes --dir=/tmp/arche-output
 bun test apps/cli/tests
+bun run verify:generated
 bun run --cwd apps/cli check-types
 bun run --cwd apps/cli lint
 bun run repo:doctor

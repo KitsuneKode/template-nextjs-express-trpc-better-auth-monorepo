@@ -57,5 +57,6 @@ bun install
 bun dev
 bun run dev:cli -- my-app --yes --dir=../projects
 bun test apps/cli/tests
+bun run verify:generated
 bun run repo:doctor
 ```

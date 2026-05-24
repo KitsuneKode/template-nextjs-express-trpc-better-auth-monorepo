@@ -16,6 +16,9 @@
 - `bun test apps/cli/tests` - Run CLI tests.
 - `bun run --cwd apps/cli check-types` - Typecheck the CLI package.
 - `bun run --cwd apps/cli lint` - Lint the CLI package.
+- `bun run verify:generated` - Generate the curated preset matrix into temp dirs and verify structure without installing dependencies.
+- `bun run verify:generated -- --preset=typescript-fullstack --pm=bun,pnpm` - Verify selected preset/package-manager structure.
+- `bun run verify:generated -- --preset=solana-product --run=cargo-check,anchor-build` - Opt into slower generated-project tool gates.
 
 ## Web development
 
@@ -32,6 +35,7 @@
 - `bun run format:check` - Check formatting.
 - `bun run repo:doctor` - Audit stale scaffolding, broken exports, placeholder files, and doc drift.
 - `bun run repo:doctor:strict` - Fail on warnings and errors for CI or pre-release checks.
+- `bun run verify:generated` - Fast generated-project structure verification for the preset matrix.
 
 ## Database
 

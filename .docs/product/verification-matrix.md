@@ -6,6 +6,9 @@ relevant generated-project checks.
 
 The code-level guard lives in
 `apps/cli/src/registry/verification-matrix.ts`.
+The generated-output harness lives in
+`apps/cli/src/lib/generated-project-verifier.ts` and is exposed through
+`bun run verify:generated`.
 
 ## Status key
 
@@ -20,10 +23,10 @@ The code-level guard lives in
 | `typescript-fullstack` | yes       | yes | yes  | no      | no   | no        | no   | no    | yes        | n/a        | n/a          | no     |
 | `rust-api`             | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
 | `rust-fullstack`       | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
-| `solana-program`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-web`           | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-mobile`        | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
+| `solana-program`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
+| `solana-web`           | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
+| `solana-mobile`        | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
+| `solana-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
 | `customize`            | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
 | `experiments`          | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
 
@@ -37,8 +40,15 @@ The code-level guard lives in
   `apps/cli/tests/rust-scaffold.test.ts`.
 - Rust-backed fullstack structure and Cargo workspace:
   `apps/cli/tests/preset-scaffold.test.ts`.
+- Rust generated Cargo workspace check:
+  `bun run verify:generated -- --preset=rust-api,rust-fullstack --run=cargo-check`.
 - Solana program/web/mobile/product structure and Bun workspace output:
   `apps/cli/tests/solana-preset.test.ts`.
+- Solana generated Anchor build:
+  `bun run verify:generated -- --preset=solana-program,solana-web,solana-mobile,solana-product --run=anchor-build`.
+- Curated generated-project structure verification harness:
+  `apps/cli/tests/generated-project-verifier.test.ts` and
+  `bun run verify:generated`.
 - Agent-context output:
   `apps/cli/tests/agent-context.test.ts` and `apps/cli/tests/add.test.ts`.
 - Preset support-label guard:

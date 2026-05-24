@@ -58,6 +58,14 @@ describe('solana preset output', () => {
       expect(anchor).toContain('[programs.localnet]')
       expect(anchor).toContain('solana_program_core')
 
+      const cargoWorkspace = readFileSync(join(destinationDir, 'Cargo.toml'), 'utf8')
+      expect(cargoWorkspace).toContain('[profile.release]')
+      expect(cargoWorkspace).toContain('overflow-checks = true')
+
+      const programCargo = readFileSync(join(destinationDir, 'programs/core/Cargo.toml'), 'utf8')
+      expect(programCargo).toContain('[features]')
+      expect(programCargo).toContain('idl-build = ["anchor-lang/idl-build"]')
+
       const rootPackage = JSON.parse(readFileSync(join(destinationDir, 'package.json'), 'utf8'))
       expect(rootPackage.packageManager).toStartWith('bun@')
       expect(rootPackage.workspaces.packages).toContain('packages/*')

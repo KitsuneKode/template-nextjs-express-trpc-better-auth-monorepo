@@ -1,0 +1,43 @@
+import { describe, expect, it } from 'bun:test'
+import {
+  buildGeneratedProjectCases,
+  verifyGeneratedProject,
+} from '../src/lib/generated-project-verifier'
+
+describe('generated project verifier', () => {
+  it('keeps slow generated command gates out of the default case matrix', () => {
+    expect(buildGeneratedProjectCases()).toEqual(
+      expect.arrayContaining([
+        { preset: 'typescript-fullstack', packageManager: 'bun' },
+        { preset: 'typescript-fullstack', packageManager: 'pnpm' },
+        { preset: 'rust-api', packageManager: 'bun' },
+        { preset: 'rust-fullstack', packageManager: 'bun' },
+        { preset: 'solana-product', packageManager: 'bun' },
+      ]),
+    )
+  })
+
+  it('verifies TypeScript fullstack structure without installing dependencies', async () => {
+    const result = await verifyGeneratedProject({
+      preset: 'typescript-fullstack',
+      packageManager: 'bun',
+      commands: [],
+    })
+
+    expect(result.success).toBe(true)
+    expect(result.missingFiles).toEqual([])
+    expect(result.commands).toEqual([])
+  }, 60000)
+
+  it('verifies Solana product structure without running Anchor gates', async () => {
+    const result = await verifyGeneratedProject({
+      preset: 'solana-product',
+      packageManager: 'bun',
+      commands: [],
+    })
+
+    expect(result.success).toBe(true)
+    expect(result.missingFiles).toEqual([])
+    expect(result.commands).toEqual([])
+  }, 60000)
+})

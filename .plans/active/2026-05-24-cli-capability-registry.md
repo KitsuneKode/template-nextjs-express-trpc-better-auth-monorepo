@@ -191,3 +191,19 @@ Solana scaffold foundation slice completed on 2026-05-24:
   slug instead of template placeholder names.
 - Updated the verification matrix to record Solana structure and Bun workspace
   proof without promoting the presets to `Stable`.
+
+Generated-project hardening slice completed on 2026-05-24:
+
+- Added a reusable generated-project verifier that scaffolds presets into temp
+  directories and checks expected output structure.
+- Added `bun run verify:generated` for fast matrix verification, with opt-in
+  `--run=install,lint,typecheck,test,build,cargo-check,anchor-build` gates.
+- Quieted internal rename/cleanup transform output during scaffolding so
+  verifier output stays readable.
+- Fixed generated Solana Anchor workspaces by adding release overflow checks
+  and the program `idl-build` feature.
+- Fixed generated Rust-backed fullstack CORS origin parsing so `cargo check
+--workspace` passes.
+- Verified fast generated structure for the curated matrix, Rust Cargo checks,
+  and Solana Anchor builds while keeping presets below `Stable` until install,
+  lint, typecheck, build, deployment, and package-manager coverage are complete.

@@ -64,6 +64,11 @@ describe('preset scaffold output', () => {
       expect(apiCargo).toContain('axum = "0.8"')
       expect(apiCargo).toContain('sqlx =')
 
+      const apiMain = readFileSync(join(destinationDir, 'services/api/src/main.rs'), 'utf8')
+      expect(apiMain).toContain('let allowed_origin = frontend_url')
+      expect(apiMain).toContain('.allow_origin(allowed_origin)')
+      expect(apiMain).not.toContain('unwrap_or_default()')
+
       const architecture = readFileSync(
         join(destinationDir, '.docs/architecture/generated-project.md'),
         'utf8',

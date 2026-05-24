@@ -15,6 +15,7 @@
     "build:cli": "turbo -F @arche/create build",
     "repo:doctor": "bun toolings/scripts/repo-doctor.ts",
     "repo:doctor:strict": "bun toolings/scripts/repo-doctor.ts --strict",
+    "verify:generated": "bun toolings/scripts/verify-generated-project.ts",
     "template:clean:dry": "bun toolings/scripts/template-cleanup.ts --dry-run",
     "template:clean": "bun toolings/scripts/template-cleanup.ts --yes",
     "commit:check": "commitlint --last --verbose",

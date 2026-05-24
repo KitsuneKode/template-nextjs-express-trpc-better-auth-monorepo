@@ -254,9 +254,12 @@ async fn main() {
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "3001".to_string());
     let frontend_url = std::env::var("FRONTEND_URL").unwrap_or_else(|_| "http://localhost:3000".to_string());
+    let allowed_origin = frontend_url
+        .parse::<axum::http::HeaderValue>()
+        .unwrap_or_else(|_| axum::http::HeaderValue::from_static("http://localhost:3000"));
 
     let cors = CorsLayer::new()
-        .allow_origin(frontend_url.parse::<axum::http::HeaderValue>().ok().map(|v| [v]).unwrap_or_default())
+        .allow_origin(allowed_origin)
         .allow_methods(Any)
         .allow_headers(Any);
 

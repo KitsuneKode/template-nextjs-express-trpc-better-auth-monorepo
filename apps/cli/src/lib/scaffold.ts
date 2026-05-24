@@ -403,6 +403,7 @@ export async function scaffoldProject(
   if (familySupportsRenameScope(family)) {
     runCommand(['bun', join(TOOLINGS_DIR, 'rename-scope.ts'), '--quiet'], {
       cwd: destinationDir,
+      silent: true,
     })
   }
 
@@ -416,7 +417,7 @@ export async function scaffoldProject(
         `--remove=${cleanupTargets.join(',')}`,
         '--yes',
       ],
-      { cwd: destinationDir },
+      { cwd: destinationDir, silent: true },
     )
   }
 

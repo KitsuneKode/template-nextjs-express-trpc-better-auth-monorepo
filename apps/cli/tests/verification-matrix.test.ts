@@ -44,7 +44,7 @@ describe('preset verification matrix', () => {
         structure: true,
         bun: true,
         generatedBuild: false,
-        solanaProgram: false,
+        solanaProgram: true,
       })
       expect(presetHasStableEvidence(preset)).toBe(false)
     }

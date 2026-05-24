@@ -81,13 +81,15 @@ Evidence: `bun test apps/cli/tests/solana-preset.test.ts apps/cli/tests/preset-c
 
 ## Task 6: Generated-project hardening
 
-- [ ] Add generated-project verification helpers that can run selected install/build/test commands in temporary output directories.
-- [ ] Keep slow install/build checks separated from fast unit tests.
-- [ ] Verify Bun and pnpm generated TypeScript routes.
-- [ ] Verify Rust API and Rust-backed fullstack Cargo workspaces where local Rust tooling is available.
-- [ ] Verify Solana structure and run Anchor/Cargo checks only when local tooling is available.
-- [ ] Keep preset support status as `requiresValidation` until evidence is complete.
-- [ ] Commit verification harness and evidence updates.
+- [x] Add generated-project verification helpers that can run selected install/build/test commands in temporary output directories.
+- [x] Keep slow install/build checks separated from fast unit tests.
+- [x] Verify Bun and pnpm generated TypeScript routes.
+- [x] Verify Rust API and Rust-backed fullstack Cargo workspaces where local Rust tooling is available.
+- [x] Verify Solana structure and run Anchor/Cargo checks only when local tooling is available.
+- [x] Keep preset support status as `requiresValidation` until evidence is complete.
+- [x] Commit verification harness and evidence updates.
+
+Evidence: `bun run verify:generated`, `bun run verify:generated -- --preset=rust-api,rust-fullstack --run=cargo-check`, `bun run verify:generated -- --preset=solana-program,solana-web,solana-mobile,solana-product --run=anchor-build`, `bun test apps/cli/tests/generated-project-verifier.test.ts apps/cli/tests/preset-scaffold.test.ts apps/cli/tests/solana-preset.test.ts apps/cli/tests/verification-matrix.test.ts`, `bun run --cwd apps/cli check-types`, `bun run --cwd apps/cli lint`, and `bun run repo:doctor` pass.
 
 ## Task 7: npm/OIDC publication readiness
 

@@ -94,6 +94,9 @@ function cargoWorkspaceToml(): string {
   return `[workspace]
 members = ["programs/core"]
 resolver = "2"
+
+[profile.release]
+overflow-checks = true
 `
 }
 
@@ -108,6 +111,9 @@ edition = "2021"
 [lib]
 name = "${libName}"
 crate-type = ["cdylib", "lib"]
+
+[features]
+idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
 anchor-lang = "0.30"
