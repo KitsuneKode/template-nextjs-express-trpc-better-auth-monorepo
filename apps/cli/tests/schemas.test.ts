@@ -150,6 +150,13 @@ describe('checkCompatibility', () => {
     })
     expect(result.warnings.filter((w: string) => w.includes('only applicable'))).toEqual([])
   })
+
+  it('warns that npm is outside first-class package manager support', () => {
+    const result = checkCompatibility({
+      packageManager: 'npm',
+    })
+    expect(result.warnings.some((w: string) => w.includes('experimental'))).toBe(true)
+  })
 })
 
 describe('Zod schemas', () => {

@@ -310,6 +310,10 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
   const warnings: string[] = []
   const errors: string[] = []
 
+  if (config.packageManager === 'npm') {
+    warnings.push('npm support is experimental. Bun and pnpm are the first-class outputs.')
+  }
+
   if (config.database === 'mongodb' && config.orm === 'drizzle') {
     errors.push('Drizzle does not support MongoDB. Use Mongoose or Prisma.')
   }

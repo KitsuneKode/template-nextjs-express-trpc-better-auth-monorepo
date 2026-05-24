@@ -1,4 +1,4 @@
-import type { SupportStatus } from './support-status'
+import { SUPPORT_LABELS, type SupportStatus } from './support-status'
 
 export interface CapabilityOption {
   id: string
@@ -70,3 +70,17 @@ export const CAPABILITIES = {
     },
   },
 } as const satisfies Record<string, CapabilityDefinition>
+
+export const PACKAGE_MANAGER_SUPPORT = {
+  bun: CAPABILITIES.packageManager.options.bun.status,
+  pnpm: CAPABILITIES.packageManager.options.pnpm.status,
+  npm: CAPABILITIES.packageManager.options.npm.status,
+} as const
+
+export function packageManagerMenuOptions() {
+  return Object.values(CAPABILITIES.packageManager.options).map((option) => ({
+    label: option.label,
+    value: option.id,
+    hint: `${option.id === 'bun' ? 'default, ' : ''}${SUPPORT_LABELS[option.status]}`,
+  }))
+}

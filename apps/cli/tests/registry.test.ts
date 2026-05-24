@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { CAPABILITIES } from '../src/registry/capabilities'
+import { CAPABILITIES, packageManagerMenuOptions } from '../src/registry/capabilities'
 import { validateCapabilitySelection } from '../src/registry/compatibility'
 import { PRESETS } from '../src/registry/presets'
 import { SUPPORT_LABELS } from '../src/registry/support-status'
@@ -16,6 +16,14 @@ describe('capability registry', () => {
     expect(CAPABILITIES.packageManager.options.bun.default).toBe(true)
     expect(CAPABILITIES.packageManager.options.pnpm.status).toBe('stable')
     expect(CAPABILITIES.packageManager.options.npm.status).toBe('experimental')
+  })
+
+  it('builds honest package manager menu labels', () => {
+    expect(packageManagerMenuOptions()).toEqual([
+      { label: 'Bun', value: 'bun', hint: 'default, Stable' },
+      { label: 'pnpm', value: 'pnpm', hint: 'Stable' },
+      { label: 'npm', value: 'npm', hint: 'Experimental' },
+    ])
   })
 
   it('defines the approved preset candidates', () => {

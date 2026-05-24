@@ -20,6 +20,7 @@ import { buildReproducibleCommand } from './lib/reproducible'
 import { scaffoldProject } from './lib/scaffold'
 import { resolveDestinationDir, sanitizeProjectName } from './lib/slug'
 import { startMcpServer } from './mcp'
+import { packageManagerMenuOptions } from './registry/capabilities'
 import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
 import {
   BUNDLE_LABELS,
@@ -32,7 +33,6 @@ import {
   hasRustDatabaseOptions,
   familySupportsShowcase,
   familySupportsWorker,
-  PackageManagerSchema,
 } from './types/schemas'
 
 const PKG_NAME = '@arche/create'
@@ -80,7 +80,7 @@ ${pc.bold('Options:')}
   --dir=<path>       Output parent directory (default: current directory)
   --output=<path>    Alias for --dir
   --family=<name>    Project family (or pass as second positional argument)
-  --pm=<pm>          Package manager: bun, pnpm, npm (default: bun)
+  --pm=<pm>          Package manager: bun (default), pnpm (stable), npm (experimental)
   --bundle=<b>       Feature bundle: product, realtime, growth, infra, ai
   --git              Initialize git repository (default: yes)
   --no-git           Skip git initialization
@@ -625,10 +625,7 @@ async function main(): Promise<void> {
         const value = await select({
           message: 'Package manager',
           initialValue: 'bun',
-          options: PackageManagerSchema.options.map((pm) => ({
-            label: pm,
-            value: pm,
-          })),
+          options: packageManagerMenuOptions(),
         })
         if (isCancel(value)) {
           cancel('Project creation cancelled.')

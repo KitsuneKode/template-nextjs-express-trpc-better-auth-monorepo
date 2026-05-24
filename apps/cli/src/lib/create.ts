@@ -1,3 +1,4 @@
+import { PACKAGE_MANAGER_SUPPORT } from '../registry/capabilities'
 import type { ProjectConfig } from '../types/schemas'
 import { checkCompatibility, FamilySchema, ProjectConfigSchema } from '../types/schemas'
 import { scaffoldProject as scaffold, type ScaffoldResult } from './scaffold'
@@ -97,8 +98,9 @@ export function getSchema(): Record<string, unknown> {
       packageManager: {
         type: 'string',
         enum: ['bun', 'pnpm', 'npm'],
-        description: 'Package manager',
+        description: 'Package manager. Bun is default; pnpm is first-class; npm is experimental.',
         default: 'bun',
+        support: PACKAGE_MANAGER_SUPPORT,
       },
       testing: {
         type: 'string',

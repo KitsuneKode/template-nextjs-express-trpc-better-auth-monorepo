@@ -101,6 +101,12 @@ describe('MCP Server', () => {
     expect(result.properties).toBeDefined()
     expect(result.properties).toHaveProperty('projectName')
     expect(result.properties).toHaveProperty('family')
+    const properties = result.properties as Record<string, Record<string, unknown>>
+    expect(properties.packageManager.support).toEqual({
+      bun: 'stable',
+      pnpm: 'stable',
+      npm: 'experimental',
+    })
     expect(result.required).toContain('projectName')
   })
 
