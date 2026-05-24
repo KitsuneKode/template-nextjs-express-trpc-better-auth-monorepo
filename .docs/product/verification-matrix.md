@@ -20,10 +20,10 @@ The code-level guard lives in
 | `typescript-fullstack` | yes       | yes | yes  | no      | no   | no        | no   | no    | yes        | n/a        | n/a          | no     |
 | `rust-api`             | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
 | `rust-fullstack`       | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
-| `solana-program`       | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-web`           | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-mobile`        | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
-| `solana-product`       | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
+| `solana-program`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
+| `solana-web`           | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
+| `solana-mobile`        | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
+| `solana-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | no           | no     |
 | `customize`            | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
 | `experiments`          | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
 
@@ -37,6 +37,8 @@ The code-level guard lives in
   `apps/cli/tests/rust-scaffold.test.ts`.
 - Rust-backed fullstack structure and Cargo workspace:
   `apps/cli/tests/preset-scaffold.test.ts`.
+- Solana program/web/mobile/product structure and Bun workspace output:
+  `apps/cli/tests/solana-preset.test.ts`.
 - Agent-context output:
   `apps/cli/tests/agent-context.test.ts` and `apps/cli/tests/add.test.ts`.
 - Preset support-label guard:

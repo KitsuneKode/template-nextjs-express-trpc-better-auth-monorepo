@@ -32,4 +32,21 @@ describe('preset verification matrix', () => {
     })
     expect(presetHasStableEvidence('rust-fullstack')).toBe(false)
   })
+
+  it('records completed Solana structure proof without calling Solana presets stable', () => {
+    for (const preset of [
+      'solana-program',
+      'solana-web',
+      'solana-mobile',
+      'solana-product',
+    ] as const) {
+      expect(PRESET_VERIFICATION_MATRIX[preset]).toMatchObject({
+        structure: true,
+        bun: true,
+        generatedBuild: false,
+        solanaProgram: false,
+      })
+      expect(presetHasStableEvidence(preset)).toBe(false)
+    }
+  })
 })

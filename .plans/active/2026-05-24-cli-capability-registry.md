@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved design. Implementation not started.
+Approved design. Implementation in progress.
 
 ## Objective
 
@@ -177,3 +177,17 @@ Verification matrix slice completed on 2026-05-24:
   fail.
 - Verified `bun run --cwd apps/cli check-types`: pass.
 - Verified `bun run --cwd apps/cli lint`: pass.
+
+Solana scaffold foundation slice completed on 2026-05-24:
+
+- Added Solana preset generation for `solana-program`, `solana-web`,
+  `solana-mobile`, and `solana-product`.
+- Solana output now creates `Anchor.toml`, a root Cargo workspace,
+  `programs/core`, `packages/solana-config`, and `packages/solana-client`.
+- Web output includes a Next.js app with the Solana wallet-adapter boundary.
+- Mobile output includes an Expo app with the Solana Mobile Wallet Adapter
+  boundary.
+- Generated Solana package names and workspace imports derive from the project
+  slug instead of template placeholder names.
+- Updated the verification matrix to record Solana structure and Bun workspace
+  proof without promoting the presets to `Stable`.

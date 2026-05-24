@@ -771,6 +771,7 @@ async function main(): Promise<void> {
   const options: ProjectConfig = {
     destinationDir,
     projectName,
+    preset,
     family,
     bundles,
     packageManager,

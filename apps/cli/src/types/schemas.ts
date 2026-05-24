@@ -138,6 +138,8 @@ export type NextPreset = z.infer<typeof NextPresetSchema>
 export const ProjectConfigSchema = z.object({
   projectName: z.string().min(1),
   destinationDir: z.string().min(1),
+  /** Top-level preset used by the capability-registry create flow. */
+  preset: PresetSchema.optional(),
   // NEW: family model
   family: FamilySchema.default('fullstack'),
   bundles: z.array(BundleSchema).default(['product']),

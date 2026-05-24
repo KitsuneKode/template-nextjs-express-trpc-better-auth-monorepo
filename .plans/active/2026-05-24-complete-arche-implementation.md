@@ -58,22 +58,26 @@ Evidence: `bun test apps/cli/tests/verification-matrix.test.ts`, `bun run --cwd 
 
 ## Task 4: Solana program foundation
 
-- [ ] Reshape the Solana template to use `programs/core` instead of a root `src/lib.rs`.
-- [ ] Generate or template `Anchor.toml`, root `Cargo.toml`, and `programs/core/Cargo.toml`.
-- [ ] Ensure generated package/program names derive from the project slug.
-- [ ] Generate `packages/solana-config` for shared cluster/program constants.
-- [ ] Generate `packages/solana-client` as the IDL/protocol client boundary.
-- [ ] Add tests for the `solana-program` preset output shape.
-- [ ] Commit the Solana program foundation.
+- [x] Reshape the Solana template to use `programs/core` instead of a root `src/lib.rs`.
+- [x] Generate or template `Anchor.toml`, root `Cargo.toml`, and `programs/core/Cargo.toml`.
+- [x] Ensure generated package/program names derive from the project slug.
+- [x] Generate `packages/solana-config` for shared cluster/program constants.
+- [x] Generate `packages/solana-client` as the IDL/protocol client boundary.
+- [x] Add tests for the `solana-program` preset output shape.
+- [x] Commit the Solana program foundation.
+
+Evidence: `bun test apps/cli/tests/solana-preset.test.ts` passes.
 
 ## Task 5: Solana web and mobile foundations
 
-- [ ] Extend `solana-web` to include a Next.js app plus wallet-adapter boundary.
-- [ ] Extend `solana-mobile` to include an Expo/mobile app plus Solana Mobile Wallet Adapter boundary.
-- [ ] Extend `solana-product` to compose web, mobile, program, client, and config output.
-- [ ] Keep off-chain indexers and APIs out of default output unless selected later as explicit capabilities.
-- [ ] Add generated-output tests for each Solana preset.
-- [ ] Commit each meaningful Solana route slice separately.
+- [x] Extend `solana-web` to include a Next.js app plus wallet-adapter boundary.
+- [x] Extend `solana-mobile` to include an Expo/mobile app plus Solana Mobile Wallet Adapter boundary.
+- [x] Extend `solana-product` to compose web, mobile, program, client, and config output.
+- [x] Keep off-chain indexers and APIs out of default output unless selected later as explicit capabilities.
+- [x] Add generated-output tests for each Solana preset.
+- [x] Commit each meaningful Solana route slice separately.
+
+Evidence: `bun test apps/cli/tests/solana-preset.test.ts apps/cli/tests/preset-config.test.ts apps/cli/tests/templates.test.ts apps/cli/tests/verification-matrix.test.ts`, `bun run --cwd apps/cli check-types`, `bun run --cwd apps/cli lint`, and `bun run repo:doctor` pass.
 
 ## Task 6: Generated-project hardening
 

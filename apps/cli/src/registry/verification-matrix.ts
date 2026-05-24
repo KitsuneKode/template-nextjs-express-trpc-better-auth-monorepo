@@ -59,10 +59,26 @@ export const PRESET_VERIFICATION_MATRIX = {
     agentContext: true,
     cargoWorkspace: true,
   },
-  'solana-program': NONE,
-  'solana-web': NONE,
-  'solana-mobile': NONE,
-  'solana-product': NONE,
+  'solana-program': {
+    ...NONE,
+    structure: true,
+    bun: true,
+  },
+  'solana-web': {
+    ...NONE,
+    structure: true,
+    bun: true,
+  },
+  'solana-mobile': {
+    ...NONE,
+    structure: true,
+    bun: true,
+  },
+  'solana-product': {
+    ...NONE,
+    structure: true,
+    bun: true,
+  },
   customize: NONE,
   experiments: NONE,
 } satisfies Record<PresetId, PresetVerificationEvidence>

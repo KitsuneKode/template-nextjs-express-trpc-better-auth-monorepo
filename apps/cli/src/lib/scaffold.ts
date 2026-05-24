@@ -37,6 +37,7 @@ import {
   applyBackendTransform,
   applyRustFamilyTransform,
   applyRustScaffoldTransform,
+  applySolanaScaffoldTransform,
   renderGitignore,
   applyDatabaseTransform,
   applyOrmTransform,
@@ -305,6 +306,7 @@ function buildArcheConfig(options: ProjectConfig): string {
     version: '0.2.0',
     createdAt: new Date().toISOString(),
     family: options.family,
+    preset: options.preset,
     packageManager: options.packageManager,
     choices: {
       backend: options.backend,
@@ -380,9 +382,14 @@ export async function scaffoldProject(
   await updateRootPackageJson(destinationDir, packageName, options)
 
   let rustGeneratedFiles: string[] = []
+  let solanaGeneratedFiles: string[] = []
   if (family === 'rust') {
     await applyRustFamilyTransform(destinationDir, options)
     rustGeneratedFiles = await applyRustScaffoldTransform(destinationDir, options)
+  }
+
+  if (family === 'solana') {
+    solanaGeneratedFiles = await applySolanaScaffoldTransform(destinationDir, options)
   }
 
   if (familySupportsMonorepoTransforms(family)) {
@@ -423,14 +430,19 @@ export async function scaffoldProject(
   await adaptPackageManagerScripts(destinationDir, pm)
 
   const workspaceFiles =
-    family !== 'rust' && family !== 'solana'
-      ? await applyJavaScriptPackageManagerFoundation(destinationDir, pm, isMonorepoFamily(family))
+    family !== 'rust'
+      ? await applyJavaScriptPackageManagerFoundation(
+          destinationDir,
+          pm,
+          isMonorepoFamily(family) || family === 'solana',
+        )
       : []
 
   const generatedFiles: string[] = [
     'arche.json',
     ...bundleFiles,
     ...rustGeneratedFiles,
+    ...solanaGeneratedFiles,
     ...workspaceFiles,
   ]
 

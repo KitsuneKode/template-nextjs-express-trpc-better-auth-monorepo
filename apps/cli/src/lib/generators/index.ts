@@ -19,6 +19,7 @@ export {
   renderRustDockerCompose,
   renderRustDockerfile,
 } from './rust'
+export { applySolanaScaffoldTransform } from './solana'
 export { applyDatabaseTransform } from './database'
 export { applyOrmTransform } from './orm'
 export { buildRootAgentsMd, buildGeneratedArchitectureMd } from './agent-docs'
