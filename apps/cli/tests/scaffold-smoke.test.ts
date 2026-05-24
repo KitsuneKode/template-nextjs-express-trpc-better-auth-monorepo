@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { existsSync, readFileSync, rmSync, mkdtempSync } from 'node:fs'
+import { existsSync, lstatSync, readFileSync, readlinkSync, rmSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createProject } from '../src/lib/create'
@@ -115,6 +115,14 @@ describe('scaffold smoke matrix', () => {
           expect(existsSync(join(destinationDir, '.opencode/skills.json'))).toBe(true)
           expect(existsSync(join(destinationDir, 'AGENTS.md'))).toBe(true)
           expect(existsSync(join(destinationDir, 'CLAUDE.md'))).toBe(true)
+          expect(lstatSync(join(destinationDir, 'CLAUDE.md')).isSymbolicLink()).toBe(true)
+          expect(readlinkSync(join(destinationDir, 'CLAUDE.md'))).toBe('AGENTS.md')
+          expect(existsSync(join(destinationDir, 'CONTEXT.md'))).toBe(false)
+          expect(existsSync(join(destinationDir, '.docs/README.md'))).toBe(true)
+          expect(existsSync(join(destinationDir, '.docs/architecture/generated-project.md'))).toBe(
+            true,
+          )
+          expect(existsSync(join(destinationDir, '.plans/README.md'))).toBe(true)
           expect(existsSync(join(destinationDir, '.cursor/rules'))).toBe(false)
           expect(existsSync(join(destinationDir, '.claude/rules'))).toBe(false)
         }

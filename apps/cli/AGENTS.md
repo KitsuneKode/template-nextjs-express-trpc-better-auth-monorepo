@@ -1,8 +1,10 @@
-# Bootstrap CLI (@arche/create)
+# Bootstrap CLI (`@arche/create`)
 
 ## Purpose
 
-Bootstrap CLI for scaffolding family-first repositories from this template.
+Bootstrap CLI for scaffolding repositories from this template. The legacy
+family flow remains while the capability-registry/recipe foundation is wired
+into verified presets.
 
 ## Read First
 
@@ -10,10 +12,13 @@ Bootstrap CLI for scaffolding family-first repositories from this template.
 - `src/lib/scaffold.ts` — pipeline orchestrator
 - `src/lib/generators/` — per-feature transforms
 - `src/types/schemas.ts` — Zod schemas + compatibility checks
+- `src/registry/` — preset candidates, support status, capability validation
+- `src/recipe/` — recipe schema and replay command support
+- `src/render/` — workspace and generated context renderers
 
 ## Scaffold Pipeline
 
-Copy template → update package.json → family transform → addon/bundle transforms → rename scope → template cleanup → generate env/docker/CI/deployment/agent-docs → git init → install
+Copy template → update package.json → family transform → addon/bundle transforms → rename scope → template cleanup → generate env/docker/CI/deployment/agent context → git init → install
 
 ## Owns
 
@@ -22,6 +27,15 @@ Copy template → update package.json → family transform → addon/bundle tran
 - Family transforms
 - Bundle/addon transforms
 - Generated files (Docker, CI, env, deployment, agent-docs, showcase)
+- Recipe/capability foundations and support-status truthfulness
+
+## Context Output
+
+- Generate one canonical `AGENTS.md`.
+- Generate `CLAUDE.md` as a symlink to `AGENTS.md`.
+- Generate scoped internal context under `.docs/` and planning guidance under
+  `.plans/`.
+- Do not generate duplicate `CONTEXT.md` instruction/context surfaces.
 
 ## Quick Commands
 
@@ -31,4 +45,6 @@ Copy template → update package.json → family transform → addon/bundle tran
 
 ## When to Update
 
-New options, changed pipeline, or modified generated output. Full reference: `docs/cli-development.md`.
+New options, changed pipeline, or modified generated output. Internal design:
+`.docs/product/cli-capability-registry.md`. Public CLI reference remains under
+`docs/`.

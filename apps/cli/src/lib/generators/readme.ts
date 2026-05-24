@@ -178,6 +178,6 @@ For MCP-capable agents, register this server:
 }
 \`\`\`
 
-${showcase ? `## Portfolio\n\nThis project is portfolio-ready. When you're ready to showcase it:\n1. Fill in \`SHOWCASE.mdx\` at the project root\n2. Push to GitHub — the portfolio will auto-sync\n\n` : ''}See \`CONTEXT.md\` for architecture details and \`AGENTS.md\` for agent navigation.
+${showcase ? `## Portfolio\n\nThis project is portfolio-ready. When you're ready to showcase it:\n1. Fill in \`SHOWCASE.mdx\` at the project root\n2. Push to GitHub — the portfolio will auto-sync\n\n` : ''}See \`.docs/architecture/generated-project.md\` for architecture details and \`AGENTS.md\` for agent navigation.
 `
 }

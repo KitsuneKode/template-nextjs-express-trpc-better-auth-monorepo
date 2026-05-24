@@ -50,4 +50,4 @@ Each workspace `AGENTS.md` should stay short and usually include:
 - Do not duplicate long shared explanations across many files.
 - Do not copy secrets or local `.env` values into docs.
 - Do not leave removed paths in routing notes.
-- Do not add `.cursor/rules/` or `.claude/rules/` — use root `AGENTS.md`, nearest workspace `AGENTS.md`, and `docs/` instead. `CLAUDE.md` is a short pointer to `AGENTS.md` only.
+- Do not add `.cursor/rules/` or `.claude/rules/` — use root `AGENTS.md`, nearest workspace `AGENTS.md`, public `docs/`, and scoped internal `.docs/` instead. `CLAUDE.md` is a symlink to canonical `AGENTS.md`.

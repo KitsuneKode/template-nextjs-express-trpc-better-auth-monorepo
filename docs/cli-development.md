@@ -108,7 +108,7 @@ apps/cli/
 │   │       ├── ci.ts         # Config-aware GitHub Actions CI
 │   │       ├── deployment.ts # Config-aware deployment guide
 │   │       ├── readme.ts     # Family-aware README generator
-│   │       ├── agent-docs.ts # Family-aware AGENTS.md, CONTEXT.md
+│   │       ├── agent-docs.ts # Architecture context content
 │   │       └── showcase.ts   # SHOWCASE.mdx (fullstack only)
 │   ├── types/
 │   │   └── schemas.ts        # Zod schemas, family/bundle types, validators
@@ -231,7 +231,7 @@ bun run dev -- my-app --yes 2>&1 | head -50
 ### Current (2026)
 
 - [x] Family-first CLI architecture (11 families defined)
-- [x] Family-aware README, AGENTS.md, CONTEXT.md generators
+- [x] Canonical AGENTS.md, CLAUDE.md symlink, and scoped `.docs`/`.plans` context output
 - [x] Feature bundle system (product, realtime, growth, infra, AI)
 - [x] Oxfmt formatting standard
 - [x] Scaffold smoke tests (fullstack + backend)

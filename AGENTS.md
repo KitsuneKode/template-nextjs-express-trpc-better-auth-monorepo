@@ -1,6 +1,6 @@
 # Agent guide (canonical)
 
-Read this file first, then the **nearest** local `AGENTS.md` for the workspace you are editing. Use [docs/README.md](docs/README.md) for commands. Production deploy: [docs/deployment.md](docs/deployment.md) and [docs/deployment-env.md](docs/deployment-env.md).
+Read this file first, then the **nearest** local `AGENTS.md` for the workspace you are editing. Use [docs/README.md](docs/README.md) for user-facing commands and [`.docs/README.md`](.docs/README.md) for internal architecture/context. Load one matching [`.plans/active/`](.plans/active/) file only for approved in-flight work. Production deploy: [docs/deployment.md](docs/deployment.md) and [docs/deployment-env.md](docs/deployment-env.md).
 
 Do not add `.cursor/rules/` or `.claude/rules/` — they duplicate this map and waste context. See [docs/context-maintenance.md](docs/context-maintenance.md).
 
@@ -15,12 +15,13 @@ If a tradeoff is required, choose **correctness and robustness** over short-term
 ## How to navigate
 
 1. Nearest `AGENTS.md` (app or package you touch).
-2. [docs/README.md](docs/README.md) — index and workspace map.
-3. One task-specific doc (deploy, architecture, CLI)—not the whole `docs/` tree.
+2. [docs/README.md](docs/README.md) — public/manual documentation.
+3. [`.docs/README.md`](.docs/README.md) and one task-specific internal topic when implementing.
+4. One matching [`.plans/active/`](.plans/active/) plan when executing approved work.
 
 Run `bun run repo:doctor` before release or after large cleanup passes.
 
-Prefer `AGENTS.md` over package `README.md` files for agent context. When behavior or commands change, update the nearest `AGENTS.md` and the affected doc in `docs/`.
+Prefer `AGENTS.md` over package `README.md` files for agent context. When behavior or commands change, update the nearest `AGENTS.md` and the owning public `docs/` or internal `.docs/` topic. Never treat `.plans/archive/` as current behavior.
 
 ## Stack map
 

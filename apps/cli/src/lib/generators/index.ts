@@ -21,7 +21,7 @@ export {
 } from './rust'
 export { applyDatabaseTransform } from './database'
 export { applyOrmTransform } from './orm'
-export { buildRootAgentsMd, buildContextMd, buildClaudeMd } from './agent-docs'
+export { buildRootAgentsMd, buildGeneratedArchitectureMd } from './agent-docs'
 export { buildReadme } from './readme'
 export { buildShowcaseMdx } from './showcase'
 export { writeSkillConfigs, buildSkillRecommendations } from './skills'

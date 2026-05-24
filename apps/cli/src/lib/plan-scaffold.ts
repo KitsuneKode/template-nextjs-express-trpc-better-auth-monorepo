@@ -17,8 +17,10 @@ export function planScaffold(options: ProjectConfig): ScaffoldResult {
     'arche.json',
     'README.md',
     'AGENTS.md',
-    'CONTEXT.md',
     'CLAUDE.md',
+    '.docs/README.md',
+    '.docs/architecture/generated-project.md',
+    '.plans/README.md',
   ]
 
   if (fullstack) {

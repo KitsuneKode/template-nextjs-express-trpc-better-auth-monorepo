@@ -1,7 +1,22 @@
 import { existsSync } from 'node:fs'
-import { access, cp, mkdir, readdir, readFile, writeFile, stat } from 'node:fs/promises'
+import {
+  access,
+  cp,
+  mkdir,
+  readdir,
+  readFile,
+  rm,
+  stat,
+  symlink,
+  writeFile,
+} from 'node:fs/promises'
 import { dirname, join, resolve, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import {
+  renderGeneratedAgentsMd,
+  renderInternalDocsIndex,
+  renderPlansIndex,
+} from '../render/docs/agent-context'
 import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
   familySupportsBundles,
@@ -24,9 +39,7 @@ import {
   renderGitignore,
   applyDatabaseTransform,
   applyOrmTransform,
-  buildRootAgentsMd,
-  buildContextMd,
-  buildClaudeMd,
+  buildGeneratedArchitectureMd,
   buildReadme,
   buildShowcaseMdx,
   writeSkillConfigs,
@@ -66,8 +79,7 @@ const EXCLUDED_SEGMENTS = new Set([
 // Files that should not appear in scaffolded output
 const EXCLUDED_FILES = new Set([
   'bun.lock',
-  // Source AGENTS.md is a symlink → CLAUDE.md. Exclude to prevent
-  // writes from affecting the source repo. The pipeline regenerates all three.
+  // Root agent files are regenerated so CLAUDE.md can point at canonical AGENTS.md.
   'AGENTS.md',
   'CLAUDE.md',
   'CONTEXT.md',
@@ -271,6 +283,12 @@ async function writeGeneratedFile(
   await writeFile(filePath, content)
 }
 
+async function writeGeneratedClaudeSymlink(destinationDir: string): Promise<void> {
+  const filePath = join(destinationDir, 'CLAUDE.md')
+  await rm(filePath, { force: true })
+  await symlink('AGENTS.md', filePath)
+}
+
 function buildArcheConfig(options: ProjectConfig): string {
   const config = {
     $schema: 'https://kitsunekode.in/schemas/arche.json',
@@ -447,13 +465,25 @@ export async function scaffoldProject(
     generatedFiles.push('.github/workflows/ci.yml')
   }
 
-  // Agent documentation (AI-development-ready from day one)
-  await writeGeneratedFile(destinationDir, 'AGENTS.md', buildRootAgentsMd(options))
+  // Agent context uses one canonical instruction file plus scoped internal docs.
+  await writeGeneratedFile(
+    destinationDir,
+    'AGENTS.md',
+    renderGeneratedAgentsMd({ projectName: packageName }),
+  )
   generatedFiles.push('AGENTS.md')
-  await writeGeneratedFile(destinationDir, 'CONTEXT.md', buildContextMd(options))
-  generatedFiles.push('CONTEXT.md')
-  await writeGeneratedFile(destinationDir, 'CLAUDE.md', buildClaudeMd())
+  await writeGeneratedClaudeSymlink(destinationDir)
   generatedFiles.push('CLAUDE.md')
+  await writeGeneratedFile(destinationDir, '.docs/README.md', renderInternalDocsIndex())
+  generatedFiles.push('.docs/README.md')
+  await writeGeneratedFile(
+    destinationDir,
+    '.docs/architecture/generated-project.md',
+    buildGeneratedArchitectureMd(options),
+  )
+  generatedFiles.push('.docs/architecture/generated-project.md')
+  await writeGeneratedFile(destinationDir, '.plans/README.md', renderPlansIndex())
+  generatedFiles.push('.plans/README.md')
 
   // Agent skill configuration
   const skillFiles = writeSkillConfigs(destinationDir, options)

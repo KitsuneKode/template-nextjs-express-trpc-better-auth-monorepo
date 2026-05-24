@@ -48,7 +48,7 @@ bun dev
 bun run repo:doctor
 \`\`\`
 
-See \`AGENTS.md\` and \`CONTEXT.md\` for architecture details.
+See \`AGENTS.md\` and \`.docs/architecture/generated-project.md\` for architecture details.
 `,
   )
   files.push('docs/getting-started.md')

@@ -1,8 +1,13 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import {
+  renderGeneratedAgentsMd,
+  renderInternalDocsIndex,
+  renderPlansIndex,
+} from '../render/docs/agent-context'
 import type { ProjectConfig } from '../types/schemas'
 import { validateConfig } from './create'
-import { buildRootAgentsMd, buildContextMd, buildClaudeMd } from './generators/agent-docs'
+import { buildGeneratedArchitectureMd } from './generators/agent-docs'
 import { renderGithubActionsWorkflow } from './generators/ci'
 import { renderDockerCompose, renderDockerComposeProd } from './generators/docker'
 import { buildServerEnv } from './generators/env'
@@ -95,6 +100,12 @@ function writeGeneratedFile(baseDir: string, relativePath: string, content: stri
   writeFileSync(filePath, content)
 }
 
+function writeGeneratedClaudeSymlink(baseDir: string): void {
+  const filePath = join(baseDir, 'CLAUDE.md')
+  rmSync(filePath, { force: true })
+  symlinkSync('AGENTS.md', filePath)
+}
+
 async function addDockerCompose(baseDir: string, config: ProjectConfig): Promise<string[]> {
   const files: string[] = []
   writeGeneratedFile(baseDir, 'docker-compose.yml', renderDockerCompose(config))
@@ -121,12 +132,24 @@ async function addEnvFiles(baseDir: string, config: ProjectConfig): Promise<stri
 
 async function addAgentDocs(baseDir: string, config: ProjectConfig): Promise<string[]> {
   const files: string[] = []
-  writeGeneratedFile(baseDir, 'AGENTS.md', buildRootAgentsMd(config))
+  writeGeneratedFile(
+    baseDir,
+    'AGENTS.md',
+    renderGeneratedAgentsMd({ projectName: config.projectName }),
+  )
   files.push('AGENTS.md')
-  writeGeneratedFile(baseDir, 'CONTEXT.md', buildContextMd(config))
-  files.push('CONTEXT.md')
-  writeGeneratedFile(baseDir, 'CLAUDE.md', buildClaudeMd())
+  writeGeneratedClaudeSymlink(baseDir)
   files.push('CLAUDE.md')
+  writeGeneratedFile(baseDir, '.docs/README.md', renderInternalDocsIndex())
+  files.push('.docs/README.md')
+  writeGeneratedFile(
+    baseDir,
+    '.docs/architecture/generated-project.md',
+    buildGeneratedArchitectureMd(config),
+  )
+  files.push('.docs/architecture/generated-project.md')
+  writeGeneratedFile(baseDir, '.plans/README.md', renderPlansIndex())
+  files.push('.plans/README.md')
   return files
 }
 

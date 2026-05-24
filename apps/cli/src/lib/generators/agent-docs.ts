@@ -81,7 +81,7 @@ function commandsForFamily(family: string, pm: string): string[] {
 function agentPrompt(family: string): string[] {
   const prompts: string[] = [
     'Before making changes, read the relevant files listed under Key Directories.',
-    'Update CONTEXT.md and this AGENTS.md when adding new endpoints, packages, or auth flows.',
+    'Update the relevant .docs topic and this AGENTS.md when adding new endpoints, packages, or auth flows.',
     'Run `bun run repo:doctor` after structural changes to verify consistency.',
     'Update SHOWCASE.mdx when adding significant features.',
   ]
@@ -166,7 +166,7 @@ When modifying this project as an agent:
 `
 }
 
-export function buildContextMd(config: ProjectConfig): string {
+export function buildGeneratedArchitectureMd(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
   const family = config.family
 
@@ -289,14 +289,5 @@ See \`.env.example\` (\`PORT\`, \`DATABASE_URL\`, \`RUST_LOG\`).`,
   return `# ${name} — Context
 
 ${description}
-`
-}
-
-export function buildClaudeMd(): string {
-  return `# Claude Code
-
-Read **[AGENTS.md](./AGENTS.md)** — canonical agent map, stack, and commands.
-
-Use the nearest workspace \`AGENTS.md\` when editing a specific app or package. Use \`CONTEXT.md\` for architecture notes. Do not add \`.cursor/rules/\` or \`.claude/rules/\`.
 `
 }
