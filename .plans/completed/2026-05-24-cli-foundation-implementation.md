@@ -10,6 +10,21 @@
 
 ---
 
+## Outcome
+
+Completed on 2026-05-24.
+
+- Added additive registry, compatibility, recipe, replay, workspace-renderer,
+  and agent-context modules.
+- Kept existing family parsing and scaffold behavior available.
+- Corrected the original plan while implementing: target presets remain
+  `requiresValidation` until their generated-project verification matrices are
+  implemented and passing.
+- Verified `bun test apps/cli/tests`: 250 pass, 1 pre-existing skipped E2E, 0
+  fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
+
 ## Scope
 
 This is the first implementation slice only. It does not rewrite every template or mark new presets stable. It creates the foundation needed for later preset renderers.

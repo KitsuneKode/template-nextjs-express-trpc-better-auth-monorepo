@@ -73,3 +73,20 @@ tooling/*
 - Native Rust Better Auth adapter as a stable default.
 - Generic unverified polyglot scaffolds marked stable.
 - Solana indexer/off-chain service as default clutter.
+
+## Implementation evidence
+
+Foundation slice completed on 2026-05-24:
+
+- Added support-status, capability/preset registry, and compatibility
+  foundations.
+- Added `arche.json` recipe schema and recipe-style replay command support.
+- Added Bun and pnpm native workspace/catalog rendering primitives.
+- Added generated agent-context rendering primitives for future scaffold
+  integration.
+- Preset candidates remain `requiresValidation`; no generated route was
+  promoted to `Stable` without its full verification matrix.
+- Verified `bun test apps/cli/tests`: 250 pass, 1 pre-existing skipped E2E, 0
+  fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
