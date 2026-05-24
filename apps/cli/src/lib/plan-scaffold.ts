@@ -30,6 +30,9 @@ export function planScaffold(options: ProjectConfig): ScaffoldResult {
       'apps/web/.env.example',
       'apps/web/.env',
     )
+    if (options.packageManager === 'pnpm') {
+      generatedFiles.push('pnpm-workspace.yaml')
+    }
   }
 
   if (options.includeDocker) {
