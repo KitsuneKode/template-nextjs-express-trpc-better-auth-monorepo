@@ -70,8 +70,13 @@ describe('rust scaffold output', () => {
       expect(readme).toContain('cargo clippy')
 
       const agents = readFileSync(join(destinationDir, 'AGENTS.md'), 'utf8')
-      expect(agents).toContain('handler')
-      expect(agents).toContain('repository')
+      expect(agents).toContain('.docs/README.md')
+      const architecture = readFileSync(
+        join(destinationDir, '.docs/architecture/generated-project.md'),
+        'utf8',
+      )
+      expect(architecture).toContain('handler')
+      expect(architecture).toContain('repository')
 
       const ci = readFileSync(join(destinationDir, '.github/workflows/ci.yml'), 'utf8')
       expect(ci).toContain('cargo fmt')
