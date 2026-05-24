@@ -35,13 +35,15 @@ Evidence: `bun test apps/web/app/route-discovery.test.ts`, `bun run --cwd apps/w
 
 ## Task 2: Public usage documentation
 
-- [ ] Rewrite `README.md` around Arche as the personal scaffold CLI.
-- [ ] Document interactive create, `--preset`, `--pm`, `create-json`, `validate`, `add`, `history`, and MCP usage where implemented.
-- [ ] Document Bun default, pnpm first-class support, npm experimental support, and the distinction between package manager and runtime.
-- [ ] Document generated agent context: `AGENTS.md`, `CLAUDE.md` symlink, `.docs/`, `.plans/`, and `arche.json`.
-- [ ] Document current support status honestly: TypeScript fullstack and Rust routes have foundations; Solana is in progress until the next slices land.
-- [ ] Update `docs/README.md`, `docs/bootstrap-cli.md`, and `docs/commands.md` when their current wording drifts from the CLI.
-- [ ] Commit public documentation changes separately.
+- [x] Rewrite `README.md` around Arche as the personal scaffold CLI.
+- [x] Document interactive create, `--preset`, `--pm`, `create-json`, `validate`, `add`, `history`, and MCP usage where implemented.
+- [x] Document Bun default, pnpm first-class support, npm experimental support, and the distinction between package manager and runtime.
+- [x] Document generated agent context: `AGENTS.md`, `CLAUDE.md` symlink, `.docs/`, `.plans/`, and `arche.json`.
+- [x] Document current support status honestly: TypeScript fullstack and Rust routes have foundations; Solana is in progress until the next slices land.
+- [x] Update `docs/README.md`, `docs/bootstrap-cli.md`, and `docs/commands.md` when their current wording drifts from the CLI.
+- [x] Commit public documentation changes separately.
+
+Evidence: `bun run repo:doctor` passes with 0 errors, 0 warnings, 0 info.
 
 ## Task 3: Verification matrix
 

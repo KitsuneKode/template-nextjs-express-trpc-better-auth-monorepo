@@ -1,56 +1,61 @@
-# Repository docs
+# Public docs
 
-**Arche** — Bun + Turborepo monorepo template: Next.js, Express, Better Auth, Prisma, tRPC, shared UI. CLI: `npx arche create`.
+These docs explain how to use this repository and the Arche scaffold CLI.
+Agents should start with root [AGENTS.md](../AGENTS.md), then use this index
+for public/user-facing docs and [`.docs/README.md`](../.docs/README.md) for
+internal architecture context.
 
-**Agents:** start at root [AGENTS.md](../AGENTS.md), then this index.
+## CLI
 
-## Navigate
+| Need                       | Doc                                            |
+| -------------------------- | ---------------------------------------------- |
+| Create projects with Arche | [bootstrap-cli.md](./bootstrap-cli.md)         |
+| Repository commands        | [commands.md](./commands.md)                   |
+| CLI development internals  | [cli-development.md](./cli-development.md)     |
+| Portfolio `SHOWCASE.mdx`   | [portfolio-sync.md](./portfolio-sync.md)       |
+| Template variants          | [template-variants.md](./template-variants.md) |
 
-| Need                              | Doc                                                                                      |
-| --------------------------------- | ---------------------------------------------------------------------------------------- |
-| **Deploy (start)**                | [deployment.md](./deployment.md)                                                         |
-| **Production playbook (default)** | [production-playbook.md](./production-playbook.md)                                       |
-| Env matrix (production)           | [deployment-env.md](./deployment-env.md)                                                 |
-| CI (GitHub Actions)               | [ci.md](./ci.md)                                                                         |
-| Path A — Vercel web + API         | [deployment-vercel.md](./deployment-vercel.md)                                           |
-| Path B — Vercel web + Render API  | [deployment-render.md](./deployment-render.md)                                           |
-| Path C — Vercel web + Railway API | [deployment-railway.md](./deployment-railway.md)                                         |
-| Commands                          | [commands.md](./commands.md)                                                             |
-| Env (local dev)                   | [env.md](./env.md)                                                                       |
-| Architecture                      | [architecture.md](./architecture.md)                                                     |
-| Troubleshooting                   | [troubleshooting.md](./troubleshooting.md)                                               |
-| CLI development                   | [cli-development.md](./cli-development.md)                                               |
-| Bootstrap CLI                     | [bootstrap-cli.md](./bootstrap-cli.md)                                                   |
-| Portfolio sync                    | [portfolio-sync.md](./portfolio-sync.md)                                                 |
-| Rebranding checklist              | [rebranding.md](./rebranding.md)                                                         |
-| E2E / monitoring                  | [e2e-testing.md](./e2e-testing.md), [monitoring-debugging.md](./monitoring-debugging.md) |
+## App template operations
 
-Historical: [archive/planning/](./archive/planning/), [archive/deployment-platforms.md](./archive/deployment-platforms.md).
+| Need                | Doc                                                |
+| ------------------- | -------------------------------------------------- |
+| Deployment hub      | [deployment.md](./deployment.md)                   |
+| Production playbook | [production-playbook.md](./production-playbook.md) |
+| Environment matrix  | [deployment-env.md](./deployment-env.md)           |
+| CI                  | [ci.md](./ci.md)                                   |
+| Vercel              | [deployment-vercel.md](./deployment-vercel.md)     |
+| Render              | [deployment-render.md](./deployment-render.md)     |
+| Railway             | [deployment-railway.md](./deployment-railway.md)   |
+| Local env           | [env.md](./env.md)                                 |
+| Architecture        | [architecture.md](./architecture.md)               |
+| Troubleshooting     | [troubleshooting.md](./troubleshooting.md)         |
+
+Historical docs live in [archive/](./archive/). Planning-era docs are not
+current implementation sources.
 
 ## Workspace map
 
-- **`apps/web`** — Next.js App Router; `trpc/client.tsx`, `trpc/server.tsx` (`trpcCaller`), `app/layout.tsx`
-- **`apps/server`** — Express; module-first `src/modules/*`; Vercel, Render, or Railway entrypoints
-- **`apps/cli`** — `@arche/create` scaffold; see `apps/cli/CLI-SPEC.md`
-- **`apps/worker`** — background jobs (Render when using Path B + Redis)
-- **`packages/trpc`** — client contract; re-exports `AppRouter` / `createCaller` from server
-- **`packages/store`** — Prisma
-- **`packages/auth`** — Better Auth
-- **`packages/backend-common`** — `serverEnv`, ioredis, logging
-- **`packages/ui`** — shared components
-- **`toolings/*`** — shared TS config and repo scripts
+- `apps/cli` - `@arche/create` scaffold CLI.
+- `apps/web` - Next.js documentation/marketing app plus hidden design lab.
+- `apps/server` - TypeScript API template source.
+- `apps/worker` - optional worker template source.
+- `packages/auth` - Better Auth template package.
+- `packages/store` - Prisma/store template package.
+- `packages/trpc` - client contract template package.
+- `packages/backend-common` - env, logging, Redis helpers.
+- `packages/ui` - shared UI components.
+- `toolings/*` - shared config and repo scripts.
 
-## Start fresh
+Target generated-project layouts, including future API, database-package,
+Rust-service, and Solana-program naming, are tracked in
+[`.docs/architecture/generated-projects.md`](../.docs/architecture/generated-projects.md).
 
-Template showcase UI cleanup: [archive/start-fresh.md](./archive/start-fresh.md).
+## Quick commands
 
-## Commands (quick)
-
-```bash
+```sh
 bun install
 bun dev
+bun run dev:cli -- my-app --yes --dir=../projects
+bun test apps/cli/tests
 bun run repo:doctor
-bun run db:migrate
 ```
-
-Full list: [commands.md](./commands.md).
