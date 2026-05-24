@@ -75,6 +75,8 @@ describe('preset scaffold output', () => {
       )
       expect(architecture).toContain('services/api')
       expect(architecture).not.toContain('apps/server/src/app.ts')
+      expect(architecture).toContain('Business logic belongs in services/use-cases')
+      expect(architecture).toContain('Use PATCH for partial updates')
     } finally {
       rmSync(tmpRoot, { recursive: true, force: true })
     }

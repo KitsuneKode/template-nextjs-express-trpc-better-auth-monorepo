@@ -207,3 +207,17 @@ Generated-project hardening slice completed on 2026-05-24:
 - Verified fast generated structure for the curated matrix, Rust Cargo checks,
   and Solana Anchor builds while keeping presets below `Stable` until install,
   lint, typecheck, build, deployment, and package-manager coverage are complete.
+
+Release-readiness slice completed on 2026-05-24:
+
+- Added `bun run ci`, `build:docs`, `pkg:check`, Changesets scripts, and a
+  guarded `bun run release` entrypoint.
+- Added Changesets config scoped to `@arche/create`.
+- Reworked CI with concurrency, Bun version pinning from `package.json`, Turbo
+  remote cache variables, docs build, and package check.
+- Added a release workflow that can create Changesets version PRs and only
+  publishes when npm Trusted Publishing has been configured and
+  `NPM_TRUSTED_PUBLISHING_ENABLED=true`.
+- Added Bash/Zsh completion output through `arche completion bash|zsh`.
+- Improved generated `AGENTS.md` context with practical "where things go"
+  guidance for fullstack, Rust, and Solana projects.

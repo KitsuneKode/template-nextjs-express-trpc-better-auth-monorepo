@@ -122,6 +122,6 @@ stable default. Monorepos use native catalog output:
 
 ## Publication status
 
-The package is not treated as release-ready yet. npm publication and GitHub
-Actions OIDC trusted publishing are final-slice work after generated-project
-verification is complete.
+The package now has local and CI package dry-run checks, but live publishing is
+still disabled. See [publishing.md](./publishing.md) for the OIDC trusted
+publishing route and the remaining release gates.

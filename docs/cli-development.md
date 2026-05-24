@@ -180,27 +180,18 @@ bun test src/cli/create-arche.test.ts
 
 ## Publishing to npm
 
-### Prerequisites
-
-1. npm account with access to `@arche` scope
-2. Logged in: `npm login`
-
-### Publishing
+Live publishing is not enabled from this repository yet. Use the package checks
+first, then follow [publishing.md](./publishing.md) for the OIDC trusted
+publishing route.
 
 ```bash
-cd apps/cli
-
-# Build and test
-bun run build
-cd ../../tests && bun test
-
-# Publish
-cd ../apps/cli
-npm publish --access public
-
-# Or dry-run first
-npm publish --access public --dry-run
+bun run pkg:check
+bun run verify:generated
 ```
+
+Do not publish with a long-lived `NPM_TOKEN`. The intended release path is npm
+Trusted Publishing from GitHub Actions OIDC after the generated-project matrix
+is complete.
 
 ### Version Strategy
 

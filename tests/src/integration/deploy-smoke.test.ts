@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'bun:test'
 import { fetchJson } from './deploy-fetch'
-import {
-  resolveDeploySmokeTargets,
-  shouldSkipVercelProtectedHost,
-} from './deploy-targets'
+import { resolveDeploySmokeTargets, shouldSkipVercelProtectedHost } from './deploy-targets'
 
-const runDeploySmoke = process.env.RUN_DEPLOY_SMOKE === '1' || process.env.RUN_DEPLOY_SMOKE === 'true'
+const runDeploySmoke =
+  process.env.RUN_DEPLOY_SMOKE === '1' || process.env.RUN_DEPLOY_SMOKE === 'true'
 const deployDescribe = runDeploySmoke ? describe : describe.skip
 
 type RootPayload = {

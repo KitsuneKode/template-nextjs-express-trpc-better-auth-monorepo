@@ -160,8 +160,10 @@ Target generated layouts are documented in
 ```sh
 bun install
 bun run dev:cli -- my-app --yes --dir=/tmp/arche-output
+bun run dev:cli -- completion zsh
 bun test apps/cli/tests
 bun run verify:generated
+bun run pkg:check
 bun run --cwd apps/cli check-types
 bun run --cwd apps/cli lint
 bun run repo:doctor
@@ -171,6 +173,7 @@ Useful docs:
 
 - [CLI usage](docs/bootstrap-cli.md)
 - [Commands](docs/commands.md)
+- [Publishing](docs/publishing.md)
 - [Internal roadmap](.docs/product/implementation-roadmap.md)
 - [Verification matrix](.docs/product/verification-matrix.md)
 
@@ -190,3 +193,6 @@ not authentication; anyone with the URL can view it.
 npm publication is intentionally last. Before publishing, Arche needs package
 contents checks, generated-project verification, release smoke tests, and
 GitHub Actions trusted publishing via OIDC rather than long-lived npm tokens.
+The package check route now exists as `bun run pkg:check`; live publishing is
+guarded behind `NPM_TRUSTED_PUBLISHING_ENABLED=true` until the verification
+matrix is complete. See [publishing](docs/publishing.md).

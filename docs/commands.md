@@ -12,7 +12,11 @@
 ## CLI development
 
 - `bun run dev:cli -- my-app --yes --dir=../projects` - Scaffold from source.
+- `bun run dev:cli -- completion bash` - Print Bash completion.
+- `bun run dev:cli -- completion zsh` - Print Zsh completion.
 - `bun run build:cli` - Build `@arche/create`.
+- `bun run pkg:check` - Typecheck, lint, test, build, and npm-pack dry-run the CLI package.
+- `bun run --cwd apps/cli pack:dry-run` - Build the CLI and inspect the npm package contents without publishing.
 - `bun test apps/cli/tests` - Run CLI tests.
 - `bun run --cwd apps/cli check-types` - Typecheck the CLI package.
 - `bun run --cwd apps/cli lint` - Lint the CLI package.
@@ -28,9 +32,15 @@
 
 ## Build and checks
 
+- `bun run ci` - Format check, lint, typecheck, tests, and repo doctor.
 - `bun run build` - Build the workspace.
+- `bun run build:affected` - Build changed packages and dependents through Turbo.
+- `bun run build:docs` - Build the web/docs app.
 - `bun run lint` - Lint packages through Turbo.
+- `bun run lint:affected` - Lint changed packages and dependents through Turbo.
 - `bun run check-types` - Run workspace type checks.
+- `bun run check-types:affected` - Typecheck changed packages and dependents through Turbo.
+- `bun run test:ci` - Run the CI test suite.
 - `bun run format` - Format with Oxfmt.
 - `bun run format:check` - Check formatting.
 - `bun run repo:doctor` - Audit stale scaffolding, broken exports, placeholder files, and doc drift.
@@ -63,6 +73,10 @@ are set and deployment protection allows access.
 ## Commit validation
 
 - `bun run commit:check` - Validate the most recent commit message.
+- `bun run changeset` - Create a Changesets release note for `@arche/create`.
+- `bun run changeset:status` - Check pending changesets.
+- `bun run version:packages` - Apply Changesets version updates.
+- `bun run release` - Guarded publish entrypoint; skips npm unless trusted publishing is enabled.
 
 Preferred format:
 

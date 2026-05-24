@@ -20,6 +20,7 @@ Do not load this whole tree by default.
 - `architecture/` - repository structure, generated-project architecture, and
   dependency boundaries.
 - `product/` - CLI UX, presets, recipe model, and support matrix.
+  Start with `product/web-brand-ui-brief.md` for web/brand UI work.
 - `capabilities/` - capability-specific guidance for package managers, Rust,
   TypeScript, Solana, deployment, and agent context.
 - `reference/` - external inspirations and ecosystem notes.

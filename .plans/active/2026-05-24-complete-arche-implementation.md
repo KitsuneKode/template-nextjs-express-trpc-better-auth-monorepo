@@ -93,11 +93,13 @@ Evidence: `bun run verify:generated`, `bun run verify:generated -- --preset=rust
 
 ## Task 7: npm/OIDC publication readiness
 
-- [ ] Audit `apps/cli/package.json` metadata, `bin`, files, and package contents.
-- [ ] Add `npm pack --dry-run`/package smoke guidance or scripts.
-- [ ] Add GitHub Actions trusted publishing design using OIDC, not a long-lived npm token.
-- [ ] Do not enable live publishing until the generated-project matrix is reliable.
-- [ ] Commit release-readiness docs/config as the final slice.
+- [x] Audit `apps/cli/package.json` metadata, `bin`, files, and package contents.
+- [x] Add `npm pack --dry-run`/package smoke guidance or scripts.
+- [x] Add GitHub Actions trusted publishing design using OIDC, not a long-lived npm token.
+- [x] Do not enable live publishing until the generated-project matrix is reliable.
+- [x] Commit release-readiness docs/config as the final slice.
+
+Evidence: `bun run pkg:check` passes and reports `@arche/create@0.2.1` dry-run tarball contents: `CHANGELOG.md`, `CLI-SPEC.md`, `README.md`, `dist/index.js`, and `package.json`. `bun run ci`, `bun run build:docs`, `bun run build:affected`, `bun run verify:generated`, `bun run changeset:status`, and guarded `bun run release` pass. CI now has multi-job Turbo affected checks, docs build, package check, and a guarded Changesets release workflow that requires npm Trusted Publishing to be explicitly enabled.
 
 ## Milestone Verification Policy
 

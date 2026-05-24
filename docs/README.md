@@ -12,6 +12,8 @@ internal architecture context.
 | Create projects with Arche | [bootstrap-cli.md](./bootstrap-cli.md)         |
 | Repository commands        | [commands.md](./commands.md)                   |
 | CLI development internals  | [cli-development.md](./cli-development.md)     |
+| Package/publish readiness  | [publishing.md](./publishing.md)               |
+| Branding/repo rename       | [rebranding.md](./rebranding.md)               |
 | Portfolio `SHOWCASE.mdx`   | [portfolio-sync.md](./portfolio-sync.md)       |
 | Template variants          | [template-variants.md](./template-variants.md) |
 

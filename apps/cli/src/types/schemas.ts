@@ -198,6 +198,7 @@ export const CLIArgsSchema = z.object({
   _jsonConfig: z.any().optional(),
   _addFeature: z.string().optional(),
   _addDir: z.string().optional(),
+  _completionShell: z.enum(['bash', 'zsh']).optional(),
 })
 export type CLIArgs = z.infer<typeof CLIArgsSchema>
 

@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'bun:test'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { buildRootAgentsMd, buildContextMd } from '../../../apps/cli/src/lib/generators/agent-docs'
+import {
+  buildGeneratedArchitectureMd,
+  buildRootAgentsMd,
+} from '../../../apps/cli/src/lib/generators/agent-docs'
 import { renderGithubActionsWorkflow } from '../../../apps/cli/src/lib/generators/ci'
 import { renderDockerCompose } from '../../../apps/cli/src/lib/generators/docker'
 import { buildServerEnv } from '../../../apps/cli/src/lib/generators/env'
@@ -131,19 +134,19 @@ describe('family-aware agent docs', () => {
 
 describe('family-aware context', () => {
   it('includes fullstack architecture sections for fullstack family', () => {
-    const ctx = buildContextMd(baseConfig())
+    const ctx = buildGeneratedArchitectureMd(baseConfig())
     expect(ctx).toContain('tRPC')
     expect(ctx).toContain('Next.js')
   })
 
   it('includes next-specific architecture for next family', () => {
-    const ctx = buildContextMd(baseConfig({ family: 'next' }))
+    const ctx = buildGeneratedArchitectureMd(baseConfig({ family: 'next' }))
     expect(ctx).toContain('Next.js')
     expect(ctx).not.toContain('tRPC')
   })
 
   it('includes backend-specific architecture for backend family', () => {
-    const ctx = buildContextMd(
+    const ctx = buildGeneratedArchitectureMd(
       baseConfig({
         family: 'backend',
         backend: 'express-bun',
@@ -157,7 +160,7 @@ describe('family-aware context', () => {
   })
 
   it('includes convex architecture for convex family', () => {
-    const ctx = buildContextMd(baseConfig({ family: 'convex' }))
+    const ctx = buildGeneratedArchitectureMd(baseConfig({ family: 'convex' }))
     expect(ctx).toContain('Convex')
     expect(ctx).toContain('serverless')
     expect(ctx).toContain('Next.js')
@@ -222,6 +225,6 @@ describe('scaffold smoke tests', () => {
     expect(existsSync(join(backendDir, '.env.example'))).toBe(true)
     expect(existsSync(join(backendDir, 'docker-compose.yml'))).toBe(true)
     expect(existsSync(join(backendDir, 'AGENTS.md'))).toBe(true)
-    expect(existsSync(join(backendDir, 'CONTEXT.md'))).toBe(true)
+    expect(existsSync(join(backendDir, '.docs/architecture/generated-project.md'))).toBe(true)
   })
 })

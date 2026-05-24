@@ -14,6 +14,7 @@ import {
 } from '@clack/prompts'
 import pc from 'picocolors'
 import { addFeature } from './lib/add'
+import { renderCompletion } from './lib/completions'
 import { createProject, validateConfig } from './lib/create'
 import { recordHistory, printHistory } from './lib/history'
 import { buildReproducibleCommand } from './lib/reproducible'
@@ -41,7 +42,15 @@ const PKG_NAME = '@arche/create'
 const PKG_VERSION = '0.2.0'
 const SITE_URL = 'https://arche.kitsunelabs.xyz'
 
-const SUBCOMMANDS = new Set(['mcp', 'create-json', 'validate', 'add', 'history', 'create'])
+const SUBCOMMANDS = new Set([
+  'mcp',
+  'create-json',
+  'validate',
+  'add',
+  'history',
+  'completion',
+  'create',
+])
 
 /** Support `arche create my-app` and legacy `arche my-app` / `create-arche my-app`. */
 function normalizeArgv(argv: string[]): string[] {
@@ -112,6 +121,7 @@ ${pc.bold('Subcommands:')}
   validate <json>    Validate config without writing files
   add <feature> [dir] Add feature to existing project (docker, ci, websocket, etc.)
   history            Show recent scaffold activity
+  completion <shell> Print shell completion for bash or zsh
 
 ${pc.bold('Examples:')}
   ${pc.dim('# Interactive mode')}
@@ -177,6 +187,13 @@ function parseArgs(argv: string[]): CLIArgs {
   }
   if (argv[0] === 'history') {
     parsed._command = 'history'
+    return parsed
+  }
+  if (argv[0] === 'completion') {
+    parsed._command = 'completion'
+    if (argv[1] === 'bash' || argv[1] === 'zsh') {
+      parsed._completionShell = argv[1]
+    }
     return parsed
   }
 
@@ -327,6 +344,16 @@ async function main(): Promise<void> {
   // arche history — show scaffold history
   if (args._command === 'history') {
     printHistory()
+    process.exit(0)
+  }
+
+  // arche completion <bash|zsh> — print shell completion script
+  if (args._command === 'completion') {
+    if (!args._completionShell) {
+      console.error('Usage: arche completion <bash|zsh>')
+      process.exit(1)
+    }
+    console.log(renderCompletion(args._completionShell))
     process.exit(0)
   }
 

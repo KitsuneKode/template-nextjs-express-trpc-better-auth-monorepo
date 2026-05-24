@@ -16,7 +16,11 @@ function keyDirs(config: ProjectConfig): string[] {
 
   if (family === 'fullstack') {
     dirs.push('`apps/web` — Next.js frontend')
-    dirs.push('`apps/server` — Express API server')
+    if (usesServiceApi(config)) {
+      dirs.push('`services/api` — Service-owned backend')
+    } else {
+      dirs.push('`apps/server` — API server')
+    }
     if (includeWorker) dirs.push('`apps/worker` — Background job processing')
     dirs.push('`packages/auth` — Better Auth configuration')
     dirs.push('`packages/store` — Database schema and client')
@@ -49,14 +53,63 @@ function keyDirs(config: ProjectConfig): string[] {
     dirs.push('`src` — CLI source')
     dirs.push('`CHANGELOG.md` — Release notes')
   } else if (family === 'solana') {
-    dirs.push('`programs` — Anchor programs')
-    dirs.push('`tests` — Program tests')
+    dirs.push('`programs/core` — Anchor program')
+    dirs.push('`packages/solana-config` — Cluster and program constants')
+    dirs.push('`packages/solana-client` — IDL/client boundary for apps')
+    if (config.preset === 'solana-web' || config.preset === 'solana-product') {
+      dirs.push('`apps/web` — Next.js dApp and wallet adapter boundary')
+    }
+    if (config.preset === 'solana-mobile' || config.preset === 'solana-product') {
+      dirs.push('`apps/mobile` — Expo app and mobile wallet adapter boundary')
+    }
   } else if (family === 'mobile') {
     dirs.push('`app` — Expo Router screens')
     dirs.push('`components` — Reusable components')
   }
 
   return dirs
+}
+
+function placementGuide(config: ProjectConfig): string[] {
+  if (config.family === 'rust') {
+    return [
+      '`routes.rs` wires paths and methods only.',
+      '`handler.rs` owns framework extraction and response conversion.',
+      '`service.rs` owns business rules and stays framework-agnostic.',
+      '`repository.rs` owns SQLx/database access.',
+      '`dto.rs`, `mapper.rs`, and `policy.rs` own contracts, response shaping, and permission checks.',
+    ]
+  }
+
+  if (config.family === 'solana') {
+    return [
+      'Program instructions and accounts go in `programs/core/src/lib.rs` until the program needs modules.',
+      'Cluster/program IDs go in `packages/solana-config`; app code should not duplicate them.',
+      'IDL and transaction/client helpers go in `packages/solana-client`.',
+      'Wallet UI stays in the app (`apps/web` or `apps/mobile`); program logic stays out of UI components.',
+      'Add indexers, APIs, or workers only as explicit services when the product needs them.',
+    ]
+  }
+
+  if (config.family === 'fullstack') {
+    const serverRoot = usesServiceApi(config)
+      ? '`services/api`'
+      : '`apps/server/src/modules/<feature>`'
+    return [
+      `Feature code belongs in ${serverRoot}; keep framework entrypoints thin.`,
+      'Business logic belongs in services/use-cases, not route handlers.',
+      'Database access belongs in repositories/queries.',
+      'API contracts and validation belong in DTO/schema files.',
+      'Permission decisions belong in policies; response shaping belongs in mappers.',
+      'Use PATCH for partial updates. Use PUT only for full replacement.',
+      'Do not return raw database objects directly; map them into response DTOs.',
+    ]
+  }
+
+  return [
+    'Keep entrypoints thin and move reusable behavior into focused modules.',
+    'Split files when validation, persistence, permissions, or response shaping start mixing.',
+  ]
 }
 
 function commandsForFamily(family: string, pm: string): string[] {
@@ -81,6 +134,17 @@ function commandsForFamily(family: string, pm: string): string[] {
       '- `cargo fmt` — Format',
       '- `cargo clippy -- -D warnings` — Lint',
       '- `sqlx migrate run` — Apply migrations (when database enabled)',
+    ]
+  }
+
+  if (family === 'solana') {
+    return [
+      `- \`${pm} install\` — Install JavaScript workspace dependencies`,
+      `- \`${run} build\` — Build generated apps/packages`,
+      `- \`${run} lint\` — Lint generated apps/packages`,
+      `- \`${run} check-types\` — Type check generated apps/packages`,
+      '- `anchor build` — Build Anchor program',
+      '- `anchor test` — Run Anchor tests when local validator tooling is available',
     ]
   }
 
@@ -112,6 +176,11 @@ function agentPrompt(family: string): string[] {
     )
   }
 
+  if (family === 'solana') {
+    prompts.push('Run `anchor build` after program changes when Anchor is available locally.')
+    prompts.push('Keep wallet adapter setup in apps; keep program/client constants in packages.')
+  }
+
   return prompts
 }
 
@@ -120,6 +189,7 @@ export function buildRootAgentsMd(config: ProjectConfig): string {
   const dirs = keyDirs(config)
   const cmds = commandsForFamily(config.family, config.packageManager ?? 'bun')
   const prompts = agentPrompt(config.family)
+  const placements = placementGuide(config)
   const pm = config.packageManager ?? 'bun'
 
   return `---
@@ -152,6 +222,10 @@ ${config.backend !== 'none' ? `- **Backend**: ${config.backend}\n` : ''}${config
 ## Key Directories
 
 ${dirs.map((d) => `- ${d}`).join('\n')}
+
+## Where Things Go
+
+${placements.map((item) => `- ${item}`).join('\n')}
 
 ## Commands
 
@@ -204,7 +278,18 @@ export function buildGeneratedArchitectureMd(config: ProjectConfig): string {
 
 ## Environment Variables
 
-See \`services/api/.env.example\` and \`apps/web/.env.example\` for required variables.`
+See \`services/api/.env.example\` and \`apps/web/.env.example\` for required variables.
+
+## Where things go
+
+- Framework entrypoints stay thin.
+- Business logic belongs in services/use-cases.
+- Database access belongs in repositories/queries.
+- API contracts and validation belong in DTO/schema files.
+- Permission decisions belong in policies.
+- Response shaping belongs in mappers.
+- Use PATCH for partial updates. Use PUT only for full replacement.
+- Do not return raw database objects directly; map them into response DTOs.`
       : `A full-stack TypeScript monorepo scaffolded with @arche/create.
 
 ## Architecture
@@ -228,7 +313,18 @@ See \`services/api/.env.example\` and \`apps/web/.env.example\` for required var
 
 ## Environment Variables
 
-See \`apps/server/.env.example\` and \`apps/web/.env.example\` for required variables.`,
+See \`apps/server/.env.example\` and \`apps/web/.env.example\` for required variables.
+
+## Where things go
+
+- Framework entrypoints stay thin.
+- Business logic belongs in services/use-cases.
+- Database access belongs in repositories/queries.
+- API contracts and validation belong in DTO/schema files.
+- Permission decisions belong in policies.
+- Response shaping belongs in mappers.
+- Use PATCH for partial updates. Use PUT only for full replacement.
+- Do not return raw database objects directly; map them into response DTOs.`,
     next: `A standalone Next.js application scaffolded with @arche/create.
 
 ## Architecture
@@ -316,6 +412,26 @@ See \`.env.example\` (\`PORT\`, \`DATABASE_URL\`, \`RUST_LOG\`).`,
 - Convex functions: \`convex/\`
 - Convex schema: \`convex/schema.ts\`
 - App pages: \`app/\``,
+    solana: `A Solana project scaffolded with @arche/create.
+
+## Architecture
+
+- **Program**: Anchor program in \`programs/core\`
+- **Config**: shared cluster and program constants in \`packages/solana-config\`
+- **Client**: IDL/protocol helpers in \`packages/solana-client\`
+${config.preset === 'solana-web' || config.preset === 'solana-product' ? '- **Web**: Next.js dApp in `apps/web` with wallet-adapter boundary\n' : ''}${config.preset === 'solana-mobile' || config.preset === 'solana-product' ? '- **Mobile**: Expo app in `apps/mobile` with Solana Mobile Wallet Adapter boundary\n' : ''}
+## Where things go
+
+- Program instructions and accounts go in \`programs/core/src/lib.rs\` until the program needs modules.
+- Cluster/program IDs go in \`packages/solana-config\`; app code should not duplicate them.
+- IDL and transaction/client helpers go in \`packages/solana-client\`.
+- Wallet UI stays in the app; program logic stays out of UI components.
+- Add indexers, APIs, or workers only as explicit services when the product needs them.
+
+## Commands
+
+- \`anchor build\` — Build the program
+- \`anchor test\` — Run Anchor tests when local validator tooling is available`,
   }
 
   const description = descriptions[family] ?? `A ${family} project scaffolded with @arche/create.`

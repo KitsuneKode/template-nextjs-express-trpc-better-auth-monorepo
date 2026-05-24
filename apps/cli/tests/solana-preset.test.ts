@@ -109,6 +109,14 @@ describe('solana preset output', () => {
       )
       expect(client).toContain('@solana-product/solana-config')
       expect(client).not.toContain('@template/')
+
+      const architecture = readFileSync(
+        join(destinationDir, '.docs/architecture/generated-project.md'),
+        'utf8',
+      )
+      expect(architecture).toContain('## Where things go')
+      expect(architecture).toContain('packages/solana-client')
+      expect(architecture).toContain('Wallet UI stays in the app')
     } finally {
       rmSync(tmpRoot, { recursive: true, force: true })
     }

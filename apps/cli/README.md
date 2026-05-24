@@ -23,6 +23,7 @@ npx @arche/create my-app          # scoped alias
 | `validate <json>`     | Validate config only                      |
 | `add <feature> [dir]` | Add docker, ci, websocket, …              |
 | `history`             | Recent scaffolds (`~/.arche`)             |
+| `completion <shell>`  | Print Bash or Zsh completion              |
 
 ## Families
 
@@ -44,6 +45,13 @@ cd apps/cli
 bun run dev -- my-app --yes --dir=/tmp/test
 bun test
 bun run build
+```
+
+Completions:
+
+```sh
+arche completion zsh > ~/.zfunc/_arche
+arche completion bash > ~/.local/share/bash-completion/completions/arche
 ```
 
 See [docs/cli-development.md](../../docs/cli-development.md) in the repo root.

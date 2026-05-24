@@ -2,21 +2,42 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, prod, develop]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  TURBO_SCM_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || '' }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.TURBO_TOKEN || '' }}
 
 jobs:
-  validate:
+  format:
+    name: Format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v6
         with:
-          bun-version: latest
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -24,23 +45,228 @@ jobs:
       - name: Format check
         run: bun run format:check
 
-      - name: Lint
-        run: bun run lint
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
 
-      - name: Typecheck
-        run: bun run check-types
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
-      - name: Test
-        run: bun test
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            .turbo
+          key: ${{ runner.os }}-lint-${{ hashFiles('bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-lint-${{ hashFiles('bun.lock') }}-
+            ${{ runner.os }}-lint-
 
-      - name: Build server (Docker / Render / Railway)
-        run: bun run build --filter=@template/server
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-      - name: Build server for Vercel
-        run: bun run build:vercel --filter=@template/server
+      - name: Generate Prisma client
+        run: bun run db:generate
+
+      - name: Lint affected packages
+        run: bun run lint:affected
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            .turbo
+          key: ${{ runner.os }}-typecheck-${{ hashFiles('bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-typecheck-${{ hashFiles('bun.lock') }}-
+            ${{ runner.os }}-typecheck-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: bun run db:generate
+
+      - name: Typecheck affected packages
+        run: bun run check-types:affected
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-test-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-test-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests
+        run: bun run test:ci
+
+  build:
+    name: Build affected
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    needs: [lint, typecheck, test]
+    env:
+      NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_NAME: Arche
+      NEXT_PUBLIC_SITE_DESCRIPTION: Personal scaffold CLI and project vault
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            .turbo
+          key: ${{ runner.os }}-build-${{ hashFiles('bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('bun.lock') }}-
+            ${{ runner.os }}-build-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: bun run db:generate
+
+      - name: Build affected packages
+        run: bun run build:affected
+
+  docs:
+    name: Docs build
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    needs: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.bun/install/cache
+            .turbo
+          key: ${{ runner.os }}-docs-${{ hashFiles('bun.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docs-${{ hashFiles('bun.lock') }}-
+            ${{ runner.os }}-docs-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: bun run db:generate
+
+      - name: Build docs
+        run: bun run build:docs
+
+  package:
+    name: CLI package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lint, typecheck, test]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-package-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-package-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Package check
+        run: bun run pkg:check
+
+  repo-doctor:
+    name: Repo doctor
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    needs: [format, lint, typecheck, test]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: blob:none
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-doctor-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-doctor-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Repo doctor
         run: bun run repo:doctor
-
-      - name: Docker smoke (server)
-        run: docker build -f apps/server/Dockerfile .

@@ -1,7 +1,7 @@
 {
   "name": "@arche/create",
   "version": "0.2.1",
-  "description": "Arche — bootstrap production-ready full-stack TypeScript monorepos with Next.js, Express, tRPC, and Better Auth",
+  "description": "Arche — scaffold personal project vaults, TypeScript monorepos, Rust services, and Solana app foundations",
   "keywords": [
     "better-auth",
     "boilerplate",
@@ -11,7 +11,9 @@
     "monorepo",
     "nextjs",
     "prisma",
+    "rust",
     "scaffold",
+    "solana",
     "starter",
     "template",
     "trpc",
@@ -35,7 +37,10 @@
     "create-arche": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "CLI-SPEC.md"
   ],
   "type": "module",
   "publishConfig": {
@@ -51,6 +56,7 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "check-types": "tsc --noEmit",
+    "pack:dry-run": "bun run build && npm pack --dry-run",
     "prepublishOnly": "bun run build"
   },
   "dependencies": {
