@@ -73,18 +73,15 @@ async function updatePackageJsonFiles(directory: string): Promise<void> {
   }
 }
 
-export async function applyTypeScriptWorkspaceFoundation(
+export async function applyJavaScriptPackageManagerFoundation(
   destinationDir: string,
   packageManager: ProjectConfig['packageManager'],
+  monorepo: boolean,
 ): Promise<string[]> {
   if (packageManager === 'npm') return []
 
   const packageJsonPath = join(destinationDir, 'package.json')
   const root = JSON.parse(await readFile(packageJsonPath, 'utf8')) as JsonPackage
-  const packages = Array.isArray(root.workspaces)
-    ? root.workspaces
-    : (root.workspaces?.packages ?? ['apps/*', 'packages/*', 'toolings/*'])
-
   normalizeTurboScripts(root.scripts)
   root.engines = {
     ...root.engines,
@@ -93,6 +90,20 @@ export async function applyTypeScriptWorkspaceFoundation(
   }
 
   const generatedFiles: string[] = []
+  if (!monorepo) {
+    root.packageManager =
+      packageManager === 'bun' ? `bun@${DEFAULT_TOOLCHAIN.bun}` : `pnpm@${DEFAULT_TOOLCHAIN.pnpm}`
+    if (packageManager === 'pnpm' && root.scripts?.preinstall?.includes('only-allow bun')) {
+      delete root.scripts.preinstall
+    }
+    await writeFile(packageJsonPath, JSON.stringify(root, null, 2) + '\n')
+    return generatedFiles
+  }
+
+  const packages = Array.isArray(root.workspaces)
+    ? root.workspaces
+    : (root.workspaces?.packages ?? ['apps/*', 'packages/*', 'toolings/*'])
+
   if (packageManager === 'bun') {
     root.workspaces = { packages, catalog: DEFAULT_WORKSPACE_CATALOG }
     root.packageManager = `bun@${DEFAULT_TOOLCHAIN.bun}`

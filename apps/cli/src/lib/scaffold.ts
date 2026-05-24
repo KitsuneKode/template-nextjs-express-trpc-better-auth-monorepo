@@ -17,7 +17,7 @@ import {
   renderInternalDocsIndex,
   renderPlansIndex,
 } from '../render/docs/agent-context'
-import { applyTypeScriptWorkspaceFoundation } from '../render/workspace/foundation'
+import { applyJavaScriptPackageManagerFoundation } from '../render/workspace/foundation'
 import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
   familySupportsBundles,
@@ -413,9 +413,10 @@ export async function scaffoldProject(
 
   await adaptPackageManagerScripts(destinationDir, pm)
 
-  const workspaceFiles = familySupportsMonorepoTransforms(family)
-    ? await applyTypeScriptWorkspaceFoundation(destinationDir, pm)
-    : []
+  const workspaceFiles =
+    family !== 'rust' && family !== 'solana'
+      ? await applyJavaScriptPackageManagerFoundation(destinationDir, pm, isMonorepoFamily(family))
+      : []
 
   const generatedFiles: string[] = [
     'arche.json',

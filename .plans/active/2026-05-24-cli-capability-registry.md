@@ -120,6 +120,8 @@ Native workspace/support surface slice completed on 2026-05-24:
   centralized shared dependency references.
 - Fullstack pnpm scaffolds now emit `pnpm-workspace.yaml` catalogs, a pinned
   pnpm package manager, and retain explicit Bun/Node engine support.
+- Standalone JavaScript scaffolds now pin the selected Bun/pnpm package manager
+  and Node/Bun engines without generating workspace catalog files.
 - Generated root scripts normalize legacy Turbo shorthand into `turbo run`
   delegation for filtered apps and database tasks.
 - Catalog values use this scaffold's selected dependency baseline; the

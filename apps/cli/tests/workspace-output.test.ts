@@ -89,3 +89,34 @@ describe('fullstack workspace output', () => {
     }
   }, 60000)
 })
+
+describe('standalone JavaScript package-manager output', () => {
+  it('pins pnpm without generating workspace catalogs for a Next.js app', async () => {
+    const tmpRoot = mkdtempSync(join(tmpdir(), 'arche-standalone-output-'))
+    const destinationDir = join(tmpRoot, 'next-pnpm')
+
+    try {
+      const result = await createProject({
+        config: {
+          ...makeConfig(destinationDir, 'pnpm'),
+          projectName: 'next-pnpm',
+          family: 'next',
+          database: 'none',
+          orm: 'none',
+          backend: 'none',
+        },
+        dryRun: false,
+      })
+      expect(result.success).toBe(true)
+
+      const root = JSON.parse(readFileSync(join(destinationDir, 'package.json'), 'utf8'))
+      expect(root.packageManager).toStartWith('pnpm@')
+      expect(root.engines.bun).toBeDefined()
+      expect(root.engines.node).toBeDefined()
+      expect(root.workspaces).toBeUndefined()
+      expect(() => readFileSync(join(destinationDir, 'pnpm-workspace.yaml'), 'utf8')).toThrow()
+    } finally {
+      rmSync(tmpRoot, { recursive: true, force: true })
+    }
+  }, 60000)
+})
