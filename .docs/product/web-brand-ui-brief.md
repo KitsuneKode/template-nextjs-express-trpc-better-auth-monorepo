@@ -10,7 +10,8 @@ Read only the context required for the slice:
 
 1. Root `AGENTS.md`, then `apps/web/AGENTS.md`.
 2. Root `PRODUCT.md` for purpose, personality, anti-goals, and accessibility.
-3. This brief for website scope and implementation order.
+3. This brief for website scope and implementation order, plus root
+   `DESIGN.md` for the active visual system.
 4. `.docs/product/verification-matrix.md` before writing any preset/status
    claim.
 5. The route/components being edited and one matching active plan.
@@ -120,26 +121,27 @@ approved in `PRODUCT.md`: precise, capable, intentional.
 - Motion must communicate sequence or state and respect reduced motion.
 - Public surfaces target WCAG 2.2 AA.
 
-The current `packages/ui/src/styles/globals.css` and public pages are **not yet
-a final design system**. They mix warm token values, stark hard-coded
-black/zinc pages, legacy `solar-*` and glass variables, and old brand assets.
-Do not generate `DESIGN.md` by blindly recording these as desired truth.
+Root `DESIGN.md` is now the compact active design source for public web work.
+It keeps the current dark, squared, code-forward language, while removing
+legacy `solar-*` and glass token families from the approved direction. Old
+`apps/web/public/brand/template-*` files remain legacy assets until a real mark
+replacement lands.
 
 ## Design-system decision gate
 
-Before broad styling changes, the UI agent must:
+Before broad styling changes beyond the current system, the UI agent must:
 
 1. Audit actual public pages, components, token files, fonts, and assets.
 2. Propose a compact system: color strategy, theme, typography, surfaces,
    focus states, terminal treatment, status badges, and Arche mark direction.
 3. Explicitly list old tokens/assets to delete or migrate.
 4. Get direction approval.
-5. Then write root `DESIGN.md` from the approved target system and implement
+5. Then update root `DESIGN.md` from the approved target system and implement
    against it.
 
-The current baseline is dark, squared, grid-led, and code-forward. It may be
-refined or replaced, but it must not be silently treated as approved final
-branding.
+The current approved baseline is dark, squared, grid-led, and code-forward.
+It may be refined or replaced, but broad changes must update `DESIGN.md` and
+keep public claims evidence-backed.
 
 ## OG and icon direction
 

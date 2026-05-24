@@ -1,68 +1,69 @@
 import { Metadata } from 'next'
+
 import { CommandTable } from '@/components/arche/command-table'
+import {
+  CodePanel,
+  HeroBlock,
+  SectionHeading,
+  StatusPill,
+} from '@/components/arche/site-primitives'
 
 export const metadata: Metadata = {
   title: 'CLI Tooling',
-  description: 'Master the Arche CLI for project bootstrapping and maintenance.',
+  description: 'Use the Arche CLI for local project scaffolding and generated workspace hygiene.',
 }
+
+const capabilities = [
+  {
+    title: 'Workspace scoping',
+    desc: 'Renames package scopes, package names, and workspace metadata from @arche-template/* to the selected project identity.',
+  },
+  {
+    title: 'Preset selection',
+    desc: 'Interactive and flag-driven scaffolds for TypeScript fullstack, Rust workspace foundations, workers, Solana foundations, and libraries.',
+  },
+  {
+    title: 'Agent context',
+    desc: 'Writes AGENTS.md plus .docs and .plans references so generated projects are navigable by coding agents without context stuffing.',
+  },
+  {
+    title: 'Verification harness',
+    desc: 'Generated projects are designed to run install, typecheck, lint, test, build, and package checks before release work starts.',
+  },
+]
 
 export default function CliDocsPage() {
   return (
     <div className="flex h-full flex-col">
-      {/* Header Area */}
-      <section className="relative overflow-hidden border-b border-zinc-800 bg-black p-6 md:p-12">
-        <div className="relative z-10 flex max-w-3xl flex-col items-start">
-          <div className="mb-6 inline-flex items-center gap-2 border border-zinc-800 bg-black px-3 py-1 text-xs font-bold tracking-wider uppercase">
-            CLI Tooling
-          </div>
-          <h1 className="mb-6 text-4xl leading-[0.9] font-black tracking-tighter text-white uppercase md:text-5xl">
-            Arche <br />
-            <span className="text-stroke-white text-transparent">CLI.</span>
-          </h1>
-          <p className="text-lg leading-snug font-medium text-zinc-400">
-            The entry point for every Arche project. A Bun-native interactive CLI to scaffold your
-            monorepo.
-          </p>
-        </div>
-      </section>
+      <HeroBlock
+        eyebrow={<StatusPill tone="muted">CLI Tooling</StatusPill>}
+        title="Arche"
+        outline="CLI."
+        className="md:p-12"
+      >
+        The CLI is the entry point for your scaffolded workspaces. It should be useful in a source
+        checkout today and publishable once the release workflow is explicitly trusted.
+      </HeroBlock>
 
       <section className="max-w-4xl space-y-12 p-6 md:p-12">
         <div>
-          <h2 className="mb-4 text-2xl font-bold tracking-tight uppercase">Local Execution</h2>
-          <p className="mb-6 font-medium text-zinc-400">
-            Run the CLI directly from this template repo to bootstrap a new workspace.
-          </p>
-          <div className="border border-zinc-800 bg-zinc-900 p-4 font-mono text-sm text-white">
-            bun run dev:cli -- my-app
-          </div>
+          <SectionHeading eyebrow="Local execution" title="Run from source." />
+          <CodePanel title="Current command">
+            <code>bun run dev:cli -- my-app --yes --preset=typescript-fullstack</code>
+          </CodePanel>
         </div>
 
         <div>
-          <h2 className="mb-4 text-2xl font-bold tracking-tight uppercase">Features</h2>
-          <ul className="space-y-4">
-            {[
-              {
-                title: 'Workspace Scoping',
-                desc: 'Automatically renames all @arche-template/* package scopes to your chosen project name.',
-              },
-              {
-                title: 'Family Selection',
-                desc: 'Interactive selection of 11+ architecture families (fullstack, mobile, convex, etc).',
-              },
-              {
-                title: 'Smart Cleaning',
-                desc: 'Optionally strips out showcase content and demo data for a clean slate.',
-              },
-              {
-                title: 'Infrastructure Generation',
-                desc: 'Generates Docker Compose files and GitHub Actions workflows tailored to your selection.',
-              },
-            ].map((f, i) => (
-              <li key={i} className="flex gap-4">
-                <span className="font-mono text-zinc-600">0{i + 1}</span>
-                <div>
-                  <div className="font-bold text-white">{f.title}</div>
-                  <div className="text-sm text-zinc-500">{f.desc}</div>
+          <SectionHeading eyebrow="Capabilities" title="What the scaffold owns." />
+          <ul className="grid gap-4 md:grid-cols-2">
+            {capabilities.map((capability, index) => (
+              <li key={capability.title} className="border border-zinc-800 bg-zinc-950/60 p-5">
+                <span className="mb-4 block font-mono text-xs text-zinc-600 tabular-nums">
+                  0{index + 1}
+                </span>
+                <div className="mb-2 font-bold text-white">{capability.title}</div>
+                <div className="text-sm leading-relaxed text-pretty text-zinc-500">
+                  {capability.desc}
                 </div>
               </li>
             ))}
@@ -70,10 +71,7 @@ export default function CliDocsPage() {
         </div>
 
         <div>
-          <h2 className="mb-6 text-2xl font-bold tracking-tight uppercase">Repo Hygiene</h2>
-          <p className="mb-8 font-medium text-zinc-400">
-            The CLI workspace also includes maintenance tools for existing projects.
-          </p>
+          <SectionHeading eyebrow="Repo hygiene" title="Commands agents should know." />
           <CommandTable />
         </div>
       </section>

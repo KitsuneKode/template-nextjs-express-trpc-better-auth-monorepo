@@ -1,43 +1,50 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
+import { cn } from '@arche-template/ui/lib/utils'
+
+const links = [
+  { href: '/families', label: 'Families' },
+  { href: '/docs', label: 'Docs' },
+  { href: '/examples', label: 'Examples' },
+]
 
 export function Navbar() {
   const pathname = usePathname()
 
   return (
-    <div className="sticky top-0 z-50 border-b border-zinc-800 bg-black">
+    <div className="sticky top-0 z-50 border-b border-zinc-800 bg-black/95 backdrop-blur-sm">
       <nav className="mx-auto flex h-14 max-w-[1200px] items-center justify-between border-r border-l border-zinc-800 px-6">
-        <a
+        <Link
           href="/"
-          className="flex items-center gap-4 text-sm font-bold tracking-tight uppercase transition-opacity hover:opacity-80"
+          transitionTypes={['route-soft']}
+          className="flex min-h-10 items-center gap-4 text-sm font-bold tracking-tight uppercase transition-[opacity] duration-150 hover:opacity-80"
         >
           <div className="size-3 bg-white" />
           ARCHE
-        </a>
+        </Link>
         <div className="hidden items-center gap-6 text-[11px] font-bold tracking-[0.15em] uppercase lg:flex">
-          <a
-            href="/families"
-            className={`px-2 py-1 transition-colors ${pathname.startsWith('/families') ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-          >
-            Families
-          </a>
-          <a
-            href="/docs"
-            className={`px-2 py-1 transition-colors ${pathname.startsWith('/docs') ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-          >
-            Docs
-          </a>
-          <a
-            href="/examples"
-            className={`px-2 py-1 transition-colors ${pathname.startsWith('/examples') ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-          >
-            Examples
-          </a>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              transitionTypes={['route-soft']}
+              className={cn(
+                'inline-flex min-h-10 items-center px-2 transition-[background-color,color] duration-150 ease-out active:scale-[0.96]',
+                pathname.startsWith(link.href)
+                  ? 'bg-white text-black'
+                  : 'text-zinc-500 hover:text-white',
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
         <a
           href="https://github.com/KitsuneKode/arche"
-          className="text-xs font-bold tracking-widest text-zinc-400 uppercase transition-colors hover:text-white"
+          className="inline-flex min-h-10 items-center text-xs font-bold tracking-widest text-zinc-400 uppercase transition-colors hover:text-white"
         >
           GitHub ↗
         </a>

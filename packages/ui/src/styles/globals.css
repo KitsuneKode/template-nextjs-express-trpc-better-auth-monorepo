@@ -41,10 +41,12 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.8866 0.0404 89.6994);
   --sidebar-ring: oklch(0.5553 0.1455 48.9975);
-  --font-sans: Oxanium, sans-serif;
-  --font-serif: Merriweather, serif;
-  --font-mono: Fira Code, monospace;
+  --font-sans: var(--font-oxanium, Oxanium), sans-serif;
+  --font-serif: var(--font-merriweather, Merriweather), serif;
+  --font-mono: var(--font-fira-code, Fira Code), monospace;
   --radius: 0rem;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --shadow-x: 0px;
   --shadow-y: 2px;
   --shadow-blur: 3px;
@@ -96,10 +98,12 @@
   --sidebar-accent-foreground: oklch(0.2839 0.0734 254.5378);
   --sidebar-border: oklch(0.3741 0.0087 67.5582);
   --sidebar-ring: oklch(0.7049 0.1867 47.6044);
-  --font-sans: Oxanium, sans-serif;
-  --font-serif: Merriweather, serif;
-  --font-mono: Fira Code, monospace;
+  --font-sans: var(--font-oxanium, Oxanium), sans-serif;
+  --font-serif: var(--font-merriweather, Merriweather), serif;
+  --font-mono: var(--font-fira-code, Fira Code), monospace;
   --radius: 0rem;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --shadow-x: 0px;
   --shadow-y: 2px;
   --shadow-blur: 3px;
@@ -167,18 +171,6 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
-  --solar-orange: #ff6b6b;
-  --solar-teal: #4ecdc4;
-  --solar-blue: #45b7d1;
-  --solar-green: #96ceb4;
-  --solar-purple: #a8e6cf;
-  --solar-dark: #2c3e50;
-  --solar-light: #ecf0f1;
-
-  --gradient-1: linear-gradient(135deg, var(--solar-orange) 0%, var(--solar-purple) 100%);
-  --gradient-2: linear-gradient(135deg, var(--solar-teal) 0%, var(--solar-blue) 100%);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
 }
 
 @layer base {
@@ -193,6 +185,18 @@
 
   body {
     @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
   }
 
   /* Reduce motion for users who prefer it */

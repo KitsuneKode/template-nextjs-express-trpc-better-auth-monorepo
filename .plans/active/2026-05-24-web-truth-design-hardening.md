@@ -17,14 +17,14 @@ claims until all promoted preset evidence is green.
 
 ## Slice Status
 
-| Slice | Purpose                                                   | Status                     |
-| ----- | --------------------------------------------------------- | -------------------------- |
-| W0    | Repair shared UI lint warnings and establish handoff docs | Complete                   |
-| W1    | Correct public copy and metadata drift                    | Ready                      |
-| W2    | Approve and encode design system/assets                   | Blocked on visual approval |
-| W3    | Rebuild landing hierarchy against approved system         | Pending                    |
-| W4    | Bring presets/docs UX in line with registry truth         | Pending                    |
-| W5    | Accessibility, responsive, metadata, and build polish     | Pending                    |
+| Slice | Purpose                                                   | Status      |
+| ----- | --------------------------------------------------------- | ----------- |
+| W0    | Repair shared UI lint warnings and establish handoff docs | Complete    |
+| W1    | Correct public copy and metadata drift                    | In progress |
+| W2    | Approve and encode design system/assets                   | In progress |
+| W3    | Rebuild landing hierarchy against approved system         | In progress |
+| W4    | Bring presets/docs UX in line with registry truth         | In progress |
+| W5    | Accessibility, responsive, metadata, and build polish     | Pending     |
 
 ## W0: Shared UI and handoff foundation
 
@@ -47,31 +47,32 @@ the public site.
 
 ## W1: Truth before styling
 
-- [ ] Replace unsupported “Production Ready” messaging on the home route.
-- [ ] Correct the hero, feature, docs, families, architecture, and metadata
+- [x] Replace unsupported “Production Ready” messaging on the home route.
+- [x] Correct the hero, feature, docs, families, architecture, and metadata
       statements identified in the web brief.
-- [ ] Add focused regression checks for claim-bearing text if an appropriate
+- [x] Add focused regression checks for claim-bearing text if an appropriate
       web test boundary is introduced.
 - [ ] Verify web tests, lint, typecheck, and docs build.
 - [ ] Commit as one truthful-copy slice.
 
 ## W2: Visual source of truth
 
-- [ ] Audit active pages, global tokens, fonts, old template marks, icons, and
+- [x] Audit active pages, global tokens, fonts, old template marks, icons, and
       social metadata assets.
-- [ ] Present a compact design-system direction for approval before broad
+- [x] Present a compact design-system direction for approval before broad
       styling changes.
-- [ ] Write `DESIGN.md` from the approved system only, not from stale mixed
+- [x] Write `DESIGN.md` from the approved system only, not from stale mixed
       tokens.
-- [ ] Replace old brand assets and add a real OG image before referencing it.
-- [ ] Consolidate/remove stale token families after the approved replacement is
+- [ ] Replace old brand assets; a file-based OG image is now generated without
+      referencing a missing public asset.
+- [x] Consolidate/remove stale token families after the approved replacement is
       wired.
 - [ ] Verify and commit as one brand-system slice.
 
 ## W3-W5: Public experience completion
 
-- [ ] Rebuild home hierarchy using the approved system and truthful artifacts.
-- [ ] Rebuild families/presets and docs navigation around current registry
+- [x] Rebuild home hierarchy using the approved system and truthful artifacts.
+- [x] Rebuild families/presets and docs navigation around current registry
       language.
 - [ ] Audit keyboard behavior, reduced motion, responsive layouts, contrast,
       metadata, sitemap/robots behavior, and social assets.

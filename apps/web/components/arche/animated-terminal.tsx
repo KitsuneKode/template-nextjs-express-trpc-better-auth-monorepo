@@ -1,19 +1,24 @@
 'use client'
 
-import { Button } from '@arche-template/ui/components/button'
 import { motion } from 'motion/react'
 import { useState, useEffect } from 'react'
 
+import { PrimaryLink } from '@/components/arche/site-primitives'
+
 const terminalSteps = [
-  { text: 'npx arche create my-app', type: 'command', delay: 800 },
-  { text: '? Which family would you like to use?', type: 'prompt', delay: 600 },
-  { text: '❯ Fullstack (Next.js + Express + tRPC)', type: 'select', delay: 400 },
-  { text: '✔ Fullstack family selected', type: 'success', delay: 300 },
-  { text: '? Do you want to initialize a git repository?', type: 'prompt', delay: 500 },
-  { text: '❯ Yes', type: 'select', delay: 300 },
-  { text: '✔ Git initialized', type: 'success', delay: 300 },
-  { text: '⠋ Scaffolding fullstack monorepo...', type: 'loading', delay: 800 },
-  { text: '✔ Project created successfully!', type: 'success', delay: 0 },
+  {
+    text: 'bun run dev:cli -- my-app --yes --preset=typescript-fullstack',
+    type: 'command',
+    delay: 800,
+  },
+  { text: '? Package manager', type: 'prompt', delay: 600 },
+  { text: '❯ bun (pnpm supported)', type: 'select', delay: 400 },
+  { text: '✔ Workspace scope renamed to @my-app/*', type: 'success', delay: 300 },
+  { text: '? Add Rust workspace foundations?', type: 'prompt', delay: 500 },
+  { text: '❯ Yes, cargo workspace + service slot', type: 'select', delay: 300 },
+  { text: '✔ AGENTS.md, .docs, .plans, CI, and env examples written', type: 'success', delay: 300 },
+  { text: '⠋ Validating generated project...', type: 'loading', delay: 800 },
+  { text: '✔ Scaffold ready for review gates', type: 'success', delay: 0 },
 ]
 
 export function AnimatedTerminal() {
@@ -70,7 +75,6 @@ export function AnimatedTerminal() {
 
         {/* Terminal Content */}
         <div className="relative flex min-h-[220px] flex-col items-start bg-black p-4 text-left font-mono text-sm leading-relaxed md:p-6">
-          {/* Step 0: Typing Command */}
           <div className="flex items-center gap-3 text-white">
             <span className="text-zinc-400">~</span>
             <span>{isTyping ? typedCommand : terminalSteps[0]!.text}</span>
@@ -83,12 +87,11 @@ export function AnimatedTerminal() {
             )}
           </div>
 
-          {/* Render completed steps */}
           {terminalSteps.slice(1, currentStep).map((step, i) => (
             <motion.div
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
               key={i}
               className={`mt-2 ${
                 step.type === 'prompt'
@@ -106,7 +109,6 @@ export function AnimatedTerminal() {
             </motion.div>
           ))}
 
-          {/* Current loading indicator if not finished */}
           {currentStep === 7 && (
             <motion.div
               animate={{ rotate: 360 }}
@@ -119,21 +121,11 @@ export function AnimatedTerminal() {
         </div>
       </div>
 
-      {/* CTA Button next to terminal */}
       <div className="flex shrink-0 gap-2 sm:flex-col">
-        <Button
-          aria-label="Initialize Arche Project"
-          className="flex-1 rounded-none border border-white bg-white px-8 font-bold text-black shadow-[4px_4px_0_0_rgba(255,255,255,0.2)] transition-all hover:bg-zinc-200 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-        >
-          Initialize
-        </Button>
-        <Button
-          aria-label="Read Documentation"
-          variant="outline"
-          className="flex-1 rounded-none border border-zinc-800 bg-black px-8 font-bold text-white shadow-[4px_4px_0_0_rgba(39,39,42,1)] transition-all hover:bg-zinc-900 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-        >
-          Docs ↗
-        </Button>
+        <PrimaryLink href="/docs/cli">CLI docs</PrimaryLink>
+        <PrimaryLink href="/docs" variant="outline">
+          Runbook
+        </PrimaryLink>
       </div>
     </div>
   )

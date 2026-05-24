@@ -13,13 +13,14 @@ export const metadata: Metadata = {
     template: '%s | Arche',
   },
   description:
-    'Full-stack TypeScript monorepo template. One command to auth, database, API, and frontend. Built with Next.js, Express, Better Auth, Prisma, and tRPC.',
+    'A personal project origin system for TypeScript, Rust, Solana, workers, deployments, and agent-readable scaffolds.',
   openGraph: {
-    images: [{ url: '/brand/og-image.png', width: 1200, height: 630 }],
+    title: 'Arche — Project origin system',
+    description:
+      'Scaffold serious workspaces with typed boundaries, Rust-ready services, deployment paths, and useful agent context.',
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/brand/og-image.png'],
   },
   robots: { index: true, follow: true },
 }
