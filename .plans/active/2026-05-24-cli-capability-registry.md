@@ -164,3 +164,16 @@ Rust-backed fullstack scaffold slice completed on 2026-05-24:
   17 pass, 0 fail.
 - Verified `bun run --cwd apps/cli check-types`: pass.
 - Verified `bun run --cwd apps/cli lint`: pass.
+
+Verification matrix slice completed on 2026-05-24:
+
+- Added `.docs/product/verification-matrix.md` as the durable generated-project
+  proof matrix.
+- Added `apps/cli/src/registry/verification-matrix.ts` so support-label
+  promotion can be checked from code.
+- Added tests that require a matrix row for every preset and keep non-stable
+  presets below the stable evidence threshold.
+- Verified `bun test apps/cli/tests/verification-matrix.test.ts`: 3 pass, 0
+  fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.

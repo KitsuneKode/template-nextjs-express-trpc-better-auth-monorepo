@@ -47,12 +47,14 @@ Evidence: `bun run repo:doctor` passes with 0 errors, 0 warnings, 0 info.
 
 ## Task 3: Verification matrix
 
-- [ ] Create `.docs/product/verification-matrix.md`.
-- [ ] Track every preset against structure tests, install, lint, typecheck, test, build, Rust gates, Solana gates, deployment checks, and package-manager coverage.
-- [ ] Add a lightweight exported matrix or test fixture only if the CLI needs to expose this status programmatically.
-- [ ] Add tests that prevent target presets from being marked `Stable` without matrix evidence.
-- [ ] Update `.plans/active/2026-05-24-cli-capability-registry.md` with evidence.
-- [ ] Commit matrix and guard tests separately.
+- [x] Create `.docs/product/verification-matrix.md`.
+- [x] Track every preset against structure tests, install, lint, typecheck, test, build, Rust gates, Solana gates, deployment checks, and package-manager coverage.
+- [x] Add a lightweight exported matrix or test fixture only if the CLI needs to expose this status programmatically.
+- [x] Add tests that prevent target presets from being marked `Stable` without matrix evidence.
+- [x] Update `.plans/active/2026-05-24-cli-capability-registry.md` with evidence.
+- [x] Commit matrix and guard tests separately.
+
+Evidence: `bun test apps/cli/tests/verification-matrix.test.ts`, `bun run --cwd apps/cli check-types`, and `bun run --cwd apps/cli lint` pass.
 
 ## Task 4: Solana program foundation
 

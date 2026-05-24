@@ -171,7 +171,7 @@ Useful docs:
 - [CLI usage](docs/bootstrap-cli.md)
 - [Commands](docs/commands.md)
 - [Internal roadmap](.docs/product/implementation-roadmap.md)
-- Verification matrix _(to be added in the next slice)_
+- [Verification matrix](.docs/product/verification-matrix.md)
 
 ## Design lab
 
