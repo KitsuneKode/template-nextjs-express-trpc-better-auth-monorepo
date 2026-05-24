@@ -25,6 +25,23 @@ export type Bundle = z.infer<typeof BundleSchema>
 export const PackageManagerSchema = z.enum(['bun', 'pnpm', 'npm'])
 export type PackageManager = z.infer<typeof PackageManagerSchema>
 
+export const PresetSchema = z.enum([
+  'typescript-fullstack',
+  'rust-api',
+  'rust-fullstack',
+  'solana-program',
+  'solana-web',
+  'solana-mobile',
+  'solana-product',
+  'customize',
+  'experiments',
+])
+export type Preset = z.infer<typeof PresetSchema>
+
+/** Package managers supported by new recipe-based presets. */
+export const StablePackageManagerSchema = z.enum(['bun', 'pnpm'])
+export type StablePackageManager = z.infer<typeof StablePackageManagerSchema>
+
 // =============================================================================
 // Core Schemas (kept for backward compat with generators)
 // =============================================================================

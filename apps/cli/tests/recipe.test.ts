@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { buildRecipeReplayCommand } from '../src/recipe/replay'
+import { buildRecipeReplayCommand } from '../src/lib/reproducible'
 import { RecipeSchema } from '../src/recipe/schema'
 
 describe('recipe schema', () => {

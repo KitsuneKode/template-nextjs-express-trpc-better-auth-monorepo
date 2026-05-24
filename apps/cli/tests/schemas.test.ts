@@ -8,6 +8,8 @@ import {
   DeploymentSchema,
   DatabaseSchema,
   FamilySchema,
+  PresetSchema,
+  StablePackageManagerSchema,
   hasBackendOptions,
   hasDatabaseOptions,
   hasOrmOptions,
@@ -151,6 +153,19 @@ describe('checkCompatibility', () => {
 })
 
 describe('Zod schemas', () => {
+  describe('new preset schemas', () => {
+    it('parses approved preset candidates', () => {
+      expect(PresetSchema.parse('rust-fullstack')).toBe('rust-fullstack')
+      expect(PresetSchema.parse('solana-product')).toBe('solana-product')
+    })
+
+    it('keeps stable package managers to Bun and pnpm', () => {
+      expect(StablePackageManagerSchema.parse('bun')).toBe('bun')
+      expect(StablePackageManagerSchema.parse('pnpm')).toBe('pnpm')
+      expect(() => StablePackageManagerSchema.parse('npm')).toThrow()
+    })
+  })
+
   describe('TestingSchema', () => {
     it('accepts valid values', () => {
       expect(TestingSchema.parse('bun')).toBe('bun')

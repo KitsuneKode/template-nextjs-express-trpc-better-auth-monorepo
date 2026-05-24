@@ -1,22 +1,10 @@
 import { z } from 'zod'
-
-export const StablePackageManagerSchema = z.enum(['bun', 'pnpm'])
-export type StablePackageManager = z.infer<typeof StablePackageManagerSchema>
+import { PresetSchema, StablePackageManagerSchema } from '../types/schemas'
 
 export const RecipeSchema = z.object({
   $schema: z.string().optional(),
   version: z.literal(1),
-  preset: z.enum([
-    'typescript-fullstack',
-    'rust-api',
-    'rust-fullstack',
-    'solana-program',
-    'solana-web',
-    'solana-mobile',
-    'solana-product',
-    'customize',
-    'experiments',
-  ]),
+  preset: PresetSchema,
   support: z.enum(['stable', 'experimental', 'requiresValidation']),
   packageManager: StablePackageManagerSchema,
   runtime: z.record(z.string(), z.string()),
