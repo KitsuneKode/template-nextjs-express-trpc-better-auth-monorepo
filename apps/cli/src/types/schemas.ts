@@ -168,6 +168,7 @@ export type ProjectConfig = z.infer<typeof ProjectConfigSchema>
 export const CLIArgsSchema = z.object({
   projectName: z.string().optional(),
   family: FamilySchema.optional(),
+  preset: PresetSchema.optional(),
   bundles: z.array(BundleSchema).optional(),
   packageManager: PackageManagerSchema.optional(),
   yes: z.boolean().default(false),

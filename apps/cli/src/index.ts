@@ -21,7 +21,8 @@ import { scaffoldProject } from './lib/scaffold'
 import { resolveDestinationDir, sanitizeProjectName } from './lib/slug'
 import { startMcpServer } from './mcp'
 import { packageManagerMenuOptions } from './registry/capabilities'
-import type { Bundle, CLIArgs, Family, ProjectConfig } from './types/schemas'
+import { presetMenuOptions, projectDefaultsForPreset } from './registry/preset-config'
+import type { Bundle, CLIArgs, Family, Preset, ProjectConfig } from './types/schemas'
 import {
   BUNDLE_LABELS,
   checkCompatibility,
@@ -33,6 +34,7 @@ import {
   hasRustDatabaseOptions,
   familySupportsShowcase,
   familySupportsWorker,
+  PresetSchema,
 } from './types/schemas'
 
 const PKG_NAME = '@arche/create'
@@ -80,6 +82,7 @@ ${pc.bold('Options:')}
   --dir=<path>       Output parent directory (default: current directory)
   --output=<path>    Alias for --dir
   --family=<name>    Project family (or pass as second positional argument)
+  --preset=<name>    Starting point: typescript-fullstack, rust-api, rust-fullstack, solana-program, customize
   --pm=<pm>          Package manager: bun (default), pnpm (stable), npm (experimental)
   --bundle=<b>       Feature bundle: product, realtime, growth, infra, ai
   --git              Initialize git repository (default: yes)
@@ -239,6 +242,10 @@ function parseArgs(argv: string[]): CLIArgs {
       const result = FamilySchema.safeParse(val)
       if (result.success) parsed.family = result.data
     }
+    if (arg.startsWith('--preset=')) {
+      const result = PresetSchema.safeParse(arg.slice('--preset='.length))
+      if (result.success) parsed.preset = result.data
+    }
     if (arg.startsWith('--dir=')) {
       parsed.dir = arg.slice('--dir='.length)
     }
@@ -368,25 +375,44 @@ async function main(): Promise<void> {
 
   const { projectName, destinationDir } = resolveDestinationDir(rawProjectName, args.dir)
 
-  // --- Family selection ---
-
-  const family: Family = args.yes
-    ? (args.family ?? 'fullstack')
-    : await promptIfNeeded(args.family, async () => {
+  const preset: Preset | undefined = args.yes
+    ? args.preset
+    : await promptIfNeeded(args.preset, async () => {
         const value = await select({
-          message: 'Project family',
-          options: FAMILIES.map((f) => ({
-            label: f,
-            value: f,
-            hint: FAMILY_LABELS[f],
-          })),
+          message: 'Starting point',
+          initialValue: 'typescript-fullstack',
+          options: presetMenuOptions(),
         })
         if (isCancel(value)) {
           cancel('Project creation cancelled.')
           process.exit(0)
         }
-        return value as Family
+        return value as Preset
       })
+  const presetDefaults = preset ? projectDefaultsForPreset(preset) : {}
+
+  // --- Family selection ---
+
+  const defaultFamily = args.family ?? presetDefaults.family
+  const family: Family = args.yes
+    ? (defaultFamily ?? 'fullstack')
+    : defaultFamily
+      ? defaultFamily
+      : await promptIfNeeded(args.family, async () => {
+          const value = await select({
+            message: 'Project family',
+            options: FAMILIES.map((f) => ({
+              label: f,
+              value: f,
+              hint: FAMILY_LABELS[f],
+            })),
+          })
+          if (isCancel(value)) {
+            cancel('Project creation cancelled.')
+            process.exit(0)
+          }
+          return value as Family
+        })
 
   // --- Family-specific prompts ---
 
@@ -403,7 +429,7 @@ async function main(): Promise<void> {
 
   if (family === 'rust') {
     rustDatabase = args.yes
-      ? (args.database ?? 'postgres')
+      ? (args.database ?? presetDefaults.database ?? 'postgres')
       : await promptIfNeeded(args.database, async () => {
           const value = await select({
             message: 'Database (sqlx)',
@@ -424,7 +450,7 @@ async function main(): Promise<void> {
     rustExample = args.yes
       ? args.example === 'none'
         ? 'none'
-        : 'posts'
+        : (presetDefaults.example ?? 'posts')
       : await promptIfNeeded(args.example === 'none' ? 'none' : undefined, async () => {
           const value = await confirm({
             message: 'Include example posts module (routes → handler → service → repository)?',
@@ -438,7 +464,7 @@ async function main(): Promise<void> {
         })
 
     rustAuth = args.yes
-      ? 'placeholder'
+      ? (presetDefaults.rustAuth ?? 'placeholder')
       : await promptIfNeeded(undefined, async () => {
           const value = await select({
             message: 'Auth scaffold',
@@ -462,7 +488,7 @@ async function main(): Promise<void> {
 
   if (hasBackendOptions(family)) {
     backend = args.yes
-      ? (args.backend ?? 'express-bun')
+      ? (args.backend ?? presetDefaults.backend ?? 'express-bun')
       : await promptIfNeeded(args.backend, async () => {
           const value = await select({
             message: 'Backend framework',
@@ -505,7 +531,7 @@ async function main(): Promise<void> {
         })
 
     database = args.yes
-      ? (args.database ?? 'postgres')
+      ? (args.database ?? presetDefaults.database ?? 'postgres')
       : await promptIfNeeded(args.database, async () => {
           const value = await select({
             message: 'Database',
@@ -525,7 +551,7 @@ async function main(): Promise<void> {
         })
 
     orm = args.yes
-      ? (args.orm ?? 'prisma')
+      ? (args.orm ?? presetDefaults.orm ?? 'prisma')
       : await promptIfNeeded(args.orm, async () => {
           const ormOptions =
             database === 'none'
@@ -566,7 +592,7 @@ async function main(): Promise<void> {
   // --- Bundle selection ---
 
   const bundles: Bundle[] = args.yes
-    ? (args.bundles ?? ['product'])
+    ? (args.bundles ?? presetDefaults.bundles ?? ['product'])
     : await promptIfNeeded(args.bundles, async () => {
         const value = await multiselect({
           message: 'Feature bundles (additive)',
@@ -589,7 +615,7 @@ async function main(): Promise<void> {
 
   if (familySupportsShowcase(family)) {
     includeShowcase = args.yes
-      ? (args.includeShowcase ?? false)
+      ? (args.includeShowcase ?? presetDefaults.includeShowcase ?? false)
       : await promptIfNeeded(args.includeShowcase, async () => {
           const value = await confirm({
             message: 'Keep showcase landing routes and demo content?',
@@ -605,7 +631,7 @@ async function main(): Promise<void> {
 
   if (familySupportsWorker(family)) {
     includeWorker = args.yes
-      ? (args.includeWorker ?? false)
+      ? (args.includeWorker ?? presetDefaults.includeWorker ?? false)
       : await promptIfNeeded(args.includeWorker, async () => {
           const value = await confirm({
             message: 'Include the background worker workspace?',
@@ -653,7 +679,7 @@ async function main(): Promise<void> {
       })
 
   const includeDocker = args.yes
-    ? (args.includeDocker ?? true)
+    ? (args.includeDocker ?? presetDefaults.includeDocker ?? true)
     : await promptIfNeeded(args.includeDocker, async () => {
         const dockerHint =
           database === 'postgres'
@@ -673,7 +699,7 @@ async function main(): Promise<void> {
       })
 
   const includeCi = args.yes
-    ? (args.includeCi ?? true)
+    ? (args.includeCi ?? presetDefaults.includeCi ?? true)
     : await promptIfNeeded(args.includeCi, async () => {
         const value = await confirm({
           message: 'Generate a GitHub Actions CI workflow?',
@@ -687,7 +713,7 @@ async function main(): Promise<void> {
       })
 
   const deployment = args.yes
-    ? (args.deployment ?? 'vercel-railway')
+    ? (args.deployment ?? presetDefaults.deployment ?? 'vercel-railway')
     : await promptIfNeeded(args.deployment, async () => {
         const value = await select({
           message: 'Deployment guide',

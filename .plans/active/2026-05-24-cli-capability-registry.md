@@ -110,7 +110,6 @@ Canonical agent-context slice completed on 2026-05-24:
 
 Still pending:
 
-- Use the registry to drive the interactive preset-led configurator.
 - Implement and verify Rust Fullstack and Solana preset output before promoting
   them to `Stable`.
 
@@ -134,3 +133,19 @@ Native workspace/support surface slice completed on 2026-05-24:
 - Verified `bun run --cwd apps/cli check-types`: pass.
 - Verified `bun run --cwd apps/cli lint`: pass.
 - Verified `bun run repo:doctor`: 0 errors, 0 warnings, 0 info.
+
+Preset configurator bridge slice completed on 2026-05-24:
+
+- Added registry-driven preset menu options using the same support-status labels
+  as the capability registry.
+- Added preset-to-config defaults for TypeScript fullstack, Rust API,
+  Rust-backed fullstack, and Solana starting points.
+- Added `--preset=<id>` parsing so non-interactive creation can start from the
+  same preset defaults while still allowing explicit flags to override them.
+- Kept `customize` and `experiments` as explicit menu routes without hidden
+  scaffold defaults.
+- Verified
+  `bun test apps/cli/tests/preset-config.test.ts apps/cli/tests/registry.test.ts apps/cli/tests/schemas.test.ts apps/cli/tests/workspace-output.test.ts apps/cli/tests/scaffold-smoke.test.ts`:
+  59 pass, 0 fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
