@@ -24,12 +24,14 @@
 
 ## Task 1: Hidden design lab route
 
-- [ ] Move current `apps/web/app/mockups/**` routes to `apps/web/app/__design-lab/**`.
-- [ ] Add route-level metadata with `robots: { index: false, follow: false }` on the design lab index and pages.
-- [ ] Update `apps/web/app/robots.ts` to disallow `/__design-lab/`.
-- [ ] Confirm `apps/web/app/sitemap.ts` does not include the route.
-- [ ] Add focused route-discovery tests if the app already has sitemap/robots tests; otherwise add a small web test for robot/sitemap behavior.
-- [ ] Commit only the design-lab and `.gitignore` cleanup files.
+- [x] Move current `apps/web/app/mockups/**` routes to `apps/web/app/__design-lab/**`.
+- [x] Add route-level metadata with `robots: { index: false, follow: false }` on the design lab index and pages.
+- [x] Update `apps/web/app/robots.ts` to disallow `/__design-lab/`.
+- [x] Confirm `apps/web/app/sitemap.ts` does not include the route.
+- [x] Add focused route-discovery tests if the app already has sitemap/robots tests; otherwise add a small web test for robot/sitemap behavior.
+- [x] Commit only the design-lab and `.gitignore` cleanup files.
+
+Evidence: `bun test apps/web/app/route-discovery.test.ts`, `bun run --cwd apps/web check-types`, and `bun run --cwd apps/web lint` pass.
 
 ## Task 2: Public usage documentation
 
