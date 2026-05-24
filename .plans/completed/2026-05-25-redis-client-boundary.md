@@ -206,7 +206,7 @@ Expected: PASS.
 
 **Files:**
 
-- Modify: `.plans/active/2026-05-25-redis-client-boundary.md`
+- Modify: `.plans/completed/2026-05-25-redis-client-boundary.md`
 
 - [x] **Step 1: Run full local verification**
 
@@ -222,10 +222,11 @@ Local evidence after the cache correction on 2026-05-25:
 - `bun run ci`: 318 passed, 3 intentional skips, 0 failed; Repo Doctor
   reported 0 errors and 0 warnings.
 - `bun run build:vercel --filter=@arche-template/server`: passed with a cache
-  miss and rebuilt 1,597 modules, rather than replaying the earlier
-  1,590-module pre-`redis` bundle.
+  miss and rebuilt the server bundle. The local install bundled 1,597 modules;
+  Vercel's clean install later bundled 1,590, so module count is recorded only
+  as environment output, not as proof of which Redis client shipped.
 
-- [ ] **Step 2: Push and inspect remote checks**
+- [x] **Step 2: Push and inspect remote checks**
 
 ```bash
 git push origin main
@@ -235,3 +236,20 @@ vercel ls --yes
 
 Expected: CI/release checks and the affected Vercel server deployment report
 success before the active plan is moved to completed.
+
+Remote evidence after pushing commit `daf12ba` on 2026-05-25:
+
+- GitHub Actions CI run `26372430310`: success, including format, tests, lint,
+  typecheck, repo doctor, CLI package, docs build, and affected build jobs.
+- GitHub Actions Release run `26372430309`: success and refreshed the
+  Changesets version PR.
+- Vercel production server deployment
+  `https://template-server-ml96mhs2b-kitsunekode.vercel.app`: Ready from
+  commit `daf12ba`; the log reports `build:vercel: cache miss`.
+- Vercel Changesets preview server deployment
+  `https://template-server-lgeur9qg0-kitsunekode.vercel.app`: Ready from
+  commit `b5f04c2`; the log reports `build:vercel: cache miss`.
+
+The two cache misses are the deployment proof required by this plan: server
+build output was recomputed after the JIT package input fix instead of
+restoring the stale artifact observed before Task 5.
