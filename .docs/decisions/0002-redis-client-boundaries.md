@@ -39,10 +39,15 @@ boundary around `ioredis`.
   `ioredis` without rewriting their application Redis client.
 - Do not pass an application `redis` client into BullMQ. Keep the two
   connection lifecycles explicit.
+- Server bundle tasks must hash `packages/*/src/**` and package manifests
+  because these Just-in-Time packages are bundled by the app instead of
+  producing independent build artifacts.
 
 ## Verification
 
 - Typechecking must validate the two client APIs independently.
 - Scaffold tests must prove generated TypeScript fullstack output records both
   dependencies and preserves the separate subpath exports.
+- A Turbo configuration test must prevent server bundle cache reuse after a
+  shared Just-in-Time package source change.
 - Full repository CI and the Vercel server build must remain green.

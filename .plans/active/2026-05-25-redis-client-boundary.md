@@ -138,13 +138,77 @@ git add .plans/active/2026-05-25-redis-client-boundary.md apps/cli/src/render/wo
 git commit -m "refactor(redis): isolate ioredis to BullMQ connections"
 ```
 
-### Task 5: Verify the full slice
+### Task 5: Prevent stale server bundles from JIT package cache gaps
+
+**Files:**
+
+- Create: `tests/src/toolings/server-turbo-cache.test.ts`
+- Modify: `apps/server/turbo.json`
+- Modify: `.docs/decisions/0002-redis-client-boundaries.md`
+
+- [x] **Step 1: Add failing cache-input evidence**
+
+Read `apps/server/turbo.json` in a Bun test and require both `build` and
+`build:vercel` to include:
+
+```ts
+'$TURBO_ROOT$/packages/*/src/**'
+'$TURBO_ROOT$/packages/*/package.json'
+```
+
+Also require `build` to preserve inherited inputs with `$TURBO_EXTENDS$` and
+`build:vercel` to retain package defaults with `$TURBO_DEFAULT$`.
+
+- [x] **Step 2: Verify the regression test fails before configuration changes**
+
+```bash
+bun test tests/src/toolings/server-turbo-cache.test.ts
+```
+
+Expected: FAIL because Vercel logs demonstrated a cache hit after
+`packages/backend-common/src/redis/index.ts` changed.
+
+- [x] **Step 3: Configure server bundle inputs for JIT shared packages**
+
+```json
+{
+  "build:vercel": {
+    "inputs": [
+      "$TURBO_DEFAULT$",
+      "$TURBO_ROOT$/packages/*/src/**",
+      "$TURBO_ROOT$/packages/*/package.json"
+    ],
+    "outputs": ["dist/**"]
+  },
+  "build": {
+    "inputs": [
+      "$TURBO_EXTENDS$",
+      "$TURBO_ROOT$/packages/*/src/**",
+      "$TURBO_ROOT$/packages/*/package.json"
+    ],
+    "outputs": ["dist/**"]
+  }
+}
+```
+
+This prevents a shared source edit from reusing a stale API bundle while
+retaining the repository-level `.env*` build inputs.
+
+- [x] **Step 4: Verify the cache-input regression test passes**
+
+```bash
+bun test tests/src/toolings/server-turbo-cache.test.ts
+```
+
+Expected: PASS.
+
+### Task 6: Verify the full slice
 
 **Files:**
 
 - Modify: `.plans/active/2026-05-25-redis-client-boundary.md`
 
-- [x] **Step 1: Run full local verification**
+- [ ] **Step 1: Run full local verification**
 
 ```bash
 bun run ci
@@ -153,11 +217,9 @@ bun run build:vercel --filter=@arche-template/server
 
 Expected: typechecks, tests, repo doctor, and the server Vercel bundle pass.
 
-Local evidence on 2026-05-25:
-
-- `bun run ci`: 317 passed, 3 intentional skips, 0 failed; Repo Doctor
-  reported 0 errors and 0 warnings.
-- `bun run build:vercel --filter=@arche-template/server`: passed.
+Earlier local verification covered the Redis adapter before Vercel logs
+revealed the missing Turbo JIT-package cache inputs. Re-run this gate after the
+cache correction before marking the slice shipped.
 
 - [ ] **Step 2: Push and inspect remote checks**
 
