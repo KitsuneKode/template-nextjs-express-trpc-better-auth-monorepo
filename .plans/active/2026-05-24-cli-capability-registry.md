@@ -90,3 +90,27 @@ Foundation slice completed on 2026-05-24:
   fail.
 - Verified `bun run --cwd apps/cli check-types`: pass.
 - Verified `bun run --cwd apps/cli lint`: pass.
+
+Canonical agent-context slice completed on 2026-05-24:
+
+- Converted this repository's `CLAUDE.md` into a symlink to canonical
+  `AGENTS.md`.
+- Updated live navigation so `docs/` is public/manual context, `.docs/` is
+  internal durable context, and `.plans/` is execution history.
+- Updated scaffold and `arche add agent-docs` output to generate `AGENTS.md`,
+  `CLAUDE.md -> AGENTS.md`, `.docs/README.md`,
+  `.docs/architecture/generated-project.md`, and `.plans/README.md`.
+- Removed generated `CONTEXT.md` behavior; detailed Rust architecture now lives
+  in its scoped `.docs` topic instead of bloating `AGENTS.md`.
+- Verified `bun test apps/cli/tests`: 251 pass, 1 pre-existing skipped E2E, 0
+  fail.
+- Verified `bun run --cwd apps/cli check-types`: pass.
+- Verified `bun run --cwd apps/cli lint`: pass.
+- Verified `bun run repo:doctor`: 0 errors, 0 warnings, 0 info.
+
+Still pending:
+
+- Use the registry to drive the interactive preset-led configurator.
+- Render Bun/pnpm catalogs into actual scaffolded workspace output.
+- Implement and verify Rust Fullstack and Solana preset output before promoting
+  them to `Stable`.
