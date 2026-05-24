@@ -1,7 +1,7 @@
-import { Redis } from 'ioredis'
+import { createClient } from 'redis'
 import { resolveRedisUrl } from '../utils/redis-enabled'
 
-/** Lifecycle Redis handle for server/worker boot. BullMQ uses `@arche-template/backend-common/redis/bull`. */
+/** Application Redis handle for server/worker boot. BullMQ owns a separate ioredis adapter. */
 export type AppRedisClient = {
   connect(): Promise<void>
   close(): Promise<void>
@@ -13,7 +13,10 @@ export const redisClient = (): AppRedisClient => {
     throw new Error('REDIS_URL is not configured (set REDIS_URL or ENABLE_REDIS=false)')
   }
 
-  const client = new Redis(url, { lazyConnect: true })
+  const client = createClient({ url })
+  client.on('error', (error) => {
+    console.error('[redis] client error:', error)
+  })
 
   return {
     async connect() {

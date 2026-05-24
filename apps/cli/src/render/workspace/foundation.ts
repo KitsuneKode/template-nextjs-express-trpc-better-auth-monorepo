@@ -8,6 +8,8 @@ export const DEFAULT_WORKSPACE_CATALOG: Record<string, string> = {
   '@types/node': '^25.9.0',
   oxlint: '^1.65.0',
   oxfmt: '^0.50.0',
+  ioredis: '^5.6.1',
+  redis: '^5.12.0',
   turbo: '^2.9.14',
   typescript: '^6.0.3',
   zod: '^4.4.3',

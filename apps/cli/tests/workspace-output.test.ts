@@ -54,15 +54,33 @@ describe('fullstack workspace output', () => {
     try {
       const root = JSON.parse(readFileSync(join(destinationDir, 'package.json'), 'utf8'))
       const web = JSON.parse(readFileSync(join(destinationDir, 'apps/web/package.json'), 'utf8'))
+      const backendCommon = JSON.parse(
+        readFileSync(join(destinationDir, 'packages/backend-common/package.json'), 'utf8'),
+      )
+      const appRedis = readFileSync(
+        join(destinationDir, 'packages/backend-common/src/redis/index.ts'),
+        'utf8',
+      )
+      const bullRedis = readFileSync(
+        join(destinationDir, 'packages/backend-common/src/redis/bull-connection.ts'),
+        'utf8',
+      )
 
       expect(root.packageManager).toStartWith('bun@')
       expect(root.workspaces.packages).toContain('apps/*')
       expect(root.workspaces.catalog.typescript).toBe('^6.0.3')
       expect(root.workspaces.catalog.turbo).toBe('^2.9.14')
+      expect(root.workspaces.catalog.redis).toBeDefined()
+      expect(root.workspaces.catalog.ioredis).toBeDefined()
       expect(root.scripts['dev:web']).toStartWith('turbo run dev --filter=')
       expect(root.scripts['db:migrate']).toBe('turbo run db:migrate')
       expect(web.devDependencies.typescript).toBe('catalog:')
       expect(web.dependencies.zod).toBe('catalog:')
+      expect(backendCommon.dependencies.redis).toBe('catalog:')
+      expect(backendCommon.dependencies.ioredis).toBe('catalog:')
+      expect(appRedis).toContain("from 'redis'")
+      expect(appRedis).not.toContain("from 'ioredis'")
+      expect(bullRedis).toContain("from 'ioredis'")
     } finally {
       rmSync(tmpRoot, { recursive: true, force: true })
     }
@@ -74,6 +92,9 @@ describe('fullstack workspace output', () => {
     try {
       const root = JSON.parse(readFileSync(join(destinationDir, 'package.json'), 'utf8'))
       const web = JSON.parse(readFileSync(join(destinationDir, 'apps/web/package.json'), 'utf8'))
+      const backendCommon = JSON.parse(
+        readFileSync(join(destinationDir, 'packages/backend-common/package.json'), 'utf8'),
+      )
       const pnpmWorkspace = readFileSync(join(destinationDir, 'pnpm-workspace.yaml'), 'utf8')
 
       expect(root.packageManager).toStartWith('pnpm@')
@@ -82,8 +103,12 @@ describe('fullstack workspace output', () => {
       expect(root.engines.bun).toBeDefined()
       expect(pnpmWorkspace).toContain('catalog:')
       expect(pnpmWorkspace).toContain('  typescript:')
+      expect(pnpmWorkspace).toContain('  redis:')
+      expect(pnpmWorkspace).toContain('  ioredis:')
       expect(web.devDependencies.typescript).toBe('catalog:')
       expect(web.dependencies.zod).toBe('catalog:')
+      expect(backendCommon.dependencies.redis).toBe('catalog:')
+      expect(backendCommon.dependencies.ioredis).toBe('catalog:')
     } finally {
       rmSync(tmpRoot, { recursive: true, force: true })
     }

@@ -34,21 +34,26 @@ git commit -m "docs(redis): establish client ownership boundary"
 **Files:**
 
 - Modify: `apps/cli/tests/workspace-output.test.ts`
+- Modify: `apps/cli/src/render/workspace/foundation.ts`
 
-- [ ] **Step 1: Add failing assertions for the fullstack dependency boundary**
+- [x] **Step 1: Add failing assertions for the fullstack dependency boundary**
 
 Within the Bun fullstack output test, read
 `packages/backend-common/package.json` and assert:
 
 ```ts
-expect(backendCommon.dependencies.redis).toBeDefined()
-expect(backendCommon.dependencies.ioredis).toBeDefined()
+expect(backendCommon.dependencies.redis).toBe('catalog:')
+expect(backendCommon.dependencies.ioredis).toBe('catalog:')
+expect(appRedis).toContain("from 'redis'")
+expect(bullRedis).toContain("from 'ioredis'")
 ```
 
 Within the pnpm test, make the same assertions so both first-class package
-manager paths carry the application Redis dependency.
+manager paths carry the application Redis dependency. Add both clients to
+`DEFAULT_WORKSPACE_CATALOG` so generated packages receive `catalog:`
+references.
 
-- [ ] **Step 2: Run the focused test to verify it fails**
+- [x] **Step 2: Run the focused test to verify it fails**
 
 ```bash
 bun test apps/cli/tests/workspace-output.test.ts
@@ -65,7 +70,7 @@ Expected: FAIL because `packages/backend-common` does not yet declare
 - Modify: `packages/backend-common/package.json`
 - Modify: `bun.lock`
 
-- [ ] **Step 1: Change only the application-facing client**
+- [x] **Step 1: Change only the application-facing client**
 
 Implement the lifecycle wrapper with the official package:
 
@@ -85,6 +90,9 @@ export const redisClient = (): AppRedisClient => {
   }
 
   const client = createClient({ url })
+  client.on('error', (error) => {
+    console.error('[redis] client error:', error)
+  })
 
   return {
     async connect() {
@@ -101,7 +109,7 @@ Add `"redis"` to `packages/backend-common` dependencies and install through
 Bun to update the lockfile. Leave `src/redis/bull-connection.ts` on
 `ioredis`.
 
-- [ ] **Step 2: Run the focused test to verify it passes**
+- [x] **Step 2: Run the focused test to verify it passes**
 
 ```bash
 bun test apps/cli/tests/workspace-output.test.ts
@@ -117,16 +125,16 @@ Expected: PASS for Bun and pnpm generated fullstack output.
 - Modify: `packages/backend-common/AGENTS.md`
 - Modify: `docs/architecture.md`
 
-- [ ] **Step 1: Describe both Redis owners without duplicating implementation detail**
+- [x] **Step 1: Describe both Redis owners without duplicating implementation detail**
 
 Change stack/context wording to say application Redis uses official `redis`
 and BullMQ connections use `ioredis`. Keep deployment/env docs unchanged
 because `REDIS_URL` and `ENABLE_REDIS` behavior do not change.
 
-- [ ] **Step 2: Commit the complete implementation slice**
+- [x] **Step 2: Commit the complete implementation slice**
 
 ```bash
-git add apps/cli/tests/workspace-output.test.ts packages/backend-common/src/redis/index.ts packages/backend-common/package.json bun.lock AGENTS.md packages/backend-common/AGENTS.md docs/architecture.md
+git add .plans/active/2026-05-25-redis-client-boundary.md apps/cli/src/render/workspace/foundation.ts apps/cli/tests/workspace-output.test.ts packages/backend-common/src/redis/index.ts packages/backend-common/package.json bun.lock AGENTS.md packages/backend-common/AGENTS.md docs/architecture.md
 git commit -m "refactor(redis): isolate ioredis to BullMQ connections"
 ```
 

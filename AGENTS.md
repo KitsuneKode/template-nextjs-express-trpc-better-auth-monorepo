@@ -33,7 +33,7 @@ Prefer `AGENTS.md` over package `README.md` files for agent context. When behavi
 | `packages/trpc`           | **Client contract only** — re-exports `AppRouter` / `createCaller` from server |
 | `packages/store`          | Prisma schema and client                                                       |
 | `packages/auth`           | Better Auth server + client                                                    |
-| `packages/backend-common` | `serverEnv`, Redis (ioredis), logging, `validate-env`                          |
+| `packages/backend-common` | `serverEnv`, app Redis (`redis`), BullMQ (`ioredis`), logging, `validate-env`  |
 
 tRPC procedures live in `apps/server/src/modules/<feature>/*.trpc.ts`, composed in `apps/server/src/modules/trpc/app.router.ts`.
 
