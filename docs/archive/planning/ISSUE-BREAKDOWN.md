@@ -101,7 +101,7 @@ cannot be named without a reference to
 **BEFORE:**
 
 ```typescript
-import { clientConfig as config } from '@template/common/config-loader'
+import { clientConfig as config } from '@arche-template/common/config-loader'
 import { createAuthClient } from 'better-auth/react'
 
 export const authClient = createAuthClient({
@@ -112,7 +112,7 @@ export const authClient = createAuthClient({
 **AFTER:**
 
 ```typescript
-import { clientConfig as config } from '@template/common/config-loader'
+import { clientConfig as config } from '@arche-template/common/config-loader'
 import { createAuthClient } from 'better-auth/react'
 
 export const authClient = createAuthClient({

@@ -14,8 +14,8 @@
   "rtl": false,
   "aliases": {
     "components": "@/components",
-    "utils": "@template/ui/lib/utils",
-    "ui": "@template/ui/components",
+    "utils": "@arche-template/ui/lib/utils",
+    "ui": "@arche-template/ui/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

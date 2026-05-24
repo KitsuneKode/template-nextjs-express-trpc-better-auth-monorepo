@@ -38,35 +38,41 @@ cli, scaffolding, turborepo, bun, pnpm, nextjs, rust, solana, better-auth, trpc,
 - [x] Generated scaffold README / deployment text via CLI generators
 - [x] `docs/README.md` intro
 
-## Intentionally unchanged (high risk)
+## Source of truth
 
-| Item                                    | Reason                                                                             |
-| --------------------------------------- | ---------------------------------------------------------------------------------- |
-| `@template/*` internal workspace scopes | They describe template source packages. Generated projects are renamed by the CLI. |
-| Root `package.json` name `template`     | Turborepo filter scripts (`@template/web`, etc.) still depend on it.               |
+| Item                     | Value               | Reason                                                                                              |
+| ------------------------ | ------------------- | --------------------------------------------------------------------------------------------------- |
+| Root `package.json` name | `arche-template`    | Canonical source-template package name. Generated projects replace it with the chosen project slug. |
+| Internal workspace scope | `@arche-template/*` | Source template packages. Generated projects are renamed by the CLI to `@<project-name>/*`.         |
+| Public CLI package       | `@arche/create`     | User-facing npm package. Keep this separate from source template workspaces.                        |
+| GitHub repo target       | `kitsunekode/arche` | Recommended canonical repo name for docs, package metadata, and site links.                         |
 
-## Future package-scope option
+## Package-scope rule
 
-If the internal source scopes are renamed, prefer **`@arche-template/*`** over
-`@arche/*`. Keep `@arche/create` reserved for the published CLI. This makes the
-difference clear:
+Keep **`@arche-template/*`** inside this source repo. Keep `@arche/create`
+reserved for the published CLI. This makes the difference clear:
 
 - `@arche/create` - user-facing npm package.
 - `@arche-template/web`, `@arche-template/server`, etc. - source template
   workspaces inside this repo.
+- `@my-app/web`, `@my-app/server`, etc. - generated project workspaces after
+  `rename-scope` runs.
 
-Do this only as a dedicated migration because it touches imports, Turborepo
-filters, docs, generated output tests, and deployment references.
+`rename-scope` defaults to migrating `@arche-template/*` to the root
+`package.json` name. It also accepts explicit flags:
+
+```bash
+bun toolings/scripts/rename-scope.ts --from @arche-template --to @my-app
+```
 
 ## Optional follow-ups
 
-1. Run `bun run rename-scope -- --to @my-org/*` only inside a **new** scaffold, not this template repo.
-2. Rename GitHub repo to `arche` when ready, then update README, package
-   repository URLs, docs links, navbar links, and npm trusted-publisher config.
-3. Replace `apps/web/public/brand/template-*` with Arche-specific mark assets.
-4. Generate or design a proper OG image and icon set for `arche.kitsunelabs.xyz`.
-5. Set production `NEXT_PUBLIC_SITE_*` on Vercel for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
-6. Replace remaining `template-nextjs` strings in archive docs only when archive
+1. Rename GitHub repo to `arche` when ready, then update GitHub description,
+   topics, homepage URL, and npm trusted-publisher config.
+2. Replace `apps/web/public/brand/template-*` with Arche-specific mark assets.
+3. Generate or design a proper OG image and icon set for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
+4. Set production `NEXT_PUBLIC_SITE_*` on Vercel for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
+5. Replace remaining `template-nextjs` strings in archive docs only when archive
    cleanup becomes worth the noise.
 
 ## Verify after edits

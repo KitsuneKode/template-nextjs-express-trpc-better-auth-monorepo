@@ -21,16 +21,16 @@
     "noPropertyAccessFromIndexSignature": false,
     "baseUrl": "..",
     "paths": {
-      "@template/server/*": ["apps/server/src/*"],
-      "@template/server": ["apps/server/src/server.ts"],
-      "@template/auth/*": ["packages/auth/src/*"],
-      "@template/auth": ["packages/auth/src/index.ts"],
-      "@template/trpc": ["packages/trpc/src/index.ts"],
-      "@template/store": ["packages/store/src/index.ts"],
-      "@template/common": ["packages/common/src/index.ts"],
-      "@template/backend-common": ["packages/backend-common/src/index.ts"],
-      "@template/ui/*": ["packages/ui/src/*"],
-      "@template/ui": ["packages/ui/src/index.ts"]
+      "@arche-template/server/*": ["apps/server/src/*"],
+      "@arche-template/server": ["apps/server/src/server.ts"],
+      "@arche-template/auth/*": ["packages/auth/src/*"],
+      "@arche-template/auth": ["packages/auth/src/index.ts"],
+      "@arche-template/trpc": ["packages/trpc/src/index.ts"],
+      "@arche-template/store": ["packages/store/src/index.ts"],
+      "@arche-template/common": ["packages/common/src/index.ts"],
+      "@arche-template/backend-common": ["packages/backend-common/src/index.ts"],
+      "@arche-template/ui/*": ["packages/ui/src/*"],
+      "@arche-template/ui": ["packages/ui/src/index.ts"]
     }
   }
 }

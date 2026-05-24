@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Toaster } from 'sonner'
-import '@template/ui/globals.css'
+import '@arche-template/ui/globals.css'
 import { Providers } from '@/components/providers'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'
 import { env } from '@/env'

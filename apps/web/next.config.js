@@ -2,7 +2,7 @@ import { createMDX } from 'fumadocs-mdx/next'
 
 /** @type {import('next').NextConfig} */
 const config = {
-  transpilePackages: ['@template/ui'],
+  transpilePackages: ['@arche-template/ui'],
   cacheComponents: true,
   turbopack: {
     resolveAlias: {

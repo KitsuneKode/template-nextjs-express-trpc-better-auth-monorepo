@@ -1,5 +1,5 @@
 {
-  "name": "@template/auth",
+  "name": "@arche-template/auth",
   "private": true,
   "type": "module",
   "module": "src/index.ts",
@@ -13,12 +13,12 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@template/common": "workspace:*",
-    "@template/store": "workspace:*",
+    "@arche-template/common": "workspace:*",
+    "@arche-template/store": "workspace:*",
     "better-auth": "^1.6.11"
   },
   "devDependencies": {
-    "@template/typescript-config": "workspace:*",
+    "@arche-template/typescript-config": "workspace:*",
     "@types/bun": "1.3.14"
   },
   "peerDependencies": {

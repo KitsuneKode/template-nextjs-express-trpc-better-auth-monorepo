@@ -1,6 +1,6 @@
-import { Badge } from '@template/ui/components/badge'
-import { Button } from '@template/ui/components/button'
-import { Card } from '@template/ui/components/card'
+import { Badge } from '@arche-template/ui/components/badge'
+import { Button } from '@arche-template/ui/components/button'
+import { Card } from '@arche-template/ui/components/card'
 
 export default function Mockup4() {
   return (

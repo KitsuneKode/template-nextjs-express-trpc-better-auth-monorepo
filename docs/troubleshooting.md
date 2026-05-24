@@ -51,7 +51,7 @@ npx prisma migrate deploy
 
 ```typescript
 // apps/server/src/server.ts
-import { setupGracefulShutdown } from '@template/backend-common'
+import { setupGracefulShutdown } from '@arche-template/backend-common'
 
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

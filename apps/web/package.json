@@ -1,5 +1,5 @@
 {
-  "name": "@template/web",
+  "name": "@arche-template/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,15 +12,15 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@arche-template/auth": "workspace:*",
+    "@arche-template/common": "workspace:*",
+    "@arche-template/store": "workspace:*",
+    "@arche-template/trpc": "workspace:*",
+    "@arche-template/ui": "workspace:*",
     "@base-ui/react": "^1.4.1",
     "@hugeicons/core-free-icons": "^4.1.4",
     "@hugeicons/react": "^1.1.6",
     "@tanstack/react-query": "^5.100.10",
-    "@template/auth": "workspace:*",
-    "@template/common": "workspace:*",
-    "@template/store": "workspace:*",
-    "@template/trpc": "workspace:*",
-    "@template/ui": "workspace:*",
     "@trpc/client": "^11.17.0",
     "@trpc/server": "^11.17.0",
     "@trpc/tanstack-react-query": "^11.17.0",
@@ -46,8 +46,8 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@arche-template/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.3.0",
-    "@template/typescript-config": "workspace:*",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^25.9.0",
     "@types/react": "19.2.14",

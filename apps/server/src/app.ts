@@ -1,4 +1,4 @@
-import { isRedisEnabled } from '@template/backend-common/redis-enabled'
+import { isRedisEnabled } from '@arche-template/backend-common/redis-enabled'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'

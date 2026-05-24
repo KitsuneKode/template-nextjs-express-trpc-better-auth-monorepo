@@ -11,7 +11,7 @@
 
 ## Owns
 
-- scope migration from `@template/*` to the root package name
+- scope migration from `@arche-template/*` to the root package name, including package metadata, imports, Turbo filters, Dockerfiles, and config files
 - repo redundancy and drift auditing
 - start-fresh cleanup automation
 - lint and typecheck coverage for repo maintenance scripts
@@ -22,6 +22,8 @@
   `bun run rename-scope:dry`
 - apply scope replacement:
   `bun run rename-scope`
+- explicit source/target scope:
+  `bun toolings/scripts/rename-scope.ts --from @arche-template --to @acme`
 - audit stale scaffolding and drift:
   `bun run repo:doctor`
 - strip template baggage from a cloned project:

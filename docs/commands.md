@@ -59,6 +59,7 @@
 - `bun run rename-scope:dry` - Preview package-name replacement.
 - `bun run rename-scope` - Apply scope rename across the repo.
 - `bun run rename-scope:verbose` - Apply scope rename with verbose logging.
+- `bun toolings/scripts/rename-scope.ts --from @arche-template --to @acme` - Explicitly rename one internal scope to another.
 - `bun run template:clean:dry` - Preview cleanup for showcase code and optional workspaces.
 - `bun run template:clean` - Apply the recommended cleanup plan.
 

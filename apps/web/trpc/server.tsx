@@ -1,9 +1,9 @@
 import 'server-only' // <-- ensure this file cannot be imported from the client
+import { auth } from '@arche-template/auth/server'
+import { prisma as db } from '@arche-template/store'
+import { createCaller } from '@arche-template/trpc'
+import type { AppRouter } from '@arche-template/trpc'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { auth } from '@template/auth/server'
-import { prisma as db } from '@template/store'
-import { createCaller } from '@template/trpc'
-import type { AppRouter } from '@template/trpc'
 import { createTRPCClient, httpLink } from '@trpc/client'
 import { createTRPCOptionsProxy, TRPCQueryOptions } from '@trpc/tanstack-react-query'
 import { headers } from 'next/headers'

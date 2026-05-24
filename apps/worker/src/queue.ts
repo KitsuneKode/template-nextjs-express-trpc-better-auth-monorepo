@@ -1,4 +1,4 @@
-import { createWorkerBullConnection as createConnection } from '@template/backend-common/redis/bull'
+import { createWorkerBullConnection as createConnection } from '@arche-template/backend-common/redis/bull'
 import { Queue, Worker } from 'bullmq'
 import type { CleanupJobData } from './jobs/cleanup'
 import type { EmailJobData } from './jobs/email'

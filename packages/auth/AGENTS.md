@@ -16,7 +16,7 @@
 - Prisma adapter wiring
 - Better Auth client setup for the frontend
 - auth export surface:
-  `@template/auth/server` and `@template/auth/client`
+  `@arche-template/auth/server` and `@arche-template/auth/client`
 
 ## Common Tasks
 

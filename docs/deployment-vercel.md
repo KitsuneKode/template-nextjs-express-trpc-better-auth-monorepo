@@ -42,13 +42,13 @@ Build uses `build:vercel` via monorepo:
 
 ```bash
 # From repo root (CI / local check)
-bun run build:vercel --filter=@template/server
+bun run build:vercel --filter=@arche-template/server
 ```
 
 In Vercel project settings, if you set a custom build from monorepo root:
 
 ```bash
-cd ../.. && bun install && bun run build:vercel --filter=@template/server
+cd ../.. && bun install && bun run build:vercel --filter=@arche-template/server
 ```
 
 ### Environment (server project)

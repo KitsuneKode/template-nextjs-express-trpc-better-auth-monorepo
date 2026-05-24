@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { cn } from '@template/ui/lib/utils'
+import { cn } from '@arche-template/ui/lib/utils'
 
 function Card({
   className,

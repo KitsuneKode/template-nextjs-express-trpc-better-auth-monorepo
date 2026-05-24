@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@template/ui/components/button'
+import { Button } from '@arche-template/ui/components/button'
 import { motion } from 'motion/react'
 import { useState, useEffect } from 'react'
 

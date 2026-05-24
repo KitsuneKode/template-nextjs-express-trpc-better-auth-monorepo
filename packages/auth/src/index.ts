@@ -1,4 +1,4 @@
-import { prisma } from '@template/store'
+import { prisma } from '@arche-template/store'
 import { betterAuth } from 'better-auth'
 export { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { prismaAdapter } from 'better-auth/adapters/prisma'

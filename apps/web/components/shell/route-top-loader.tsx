@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@template/ui/lib/utils'
+import { cn } from '@arche-template/ui/lib/utils'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 

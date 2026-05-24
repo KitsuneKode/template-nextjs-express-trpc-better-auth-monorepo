@@ -165,7 +165,7 @@ export function setContext(name: string, context: Record<string, unknown>) {
 **apps/server/src/app.ts**
 
 ```typescript
-import { sentryMiddleware, sentryErrorHandler } from '@template/backend-common/sentry'
+import { sentryMiddleware, sentryErrorHandler } from '@arche-template/backend-common/sentry'
 
 export function createApp(): Express {
   const app = express()
@@ -224,7 +224,7 @@ export const protectedProcedure = t.procedure.use(middleware)
 **Using Sentry in application code:**
 
 ```typescript
-import { captureException, setUser, setContext } from '@template/backend-common/sentry'
+import { captureException, setUser, setContext } from '@arche-template/backend-common/sentry'
 
 // In auth callback
 export async function handleLogin(user: User) {
@@ -335,7 +335,7 @@ export function createSpan(name: string, tags?: Record<string, unknown>) {
 **apps/server/src/server.ts**
 
 ```typescript
-import { initDatadog } from '@template/backend-common/datadog'
+import { initDatadog } from '@arche-template/backend-common/datadog'
 
 // Initialize DataDog tracing
 initDatadog()
@@ -399,7 +399,7 @@ await client.query('SELECT * FROM users')
 **Trace custom operations:**
 
 ```typescript
-import { getTracer } from '@template/backend-common/datadog'
+import { getTracer } from '@arche-template/backend-common/datadog'
 
 const tracer = getTracer()
 
@@ -429,7 +429,7 @@ export async function processPost(postId: string) {
 ### Metrics Submission
 
 ```typescript
-import { getTracer } from '@template/backend-common/datadog'
+import { getTracer } from '@arche-template/backend-common/datadog'
 
 const tracer = getTracer()
 

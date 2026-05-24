@@ -8,16 +8,16 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@template/auth",
-    "@template/backend-common",
-    "@template/common",
-    "@template/server",
-    "@template/store",
-    "@template/tooling-scripts",
-    "@template/trpc",
-    "@template/typescript-config",
-    "@template/ui",
-    "@template/web",
-    "@template/worker"
+    "@arche-template/auth",
+    "@arche-template/backend-common",
+    "@arche-template/common",
+    "@arche-template/server",
+    "@arche-template/store",
+    "@arche-template/tooling-scripts",
+    "@arche-template/trpc",
+    "@arche-template/typescript-config",
+    "@arche-template/ui",
+    "@arche-template/web",
+    "@arche-template/worker"
   ]
 }

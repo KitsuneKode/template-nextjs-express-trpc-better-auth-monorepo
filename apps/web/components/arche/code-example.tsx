@@ -1,6 +1,6 @@
 'use client'
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@template/ui/components/tabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@arche-template/ui/components/tabs'
 import { motion } from 'motion/react'
 
 const examples = [

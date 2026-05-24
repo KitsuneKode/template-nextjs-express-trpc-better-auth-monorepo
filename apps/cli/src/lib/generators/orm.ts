@@ -11,7 +11,7 @@
  * - Rewritten tRPC routers using Drizzle query API
  *
  * Runs AFTER applyDatabaseTransform (which may have already switched to
- * SQLite schema), but BEFORE rename-scope (so all @template/ imports
+ * SQLite schema), but BEFORE rename-scope (so all @arche-template/ imports
  * get caught by the scope rename).
  */
 
@@ -360,7 +360,7 @@ function drizzleStorePackageJsonPatch(database: 'postgres' | 'sqlite'): {
 // =============================================================================
 
 function drizzleAuthPatch(database: 'postgres' | 'sqlite'): string {
-  return `import { db } from '@template/store'
+  return `import { db } from '@arche-template/store'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
@@ -388,11 +388,11 @@ export type Session = typeof auth.$Infer.Session
 
 /** Rewrite apps/server/src/modules/trpc/trpc.ts for Drizzle (Express backend) */
 function drizzleTrpcContextExpress(): string {
-  return `import { auth, fromNodeHeaders } from '@template/auth/server'
+  return `import { auth, fromNodeHeaders } from '@arche-template/auth/server'
 import * as trpcExpress from '@trpc/server/adapters/express'
 import { initTRPC, TRPCError } from '@trpc/server'
-import { db } from '@template/store'
-import { logger } from '@template/backend-common/logger'
+import { db } from '@arche-template/store'
+import { logger } from '@arche-template/backend-common/logger'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 
@@ -462,11 +462,11 @@ export const protectedProcedure = t.procedure
 /** Rewrite apps/server/src/modules/trpc/trpc.ts for Drizzle (Hono/fetch backend) */
 function drizzleTrpcContextFetch(): string {
   return `import { initTRPC, TRPCError } from '@trpc/server'
-import { auth, fromNodeHeaders } from '@template/auth/server'
-import { db } from '@template/store'
+import { auth, fromNodeHeaders } from '@arche-template/auth/server'
+import { db } from '@arche-template/store'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
-import { logger } from '@template/backend-common/logger'
+import { logger } from '@arche-template/backend-common/logger'
 
 /**
  * tRPC context for fetch-based backends (Hono, etc.)
@@ -538,7 +538,7 @@ export const protectedProcedure = t.procedure
 function drizzlePostRouter(): string {
   return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
-import { db, post, user } from '@template/store'
+import { db, post, user } from '@arche-template/store'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -610,7 +610,7 @@ export const postRouter = {
 function drizzleChatRouter(): string {
   return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
-import { db, message } from '@template/store'
+import { db, message } from '@arche-template/store'
 import { z } from 'zod'
 
 export const chatRouter = {
@@ -637,7 +637,7 @@ export const chatRouter = {
 function drizzleUserRouter(): string {
   return `import { protectedProcedure, publicProcedure } from '@/modules/trpc/trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
-import { db, user } from '@template/store'
+import { db, user } from '@arche-template/store'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 

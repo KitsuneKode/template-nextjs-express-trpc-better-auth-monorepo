@@ -4,9 +4,9 @@
  * Handles environment validation, graceful shutdown, and cluster management.
  */
 
-import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
-import { isRedisEnabled } from '@template/backend-common/redis-enabled'
-import { validateEnvironment } from '@template/backend-common/validate-env'
+import { setupGracefulShutdown, onShutdown } from '@arche-template/backend-common/graceful-shutdown'
+import { isRedisEnabled } from '@arche-template/backend-common/redis-enabled'
+import { validateEnvironment } from '@arche-template/backend-common/validate-env'
 import app from './app'
 import { env } from './common/env'
 import { logger } from './common/logger'

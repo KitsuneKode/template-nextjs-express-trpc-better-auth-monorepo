@@ -1,10 +1,19 @@
 #!/usr/bin/env bun
-import { join } from 'path'
+import { basename, extname, join } from 'path'
+
+function readFlag(name: string): string | undefined {
+  const prefix = `--${name}=`
+  const exactIndex = process.argv.indexOf(`--${name}`)
+  if (exactIndex >= 0) return process.argv[exactIndex + 1]
+  return process.argv.find((arg) => arg.startsWith(prefix))?.slice(prefix.length)
+}
 
 // --- CONFIGURATION ---
 const CONFIG = {
-  oldScope: '@template',
-  extensions: ['ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'md', 'mdx', 'json'],
+  fromScope: readFlag('from') ?? '@arche-template',
+  toScope: readFlag('to'),
+  extensions: ['ts', 'tsx', 'js', 'jsx', 'mjs', 'cjs', 'md', 'mdx', 'json', 'yml', 'yaml', 'toml'],
+  exactFiles: ['Dockerfile'],
   ignore: ['node_modules', '.git', '.turbo', 'dist', '.next', 'build', 'out'],
   dryRun: process.argv.includes('--dry-run') || process.argv.includes('-d'),
   verbose: process.argv.includes('--verbose') || process.argv.includes('-v'),
@@ -35,6 +44,20 @@ function shouldIgnore(path: string): boolean {
   return CONFIG.ignore.some((dir) => path.includes(`/${dir}/`) || path.startsWith(`${dir}/`))
 }
 
+function normalizeScope(scope: string): string {
+  const cleaned = scope.trim().replace(/\/\*$/, '')
+  return cleaned.startsWith('@') ? cleaned : `@${cleaned}`
+}
+
+function shouldScanFile(path: string): boolean {
+  if (path.endsWith('package.json')) return false
+  if (shouldIgnore(path)) return false
+  if (CONFIG.exactFiles.includes(basename(path))) return true
+
+  const extension = extname(path).slice(1)
+  return CONFIG.extensions.includes(extension)
+}
+
 async function readJson(path: string): Promise<Record<string, unknown>> {
   const file = Bun.file(path)
   if (!(await file.exists())) {
@@ -47,8 +70,12 @@ async function writeJson(path: string, data: Record<string, unknown>): Promise<v
   await Bun.write(path, JSON.stringify(data, null, 2) + '\n')
 }
 
-// --- STEP 1: Detect Root Name & Generate New Scope ---
+// --- STEP 1: Detect Target Scope ---
 async function detectNewScope(): Promise<string> {
+  if (CONFIG.toScope) {
+    return normalizeScope(CONFIG.toScope)
+  }
+
   const rootPackagePath = join(process.cwd(), 'package.json')
   const rootJson = await readJson(rootPackagePath)
   const rootName = rootJson.name as string | undefined
@@ -57,8 +84,7 @@ async function detectNewScope(): Promise<string> {
     throw new Error('Root package.json does not have a valid "name" field')
   }
 
-  // Construct the new scope: prefix with @ if not already present
-  return rootName.startsWith('@') ? rootName : `@${rootName}`
+  return normalizeScope(rootName)
 }
 
 // --- STEP 2: Update package.json Files ---
@@ -104,7 +130,7 @@ async function updatePackageJsonFiles(
       }
     }
 
-    // 3. Replace scope references inside script values (e.g. turbo -F @template/web)
+    // 3. Replace scope references inside script values (e.g. turbo run build --filter=@arche-template/web)
     const scripts = json.scripts
     if (scripts && typeof scripts === 'object') {
       const scriptsObj = scripts as Record<string, string>
@@ -135,18 +161,17 @@ async function updateSourceFiles(
   newScope: string,
   metrics: ChangeMetrics,
 ): Promise<void> {
-  const extPattern = `**/*.{${CONFIG.extensions.join(',')}}`
-  const sourceGlob = new Bun.Glob(extPattern)
+  const sourceGlob = new Bun.Glob('**/*')
 
   for await (const filePath of sourceGlob.scan('.')) {
-    if (shouldIgnore(filePath) || filePath.endsWith('package.json')) continue
+    if (!shouldScanFile(filePath)) continue
 
     const file = Bun.file(filePath)
     const text = await file.text()
 
     // Count and replace occurrences
     if (text.includes(oldScope)) {
-      const occurrences = (text.match(new RegExp(oldScope, 'g')) || []).length
+      const occurrences = text.split(oldScope).length - 1
       const newText = text.replaceAll(oldScope, newScope)
 
       if (!CONFIG.dryRun) {
@@ -248,17 +273,20 @@ async function main() {
       console.log(`
 Usage: bun rename-scope.ts [options]
 
-Renames package scope from "${CONFIG.oldScope}" to match root package name.
+Renames package scope from "${CONFIG.fromScope}" to match root package name.
 
 Options:
   -d, --dry-run    Preview changes without modifying files
   -v, --verbose    Show detailed logs of all changes
   -q, --quiet      Minimal output (errors and summary only)
+  --from <scope>   Source package scope (default: @arche-template)
+  --to <scope>     Target package scope (default: root package.json name)
   -h, --help       Show this help message
 
 Examples:
   bun rename-scope.ts --dry-run    # Preview changes
   bun rename-scope.ts --verbose    # Apply with detailed logs
+  bun rename-scope.ts --to @acme   # Rename @arche-template/* to @acme/*
   bun rename-scope.ts              # Apply changes
 `)
       process.exit(0)
@@ -283,26 +311,28 @@ Examples:
     const newScope = await detectNewScope()
     log.info(`Detected new scope: "${newScope}"`)
 
-    if (CONFIG.oldScope === newScope) {
+    const fromScope = normalizeScope(CONFIG.fromScope)
+
+    if (fromScope === newScope) {
       console.log('')
       log.success(`Scope already correct: "${newScope}"`)
       log.info('No changes needed. Your project is already configured correctly.')
       process.exit(0)
     }
 
-    log.info(`Migrating from "${CONFIG.oldScope}" to "${newScope}"...`)
+    log.info(`Migrating from "${fromScope}" to "${newScope}"...`)
     console.log('')
 
     // Step 2: Update package.json files
     log.info('Scanning package.json files...')
-    await updatePackageJsonFiles(CONFIG.oldScope, newScope, metrics)
+    await updatePackageJsonFiles(fromScope, newScope, metrics)
 
     // Step 3: Update source files
     log.info('Scanning source files...')
-    await updateSourceFiles(CONFIG.oldScope, newScope, metrics)
+    await updateSourceFiles(fromScope, newScope, metrics)
 
     // Print metrics
-    printMetrics(metrics, CONFIG.oldScope, newScope)
+    printMetrics(metrics, fromScope, newScope)
 
     // Final instructions
     const totalChanges = metrics.packageJsonFiles.length + metrics.sourceFiles.length

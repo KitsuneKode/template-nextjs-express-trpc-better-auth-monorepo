@@ -190,7 +190,7 @@ export function createWSServer(port = 3002) {
 
   const tsconfig = JSON.stringify(
     {
-      extends: '@template/typescript-config/backend.json',
+      extends: '@arche-template/typescript-config/backend.json',
       include: ['src'],
       exclude: ['node_modules', 'dist'],
     },

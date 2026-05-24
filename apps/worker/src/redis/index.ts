@@ -1,4 +1,4 @@
-import { redisClient } from '@template/backend-common/redis'
+import { redisClient } from '@arche-template/backend-common/redis'
 
 export const redis = redisClient()
 

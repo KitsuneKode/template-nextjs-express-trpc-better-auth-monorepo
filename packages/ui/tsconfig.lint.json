@@ -1,5 +1,5 @@
 {
-  "extends": "@template/typescript-config/react-library.json",
+  "extends": "@arche-template/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },

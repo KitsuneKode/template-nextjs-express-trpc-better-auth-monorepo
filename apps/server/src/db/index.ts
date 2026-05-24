@@ -1,1 +1,1 @@
-export { prisma } from '@template/store'
+export { prisma } from '@arche-template/store'

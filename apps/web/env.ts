@@ -7,8 +7,8 @@
  * export const Component = () => env.NEXT_PUBLIC_APP_URL
  */
 
+import { clientEnv } from '@arche-template/common/env'
 import { createEnv } from '@t3-oss/env-nextjs'
-import { clientEnv } from '@template/common/env'
 import { z } from 'zod'
 
 /** Dashboard typos like the literal string "undefined" must not reach `new URL()`. */

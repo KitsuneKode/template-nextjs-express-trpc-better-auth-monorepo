@@ -14,7 +14,7 @@ Background job processing with BullMQ — email, webhooks, and scheduled cleanup
 
 - BullMQ queue definitions
 - Job processor implementations
-- Worker-specific Redis connection (via `@template/backend-common/redis/bull`)
+- Worker-specific Redis connection (via `@arche-template/backend-common/redis/bull`)
 
 ## Job Types
 

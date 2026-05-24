@@ -127,11 +127,11 @@ export default createApp
 ```typescript
 import 'dotenv/config'
 import { createApp } from './app'
-import { validateEnvironment } from '@template/backend-common/validate-env'
-import { setupGracefulShutdown, onShutdown } from '@template/backend-common/graceful-shutdown'
-import { logger } from '@template/backend-common/logger/server'
-import { prisma } from '@template/store'
-import { redis } from '@template/backend-common/redis'
+import { validateEnvironment } from '@arche-template/backend-common/validate-env'
+import { setupGracefulShutdown, onShutdown } from '@arche-template/backend-common/graceful-shutdown'
+import { logger } from '@arche-template/backend-common/logger/server'
+import { prisma } from '@arche-template/store'
+import { redis } from '@arche-template/backend-common/redis'
 
 const PORT = process.env.PORT || 3000
 
@@ -185,7 +185,7 @@ export type AppRouter = typeof appRouter
 ```typescript
 import { z } from 'zod'
 import { publicProcedure, protectedProcedure, router } from '@/utils/trpc'
-import { prisma } from '@template/store'
+import { prisma } from '@arche-template/store'
 import { TRPCError } from '@trpc/server'
 
 export const postsRouter = router({
@@ -287,7 +287,7 @@ export const postsRouter = router({
 ```typescript
 import { z } from 'zod'
 import { publicProcedure, router } from '@/utils/trpc'
-import { betterAuth } from '@template/auth'
+import { betterAuth } from '@arche-template/auth'
 import { TRPCError } from '@trpc/server'
 
 export const authRouter = router({
@@ -341,7 +341,7 @@ export const authRouter = router({
 ```typescript
 import { Express, Request, Response, NextFunction } from 'express'
 import { TRPCError } from '@trpc/server'
-import { logger } from '@template/backend-common/logger/server'
+import { logger } from '@arche-template/backend-common/logger/server'
 
 export function errorHandler(
   err: Error | TRPCError,
@@ -386,7 +386,7 @@ function getHttpStatusCode(code: string): number {
 
 ```typescript
 import { Request, Response, NextFunction } from 'express'
-import { logger } from '@template/backend-common/logger/server'
+import { logger } from '@arche-template/backend-common/logger/server'
 
 export function requestLogger(req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now()

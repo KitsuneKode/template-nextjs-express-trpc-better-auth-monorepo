@@ -1,1 +1,1 @@
-export { serverEnv as env } from '@template/backend-common/env'
+export { serverEnv as env } from '@arche-template/backend-common/env'

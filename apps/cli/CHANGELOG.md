@@ -23,9 +23,9 @@
 ### Fixed
 
 - `.env` files no longer leak into scaffolded output
-- `@template/auth` package.json `module` field pointing to non-existent file
-- `@template/backend-common` had empty main export
-- `@template/trpc` listed unused `@template/common` dependency
+- `@arche-template/auth` package.json `module` field pointing to non-existent file
+- `@arche-template/backend-common` had empty main export
+- `@arche-template/trpc` listed unused `@arche-template/common` dependency
 - Server build/start script mismatch (`dist/app.js` vs `dist/server.js`)
 - Hardcoded Bun version in CI generator
 - `JWT_SECRET` leftover in generated env files (Better Auth uses `BETTER_AUTH_SECRET`)

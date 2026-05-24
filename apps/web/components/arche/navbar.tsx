@@ -36,7 +36,7 @@ export function Navbar() {
           </a>
         </div>
         <a
-          href="https://github.com/KitsuneKode/template-nextjs-express-trpc-bettera-auth-monorepo"
+          href="https://github.com/KitsuneKode/arche"
           className="text-xs font-bold tracking-widest text-zinc-400 uppercase transition-colors hover:text-white"
         >
           GitHub ↗

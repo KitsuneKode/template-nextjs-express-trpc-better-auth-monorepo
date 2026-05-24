@@ -1,5 +1,5 @@
 /**
- * @template/trpc — client-facing API contract
+ * @arche-template/trpc — client-facing API contract
  *
  * Implementation lives in apps/server/src/modules (module-first architecture).
  * This package re-exports types and server callers for web/worker consumers.
@@ -10,11 +10,11 @@
  * - App router composition: apps/server/src/modules/trpc/app.router.ts
  */
 
-export type { AppRouter, RouterInputs, RouterOutputs } from '@template/server/trpc'
+export type { AppRouter, RouterInputs, RouterOutputs } from '@arche-template/server/trpc'
 export {
   appRouter,
   createCaller,
   createTRPCContext,
   createCallerFactory,
   expressMiddleWare,
-} from '@template/server/trpc'
+} from '@arche-template/server/trpc'

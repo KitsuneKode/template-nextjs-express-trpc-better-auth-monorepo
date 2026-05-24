@@ -19,9 +19,9 @@ import { buildServerEnv } from './env'
 function honoAppTs(): string {
   return `import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { auth } from '@template/auth/server'
+import { auth } from '@arche-template/auth/server'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import { appRouter, createTRPCContext } from '@template/server/trpc'
+import { appRouter, createTRPCContext } from '@arche-template/server/trpc'
 import { config } from './utils/config'
 
 const app = new Hono()
@@ -125,11 +125,11 @@ function honoPackageJsonPatch(): {
 /** Rewrite apps/server/src/modules/trpc/trpc.ts for fetch-based context */
 function trpcContextFetch(): string {
   return `import { initTRPC, TRPCError } from '@trpc/server'
-import { auth, fromNodeHeaders } from '@template/auth/server'
-import { prisma as db } from '@template/store'
+import { auth, fromNodeHeaders } from '@arche-template/auth/server'
+import { prisma as db } from '@arche-template/store'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
-import { logger } from '@template/backend-common/logger'
+import { logger } from '@arche-template/backend-common/logger'
 
 /**
  * tRPC context for fetch-based backends (Hono, etc.)
@@ -199,10 +199,10 @@ export const protectedProcedure = t.procedure
 `
 }
 
-/** Keep @template/trpc as a thin re-export for web clients */
+/** Keep @arche-template/trpc as a thin re-export for web clients */
 function trpcIndexFetch(): string {
-  return `export type { AppRouter, RouterInputs, RouterOutputs } from '@template/server/trpc'
-export { appRouter, createCaller, createTRPCContext, createCallerFactory } from '@template/server/trpc'
+  return `export type { AppRouter, RouterInputs, RouterOutputs } from '@arche-template/server/trpc'
+export { appRouter, createCaller, createTRPCContext, createCallerFactory } from '@arche-template/server/trpc'
 `
 }
 

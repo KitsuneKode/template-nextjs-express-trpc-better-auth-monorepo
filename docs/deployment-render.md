@@ -33,7 +33,7 @@ curl -sS "https://<your-service>.onrender.com/health"
 
 Do **not** set `PORT` manually. Health check path: `/health`.
 
-Docker uses `turbo prune @template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile). Test locally before pushing:
+Docker uses `turbo prune @arche-template/server` in [apps/server/Dockerfile](../apps/server/Dockerfile). Test locally before pushing:
 
 ```bash
 bun run docker:build
@@ -90,11 +90,11 @@ Not `bun run apps/server/dist/server.js` from repo root.
 
 ### Manual Native Bun (discouraged vs Docker)
 
-| Setting        | Value                                                    |
-| -------------- | -------------------------------------------------------- |
-| Root directory | `.`                                                      |
-| Build          | `bun install && bun run build --filter=@template/server` |
-| Start          | `cd apps/server && HOST=0.0.0.0 bun run start`           |
+| Setting        | Value                                                          |
+| -------------- | -------------------------------------------------------------- |
+| Root directory | `.`                                                            |
+| Build          | `bun install && bun run build --filter=@arche-template/server` |
+| Start          | `cd apps/server && HOST=0.0.0.0 bun run start`                 |
 
 Prefer Docker blueprint.
 

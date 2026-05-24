@@ -1,7 +1,7 @@
 'use client'
+import type { AppRouter } from '@arche-template/trpc'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
-import type { AppRouter } from '@template/trpc'
 import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCContext } from '@trpc/tanstack-react-query'
 // ^-- to make sure we can mount the Provider from a server component

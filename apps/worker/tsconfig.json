@@ -1,15 +1,15 @@
 {
-  "extends": "@template/typescript-config/backend.json",
+  "extends": "@arche-template/typescript-config/backend.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@template/store/*": ["../../packages/store/src/*"],
-      "@template/auth/*": ["../../packages/auth/src/*"],
-      "@template/trpc/*": ["../../packages/trpc/src/*"],
-      "@template/backend-common/*": ["../../packages/trpc/backend-common/src/*"],
-      "@template/common/*": ["../../packages/trpc/common/src/*"]
+      "@arche-template/store/*": ["../../packages/store/src/*"],
+      "@arche-template/auth/*": ["../../packages/auth/src/*"],
+      "@arche-template/trpc/*": ["../../packages/trpc/src/*"],
+      "@arche-template/backend-common/*": ["../../packages/trpc/backend-common/src/*"],
+      "@arche-template/common/*": ["../../packages/trpc/common/src/*"]
     },
     "outDir": "dist"
   }

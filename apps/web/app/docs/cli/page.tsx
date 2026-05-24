@@ -43,7 +43,7 @@ export default function CliDocsPage() {
             {[
               {
                 title: 'Workspace Scoping',
-                desc: 'Automatically renames all @template/* package scopes to your chosen project name.',
+                desc: 'Automatically renames all @arche-template/* package scopes to your chosen project name.',
               },
               {
                 title: 'Family Selection',

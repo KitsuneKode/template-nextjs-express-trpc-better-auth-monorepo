@@ -112,6 +112,22 @@ describe('scaffold smoke matrix', () => {
         expect(arche.packageManager).toBe(entry.pm)
 
         if (entry.family === 'fullstack') {
+          const rootPackage = readFileSync(join(destinationDir, 'package.json'), 'utf8')
+          const serverPackage = readFileSync(
+            join(destinationDir, 'apps/server/package.json'),
+            'utf8',
+          )
+          const serverDockerfile = readFileSync(
+            join(destinationDir, 'apps/server/Dockerfile'),
+            'utf8',
+          )
+          const expectedScope = `@${entry.family}-${entry.pm}`
+
+          expect(rootPackage).not.toContain('@arche-template/')
+          expect(serverPackage).toContain(`"name": "${expectedScope}/server"`)
+          expect(serverDockerfile).toContain(`turbo@2.9.14 prune ${expectedScope}/server --docker`)
+          expect(serverDockerfile).not.toContain('@arche-template/')
+
           expect(existsSync(join(destinationDir, '.opencode/skills.json'))).toBe(true)
           expect(existsSync(join(destinationDir, 'AGENTS.md'))).toBe(true)
           expect(existsSync(join(destinationDir, 'CLAUDE.md'))).toBe(true)

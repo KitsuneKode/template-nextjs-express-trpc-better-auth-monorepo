@@ -1,5 +1,5 @@
 {
-  "name": "@template/tooling-scripts",
+  "name": "@arche-template/tooling-scripts",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@template/typescript-config": "workspace:*",
+    "@arche-template/typescript-config": "workspace:*",
     "@types/bun": "1.3.14"
   },
   "peerDependencies": {

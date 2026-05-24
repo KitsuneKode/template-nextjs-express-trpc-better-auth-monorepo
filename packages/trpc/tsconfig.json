@@ -1,15 +1,15 @@
 {
-  "extends": "@template/typescript-config/backend.json",
+  "extends": "@arche-template/typescript-config/backend.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "types": ["bun"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["../../apps/server/src/*"],
-      "@template/server/trpc": ["../../apps/server/src/modules/trpc/index.ts"],
-      "@template/store/*": ["../store/src/*"],
-      "@template/auth/*": ["../auth/src/*"],
-      "@template/backend-common/*": ["../backend-common/src/*"]
+      "@arche-template/server/trpc": ["../../apps/server/src/modules/trpc/index.ts"],
+      "@arche-template/store/*": ["../store/src/*"],
+      "@arche-template/auth/*": ["../auth/src/*"],
+      "@arche-template/backend-common/*": ["../backend-common/src/*"]
     }
   },
   "exclude": ["node_modules"]

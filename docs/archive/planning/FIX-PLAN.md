@@ -80,7 +80,7 @@ ls -la apps/web/.env apps/server/.env
 
 ### What's Happening
 
-When building `@template/web`, TypeScript fails:
+When building `@arche-template/web`, TypeScript fails:
 
 ```
 Type error: The inferred type of 'authClient'
@@ -98,7 +98,7 @@ Add explicit type annotation:
 **File: `packages/auth/src/client.ts`**
 
 ```typescript
-import { clientConfig as config } from '@template/common/config-loader'
+import { clientConfig as config } from '@arche-template/common/config-loader'
 import { createAuthClient } from 'better-auth/react'
 import type { BetterAuthClientPlugin } from 'better-auth/client'
 
@@ -618,7 +618,7 @@ Once migrated, delete this file. But first, update imports everywhere.
 
 import { createEnv } from '@t3-oss/env-nextjs'
 import { z } from 'zod'
-import { clientEnv } from '@template/common/src/env/client'
+import { clientEnv } from '@arche-template/common/src/env/client'
 
 export const env = createEnv({
   extends: [clientEnv],
@@ -644,14 +644,14 @@ export type Env = typeof env
 From:
 
 ```typescript
-import { clientConfig } from '@template/common/config-loader'
+import { clientConfig } from '@arche-template/common/config-loader'
 const appUrl = clientConfig.getConfig('appUrl')
 ```
 
 To:
 
 ```typescript
-import { env } from '@template/common/env/client'
+import { env } from '@arche-template/common/env/client'
 const appUrl = env.NEXT_PUBLIC_APP_URL
 ```
 

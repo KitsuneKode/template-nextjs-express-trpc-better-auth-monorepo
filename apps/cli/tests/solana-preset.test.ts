@@ -96,19 +96,19 @@ describe('solana preset output', () => {
       const webPage = readFileSync(join(destinationDir, 'apps/web/app/page.tsx'), 'utf8')
       expect(webPage).toContain('@solana/wallet-adapter-react')
       expect(webPage).toContain('@solana-product/solana-client')
-      expect(webPage).not.toContain('@template/')
+      expect(webPage).not.toContain('@arche-template/')
 
       const mobileApp = readFileSync(join(destinationDir, 'apps/mobile/App.tsx'), 'utf8')
       expect(mobileApp).toContain('Solana Mobile Wallet Adapter')
       expect(mobileApp).toContain('@solana-product/solana-client')
-      expect(mobileApp).not.toContain('@template/')
+      expect(mobileApp).not.toContain('@arche-template/')
 
       const client = readFileSync(
         join(destinationDir, 'packages/solana-client/src/index.ts'),
         'utf8',
       )
       expect(client).toContain('@solana-product/solana-config')
-      expect(client).not.toContain('@template/')
+      expect(client).not.toContain('@arche-template/')
 
       const architecture = readFileSync(
         join(destinationDir, '.docs/architecture/generated-project.md'),

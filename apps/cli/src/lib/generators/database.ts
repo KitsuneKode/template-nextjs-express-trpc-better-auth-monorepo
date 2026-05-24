@@ -155,7 +155,7 @@ export default defineConfig({
 }
 
 function sqliteAuthPatch(): string {
-  return `import { prisma } from '@template/store'
+  return `import { prisma } from '@arche-template/store'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
@@ -328,7 +328,7 @@ export default defineConfig({
 }
 
 function mongoAuthPatch(): string {
-  return `import { prisma } from '@template/store'
+  return `import { prisma } from '@arche-template/store'
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'

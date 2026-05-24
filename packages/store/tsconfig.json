@@ -1,10 +1,10 @@
 {
-  "extends": "@template/typescript-config/backend.json",
+  "extends": "@arche-template/typescript-config/backend.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
-      "@template/store/*": ["./src/*"]
+      "@arche-template/store/*": ["./src/*"]
     }
   },
   "include": ["."],

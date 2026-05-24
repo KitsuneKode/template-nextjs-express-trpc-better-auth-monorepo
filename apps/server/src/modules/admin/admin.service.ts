@@ -1,7 +1,7 @@
+import { getBullConnection } from '@arche-template/backend-common/redis/bull'
 import { createBullBoard } from '@bull-board/api'
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter'
 import { ExpressAdapter } from '@bull-board/express'
-import { getBullConnection } from '@template/backend-common/redis/bull'
 import { Queue } from 'bullmq'
 
 const QUEUE_NAMES = ['email', 'webhook', 'cleanup'] as const

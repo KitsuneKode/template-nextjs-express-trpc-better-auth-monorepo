@@ -1,4 +1,4 @@
-import { Button } from '@template/ui/components/button'
+import { Button } from '@arche-template/ui/components/button'
 
 export default function Mockup11() {
   return (

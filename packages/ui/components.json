@@ -13,11 +13,11 @@
   "iconLibrary": "hugeicons",
   "rtl": false,
   "aliases": {
-    "components": "@template/ui/components",
-    "utils": "@template/ui/lib/utils",
-    "hooks": "@template/ui/hooks",
-    "lib": "@template/ui/lib",
-    "ui": "@template/ui/components"
+    "components": "@arche-template/ui/components",
+    "utils": "@arche-template/ui/lib/utils",
+    "hooks": "@arche-template/ui/hooks",
+    "lib": "@arche-template/ui/lib",
+    "ui": "@arche-template/ui/components"
   },
   "menuColor": "default",
   "menuAccent": "bold",

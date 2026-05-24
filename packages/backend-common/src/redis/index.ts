@@ -1,7 +1,7 @@
 import IORedis from 'ioredis'
 import { resolveRedisUrl } from '../utils/redis-enabled'
 
-/** Lifecycle Redis handle for server/worker boot. BullMQ uses `@template/backend-common/redis/bull`. */
+/** Lifecycle Redis handle for server/worker boot. BullMQ uses `@arche-template/backend-common/redis/bull`. */
 export type AppRedisClient = {
   connect(): Promise<void>
   close(): Promise<void>

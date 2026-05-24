@@ -1,4 +1,4 @@
-import { auth, fromNodeHeaders } from '@template/auth/server'
+import { auth, fromNodeHeaders } from '@arche-template/auth/server'
 import { initTRPC, TRPCError } from '@trpc/server'
 import type * as trpcExpress from '@trpc/server/adapters/express'
 import superjson from 'superjson'

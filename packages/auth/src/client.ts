@@ -1,4 +1,4 @@
-import { clientEnv as env } from '@template/common/env'
+import { clientEnv as env } from '@arche-template/common/env'
 import { createAuthClient } from 'better-auth/react' // make sure to import from better-auth/react
 
 /**

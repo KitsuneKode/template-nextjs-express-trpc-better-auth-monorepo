@@ -1,15 +1,15 @@
 {
-  "extends": "@template/typescript-config/nextjs.json",
+  "extends": "@arche-template/typescript-config/nextjs.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@template/ui/*": ["../../packages/ui/src/*"],
-      "@template/store/*": ["../../packages/store/src/*"],
-      "@template/auth/*": ["../../packages/auth/src/*"],
-      "@template/trpc/*": ["../../packages/trpc/src/*"],
-      "@template/common/*": ["../../packages/common/src/*"]
+      "@arche-template/ui/*": ["../../packages/ui/src/*"],
+      "@arche-template/store/*": ["../../packages/store/src/*"],
+      "@arche-template/auth/*": ["../../packages/auth/src/*"],
+      "@arche-template/trpc/*": ["../../packages/trpc/src/*"],
+      "@arche-template/common/*": ["../../packages/common/src/*"]
     },
     "plugins": [
       {

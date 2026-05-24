@@ -22,7 +22,7 @@ const DEFAULT_TARGETS: CleanupTarget[] = ['showcase', 'seed', 'worker', 'tests',
 
 const STARTER_LAYOUT = `import { Suspense } from 'react'
 import { Toaster } from 'sonner'
-import '@template/ui/globals.css'
+import '@arche-template/ui/globals.css'
 import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'

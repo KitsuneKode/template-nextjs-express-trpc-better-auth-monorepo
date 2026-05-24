@@ -1,4 +1,4 @@
-import { isRedisEnabled } from '@template/backend-common/redis-enabled'
+import { isRedisEnabled } from '@arche-template/backend-common/redis-enabled'
 import type { Request, Response } from 'express'
 
 const SERVICE_VERSION = '1.0.0'
@@ -15,7 +15,7 @@ export const rootController = {
     }
 
     res.json({
-      service: '@template/server',
+      service: '@arche-template/server',
       title: 'Arche API',
       status: 'ok',
       version: SERVICE_VERSION,

@@ -6,7 +6,7 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 
 - Production default: [docs/production-playbook.md](../../docs/production-playbook.md)
 - Deploy hub: [docs/deployment.md](../../docs/deployment.md)
-- Build: `bun run build --filter=@template/web` (Vercel uses app root `apps/web`)
+- Build: `bun run build --filter=@arche-template/web` (Vercel uses app root `apps/web`)
 
 ## Read first
 

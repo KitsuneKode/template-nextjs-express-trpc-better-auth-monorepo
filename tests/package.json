@@ -1,5 +1,5 @@
 {
-  "name": "@template/tests",
+  "name": "@arche-template/tests",
   "private": true,
   "type": "module",
   "module": "src/index.ts",
@@ -11,10 +11,10 @@
     "test:coverage": "bun test --coverage"
   },
   "dependencies": {
-    "@template/auth": "workspace:*",
-    "@template/server": "workspace:*",
-    "@template/store": "workspace:*",
-    "@template/trpc": "workspace:*"
+    "@arche-template/auth": "workspace:*",
+    "@arche-template/server": "workspace:*",
+    "@arche-template/store": "workspace:*",
+    "@arche-template/trpc": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -15,7 +15,7 @@
 **Problem**: The template repository itself won't build:
 
 ```
-@template/web#build: Type error: The inferred type of 'authClient'
+@arche-template/web#build: Type error: The inferred type of 'authClient'
 cannot be named without a reference to 'better-auth/dist/client/path-to-object.mjs'
 ```
 
@@ -125,17 +125,17 @@ npx @arche/create my-app --yes
 
 ### What Works ✅
 
-| Feature            | Status   | Evidence                                      |
-| ------------------ | -------- | --------------------------------------------- |
-| Help output        | ✅ WORKS | `--help` shows all options clearly            |
-| Argument parsing   | ✅ WORKS | `--yes`, `--no-*`, `--db=postgres` all parse  |
-| CLI tests          | ✅ PASS  | 101 tests pass, 251 assertions                |
-| Scaffolding        | ✅ WORKS | Creates all directories and files             |
-| Package rename     | ✅ WORKS | `@template/*` → `@my-app/*` in 123 files      |
-| Template cleanup   | ✅ WORKS | Removes showcase, worker correctly            |
-| Git init           | ✅ WORKS | Initializes git repo                          |
-| Dependency install | ✅ WORKS | Calls `bun install` successfully              |
-| Generated files    | ✅ WORKS | Docker-compose, CI, deployment guides created |
+| Feature            | Status   | Evidence                                       |
+| ------------------ | -------- | ---------------------------------------------- |
+| Help output        | ✅ WORKS | `--help` shows all options clearly             |
+| Argument parsing   | ✅ WORKS | `--yes`, `--no-*`, `--db=postgres` all parse   |
+| CLI tests          | ✅ PASS  | 101 tests pass, 251 assertions                 |
+| Scaffolding        | ✅ WORKS | Creates all directories and files              |
+| Package rename     | ✅ WORKS | `@arche-template/*` → `@my-app/*` in 123 files |
+| Template cleanup   | ✅ WORKS | Removes showcase, worker correctly             |
+| Git init           | ✅ WORKS | Initializes git repo                           |
+| Dependency install | ✅ WORKS | Calls `bun install` successfully               |
+| Generated files    | ✅ WORKS | Docker-compose, CI, deployment guides created  |
 
 ### What Doesn't Work ❌
 

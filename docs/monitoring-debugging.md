@@ -27,7 +27,7 @@ DEBUG=trpc:* bun run dev
 
 ```typescript
 // Log performance metrics
-import { getMetricStats } from '@template/backend-common/performance'
+import { getMetricStats } from '@arche-template/backend-common/performance'
 
 console.log(getMetricStats('database:query'))
 // Output: { count: 42, avg: 12.5, min: 2, max: 145 }
@@ -49,7 +49,7 @@ For production, send logs to a centralized service:
 
 ```typescript
 // Example: Sending logs to external service
-import { logger } from '@template/backend-common/logger'
+import { logger } from '@arche-template/backend-common/logger'
 
 // Configure Winston transports to send to:
 // - DataDog
@@ -64,7 +64,7 @@ import { logger } from '@template/backend-common/logger'
 Track key metrics:
 
 ```typescript
-import { measureAsync } from '@template/backend-common/performance'
+import { measureAsync } from '@arche-template/backend-common/performance'
 
 // Automatically tracked:
 // - Request latency
@@ -166,7 +166,7 @@ psql -h localhost -U postgres -c "SELECT datname, count(*) FROM pg_stat_activity
 
 ```typescript
 // Add logging to understand bottleneck
-import { measureAsync } from '@template/backend-common/performance'
+import { measureAsync } from '@arche-template/backend-common/performance'
 
 export const myProcedure = publicProcedure
   .input(z.object({ id: z.string() }))

@@ -104,7 +104,7 @@ describe('applyOrmTransform', () => {
     )
     await writeFile(
       join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'),
-      "import { prisma as db } from '@template/store'\n",
+      "import { prisma as db } from '@arche-template/store'\n",
     )
     await writeFile(
       join(tempDir, 'packages/trpc/src/index.ts'),
@@ -112,15 +112,15 @@ describe('applyOrmTransform', () => {
     )
     await writeFile(
       join(tempDir, 'apps/server/src/modules/post/post.trpc.ts'),
-      "import { prisma } from '@template/store'\nprisma.post.findMany()\n",
+      "import { prisma } from '@arche-template/store'\nprisma.post.findMany()\n",
     )
     await writeFile(
       join(tempDir, 'apps/server/src/modules/chat/chat.trpc.ts'),
-      "import { prisma } from '@template/store'\nprisma.message.findMany()\n",
+      "import { prisma } from '@arche-template/store'\nprisma.message.findMany()\n",
     )
     await writeFile(
       join(tempDir, 'apps/server/src/modules/user/user.trpc.ts'),
-      "import { prisma } from '@template/store'\nprisma.user.findMany()\n",
+      "import { prisma } from '@arche-template/store'\nprisma.user.findMany()\n",
     )
   })
 
@@ -221,7 +221,7 @@ describe('applyOrmTransform', () => {
       await applyOrmTransform(tempDir, config)
       const auth = await readFile(join(tempDir, 'packages/auth/src/index.ts'), 'utf8')
       expect(auth).toContain('drizzleAdapter')
-      expect(auth).toContain("from '@template/store'")
+      expect(auth).toContain("from '@arche-template/store'")
       expect(auth).toContain("provider: 'pg'")
       expect(auth).not.toContain('prismaAdapter')
     })
@@ -229,7 +229,7 @@ describe('applyOrmTransform', () => {
     it('rewrites tRPC context for Express + Drizzle', async () => {
       await applyOrmTransform(tempDir, config)
       const trpc = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
-      expect(trpc).toContain("import { db } from '@template/store'")
+      expect(trpc).toContain("import { db } from '@arche-template/store'")
       expect(trpc).toContain("from '@trpc/server/adapters/express'")
       expect(trpc).not.toContain('prisma')
     })
@@ -241,7 +241,7 @@ describe('applyOrmTransform', () => {
         join(tempDir, 'apps/server/src/modules/post/post.trpc.ts'),
         'utf8',
       )
-      expect(postRouter).toContain("from '@template/store'")
+      expect(postRouter).toContain("from '@arche-template/store'")
       expect(postRouter).toContain('db.query.post')
       expect(postRouter).toContain('db.insert(post)')
       expect(postRouter).toContain('db.update(post)')
@@ -314,7 +314,7 @@ describe('applyOrmTransform', () => {
     it('rewrites tRPC context for fetch-based backend', async () => {
       await applyOrmTransform(tempDir, config)
       const trpc = await readFile(join(tempDir, 'apps/server/src/modules/trpc/trpc.ts'), 'utf8')
-      expect(trpc).toContain("import { db } from '@template/store'")
+      expect(trpc).toContain("import { db } from '@arche-template/store'")
       expect(trpc).toContain('{ headers }: { headers: Headers }')
       expect(trpc).not.toContain('@trpc/server/adapters/express')
       expect(trpc).not.toContain('prisma')

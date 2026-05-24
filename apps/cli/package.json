@@ -22,13 +22,13 @@
   ],
   "homepage": "https://arche.kitsunelabs.xyz",
   "bugs": {
-    "url": "https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo/issues"
+    "url": "https://github.com/kitsunekode/arche/issues"
   },
   "license": "MIT",
   "author": "kitsunekode <bhuyanmanash2002@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo.git",
+    "url": "git+https://github.com/kitsunekode/arche.git",
     "directory": "apps/cli"
   },
   "bin": {
@@ -65,7 +65,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@template/typescript-config": "workspace:*",
+    "@arche-template/typescript-config": "workspace:*",
     "@types/node": "^25.9.0",
     "typescript": "^6.0.3"
   },

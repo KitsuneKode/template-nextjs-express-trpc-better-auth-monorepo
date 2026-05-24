@@ -7,7 +7,7 @@ RUN bun install --frozen-lockfile --production
 
 FROM base AS build
 COPY . .
-RUN bun run build --filter @template/web
+RUN bun run build --filter @arche-template/web
 
 FROM oven/bun:1-slim AS production
 WORKDIR /app

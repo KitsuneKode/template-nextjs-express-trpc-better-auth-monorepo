@@ -1,1 +1,1 @@
-export { workerLogger as logger } from '@template/backend-common/logger'
+export { workerLogger as logger } from '@arche-template/backend-common/logger'

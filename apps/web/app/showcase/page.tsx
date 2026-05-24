@@ -1,5 +1,5 @@
-import { Badge } from '@template/ui/components/badge'
-import { Button } from '@template/ui/components/button'
+import { Badge } from '@arche-template/ui/components/badge'
+import { Button } from '@arche-template/ui/components/button'
 import {
   Card,
   CardHeader,
@@ -7,8 +7,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from '@template/ui/components/card'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@template/ui/components/tabs'
+} from '@arche-template/ui/components/card'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@arche-template/ui/components/tabs'
 import { Metadata } from 'next'
 import { Navbar } from '@/components/arche/navbar'
 

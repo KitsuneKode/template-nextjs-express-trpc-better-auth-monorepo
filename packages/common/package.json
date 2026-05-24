@@ -1,5 +1,5 @@
 {
-  "name": "@template/common",
+  "name": "@arche-template/common",
   "version": "1.0.0",
   "private": true,
   "description": "",
@@ -26,7 +26,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
-    "@template/typescript-config": "workspace:*",
+    "@arche-template/typescript-config": "workspace:*",
     "@types/bun": "1.3.14"
   },
   "peerDependencies": {

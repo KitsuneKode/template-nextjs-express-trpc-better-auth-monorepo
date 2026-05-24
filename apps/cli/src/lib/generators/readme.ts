@@ -145,7 +145,7 @@ export function buildReadme(config: ProjectConfig): string {
 
   return `# ${name}
 
-A ${label.toLowerCase()} scaffolded with [@arche/create](https://github.com/kitsunekode/template-nextjs-express-trpc-bettera-auth-monorepo).
+A ${label.toLowerCase()} scaffolded with [@arche/create](https://github.com/kitsunekode/arche).
 
 ## Stack
 

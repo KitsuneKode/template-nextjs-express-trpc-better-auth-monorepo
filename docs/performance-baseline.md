@@ -154,7 +154,7 @@ describe('API Performance Benchmarks', () => {
 
 ```typescript
 import { bench, describe } from 'vitest'
-import { prisma } from '@template/store'
+import { prisma } from '@arche-template/store'
 
 describe('Database Performance', () => {
   bench(
@@ -204,7 +204,7 @@ describe('Database Performance', () => {
 
 ```typescript
 import { Request, Response, NextFunction } from 'express'
-import { recordMetric } from '@template/backend-common/performance'
+import { recordMetric } from '@arche-template/backend-common/performance'
 
 export function performanceMonitor(req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now()
@@ -304,7 +304,7 @@ describe('Memory Leaks Detection', () => {
 
 ```typescript
 import { bench, describe } from 'vitest'
-import { prisma } from '@template/store'
+import { prisma } from '@arche-template/store'
 
 describe('Network Performance', () => {
   bench(

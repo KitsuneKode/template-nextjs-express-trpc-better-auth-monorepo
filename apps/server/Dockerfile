@@ -12,10 +12,10 @@ RUN apt-get update -y \
   && apt-get install -y --no-install-recommends openssl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-# --- Prune to @template/server workspace closure ---
+# --- Prune to @arche-template/server workspace closure ---
 FROM base AS pruner
 COPY . .
-RUN bunx turbo@2.9.14 prune @template/server --docker
+RUN bunx turbo@2.9.14 prune @arche-template/server --docker
 
 # --- Install + generate + build (buzz8n-style: json install, then full sources) ---
 FROM base AS builder
@@ -37,7 +37,7 @@ COPY --from=pruner /app/out/full/ .
 COPY --from=pruner /app/out/json/bun.lock ./bun.lock
 
 RUN bun run db:generate
-RUN bun run build --filter=@template/server
+RUN bun run build --filter=@arche-template/server
 
 # --- Runtime ---
 FROM oven/bun:${BUN_VERSION}-slim AS production

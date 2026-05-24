@@ -1,4 +1,4 @@
-import { toNodeHandler, auth } from '@template/auth/server'
+import { toNodeHandler, auth } from '@arche-template/auth/server'
 import { Router } from 'express'
 import { authRateLimit } from '../../common/middleware/rate-limit'
 import { timingMiddleware } from '../../common/middleware/timing'
