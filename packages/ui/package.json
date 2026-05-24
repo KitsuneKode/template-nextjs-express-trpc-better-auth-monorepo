@@ -9,7 +9,7 @@
     "./postcss.config": "./postcss.config.mjs"
   },
   "scripts": {
-    "lint": "oxlint",
+    "lint": "oxlint --deny-warnings",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit"
   },

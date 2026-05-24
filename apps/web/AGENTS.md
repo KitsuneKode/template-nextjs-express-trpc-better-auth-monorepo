@@ -10,6 +10,9 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 
 ## Read first
 
+- [`../../PRODUCT.md`](../../PRODUCT.md) - product voice, truthful-claim rules, and accessibility bar
+- [`.docs/product/web-brand-ui-brief.md`](../../.docs/product/web-brand-ui-brief.md) - public-site direction and current web work slices
+- [`.docs/product/verification-matrix.md`](../../.docs/product/verification-matrix.md) - only source for public preset support claims
 - `app/layout.tsx` — metadata (`metadataBase` from `NEXT_PUBLIC_SITE_URL`)
 - `trpc/server.tsx` — `trpcCaller` for RSC; HTTP `trpc` proxy for client components
 - `trpc/client.tsx` — browser client

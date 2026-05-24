@@ -62,3 +62,5 @@ Historical planning and assessment docs live under [docs/archive/planning/](docs
 ## Portfolio / CLI
 
 Scaffold CLI: [apps/cli/CLI-SPEC.md](apps/cli/CLI-SPEC.md). Fullstack scaffolds may include `SHOWCASE.mdx` for portfolio sync (`kitsunekode.in`).
+
+Web/brand work: read [PRODUCT.md](PRODUCT.md) and [`.docs/product/web-brand-ui-brief.md`](.docs/product/web-brand-ui-brief.md) before editing public site copy or visual direction.

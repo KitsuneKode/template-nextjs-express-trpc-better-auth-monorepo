@@ -10,8 +10,9 @@ completed, and archived work plans.
 
 1. Start with the root `AGENTS.md`.
 2. Read the nearest local `AGENTS.md` for files you will edit.
-3. Read one relevant `.docs` topic.
-4. Read one matching `.plans/active` file only when continuing approved work.
+3. For web/design work, read root [`PRODUCT.md`](../PRODUCT.md) before one relevant `.docs` topic.
+4. Read one relevant `.docs` topic.
+5. Read one matching `.plans/active` file only when continuing approved work.
 
 Do not load this whole tree by default.
 
