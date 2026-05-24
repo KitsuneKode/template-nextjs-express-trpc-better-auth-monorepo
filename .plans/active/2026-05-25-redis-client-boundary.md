@@ -144,7 +144,7 @@ git commit -m "refactor(redis): isolate ioredis to BullMQ connections"
 
 - Modify: `.plans/active/2026-05-25-redis-client-boundary.md`
 
-- [ ] **Step 1: Run full local verification**
+- [x] **Step 1: Run full local verification**
 
 ```bash
 bun run ci
@@ -152,6 +152,12 @@ bun run build:vercel --filter=@arche-template/server
 ```
 
 Expected: typechecks, tests, repo doctor, and the server Vercel bundle pass.
+
+Local evidence on 2026-05-25:
+
+- `bun run ci`: 317 passed, 3 intentional skips, 0 failed; Repo Doctor
+  reported 0 errors and 0 warnings.
+- `bun run build:vercel --filter=@arche-template/server`: passed.
 
 - [ ] **Step 2: Push and inspect remote checks**
 
