@@ -208,7 +208,7 @@ Expected: PASS.
 
 - Modify: `.plans/active/2026-05-25-redis-client-boundary.md`
 
-- [ ] **Step 1: Run full local verification**
+- [x] **Step 1: Run full local verification**
 
 ```bash
 bun run ci
@@ -217,9 +217,13 @@ bun run build:vercel --filter=@arche-template/server
 
 Expected: typechecks, tests, repo doctor, and the server Vercel bundle pass.
 
-Earlier local verification covered the Redis adapter before Vercel logs
-revealed the missing Turbo JIT-package cache inputs. Re-run this gate after the
-cache correction before marking the slice shipped.
+Local evidence after the cache correction on 2026-05-25:
+
+- `bun run ci`: 318 passed, 3 intentional skips, 0 failed; Repo Doctor
+  reported 0 errors and 0 warnings.
+- `bun run build:vercel --filter=@arche-template/server`: passed with a cache
+  miss and rebuilt 1,597 modules, rather than replaying the earlier
+  1,590-module pre-`redis` bundle.
 
 - [ ] **Step 2: Push and inspect remote checks**
 
