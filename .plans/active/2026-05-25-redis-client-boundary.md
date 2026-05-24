@@ -1,0 +1,157 @@
+# Redis Client Boundary Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Use official `redis` for application Redis lifecycle access while retaining `ioredis` only for BullMQ connections in the TypeScript fullstack template.
+
+**Architecture:** `packages/backend-common/src/redis/index.ts` remains the application-facing subpath, but its private client changes to `createClient` from `redis`. `packages/backend-common/src/redis/bull-connection.ts` remains an explicit BullMQ adapter and continues creating `ioredis` connections. The scaffold copies this root template, so dependency and generated-output tests establish the rule for new projects.
+
+**Tech Stack:** Bun workspaces, TypeScript, `redis`/node-redis, BullMQ, `ioredis`, Bun test, Turborepo.
+
+---
+
+### Task 1: Record the dependency ownership rule
+
+**Files:**
+
+- Create: `.docs/decisions/0002-redis-client-boundaries.md`
+- Create: `.plans/active/2026-05-25-redis-client-boundary.md`
+
+- [x] **Step 1: Document the accepted boundary**
+
+Record that `redis` owns general application access and `ioredis` is an
+adapter dependency for BullMQ only.
+
+- [x] **Step 2: Commit the decision and plan**
+
+```bash
+git add .docs/decisions/0002-redis-client-boundaries.md .plans/active/2026-05-25-redis-client-boundary.md
+git commit -m "docs(redis): establish client ownership boundary"
+```
+
+### Task 2: Add generated-project evidence before changing the template
+
+**Files:**
+
+- Modify: `apps/cli/tests/workspace-output.test.ts`
+
+- [ ] **Step 1: Add failing assertions for the fullstack dependency boundary**
+
+Within the Bun fullstack output test, read
+`packages/backend-common/package.json` and assert:
+
+```ts
+expect(backendCommon.dependencies.redis).toBeDefined()
+expect(backendCommon.dependencies.ioredis).toBeDefined()
+```
+
+Within the pnpm test, make the same assertions so both first-class package
+manager paths carry the application Redis dependency.
+
+- [ ] **Step 2: Run the focused test to verify it fails**
+
+```bash
+bun test apps/cli/tests/workspace-output.test.ts
+```
+
+Expected: FAIL because `packages/backend-common` does not yet declare
+`redis`.
+
+### Task 3: Migrate the application Redis adapter
+
+**Files:**
+
+- Modify: `packages/backend-common/src/redis/index.ts`
+- Modify: `packages/backend-common/package.json`
+- Modify: `bun.lock`
+
+- [ ] **Step 1: Change only the application-facing client**
+
+Implement the lifecycle wrapper with the official package:
+
+```ts
+import { createClient } from 'redis'
+import { resolveRedisUrl } from '../utils/redis-enabled'
+
+export type AppRedisClient = {
+  connect(): Promise<void>
+  close(): Promise<void>
+}
+
+export const redisClient = (): AppRedisClient => {
+  const url = resolveRedisUrl()
+  if (!url) {
+    throw new Error('REDIS_URL is not configured (set REDIS_URL or ENABLE_REDIS=false)')
+  }
+
+  const client = createClient({ url })
+
+  return {
+    async connect() {
+      await client.connect()
+    },
+    async close() {
+      await client.quit()
+    },
+  }
+}
+```
+
+Add `"redis"` to `packages/backend-common` dependencies and install through
+Bun to update the lockfile. Leave `src/redis/bull-connection.ts` on
+`ioredis`.
+
+- [ ] **Step 2: Run the focused test to verify it passes**
+
+```bash
+bun test apps/cli/tests/workspace-output.test.ts
+```
+
+Expected: PASS for Bun and pnpm generated fullstack output.
+
+### Task 4: Align agent and public architecture context
+
+**Files:**
+
+- Modify: `AGENTS.md`
+- Modify: `packages/backend-common/AGENTS.md`
+- Modify: `docs/architecture.md`
+
+- [ ] **Step 1: Describe both Redis owners without duplicating implementation detail**
+
+Change stack/context wording to say application Redis uses official `redis`
+and BullMQ connections use `ioredis`. Keep deployment/env docs unchanged
+because `REDIS_URL` and `ENABLE_REDIS` behavior do not change.
+
+- [ ] **Step 2: Commit the complete implementation slice**
+
+```bash
+git add apps/cli/tests/workspace-output.test.ts packages/backend-common/src/redis/index.ts packages/backend-common/package.json bun.lock AGENTS.md packages/backend-common/AGENTS.md docs/architecture.md
+git commit -m "refactor(redis): isolate ioredis to BullMQ connections"
+```
+
+### Task 5: Verify the full slice
+
+**Files:**
+
+- Modify: `.plans/active/2026-05-25-redis-client-boundary.md`
+
+- [ ] **Step 1: Run full local verification**
+
+```bash
+bun run ci
+bun run build:vercel --filter=@arche-template/server
+```
+
+Expected: typechecks, tests, repo doctor, and the server Vercel bundle pass.
+
+- [ ] **Step 2: Push and inspect remote checks**
+
+```bash
+git push origin main
+gh run list --limit 6
+vercel ls --yes
+```
+
+Expected: CI/release checks and the affected Vercel server deployment report
+success before the active plan is moved to completed.
