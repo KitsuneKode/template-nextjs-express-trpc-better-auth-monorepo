@@ -2,12 +2,12 @@
  * BullMQ-compatible Redis connection factory.
  */
 
-import IORedis from 'ioredis'
+import { Redis } from 'ioredis'
 import { resolveRedisUrl } from '../utils/redis-enabled'
 
-let bullConnection: IORedis | null = null
+let bullConnection: Redis | null = null
 
-export function getBullConnection(): IORedis {
+export function getBullConnection(): Redis {
   if (bullConnection) return bullConnection
 
   const url = resolveRedisUrl()
@@ -15,7 +15,7 @@ export function getBullConnection(): IORedis {
     throw new Error('BullMQ requires REDIS_URL (queues are disabled when ENABLE_REDIS=false)')
   }
 
-  bullConnection = new IORedis(url, {
+  bullConnection = new Redis(url, {
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
   })
@@ -24,13 +24,13 @@ export function getBullConnection(): IORedis {
 }
 
 /** Separate connection for worker processes. */
-export function createWorkerBullConnection(): IORedis {
+export function createWorkerBullConnection(): Redis {
   const url = resolveRedisUrl()
   if (!url) {
     throw new Error('Worker requires REDIS_URL')
   }
 
-  return new IORedis(url, {
+  return new Redis(url, {
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
   })
