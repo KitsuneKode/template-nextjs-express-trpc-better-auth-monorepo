@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation'
 
 import { cn } from '@arche-template/ui/lib/utils'
 
+import { BrandMark } from '@/components/arche/brand-mark'
+
 const links = [
   { href: '/families', label: 'Families' },
   { href: '/docs', label: 'Docs' },
@@ -22,7 +24,7 @@ export function Navbar() {
           transitionTypes={['route-soft']}
           className="flex min-h-10 items-center gap-4 text-sm font-bold tracking-tight uppercase transition-[opacity] duration-150 hover:opacity-80"
         >
-          <div className="size-3 bg-white" />
+          <BrandMark size={28} className="text-white" />
           ARCHE
         </Link>
         <div className="hidden items-center gap-6 text-[11px] font-bold tracking-[0.15em] uppercase lg:flex">

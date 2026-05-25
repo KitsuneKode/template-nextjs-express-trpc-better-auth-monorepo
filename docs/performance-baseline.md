@@ -1,5 +1,7 @@
 # Performance Baseline Testing Guide
 
+> **Note:** Example GitHub Actions workflows in this doc are illustrative. This template repo does not include `.github/workflows/performance.yml`. See [ci-gaps.md](./ci-gaps.md).
+
 This guide covers setting up performance benchmarks for monitoring application performance over time.
 
 ## Performance Testing Goals

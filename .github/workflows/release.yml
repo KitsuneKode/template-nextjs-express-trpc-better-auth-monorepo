@@ -1,12 +1,13 @@
 name: Release
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
-  workflow_dispatch:
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 permissions:
@@ -15,24 +16,22 @@ permissions:
   id-token: write
 
 env:
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   NPM_TRUSTED_PUBLISHING_ENABLED: ${{ vars.NPM_TRUSTED_PUBLISHING_ENABLED }}
-  NEXT_PUBLIC_API_URL: http://localhost:8080/api/v1
-  NEXT_PUBLIC_APP_URL: http://localhost:3000
-  NEXT_PUBLIC_SITE_URL: http://localhost:3000
-  NEXT_PUBLIC_SITE_NAME: Arche
-  NEXT_PUBLIC_SITE_DESCRIPTION: Personal scaffold CLI and project vault
 
 jobs:
   release:
     name: Version PR / Publish
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
@@ -43,21 +42,13 @@ jobs:
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
+          package-manager-cache: false
 
       - name: Update npm
         run: npm install -g npm@latest
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
-
-      - name: Verify
-        run: bun run ci
-
-      - name: Build
-        run: bun run build
-
-      - name: Package check
-        run: bun run pkg:check
 
       - name: Create release PR or publish
         uses: changesets/action@v1

@@ -13,6 +13,7 @@
 
 - scope migration from `@arche-template/*` to the root package name, including package metadata, imports, Turbo filters, Dockerfiles, and config files
 - repo redundancy and drift auditing
+- staged secret scan for Husky (`gitleaks-staged.sh`; requires gitleaks CLI)
 - start-fresh cleanup automation
 - lint and typecheck coverage for repo maintenance scripts
 

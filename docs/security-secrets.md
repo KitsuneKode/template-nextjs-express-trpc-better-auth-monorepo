@@ -15,14 +15,29 @@ Do **not** use `generateValue: true` in git if you want secrets created only in 
 
 ## Local scan
 
+Secret scanning runs in three places:
+
+1. **Pre-commit (Husky)** — staged files only (`toolings/scripts/gitleaks-staged.sh`).
+2. **GitHub Actions** — every push/PR to `main`, `prod`, `develop` (`.github/workflows/gitleaks.yml`).
+3. **Weekly schedule** — same workflow, Mondays 06:00 UTC, full history.
+
+Install [gitleaks](https://github.com/gitleaks/gitleaks#installing) for local hooks.
+
+Emergency only (not for routine use): `SKIP_GITLEAKS=1 git commit ...` skips the pre-commit staged scan.
+
 ```bash
-gitleaks detect --source . --redact=100
+bun run secret-scan:staged   # same as pre-commit
+bun run secret-scan          # full repo
+```
+
+Or directly:
+
+```bash
+gitleaks detect --source . --redact=100 --config .gitleaks.toml
 ```
 
 Do **not** use `gitleaks -v` / `--verbose` in shared logs — it prints finding details.  
 Do **not** run `git show <commit>:path` on files known to contain secrets.
-
-CI runs a redacted scan on every push/PR (`.github/workflows/gitleaks.yml`).
 
 ## Public `main` on GitHub
 

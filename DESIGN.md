@@ -57,6 +57,23 @@ Motion should clarify hierarchy or state. Use short ease-out transitions, stagge
 for marketing sections, and press feedback at `scale(0.96)`. Do not animate high-frequency command
 actions. Respect reduced-motion through the global stylesheet.
 
+## Brand assets
+
+Canonical mark and logo: `apps/web/public/brand/arche-mark.svg`, `arche-logo.svg`.
+
+| Asset                | Location                                                                              | Role                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Dynamic OG / favicon | `apps/web/app/opengraph-image.tsx`, `icon.tsx`, `apple-icon.tsx`, `twitter-image.tsx` | Primary social + app icons (uses `lib/brand/mark-data-uri.ts` from SVG) |
+| Static OG backup     | `apps/web/public/brand/og-image.png`                                                  | Kept on disk for external links; not duplicated in `layout` metadata    |
+| Identity board       | `docs/assets/brand/arche-brand-kit.png`                                               | Reference deck (not deployed from `public/`)                            |
+
+React component: `apps/web/components/arche/brand-mark.tsx`.
+
+Palette for marks: background `#050505` / `#09090b`, border `#27272a`, text `#fafafa`,
+amber `#f59e0b`, emerald `#10b981`, blue `#60a5fa`.
+
+Future: `bun run brand:export-og` may regenerate static PNG from `/opengraph-image` when dynamic vs static strategy is finalized.
+
 ## Content Rules
 
 Never claim production readiness, publication, or remote cache defaults unless the repo verifies it.

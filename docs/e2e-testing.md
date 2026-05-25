@@ -1,5 +1,9 @@
 # E2E Testing Guide
 
+> **Scope:** Optional setup for generated apps or when you add Playwright to a project.
+> This **template repository** does not include `playwright.config` or an E2E GitHub Actions job.
+> CI here runs `bun test` only. See [ci-gaps.md](./ci-gaps.md).
+
 This guide covers end-to-end testing with Playwright and integration testing with Vitest.
 
 ## Setup

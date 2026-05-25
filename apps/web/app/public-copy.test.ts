@@ -24,7 +24,6 @@ const bannedClaims = [
   'remote cache enabled by default',
   'rules for Cursor',
   '11 distinct starter templates',
-  '/brand/og-image.png',
 ]
 
 describe('public website copy', () => {

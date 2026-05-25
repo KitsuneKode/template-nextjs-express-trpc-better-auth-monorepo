@@ -1,5 +1,7 @@
 # Production Monitoring: Sentry & DataDog Setup Guide
 
+> **Note:** Example deploy/monitor workflows in this doc are illustrative. This template repo does not ship matching `.github/workflows/*.yml` files. See [ci-gaps.md](./ci-gaps.md).
+
 This guide covers integrating Sentry for error tracking and DataDog for APM/infrastructure monitoring.
 
 ## Overview

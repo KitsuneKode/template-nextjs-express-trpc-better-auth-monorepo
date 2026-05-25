@@ -1,4 +1,4 @@
 #!/bin/sh
 
 bunx lint-staged
-bun run check-types
+sh toolings/scripts/gitleaks-staged.sh

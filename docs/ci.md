@@ -2,27 +2,65 @@
 
 GitHub Actions workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
 
-Runs on `push` to `main`, `prod`, and `develop`, and on pull requests.
+Runs on `push` to `main`, `prod`, and `develop`, and on pull requests. One job installs once, then runs the verification ladder.
 
-| Job         | Command                        | Purpose                                |
-| ----------- | ------------------------------ | -------------------------------------- |
-| Format      | `bun run format:check`         | Oxfmt repo formatting                  |
-| Lint        | `bun run lint:affected`        | Turbo affected lint                    |
-| Typecheck   | `bun run check-types:affected` | Turbo affected TypeScript checks       |
-| Tests       | `bun run test:ci`              | CLI/tooling/unit tests                 |
-| Build       | `bun run build:affected`       | Build changed packages and dependents  |
-| Docs        | `bun run build:docs`           | Build the web/docs app                 |
-| Package     | `bun run pkg:check`            | Build and dry-run pack `@arche/create` |
-| Repo doctor | `bun run repo:doctor`          | Doc/path drift                         |
+| Step         | Command                                                               | Purpose                        |
+| ------------ | --------------------------------------------------------------------- | ------------------------------ |
+| Format       | `bun run format:check`                                                | Oxfmt repo formatting          |
+| Lint + types | `turbo run lint check-types` (+ `--affected` on PRs / `develop`)      | Turbo lint and TypeScript      |
+| Tests        | `bun test`                                                            | CLI, tooling, and unit tests   |
+| Build        | `turbo run build` (+ `--affected` on PRs / `develop`)                 | Build packages                 |
+| Smoke        | `turbo run build --filter=@arche-template/web --filter=@arche/create` | Always build web + CLI         |
+| Package      | `bun run pkg:check`                                                   | CLI pack dry-run               |
+| Repo doctor  | `bun run repo:doctor:strict`                                          | Doc/path drift (warnings fail) |
 
-The workflow uses `TURBO_SCM_BASE` for pull-request affected runs and accepts
-`TURBO_TEAM`/`TURBO_TOKEN` for remote caching. The token is only passed on
-`push` to `main`.
+Turbo uses `TURBO_SCM_BASE` (PR base SHA, previous push SHA, or `git rev-parse HEAD^1`) for `--affected`. On **push to `main` or `prod`**, lint/types/build run on the **full workspace** (no `--affected`).
 
-Local parity before push:
+Release ([`.github/workflows/release.yml`](../.github/workflows/release.yml)) runs only after CI succeeds on a **`push` to `main`** (`head_branch == main`, `event == push`). No manual dispatch.
+
+Weekly generated verification: [`.github/workflows/verify-generated-weekly.yml`](../.github/workflows/verify-generated-weekly.yml).
+
+## Secret scanning
+
+Three layers (defense in depth):
+
+| Layer      | When                                 | What                                                                  |
+| ---------- | ------------------------------------ | --------------------------------------------------------------------- |
+| Pre-commit | Every commit (local)                 | Staged files via Husky → `toolings/scripts/gitleaks-staged.sh`        |
+| CI         | Push/PR to `main`, `prod`, `develop` | [`.github/workflows/gitleaks.yml`](../.github/workflows/gitleaks.yml) |
+| Weekly     | Mondays 06:00 UTC                    | Same workflow (`schedule`) — full history; not cancelled by pushes    |
+
+Install the [gitleaks CLI](https://github.com/gitleaks/gitleaks#installing) for local hooks. Emergency skip: `SKIP_GITLEAKS=1` (see [security-secrets.md](security-secrets.md)).
+
+```bash
+bun run secret-scan:staged   # staged only (same as pre-commit)
+bun run secret-scan          # full repo
+```
+
+## Branch protection
+
+If using required checks, require at least **`Verify`** (CI) and **`Gitleaks`**. Release does not need to be required for every PR.
+
+## Local parity
+
+Full workspace:
 
 ```bash
 bun run ci
-bun run build:docs
-bun run pkg:check
 ```
+
+Affected-only (closer to PR CI when you have a merge base):
+
+```bash
+bun run ci:affected
+```
+
+Strict doctor (matches CI):
+
+```bash
+bun run repo:doctor:ci
+```
+
+## What CI does not run
+
+See [ci-gaps.md](./ci-gaps.md) for E2E, deploy smoke, and doc drift to avoid.

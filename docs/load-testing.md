@@ -1,5 +1,7 @@
 # Load Testing Guide
 
+> **Note:** Example GitHub Actions workflows in this doc are illustrative. This template repo does not include `.github/workflows/load-test.yml`. See [ci-gaps.md](./ci-gaps.md).
+
 This guide covers load testing strategies and tools for validating application performance under realistic traffic.
 
 ## Load Testing Goals

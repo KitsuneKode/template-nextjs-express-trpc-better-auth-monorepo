@@ -25,6 +25,8 @@ internal architecture context.
 | Production playbook | [production-playbook.md](./production-playbook.md) |
 | Environment matrix  | [deployment-env.md](./deployment-env.md)           |
 | CI                  | [ci.md](./ci.md)                                   |
+| CI coverage gaps    | [ci-gaps.md](./ci-gaps.md)                         |
+| Secrets hygiene     | [security-secrets.md](./security-secrets.md)       |
 | Vercel              | [deployment-vercel.md](./deployment-vercel.md)     |
 | Render              | [deployment-render.md](./deployment-render.md)     |
 | Railway             | [deployment-railway.md](./deployment-railway.md)   |

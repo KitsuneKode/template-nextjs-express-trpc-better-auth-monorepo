@@ -2,18 +2,29 @@ name: Secret scan
 
 on:
   push:
-    branches: [main]
+    branches: [main, prod, develop]
   pull_request:
+  schedule:
+    # Mondays 06:00 UTC — full-repo history scan
+    - cron: '0 6 * * 1'
+
+concurrency:
+  group: gitleaks-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'schedule' }}
+
+permissions:
+  contents: read
 
 jobs:
   gitleaks:
+    name: Gitleaks
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - name: Scan for secrets (redacted output)
         uses: gitleaks/gitleaks-action@v2
         env:

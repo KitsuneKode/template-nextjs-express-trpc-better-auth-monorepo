@@ -32,7 +32,11 @@
 
 ## Build and checks
 
-- `bun run ci` - Format check, lint, typecheck, tests, and repo doctor.
+- `bun run ci` - Full local CI ladder (format, turbo lint/types, test, build, docs, pkg:check, repo doctor).
+- `bun run ci:affected` - Same ladder with Turbo `--affected` (needs a valid merge base).
+- `bun run secret-scan` - Full-repo gitleaks scan (requires gitleaks CLI).
+- `bun run secret-scan:staged` - Scan staged files only (same as pre-commit).
+- `SKIP_GITLEAKS=1` - Emergency pre-commit skip for staged gitleaks only (see [security-secrets.md](./security-secrets.md)).
 - `bun run build` - Build the workspace.
 - `bun run build:affected` - Build changed packages and dependents through Turbo.
 - `bun run build:docs` - Build the web/docs app.
@@ -40,11 +44,11 @@
 - `bun run lint:affected` - Lint changed packages and dependents through Turbo.
 - `bun run check-types` - Run workspace type checks.
 - `bun run check-types:affected` - Typecheck changed packages and dependents through Turbo.
-- `bun run test:ci` - Run the CI test suite.
 - `bun run format` - Format with Oxfmt.
 - `bun run format:check` - Check formatting.
 - `bun run repo:doctor` - Audit stale scaffolding, broken exports, placeholder files, and doc drift.
 - `bun run repo:doctor:strict` - Fail on warnings and errors for CI or pre-release checks.
+- `bun run repo:doctor:ci` - Alias for strict doctor (matches CI).
 - `bun run verify:generated` - Fast generated-project structure verification for the preset matrix.
 
 ## Database
