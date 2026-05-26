@@ -72,7 +72,7 @@ React component: `apps/web/components/arche/brand-mark.tsx`.
 Palette for marks: background `#050505` / `#09090b`, border `#27272a`, text `#fafafa`,
 amber `#f59e0b`, emerald `#10b981`, blue `#60a5fa`.
 
-Future: `bun run brand:export-og` may regenerate static PNG from `/opengraph-image` when dynamic vs static strategy is finalized.
+Regenerate static backup: `bun run brand:export-og` (builds web, fetches `/opengraph-image`, writes `public/brand/og-image.png`).
 
 ## Content Rules
 

@@ -25,6 +25,7 @@ Living checklist of what CI **does** cover vs what docs or release checklists st
 - **Primary:** Next file routes (`opengraph-image.tsx`, `twitter-image.tsx`) using `arche-mark.svg`.
 - **Backup:** [`apps/web/public/brand/og-image.png`](../apps/web/public/brand/og-image.png) kept on disk; not listed in `layout` metadata (avoids duplicate `og:image` tags).
 - **Reference board:** [`docs/assets/brand/arche-brand-kit.png`](../docs/assets/brand/arche-brand-kit.png).
+- **Sync static OG:** `bun run brand:export-og` after changing mark or OG layout.
 
 ## Doc drift to avoid
 

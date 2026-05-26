@@ -48,17 +48,17 @@ Claims the site must not make yet:
 
 These are corrections, not optional design opinions:
 
-| Location                                           | Current drift                                                | Required truth                                                                                                   |
-| -------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `apps/web/app/page.tsx`                            | `Status: Production Ready`                                   | Use a factual label such as `Preset-led scaffolding` or `Validation tracked`.                                    |
-| `apps/web/app/page.tsx`                            | Hero copy only promises the TypeScript monorepo              | Describe TypeScript, Rust, and Solana starting points without claiming stability.                                |
-| `apps/web/components/arche/feature-grid.tsx`       | Says remote caching is enabled by default                    | Say Turbo task orchestration/caching is configured; avoid remote-cache promise.                                  |
-| `apps/web/components/arche/feature-grid.tsx`       | Says it ships Cursor rules                                   | Say it generates canonical agent context (`AGENTS.md`, `.docs/`, `.plans/`, `arche.json`).                       |
-| `apps/web/components/arche/architecture-graph.tsx` | `Next.js 15 UI`                                              | Use `Next.js 16 web` or avoid version copy.                                                                      |
-| `apps/web/app/families/page.tsx`                   | Claims `11 distinct starter templates` without support state | Present presets/capabilities and show evidence-backed status.                                                    |
-| `apps/web/app/docs/page.tsx`                       | `Zero to Production` and published-command implication       | Frame this as getting started; distinguish repository development commands from eventual npm distribution.       |
-| `apps/web/app/layout.tsx`                          | Metadata should reflect Arche’s full purpose and OG image    | Uses `/brand/og-image.png` + dynamic `opengraph-image.tsx`.                                                      |
-| `apps/web/public/brand/template-*`                 | Legacy Kitsune Stack template marks                          | Superseded by `arche-mark.svg`, `arche-logo.svg`, `og-image.png`; remove `template-*` when no longer referenced. |
+| Location                                           | Current drift                                                | Required truth                                                                                                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/app/page.tsx`                            | `Status: Production Ready`                                   | Use a factual label such as `Preset-led scaffolding` or `Validation tracked`.                                                                      |
+| `apps/web/app/page.tsx`                            | Hero copy only promises the TypeScript monorepo              | Describe TypeScript, Rust, and Solana starting points without claiming stability.                                                                  |
+| `apps/web/components/arche/feature-grid.tsx`       | Says remote caching is enabled by default                    | Say Turbo task orchestration/caching is configured; avoid remote-cache promise.                                                                    |
+| `apps/web/components/arche/feature-grid.tsx`       | Says it ships Cursor rules                                   | Say it generates canonical agent context (`AGENTS.md`, `.docs/`, `.plans/`, `arche.json`).                                                         |
+| `apps/web/components/arche/architecture-graph.tsx` | `Next.js 15 UI`                                              | Use `Next.js 16 web` or avoid version copy.                                                                                                        |
+| `apps/web/app/families/page.tsx`                   | Claims `11 distinct starter templates` without support state | Present presets/capabilities and show evidence-backed status.                                                                                      |
+| `apps/web/app/docs/page.tsx`                       | `Zero to Production` and published-command implication       | Frame this as getting started; distinguish repository development commands from eventual npm distribution.                                         |
+| `apps/web/app/layout.tsx`                          | Metadata should reflect Arche’s full purpose and OG image    | Resolved: file-based `opengraph-image.tsx` + `twitter-image.tsx`; layout has no duplicate `og:image` arrays; static `og-image.png` is backup only. |
+| `apps/web/public/brand/template-*`                 | Legacy Kitsune Stack template marks                          | Superseded by `arche-mark.svg`, `arche-logo.svg`, `og-image.png`; remove `template-*` when no longer referenced.                                   |
 
 ## Website information architecture
 

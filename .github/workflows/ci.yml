@@ -77,7 +77,7 @@ jobs:
       - name: Lint and typecheck
         env:
           TURBO_SCM_BASE: ${{ steps.turbo-base.outputs.base }}
-        run: turbo run lint check-types ${{ steps.turbo-mode.outputs.affected }}
+        run: bunx turbo run lint check-types ${{ steps.turbo-mode.outputs.affected }}
 
       - name: Tests
         run: bun test
@@ -85,10 +85,10 @@ jobs:
       - name: Build
         env:
           TURBO_SCM_BASE: ${{ steps.turbo-base.outputs.base }}
-        run: turbo run build ${{ steps.turbo-mode.outputs.affected }}
+        run: bunx turbo run build ${{ steps.turbo-mode.outputs.affected }}
 
       - name: Smoke build web and CLI
-        run: turbo run build --filter=@arche-template/web --filter=@arche/create
+        run: bunx turbo run build --filter=@arche-template/web --filter=@arche/create
 
       - name: CLI package check
         run: bun run pkg:check

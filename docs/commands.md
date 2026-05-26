@@ -37,6 +37,7 @@
 - `bun run secret-scan` - Full-repo gitleaks scan (requires gitleaks CLI).
 - `bun run secret-scan:staged` - Scan staged files only (same as pre-commit).
 - `SKIP_GITLEAKS=1` - Emergency pre-commit skip for staged gitleaks only (see [security-secrets.md](./security-secrets.md)).
+- `bun run brand:export-og` - Regenerate `apps/web/public/brand/og-image.png` from `/opengraph-image`.
 - `bun run build` - Build the workspace.
 - `bun run build:affected` - Build changed packages and dependents through Turbo.
 - `bun run build:docs` - Build the web/docs app.
