@@ -84,8 +84,9 @@ export default function MockupNavigator() {
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-4 text-4xl font-bold text-white">Arche Design Mockups</h1>
         <p className="mb-12 max-w-2xl text-lg text-zinc-500">
-          I have removed the overlapping Navbar, so these pages will render cleanly. Select a mockup
-          below to preview the aesthetic direction.
+          Sandbox only—not linked from the public site. Reference set for production direction:
+          mockups 1, 5, 7, 10, and 14 (terminal brutalist, neo-brutal grid, high-tech glow, CLI
+          focus, stark borders). Avoid glass-heavy mockups 2, 9, and 15 for the live brand.
         </p>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

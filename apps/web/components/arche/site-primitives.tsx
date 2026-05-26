@@ -14,9 +14,14 @@ const toneClasses: Record<Tone, string> = {
     'border-amber-500/40 bg-amber-500/10 text-amber-200 shadow-[4px_4px_0_0_rgba(245,158,11,0.14)]',
 }
 
-export function SiteShell({ children }: { children: ReactNode }) {
+export function SiteShell({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <main className="min-h-screen bg-black font-sans text-white selection:bg-white selection:text-black">
+    <main
+      className={cn(
+        'min-h-screen w-full max-w-full overflow-x-hidden bg-black font-sans text-white selection:bg-white selection:text-black',
+        className,
+      )}
+    >
       {children}
     </main>
   )

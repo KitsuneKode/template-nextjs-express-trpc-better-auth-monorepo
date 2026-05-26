@@ -41,7 +41,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SITE_DESCRIPTION: z
       .string()
       .default(
-        'Full-stack TypeScript monorepo template — auth, database, API, and frontend wired and ready.',
+        'Personal project origin system — TypeScript, Rust, and Solana scaffolds with agent-readable context.',
       ),
     NEXT_PUBLIC_APP_URL: z.string().url(),
     NEXT_PUBLIC_API_URL: z.string().url(),
