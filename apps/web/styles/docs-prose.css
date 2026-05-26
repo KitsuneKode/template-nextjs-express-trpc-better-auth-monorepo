@@ -1,0 +1,209 @@
+/* Arche docs / blog MDX — editorial prose (reference: Vercel blog starter patterns) */
+
+:root {
+  --sh-class: #7dd3fc;
+  --sh-identifier: #e4e4e7;
+  --sh-sign: #a1a1aa;
+  --sh-string: #86efac;
+  --sh-keyword: #fca5a5;
+  --sh-comment: #71717a;
+  --sh-property: #fcd34d;
+  --sh-entity: #fcd34d;
+}
+
+.docs-prose {
+  max-width: 42rem;
+  color: rgb(212 212 216);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+.docs-prose > * + * {
+  margin-top: 1.35rem;
+}
+
+.docs-prose > :first-child {
+  margin-top: 0 !important;
+}
+
+/* Section anchors (hover #) */
+.docs-prose .docs-heading-anchor {
+  position: absolute;
+  left: -1.35rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.docs-prose .docs-heading-anchor::after {
+  content: '#';
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: rgb(113 113 122);
+}
+
+.docs-prose h2:hover .docs-heading-anchor,
+.docs-prose h3:hover .docs-heading-anchor,
+.docs-prose h4:hover .docs-heading-anchor,
+.docs-prose .docs-heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.docs-prose h2,
+.docs-prose h3,
+.docs-prose h4 {
+  position: relative;
+}
+
+.docs-prose h2 {
+  margin-top: 3rem;
+  margin-bottom: 0.85rem;
+  padding-top: 0.25rem;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: rgb(255 255 255);
+  scroll-margin-top: 6rem;
+}
+
+.docs-prose h3 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgb(250 250 250);
+  scroll-margin-top: 6rem;
+}
+
+.docs-prose h4 {
+  margin-top: 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(228 228 231);
+  scroll-margin-top: 6rem;
+}
+
+.docs-prose p {
+  color: rgb(212 212 216);
+}
+
+.docs-prose strong {
+  font-weight: 600;
+  color: rgb(255 255 255);
+}
+
+.docs-prose a {
+  color: rgb(255 255 255);
+  text-decoration: underline;
+  text-decoration-color: rgb(82 82 91);
+  text-underline-offset: 3px;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.docs-prose a:hover {
+  color: rgb(251 191 36);
+  text-decoration-color: rgb(251 191 36 / 0.5);
+}
+
+.docs-prose ul,
+.docs-prose ol {
+  padding-left: 1.35rem;
+}
+
+.docs-prose ul {
+  list-style: disc;
+}
+
+.docs-prose ol {
+  list-style: decimal;
+}
+
+.docs-prose li {
+  margin-top: 0.45rem;
+}
+
+.docs-prose li::marker {
+  color: rgb(113 113 122);
+}
+
+.docs-prose .mdx-inline-code,
+.docs-prose code:not(pre code) {
+  border: 1px solid rgb(39 39 42);
+  background: rgb(24 24 27);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  line-height: 1.4;
+}
+
+.docs-prose pre code {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.docs-prose hr {
+  border: none;
+  border-top: 1px solid rgb(39 39 42);
+  margin-block: 2.5rem;
+}
+
+.docs-prose blockquote {
+  border-left: 2px solid rgb(245 158 11);
+  padding-left: 1.15rem;
+  color: rgb(161 161 170);
+  font-style: normal;
+}
+
+/* sugar-high token colors */
+.docs-prose .mdx-inline-code .sh__token--identifier {
+  color: var(--sh-identifier);
+}
+.docs-prose .mdx-inline-code .sh__token--sign {
+  color: var(--sh-sign);
+}
+.docs-prose .mdx-inline-code .sh__token--string {
+  color: var(--sh-string);
+}
+.docs-prose .mdx-inline-code .sh__token--keyword {
+  color: var(--sh-keyword);
+}
+.docs-prose .mdx-inline-code .sh__token--comment {
+  color: var(--sh-comment);
+}
+.docs-prose .mdx-inline-code .sh__token--class {
+  color: var(--sh-class);
+}
+.docs-prose .mdx-inline-code .sh__token--property {
+  color: var(--sh-property);
+}
+
+html {
+  background-color: #000;
+  color-scheme: dark;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.12s;
+  background-color: #000;
+}
+
+.docs-mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.docs-mermaid .node rect,
+.docs-mermaid .node circle,
+.docs-mermaid .node polygon {
+  stroke: rgb(63 63 70);
+}
