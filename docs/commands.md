@@ -26,6 +26,7 @@
 
 ## Web development
 
+- `bun run --cwd apps/web mdx:generate` - Regenerate Fumadocs `.source/` (also runs on `postinstall` and before `check-types`).
 - `bun run --cwd apps/web check-types` - Typecheck the web app.
 - `bun run --cwd apps/web lint` - Lint the web app.
 - `bun test apps/web/app/route-discovery.test.ts` - Check hidden design-lab route discovery controls.
