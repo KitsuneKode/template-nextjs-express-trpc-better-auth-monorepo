@@ -1,96 +1,119 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+
+import { cn } from '@arche-template/ui/lib/utils'
 import { Navbar } from '@/components/arche/navbar'
+import { HeroBlock, SiteFrame, SiteShell, StatusPill } from '@/components/arche/site-primitives'
+import { blogSource, isBlogCategory, type BlogCategory } from '@/lib/blog-source'
 
 export const metadata: Metadata = {
-  title: 'Engineering Blog',
-  description: 'Thoughts on architecture, AI engineering, and the future of development.',
+  title: 'Blog',
+  description: 'Changelog, guides, and technical notes from the Arche project.',
 }
 
-export const posts = [
-  {
-    slug: 'agent-first-philosophy',
-    title: 'The Agent-First Philosophy',
-    date: 'May 18, 2026',
-    excerpt: 'Why we built Arche with native support for AI agents like Claude and Cursor.',
-    category: 'Architecture',
-  },
-  {
-    slug: 'mastering-monorepos-2026',
-    title: 'Monorepo vs Polyrepo in 2026',
-    date: 'May 10, 2026',
-    excerpt: 'Exploring the scaling benefits of Turborepo for mid-sized engineering teams.',
-    category: 'Engineering',
-  },
-  {
-    slug: 'typesafe-api-glue',
-    title: 'The Typesafe API Glue',
-    date: 'May 05, 2026',
-    excerpt: 'How tRPC and Prisma create a seamless data flow from DB to UI.',
-    category: 'Productivity',
-  },
+const categories: { id: BlogCategory | 'all'; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'changelog', label: 'Changelog' },
+  { id: 'guide', label: 'Guides' },
+  { id: 'technical', label: 'Technical' },
 ]
 
-export default function BlogPage() {
+type Props = {
+  searchParams: Promise<{ category?: string }>
+}
+
+function getCategory(page: ReturnType<typeof blogSource.getPages>[number]): BlogCategory {
+  const value = (page.data as { category?: string }).category
+  return isBlogCategory(value) ? value : 'technical'
+}
+
+export default async function BlogPage({ searchParams }: Props) {
+  const { category: categoryParam } = await searchParams
+  const activeCategory = isBlogCategory(categoryParam) ? categoryParam : 'all'
+
+  const posts = blogSource
+    .getPages()
+    .filter((page) => !(page.data as { draft?: boolean }).draft)
+    .filter((page) => activeCategory === 'all' || getCategory(page) === activeCategory)
+    .sort((a, b) => {
+      const dateA = (a.data as { date?: string }).date ?? ''
+      const dateB = (b.data as { date?: string }).date ?? ''
+      return dateB.localeCompare(dateA)
+    })
+
   return (
-    <main className="min-h-screen bg-black font-sans text-white selection:bg-white selection:text-black">
+    <SiteShell className="overflow-x-hidden">
       <Navbar />
+      <SiteFrame>
+        <HeroBlock
+          eyebrow={<StatusPill tone="muted">Writing</StatusPill>}
+          title="Arche"
+          outline="journal."
+          className="md:p-12"
+        >
+          Changelog entries, functional guides, and technical deep dives—one feed, filtered by
+          intent.
+        </HeroBlock>
 
-      <div className="mx-auto flex min-h-[calc(100vh-56px)] max-w-[1200px] flex-col border-r border-l border-zinc-800">
-        {/* Header Area */}
-        <section className="relative overflow-hidden border-b border-zinc-800 bg-black p-6 text-left md:p-16">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]" />
-
-          <div className="relative z-10 flex max-w-3xl flex-col items-start">
-            <div className="mb-8 inline-flex items-center gap-2 border border-zinc-800 bg-black px-3 py-1 text-xs font-bold tracking-wider uppercase shadow-[4px_4px_0_0_rgba(39,39,42,1)]">
-              Engineering Blog
-            </div>
-
-            <h1 className="mb-8 text-5xl leading-[0.9] font-black tracking-tighter text-white uppercase md:text-7xl">
-              The <br />
-              <span className="text-stroke-white text-transparent">Changelog.</span>
-            </h1>
-
-            <p className="text-xl leading-snug font-medium text-zinc-300">
-              Deep dives into the technical decisions that power Arche.
-            </p>
-          </div>
-        </section>
-
-        {/* Blog Feed */}
-        <section className="flex-1 bg-black">
-          <div className="divide-y divide-zinc-800 border-b border-zinc-800">
-            {posts.map((post) => (
+        <section className="border-b border-zinc-800 bg-black px-6 py-6 md:px-12">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
               <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="group block p-6 transition-colors hover:bg-zinc-950 md:p-16"
+                key={cat.id}
+                href={cat.id === 'all' ? '/blog' : `/blog?category=${cat.id}`}
+                className={cn(
+                  'inline-flex min-h-10 items-center border px-4 py-2 font-mono text-[10px] tracking-widest uppercase transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]',
+                  activeCategory === cat.id
+                    ? 'border-white bg-white text-black'
+                    : 'border-zinc-800 bg-black text-zinc-400 hover:text-white',
+                )}
               >
-                <div className="mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                  <div className="flex items-center gap-4">
-                    <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
-                      {post.date}
-                    </span>
-                    <span className="size-1 rounded-full bg-zinc-800" />
-                    <span className="font-mono text-[10px] tracking-widest text-amber-500 uppercase">
-                      {post.category}
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold tracking-widest text-zinc-400 uppercase transition-colors group-hover:text-white">
-                    Read Article ↗
-                  </span>
-                </div>
-                <h2 className="mb-4 text-3xl font-bold tracking-tight text-white uppercase transition-colors group-hover:text-zinc-200 md:text-4xl">
-                  {post.title}
-                </h2>
-                <p className="max-w-2xl text-lg leading-relaxed font-medium text-zinc-400">
-                  {post.excerpt}
-                </p>
+                {cat.label}
               </Link>
             ))}
           </div>
         </section>
-      </div>
-    </main>
+
+        <section className="flex-1 bg-black">
+          <div className="divide-y divide-zinc-800 border-b border-zinc-800">
+            {posts.map((post) => {
+              const slug = post.slugs[0]
+              const date = (post.data as { date?: string }).date
+              const category = getCategory(post)
+              return (
+                <Link
+                  key={post.url}
+                  href={`/blog/${slug}`}
+                  className="group block p-6 transition-colors hover:bg-zinc-950 md:p-12"
+                >
+                  <div className="mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                    <div className="flex items-center gap-4">
+                      {date ? (
+                        <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase tabular-nums">
+                          {date}
+                        </span>
+                      ) : null}
+                      <span className="size-1 rounded-full bg-zinc-800" />
+                      <span className="font-mono text-[10px] tracking-widest text-amber-500 uppercase">
+                        {category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold tracking-widest text-zinc-400 uppercase transition-colors group-hover:text-white">
+                      Read article
+                    </span>
+                  </div>
+                  <h2 className="mb-4 text-3xl font-bold tracking-tight text-balance text-white uppercase transition-colors group-hover:text-zinc-200 md:text-4xl">
+                    {post.data.title}
+                  </h2>
+                  <p className="max-w-2xl text-lg leading-relaxed font-medium text-pretty text-zinc-400">
+                    {post.data.description}
+                  </p>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      </SiteFrame>
+    </SiteShell>
   )
 }

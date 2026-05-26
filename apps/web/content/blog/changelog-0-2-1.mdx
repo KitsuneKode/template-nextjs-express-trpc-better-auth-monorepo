@@ -1,0 +1,25 @@
+---
+title: Arche CLI 0.2.1 — registry and verification language
+description: Release notes for the guarded CLI track and public preset vocabulary.
+date: '2026-05-20'
+category: changelog
+---
+
+Arche `0.2.1` tightens how presets describe support status on the website and in generated projects.
+
+## Highlights
+
+- Preset registry exposes `Requires validation` and `Experimental` labels aligned with the verification matrix.
+- Public site copy no longer implies production-ready presets without evidence.
+- Documentation distinguishes **Arche CLI**, **generated project**, and **source template** commands.
+
+## Verification
+
+Generated-project checks remain the source of truth. A preset only graduates to `Stable` when install, lint, typecheck, test, and build evidence exists for that route.
+
+## Try it
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+cd my-app && bun install && bun run ci
+```

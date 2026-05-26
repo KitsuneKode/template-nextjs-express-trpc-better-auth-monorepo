@@ -1,0 +1,34 @@
+---
+title: The Typesafe API Glue
+description: How Prisma, server modules, and tRPC contracts connect database models to the UI.
+date: '2026-05-05'
+category: technical
+---
+
+Type safety should not stop at your database or your frontend. It should be the connective tissue across the stack.
+
+## The pipeline
+
+1. **Prisma** in `packages/store` defines models.
+2. **Procedures** in `apps/server/src/modules/<feature>/*.trpc.ts` expose validated operations.
+3. **`packages/trpc`** re-exports `AppRouter` and `createCaller` for the web client.
+4. **Next.js** consumes the API with full autocomplete via `trpc` or `trpcCaller`.
+
+```typescript
+// apps/server — procedure definition
+export const userRouter = router({
+  me: protectedProcedure.query(({ ctx }) => ctx.db.user.findUnique({ where: { id: ctx.user.id } })),
+})
+
+// apps/web — typed consumer
+const user = await trpcCaller.user.me()
+```
+
+## Why this matters
+
+You eliminate an entire class of client/server drift bugs that appear when OpenAPI or hand-written DTOs lag behind the database.
+
+## Learn more
+
+- [tRPC guide](/docs/trpc)
+- [Architecture](/docs/architecture)

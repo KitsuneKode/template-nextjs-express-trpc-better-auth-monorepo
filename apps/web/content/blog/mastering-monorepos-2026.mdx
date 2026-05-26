@@ -1,0 +1,24 @@
+---
+title: Monorepo vs Polyrepo in 2026
+description: How Turborepo task graphs and shared contracts keep mid-size teams fast.
+date: '2026-05-10'
+category: technical
+---
+
+For high-velocity teams, the monorepo has won—when task orchestration and boundaries are explicit.
+
+## Scaling without friction
+
+Arche uses Turborepo pipelines so a change in `packages/auth` only rebuilds and retests direct dependents. Remote cache is optional and must be configured deliberately; it is not enabled by default in generated projects.
+
+## Shared types, shared success
+
+The TypeScript fullstack preset shares API contracts through `packages/trpc`, which re-exports `AppRouter` from the server. The web app imports **types only**, avoiding duplicated router logic.
+
+```typescript
+import type { AppRouter } from '@arche-template/trpc'
+```
+
+## Conclusion
+
+A monorepo is not “all code in one folder.” It is one engineering system: boundaries, verification, and docs that stay aligned.

@@ -1,0 +1,25 @@
+---
+title: The Agent-First Philosophy
+description: Why Arche generates agent context files alongside human-oriented docs.
+date: '2026-05-18'
+category: technical
+---
+
+In 2026, we are no longer just writing code for other humans to read. We are writing code to be co-authored by AI agents. That shift requires a fundamental change in how we structure repositories.
+
+## Beyond standard templates
+
+Most templates focus on human developer experience. Arche also optimizes for **agent experience**: one canonical `AGENTS.md` map, scoped `.docs/` topics, and `.plans/` for approved in-flight work.
+
+## Strict boundaries for clear reasoning
+
+AI models reason better when context is bounded. Generated monorepos keep feature logic in explicit workspaces so an agent working in `packages/auth` is not forced to load unrelated UI code.
+
+## What we do not generate
+
+Arche does not ship duplicate `.cursor/rules/` or `.claude/rules/` trees. The canonical map stays in `AGENTS.md` so prompts stay small and truthful.
+
+## Next steps
+
+- Read the [agent context guide](/docs/guides/agent-context)
+- Compare presets on [/families](/families)

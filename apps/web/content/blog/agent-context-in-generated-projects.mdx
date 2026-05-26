@@ -1,0 +1,30 @@
+---
+title: Agent context in generated projects
+description: What Arche writes for coding agents and how to keep it accurate.
+date: '2026-05-15'
+category: guide
+---
+
+Every serious Arche preset can emit a compact context map so agents load the right files—not the entire repository.
+
+## Files you should expect
+
+| File | Role |
+| --- | --- |
+| `AGENTS.md` | Canonical map for humans and agents |
+| `CLAUDE.md` | Symlink to `AGENTS.md` when enabled |
+| `.docs/` | Internal architecture topics |
+| `.plans/` | Approved in-flight work only |
+| `arche.json` | Machine-readable scaffold metadata |
+
+## How agents should navigate
+
+1. Read root `AGENTS.md`.
+2. Open the nearest workspace `AGENTS.md` for the package being edited.
+3. Load **one** matching `.plans/active/` file when executing approved work.
+
+## Maintenance rule
+
+When you change commands, env names, or preset behavior, update the nearest `AGENTS.md` and the owning doc topic. The public site must never claim features the generator does not produce.
+
+See the full guide: [/docs/guides/agent-context](/docs/guides/agent-context).

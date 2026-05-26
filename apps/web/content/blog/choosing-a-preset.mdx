@@ -1,0 +1,33 @@
+---
+title: Choosing a preset
+description: Pick TypeScript fullstack, Rust, or Solana foundations without over-committing.
+date: '2026-05-12'
+category: guide
+---
+
+Arche is a preset-led scaffold. Start with the product shape, then let the CLI generate only the workspaces that belong to that route.
+
+## Decision guide
+
+| If you need… | Start with |
+| --- | --- |
+| Next.js + Express + tRPC + Better Auth | `typescript-fullstack` |
+| Axum API only | `rust-api` |
+| Next.js + Axum API | `rust-fullstack` |
+| Anchor program | `solana-program` |
+| Web dApp + program | `solana-web` |
+| Mobile + program | `solana-mobile` |
+| Web + mobile + program | `solana-product` |
+
+## Status vocabulary
+
+- **Requires validation** — structure exists; full install/build evidence may still be pending.
+- **Experimental** — explicit opt-in for unstable generators.
+
+Compare rows on [/families](/families) before you scaffold.
+
+## Command
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+```
