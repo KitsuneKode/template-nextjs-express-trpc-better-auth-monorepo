@@ -2,38 +2,13 @@
 
 import { motion } from 'motion/react'
 
-const families = [
-  {
-    id: 'typescript-fullstack',
-    status: 'Primary',
-    shape: 'Next.js web + Express API + tRPC + Better Auth + Prisma',
-    goodFor: 'Default production app foundation',
-  },
-  {
-    id: 'rust-workspace',
-    status: 'Foundation',
-    shape: 'Cargo workspace with service and worker slots',
-    goodFor: 'Engine services, background work, and future polyglot scale',
-  },
-  {
-    id: 'solana',
-    status: 'Foundation',
-    shape: 'Program/client foldering, IDL route, wallet adapter direction',
-    goodFor: 'Web3 apps where frontend, contracts, and mobile hooks must stay explicit',
-  },
-  {
-    id: 'worker',
-    status: 'Composable',
-    shape: 'Queue-ready service workspace with deployment hooks',
-    goodFor: 'Async jobs, scheduled tasks, and isolated runtime concerns',
-  },
-  {
-    id: 'library',
-    status: 'Composable',
-    shape: 'Publishable package surface with tests and package checks',
-    goodFor: 'Shared internal packages or standalone npm modules',
-  },
-]
+import { formatSupportStatus, PUBLIC_PRESET_ROWS } from '@/lib/presets-public'
+
+function statusTone(status: (typeof PUBLIC_PRESET_ROWS)[number]['status']) {
+  if (status === 'experimental') return 'border-amber-500/40 text-amber-200'
+  if (status === 'stable') return 'border-emerald-500/40 text-emerald-200'
+  return 'border-zinc-700 text-zinc-300'
+}
 
 export function FamilyTable() {
   return (
@@ -55,7 +30,7 @@ export function FamilyTable() {
             visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
           }}
         >
-          {families.map((family, index) => (
+          {PUBLIC_PRESET_ROWS.map((family, index) => (
             <motion.tr
               key={family.id}
               variants={{
@@ -65,12 +40,15 @@ export function FamilyTable() {
               transition={{ duration: 0.2, delay: index * 0.02, ease: [0.23, 1, 0.32, 1] }}
               className="border-b border-zinc-800 transition-[background-color] duration-150 ease-out last:border-b-0 hover:bg-zinc-900/30"
             >
-              <td className="border-r border-zinc-800 px-6 py-4 font-mono font-bold text-white">
-                {family.id}
+              <td className="border-r border-zinc-800 px-6 py-4">
+                <div className="font-mono font-bold text-white">{family.id}</div>
+                <div className="mt-1 text-xs text-zinc-500">{family.label}</div>
               </td>
               <td className="border-r border-zinc-800 px-6 py-4">
-                <span className="inline-flex border border-zinc-800 bg-zinc-950 px-2 py-1 font-mono text-[10px] tracking-widest text-zinc-300 uppercase">
-                  {family.status}
+                <span
+                  className={`inline-flex border bg-zinc-950 px-2 py-1 font-mono text-[10px] tracking-widest uppercase ${statusTone(family.status)}`}
+                >
+                  {formatSupportStatus(family.status)}
                 </span>
               </td>
               <td className="border-r border-zinc-800 px-6 py-4 text-zinc-200">{family.shape}</td>

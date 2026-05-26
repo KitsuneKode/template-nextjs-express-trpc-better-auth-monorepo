@@ -7,10 +7,11 @@ export function StackDiagram() {
 │ apps/web (Next.js)                  │
 │  ↑ tRPC client                      │
 ├─────────────────────────────────────┤
-│ packages/trpc (shared routers)      │
-│  ↑                                  │
+│ packages/trpc (client contract)     │
+│  ↑ types only                       │
 ├─────────────────────────────────────┤
 │ apps/server (Express)               │
+│  ├── modules/*/*.trpc.ts            │
 │  ├── Better Auth (/api/auth/*)      │
 │  └── tRPC endpoint (/api/trpc)      │
 │  ↓                                  │

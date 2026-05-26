@@ -1,6 +1,9 @@
 import { Metadata } from 'next'
 
-import { CommandTable } from '@/components/arche/command-table'
+import {
+  ArcheCliCommandTable,
+  GeneratedProjectCommandTable,
+} from '@/components/arche/command-tables'
 import {
   CodePanel,
   HeroBlock,
@@ -66,9 +69,15 @@ export default function DocsPage() {
           </div>
         </section>
 
-        <aside className="w-full bg-zinc-950/30 p-6 md:p-12 lg:w-80">
-          <h2 className="mb-6 text-lg font-bold tracking-tight uppercase">CLI Reference</h2>
-          <CommandTable />
+        <aside className="flex w-full flex-col gap-8 bg-zinc-950/30 p-6 md:p-12 lg:w-[22rem]">
+          <div>
+            <h2 className="mb-4 text-lg font-bold tracking-tight uppercase">Arche CLI</h2>
+            <ArcheCliCommandTable />
+          </div>
+          <div>
+            <h2 className="mb-4 text-lg font-bold tracking-tight uppercase">After scaffold</h2>
+            <GeneratedProjectCommandTable />
+          </div>
         </aside>
       </div>
     </div>

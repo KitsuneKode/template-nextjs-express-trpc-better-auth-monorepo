@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { CommandTable } from '@/components/arche/command-table'
+import { ArcheCliCommandTable, SourceTemplateCommandTable } from '@/components/arche/command-tables'
 import {
   CodePanel,
   HeroBlock,
@@ -70,9 +70,10 @@ export default function CliDocsPage() {
           </ul>
         </div>
 
-        <div>
+        <div className="space-y-8">
           <SectionHeading eyebrow="Repo hygiene" title="Commands agents should know." />
-          <CommandTable />
+          <ArcheCliCommandTable />
+          <SourceTemplateCommandTable />
         </div>
       </section>
     </div>

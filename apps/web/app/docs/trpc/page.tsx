@@ -41,13 +41,20 @@ export default function TrpcDocsPage() {
             <ol className="space-y-6">
               {[
                 {
-                  title: 'Define Routers',
-                  desc: 'In packages/trpc, you define your procedures and Zod schemas.',
+                  title: 'Define procedures',
+                  desc: 'In apps/server/src/modules/<feature>/*.trpc.ts, define procedures and Zod schemas.',
                 },
-                { title: 'Export Type', desc: 'The server exports the AppRouter type definition.' },
                 {
-                  title: 'Import Type',
-                  desc: 'The frontend imports only the type (zero runtime code shared).',
+                  title: 'Compose router',
+                  desc: 'Wire feature routers in apps/server/src/modules/trpc/app.router.ts.',
+                },
+                {
+                  title: 'Share contract',
+                  desc: 'packages/trpc re-exports AppRouter and createCaller for the web client only.',
+                },
+                {
+                  title: 'Import type',
+                  desc: 'The frontend imports only the type (zero runtime router code shared).',
                 },
                 {
                   title: 'Auto-Complete',

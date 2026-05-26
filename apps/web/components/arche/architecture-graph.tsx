@@ -16,14 +16,14 @@ const nodes = [
     id: '02',
     path: 'apps/server',
     title: 'Module-first API',
-    body: 'Express hosts Better Auth and tRPC while modules keep services, DTOs, policies, mappers, and repositories separate.',
+    body: 'Procedures live in modules/*.trpc.ts. Express hosts Better Auth and tRPC while services, DTOs, policies, mappers, and repositories stay separated.',
     code: 'router.use("/api/trpc", trpcHandler)',
   },
   {
     id: '03',
-    path: 'packages/*',
-    title: 'Shared contracts',
-    body: 'UI, auth, common utilities, database clients, and contracts move into packages when they serve more than one workspace.',
+    path: 'packages/trpc',
+    title: 'Client contract',
+    body: 'packages/trpc re-exports AppRouter and createCaller from the server so the web app shares types without duplicating router logic.',
     code: 'export type { AppRouter } from "@arche-template/server"',
   },
   {

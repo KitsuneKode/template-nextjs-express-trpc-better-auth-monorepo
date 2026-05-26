@@ -9,11 +9,14 @@ const publicCopyFiles = [
   'page.tsx',
   'docs/page.tsx',
   'docs/cli/page.tsx',
+  'docs/trpc/page.tsx',
   'families/page.tsx',
   '../components/arche/animated-terminal.tsx',
   '../components/arche/architecture-graph.tsx',
   '../components/arche/feature-grid.tsx',
   '../components/arche/family-table.tsx',
+  '../components/arche/stack-diagram.tsx',
+  '../components/arche/code-example.tsx',
 ]
 
 const bannedClaims = [
@@ -26,6 +29,12 @@ const bannedClaims = [
   '11 distinct starter templates',
 ]
 
+const bannedArchitectureClaims = [
+  'In packages/trpc, you define your procedures',
+  'packages/trpc (shared routers)',
+  'Define Routers',
+]
+
 describe('public website copy', () => {
   it('does not publish stale capability or asset claims', () => {
     const combinedCopy = publicCopyFiles
@@ -33,6 +42,16 @@ describe('public website copy', () => {
       .join('\n')
 
     for (const claim of bannedClaims) {
+      expect(combinedCopy).not.toContain(claim)
+    }
+  })
+
+  it('does not describe packages/trpc as the router definition layer', () => {
+    const combinedCopy = publicCopyFiles
+      .map((file) => readFileSync(join(appRoot, file), 'utf8'))
+      .join('\n')
+
+    for (const claim of bannedArchitectureClaims) {
       expect(combinedCopy).not.toContain(claim)
     }
   })
