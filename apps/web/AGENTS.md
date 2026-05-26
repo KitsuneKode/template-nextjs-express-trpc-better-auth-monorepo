@@ -29,6 +29,15 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 
 - App Router pages, marketing/demo routes, providers, public assets
 
+## Public content map
+
+- **Hybrid docs:** TSX hubs under `app/docs/*`; MDX guides under `content/docs/guides/` rendered at `/docs/guides/*` via `lib/source.ts` + `.source/server.ts`.
+- **Blog:** MDX in `content/blog/` with categories `changelog` | `guide` | `technical`; list at `/blog` (filter via `?category=`).
+- **Presets table:** `lib/presets-public.ts` (keep aligned with `apps/cli/src/registry/presets.ts`).
+- **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).
+- **Showcase:** `/showcase` returns 404 in production (`NODE_ENV === 'production'`).
+- **Design lab:** `/__design-lab` stays noindex; reference mockups 1, 5, 7, 10, 14 for brand direction.
+
 ## Template cleanup
 
 If starting fresh: `app/demo`, `app/landing`, `components/demos`, `components/landing*`, `lib/demo-data.ts`.
