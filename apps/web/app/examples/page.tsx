@@ -1,4 +1,6 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
+
 import { CodeExample } from '@/components/arche/code-example'
 import { Navbar } from '@/components/arche/navbar'
 
@@ -38,7 +40,15 @@ export default function ExamplesPage() {
         <section className="flex-1 bg-black p-6 md:p-16">
           <div className="max-w-4xl">
             <h2 className="mb-8 text-2xl font-bold tracking-tight uppercase">Generated Snippets</h2>
-            <CodeExample />
+            <Suspense
+              fallback={
+                <div className="border border-zinc-800 bg-black p-8 font-mono text-sm text-zinc-500">
+                  Loading highlighted examples...
+                </div>
+              }
+            >
+              <CodeExample />
+            </Suspense>
           </div>
         </section>
       </div>
