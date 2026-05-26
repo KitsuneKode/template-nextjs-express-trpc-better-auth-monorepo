@@ -1,183 +1,41 @@
 import type { ProjectConfig } from '../../types/schemas'
 import { sanitizeProjectName } from '../slug'
 
-function familyLabel(family: string): string {
-  const labels: Record<string, string> = {
-    fullstack: 'Full-stack TypeScript Monorepo',
-    next: 'Standalone Next.js App',
-    backend: 'API Service',
-    rust: 'Rust API Service',
-    solana: 'Solana Program',
-    convex: 'Next.js + Convex',
-    worker: 'Background Worker',
-    lib: 'TypeScript Package',
-    cli: 'CLI Package',
-    mobile: 'Expo Mobile App',
-    polyglot: 'Multi-language Monorepo',
+function quickStart(config: ProjectConfig): string {
+  if (config.family === 'rust') {
+    return 'cp .env.example .env\ncargo run'
   }
-  return labels[family] ?? 'Project'
-}
-
-function backendLabel(backend: string): string {
-  const labels: Record<string, string> = {
-    'express-bun': 'Express (Bun)',
-    'hono-bun': 'Hono (Bun)',
-    'fastify-node': 'Fastify (Node)',
-    'go-fiber': 'Go Fiber',
-    'rust-axum': 'Rust Axum',
-    'rust-actix': 'Rust Actix Web',
-    'python-fastapi': 'Python FastAPI',
-  }
-  return labels[backend] ?? backend
-}
-
-function commandsForFamily(family: string): string {
-  const common = `| \`bun run build\` | Build all packages |
-| \`bun run lint\` | Lint all packages |
-| \`bun run check-types\` | Type check all packages |`
-
-  if (family === 'fullstack') {
-    return `| \`bun dev\` | Start all dev servers |
-| \`bun run db:generate\` | Generate database client |
-| \`bun run db:migrate\` | Run database migrations |
-${common}`
-  }
-
-  if (family === 'next') {
-    return `| \`bun dev\` | Start Next.js dev server |
-${common}`
-  }
-
-  if (family === 'backend') {
-    return `| \`bun dev\` | Start API dev server |
-| \`bun run db:generate\` | Generate database client |
-| \`bun run db:migrate\` | Run database migrations |
-${common}`
-  }
-
-  if (family === 'convex') {
-    return `| \`bun dev\` | Start Next.js + Convex dev |
-| \`bun run convex:deploy\` | Deploy Convex functions |
-${common}`
-  }
-
-  if (family === 'rust') {
-    return `| \`cargo run\` | Start API server |
-| \`cargo test\` | Run tests |
-| \`cargo fmt\` | Format Rust sources |
-| \`cargo clippy -- -D warnings\` | Lint with Clippy |
-| \`sqlx migrate run\` | Apply SQL migrations (when database enabled) |
-| \`docker compose up -d\` | Start Postgres (when Docker + postgres) |`
-  }
-
-  return `| \`bun dev\` | Start development |
-${common}`
-}
-
-function stackForFamily(config: ProjectConfig): string {
-  const { family, backend, database, orm } = config
-  const lines: string[] = []
-
-  if (family === 'fullstack') {
-    lines.push('- **Frontend**: Next.js')
-    lines.push(`- **Backend**: ${backendLabel(backend)}`)
-    lines.push('- **API**: tRPC')
-    if (database !== 'none') lines.push(`- **Database**: ${database} via ${orm}`)
-    lines.push('- **Auth**: Better Auth')
-    lines.push('- **Monorepo**: Turborepo + Bun')
-  } else if (family === 'next') {
-    lines.push('- **Frontend**: Next.js')
-    lines.push('- **Runtime**: Bun')
-    if (config.presets.includes('auth')) lines.push('- **Auth**: Better Auth')
-    if (config.presets.includes('docs')) lines.push('- **Docs**: Fumadocs')
-  } else if (family === 'backend') {
-    lines.push(`- **Backend**: ${backendLabel(backend)}`)
-    if (database !== 'none') lines.push(`- **Database**: ${database} via ${orm}`)
-    lines.push('- **API**: tRPC')
-    lines.push('- **Auth**: Better Auth')
-    lines.push('- **Runtime**: Bun')
-  } else if (family === 'convex') {
-    lines.push('- **Frontend**: Next.js')
-    lines.push('- **Backend**: Convex')
-    lines.push('- **Auth**: Better Auth')
-    lines.push('- **Runtime**: Bun')
-  } else if (family === 'rust') {
-    lines.push('- **Language**: Rust')
-    lines.push('- **Framework**: Axum')
-    if (config.database === 'postgres') lines.push('- **Database**: PostgreSQL (sqlx)')
-    else if (config.database === 'sqlite') lines.push('- **Database**: SQLite (sqlx)')
-    else lines.push('- **Database**: none (API-only)')
-    if (config.example === 'posts') lines.push('- **Example module**: posts (layered CRUD)')
-    lines.push(
-      `- **Auth**: ${config.rustAuth === 'placeholder' ? 'placeholder Bearer demo' : 'none'}`,
-    )
-  } else if (family === 'worker') {
-    lines.push('- **Queue**: BullMQ + Redis')
-    lines.push('- **Runtime**: Bun')
-  } else if (family === 'lib') {
-    lines.push('- **Language**: TypeScript')
-    lines.push('- **Runtime**: Bun')
-  } else if (family === 'cli') {
-    lines.push('- **Language**: TypeScript')
-    lines.push('- **Runtime**: Bun')
-    lines.push('- **Release**: Changesets')
-  } else if (family === 'solana') {
-    lines.push('- **Framework**: Anchor')
-    lines.push('- **Language**: Rust')
-  } else if (family === 'mobile') {
-    lines.push('- **Framework**: Expo Router')
-    lines.push('- **Language**: TypeScript')
-  }
-
-  return lines.join('\n')
-}
-
-function hasShowcase(config: ProjectConfig): boolean {
-  return config.includeShowcase && config.family === 'fullstack'
+  return 'bun install\nbun dev'
 }
 
 export function buildReadme(config: ProjectConfig): string {
   const name = sanitizeProjectName(config.projectName)
-  const label = familyLabel(config.family)
-  const commands = commandsForFamily(config.family)
-  const stack = stackForFamily(config)
-  const showcase = hasShowcase(config)
+  const preset = config.preset ?? config.family
 
   return `# ${name}
 
-A ${label.toLowerCase()} scaffolded with [@arche/create](https://github.com/kitsunekode/arche).
+Scaffolded with [@arche/create](https://github.com/KitsuneKode/arche) (\`${preset}\`).
 
-## Stack
-
-${stack}
-
-## Quick Start
+## Quick start
 
 \`\`\`bash
-${config.family === 'rust' ? 'cp .env.example .env\ncargo run' : 'bun install\nbun dev'}
+${quickStart(config)}
 \`\`\`
 
 ## Commands
 
 | Command | Description |
-|---------|-------------|
-${commands}
+| ------- | ----------- |
+| \`bun dev\` | Start development (or \`cargo run\` for Rust-only) |
+| \`bun run build\` | Build all packages |
+| \`bun run lint\` | Lint |
+| \`bun run check-types\` | Typecheck |
 
-## Agent Setup
+## Project context
 
-For MCP-capable agents, register this server:
+- \`AGENTS.md\` — agent entrypoint
+- \`.docs/architecture/generated-project.md\` — architecture notes
+- \`arche.json\` — scaffold choices and replay command
 
-\`\`\`json
-{
-  "mcpServers": {
-    "@arche/create": {
-      "command": "bunx",
-      "args": ["@arche/create", "mcp"]
-    }
-  }
-}
-\`\`\`
-
-${showcase ? `## Portfolio\n\nThis project is portfolio-ready. When you're ready to showcase it:\n1. Fill in \`SHOWCASE.mdx\` at the project root\n2. Push to GitHub — the portfolio will auto-sync\n\n` : ''}See \`.docs/architecture/generated-project.md\` for architecture details and \`AGENTS.md\` for agent navigation.
-`
+${config.includeShowcase && config.family === 'fullstack' ? 'Fill in `SHOWCASE.mdx` when you are ready for portfolio sync.\n' : ''}`
 }

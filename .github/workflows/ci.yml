@@ -87,9 +87,6 @@ jobs:
           TURBO_SCM_BASE: ${{ steps.turbo-base.outputs.base }}
         run: bunx turbo run build ${{ steps.turbo-mode.outputs.affected }}
 
-      - name: Smoke build web and CLI
-        run: bunx turbo run build --filter=@arche-template/web --filter=@arche/create
-
       - name: CLI package check
         run: bun run pkg:check
 

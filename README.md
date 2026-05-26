@@ -1,40 +1,37 @@
-# Arche
+<p align="center">
+  <a href="https://arche.kitsunelabs.xyz">
+    <img src="docs/assets/readme-banner.png" alt="Arche — project origin system" width="1200" />
+  </a>
+</p>
 
-Personal project scaffolding for KitsuneKode-style apps.
+<p align="center">
+  <a href="https://github.com/KitsuneKode/arche/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/KitsuneKode/arche/ci.yml?branch=main&label=CI" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT" />
+  <img src="https://img.shields.io/badge/package%20manager-Bun-default?logo=bun" alt="Bun" />
+  <img src="https://img.shields.io/badge/release-guarded-orange" alt="Release guarded" />
+  <img src="https://img.shields.io/badge/presets-requires%20validation-yellow" alt="Preset status" />
+</p>
 
-Arche is a preset-led CLI for starting projects with the boring foundations
-already wired: workspace shape, package manager metadata, agent context,
-deployment notes, local env examples, and a reproducible `arche.json`.
+<p align="center">
+  <strong>Project origin system</strong> — personal scaffold CLI and template vault for TypeScript monorepos, Rust services, and Solana foundations.
+</p>
 
-It began as a full-stack TypeScript template. It is now being shaped into a
-personal project vault and CLI for TypeScript, Rust, and Solana products.
+<p align="center">
+  <a href="https://arche.kitsunelabs.xyz">Site</a> ·
+  <a href="https://github.com/KitsuneKode/arche">GitHub</a> ·
+  <a href="docs/README.md">Docs</a> ·
+  <a href="docs/bootstrap-cli.md">CLI</a>
+</p>
 
-## Current status
+---
 
-Implemented foundations:
+Arche is KitsuneKode’s preset-led way to start real projects without re-wiring the boring parts: workspace shape, package-manager catalogs, agent context, deployment notes, and a reproducible `arche.json`. It began as a full-stack TypeScript template and is now a vault plus `@arche/create` CLI.
 
-- TypeScript fullstack monorepo generation.
-- Bun-first and pnpm-first-class workspace output.
-- Standalone JavaScript package-manager pinning.
-- Canonical generated agent context: `AGENTS.md`, `CLAUDE.md -> AGENTS.md`,
-  `.docs/`, and `.plans/`.
-- Rust API scaffold with module-first Axum/SQLx structure.
-- Rust-backed fullstack scaffold with `apps/web`, `services/api`, and a root
-  Cargo workspace.
-- Preset menu and `--preset=<id>` defaults.
+**Honest status:** foundations are implemented; preset promotion to “stable” waits on the [verification matrix](.docs/product/verification-matrix.md). No preset is marketed as production-ready until that matrix passes.
 
-Still validation-gated:
+## Use the CLI (the fun part)
 
-- Solana program/web/mobile/product presets.
-- Full generated-project install/build/test matrix for every preset.
-- npm trusted publishing and release automation.
-
-No preset is promoted to `Stable` until its generated-project verification
-matrix passes.
-
-## Use the CLI
-
-Published package route, once released:
+Published route (after npm release):
 
 ```sh
 npx arche create my-app
@@ -48,151 +45,118 @@ From this repository while developing:
 bun run dev:cli -- my-app --yes --dir=../projects
 ```
 
-Always scaffold outside this template repository when writing real output.
+Scaffold **outside** this template repo when writing real output.
 
-## Common create commands
-
-Interactive setup:
-
-```sh
-bun run dev:cli -- my-app --dir=../projects
+```mermaid
+flowchart LR
+  dev[Developer] --> cli["arche create"]
+  cli --> copy[Template copy]
+  copy --> turbo[Rendered turbo.json]
+  copy --> ctx[AGENTS.md + arche.json]
+  ctx --> app[Your monorepo]
 ```
 
-Default non-interactive TypeScript fullstack:
+### Terminal block (matches the site)
 
 ```sh
 bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects
 ```
 
-Rust API:
+More examples:
 
 ```sh
+# Interactive
+bun run dev:cli -- my-app --dir=../projects
+
+# Rust API
 bun run dev:cli -- my-api --yes --preset=rust-api --dir=../projects
-```
 
-Rust-backed fullstack:
+# pnpm catalogs
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=pnpm --dir=../projects
 
-```sh
-bun run dev:cli -- my-product --yes --preset=rust-fullstack --dir=../projects
-```
-
-pnpm output:
-
-```sh
-bun run dev:cli -- my-app --yes --pm=pnpm --dir=../projects
-```
-
-Dry run:
-
-```sh
+# Dry run
 bun run dev:cli -- my-app --yes --dry-run --dir=../projects
 ```
 
-## Presets
+## Presets (pick your fighter)
 
-| Preset                 | Status              | Output today                                 |
-| ---------------------- | ------------------- | -------------------------------------------- |
-| `typescript-fullstack` | Requires validation | Next.js + TypeScript API monorepo foundation |
-| `rust-api`             | Requires validation | Axum API with module-first Rust layout       |
-| `rust-fullstack`       | Requires validation | Next.js web + `services/api` Rust API        |
-| `solana-program`       | Requires validation | Planned Anchor `programs/core` foundation    |
-| `solana-web`           | Requires validation | Planned web dApp + generated Solana client   |
-| `solana-mobile`        | Requires validation | Planned mobile dApp + mobile wallet boundary |
-| `solana-product`       | Requires validation | Planned web + mobile + program composition   |
-| `customize`            | Requires validation | Explicit composition path                    |
-| `experiments`          | Experimental        | Proof-gated or unstable routes               |
-
-## Package managers
-
-- Bun is the default.
-- pnpm is first-class.
-- npm is available as an experimental legacy-compatible route.
-- Package manager and runtime are separate decisions. A project can use pnpm as
-  the package manager and still keep Bun runtime scripts where selected.
-
-Monorepo outputs use native workspace catalogs:
-
-- Bun: root `package.json` `workspaces.catalog`.
-- pnpm: `pnpm-workspace.yaml` `catalog:`.
-
-## Generated project context
-
-Generated projects include:
-
-```text
-AGENTS.md
-CLAUDE.md -> AGENTS.md
-.docs/README.md
-.docs/architecture/generated-project.md
-.plans/README.md
-arche.json
-```
-
-`AGENTS.md` is the canonical agent entrypoint. `.docs/` holds durable
-architecture context. `.plans/` holds active/completed execution plans.
-`arche.json` records the scaffold choices and replay command.
+| Preset                 | Status              | Output today                          |
+| ---------------------- | ------------------- | ------------------------------------- |
+| `typescript-fullstack` | Requires validation | Next.js + TypeScript API monorepo     |
+| `rust-api`             | Requires validation | Axum API, module-first layout         |
+| `rust-fullstack`       | Requires validation | Next.js web + `services/api` Rust API |
+| `solana-program`       | Requires validation | Planned Anchor `programs/core`        |
+| `solana-web`           | Requires validation | Planned web dApp + client             |
+| `solana-mobile`        | Requires validation | Planned mobile dApp                   |
+| `solana-product`       | Requires validation | Planned web + mobile + program        |
+| `customize`            | Requires validation | Explicit composition                  |
+| `experiments`          | Experimental        | Opt-in unstable routes                |
 
 ## Repository layout
+
+```mermaid
+flowchart TB
+  subgraph apps [apps]
+    cli[cli — @arche/create]
+    web[web — docs + design lab]
+    server[server — API template]
+    worker[worker — optional jobs]
+  end
+  subgraph packages [packages]
+    auth[auth]
+    store[store]
+    trpc[trpc]
+    ui[ui]
+  end
+  cli --> apps
+  cli --> packages
+```
 
 ```text
 apps/
   cli/       @arche/create CLI
-  web/       documentation/marketing app and design lab
+  web/       documentation / marketing + design lab
   server/    TypeScript API template source
-  worker/    optional worker template source
+  worker/    optional worker template
 
 packages/
-  auth/
-  backend-common/
-  store/
-  trpc/
-  ui/
+  auth/  backend-common/  store/  trpc/  ui/
 
 toolings/
-  scripts/
+  catalog/   workspace-catalog.json
+  scripts/   repo maintenance + brand:export
 ```
-
-Target generated layouts are documented in
-[`.docs/architecture/generated-projects.md`](.docs/architecture/generated-projects.md).
 
 ## Development
 
 ```sh
 bun install
 bun run dev:cli -- my-app --yes --dir=/tmp/arche-output
-bun run dev:cli -- completion zsh
 bun test apps/cli/tests
 bun run verify:generated
-bun run pkg:check
-bun run --cwd apps/cli check-types
-bun run --cwd apps/cli lint
-bun run repo:doctor
+bun run ci
+bun run brand:export   # README banner, GitHub icons, OG (needs web build)
 ```
 
-Useful docs:
+## Docs grid
 
-- [CLI usage](docs/bootstrap-cli.md)
-- [Commands](docs/commands.md)
-- [Publishing](docs/publishing.md)
-- [Internal roadmap](.docs/product/implementation-roadmap.md)
-- [Verification matrix](.docs/product/verification-matrix.md)
+| Topic                      | Link                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| Doc index                  | [docs/README.md](docs/README.md)                                             |
+| CLI reference              | [docs/bootstrap-cli.md](docs/bootstrap-cli.md)                               |
+| Commands                   | [docs/commands.md](docs/commands.md)                                         |
+| Deployment hub             | [docs/deployment.md](docs/deployment.md)                                     |
+| Env matrix                 | [docs/deployment-env.md](docs/deployment-env.md)                             |
+| Verification matrix        | [.docs/product/verification-matrix.md](.docs/product/verification-matrix.md) |
+| Rebranding / GitHub assets | [docs/rebranding.md](docs/rebranding.md)                                     |
 
-## Design lab
+## Design lab (not a secret base)
 
-Private-ish design previews live at:
+Unlinked previews live at `/__design-lab` — `noindex`, excluded from the sitemap, not auth-gated. Fine for experiments; don’t treat it as private infrastructure.
 
-```text
-/__design-lab
-```
+---
 
-The route is unlinked, excluded from the sitemap, and marked `noindex`. It is
-not authentication; anyone with the URL can view it.
-
-## Release direction
-
-npm publication is intentionally last. Before publishing, Arche needs package
-contents checks, generated-project verification, release smoke tests, and
-GitHub Actions trusted publishing via OIDC rather than long-lived npm tokens.
-The package check route now exists as `bun run pkg:check`; live publishing is
-guarded behind `NPM_TRUSTED_PUBLISHING_ENABLED=true` until the verification
-matrix is complete. See [publishing](docs/publishing.md).
+<p align="center">
+  Built by <a href="https://kitsunekode.in">KitsuneKode</a> ·
+  <a href="https://arche.kitsunelabs.xyz">arche.kitsunelabs.xyz</a>
+</p>

@@ -1,19 +1,10 @@
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import workspaceCatalog from '../../../../../toolings/catalog/workspace-catalog.json' with { type: 'json' }
 import type { ProjectConfig } from '../../types/schemas'
 import { renderPnpmWorkspaceYaml } from './pnpm'
 
-export const DEFAULT_WORKSPACE_CATALOG: Record<string, string> = {
-  '@types/bun': '1.3.14',
-  '@types/node': '^25.9.0',
-  oxlint: '^1.65.0',
-  oxfmt: '^0.50.0',
-  ioredis: '^5.6.1',
-  redis: '^5.12.0',
-  turbo: '^2.9.14',
-  typescript: '^6.0.3',
-  zod: '^4.4.3',
-}
+export const DEFAULT_WORKSPACE_CATALOG: Record<string, string> = workspaceCatalog
 
 const DEFAULT_TOOLCHAIN = {
   bun: '1.3.11',

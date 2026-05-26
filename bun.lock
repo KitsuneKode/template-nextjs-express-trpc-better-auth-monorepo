@@ -21,6 +21,7 @@
         "lint-staged": "^17.0.5",
         "oxfmt": "^0.50.0",
         "oxlint": "^1.65.0",
+        "sharp": "^0.34.5",
         "turbo": "^2.9.14",
         "typescript": "6.0.3",
       },

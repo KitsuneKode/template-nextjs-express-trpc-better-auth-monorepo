@@ -17,6 +17,7 @@ import {
   renderInternalDocsIndex,
   renderPlansIndex,
 } from '../render/docs/agent-context'
+import { renderTurboJson } from '../render/turbo/render-turbo-json'
 import { applyJavaScriptPackageManagerFoundation } from '../render/workspace/foundation'
 import type { Family, ProjectConfig, CleanupTarget } from '../types/schemas'
 import {
@@ -80,6 +81,7 @@ const EXCLUDED_SEGMENTS = new Set([
 
 // Files that should not appear in scaffolded output
 const EXCLUDED_FILES = new Set([
+  'turbo.json',
   'bun.lock',
   // Root agent files are regenerated so CLAUDE.md can point at canonical AGENTS.md.
   'AGENTS.md',
@@ -439,12 +441,29 @@ export async function scaffoldProject(
         )
       : []
 
+  const turboFiles: string[] = []
+  if (isMonorepoFamily(family) || family === 'solana') {
+    const includeDbTasks =
+      family === 'fullstack' ||
+      family === 'polyglot' ||
+      (family === 'backend' && options.database !== 'none')
+    const includeMdxGenerate = family === 'fullstack'
+    const extraBuildOutputs = family === 'polyglot' ? ['target/**'] : undefined
+    await writeGeneratedFile(
+      destinationDir,
+      'turbo.json',
+      renderTurboJson({ includeDbTasks, includeMdxGenerate, extraBuildOutputs }),
+    )
+    turboFiles.push('turbo.json')
+  }
+
   const generatedFiles: string[] = [
     'arche.json',
     ...bundleFiles,
     ...rustGeneratedFiles,
     ...solanaGeneratedFiles,
     ...workspaceFiles,
+    ...turboFiles,
   ]
 
   const monorepo = isMonorepoFamily(family)

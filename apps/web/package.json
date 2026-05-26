@@ -11,7 +11,7 @@
     "lint:fix": "oxlint --fix",
     "mdx:generate": "fumadocs-mdx",
     "postinstall": "fumadocs-mdx",
-    "check-types": "fumadocs-mdx && tsc --noEmit"
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@arche-template/auth": "workspace:*",

@@ -30,3 +30,21 @@ Do not emit Bun-shaped workspace metadata and call it native pnpm output.
 Root scripts should delegate through `turbo run <task>`. Package scripts own the
 actual task implementations. Avoid ambiguous shorthand in generated package
 scripts and CI.
+
+## Transit nodes (generated monorepos)
+
+Generated `turbo.json` files use a `transit` task with `dependsOn: ["^transit"]`
+so lint and typecheck invalidate when upstream package sources change, without
+waiting for upstream lint/typecheck to finish.
+
+`lint`, `lint:fix`, and `check-types` depend on `transit` only (not `^lint`).
+
+When adding a new package script:
+
+1. Add the script in that package's `package.json`.
+2. Register the task in root `turbo.json` (outputs, `dependsOn`, `env` as needed).
+3. For web docs (Fumadocs), keep `mdx:generate` in `apps/web` and wire
+   `check-types` → `mdx:generate` in `apps/web/turbo.json`.
+
+The CLI renders root `turbo.json` from `apps/cli/src/render/turbo/render-turbo-json.ts`
+using options from the scaffold recipe (db tasks, mdx, extra build outputs).

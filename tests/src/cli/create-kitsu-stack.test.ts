@@ -99,20 +99,19 @@ describe('server env', () => {
 })
 
 describe('family-aware readme', () => {
-  it('includes fullstack stack details for fullstack family', () => {
+  it('includes scaffold metadata for fullstack family', () => {
     const readme = buildReadme(baseConfig())
-    expect(readme).toContain('full-stack typescript monorepo')
-    expect(readme).toContain('tRPC')
-    expect(readme).toContain('Better Auth')
+    expect(readme).toContain('@arche/create')
+    expect(readme).toContain('`fullstack`')
+    expect(readme).toContain('bun dev')
+    expect(readme).toContain('AGENTS.md')
   })
 
-  it('includes Next.js stack details for next family', () => {
+  it('includes next preset id for next family', () => {
     const readme = buildReadme(baseConfig({ family: 'next', presets: ['auth'] }))
-    expect(readme).toContain('standalone next.js app')
-    expect(readme).toContain('Next.js')
-    expect(readme).toContain('Better Auth')
-    expect(readme).not.toContain('tRPC')
-    expect(readme).not.toContain('Turborepo')
+    expect(readme).toContain('`next`')
+    expect(readme).toContain('bun install')
+    expect(readme).toContain('arche.json')
   })
 })
 

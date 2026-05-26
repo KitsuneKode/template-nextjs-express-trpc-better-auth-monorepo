@@ -2,6 +2,7 @@ import { describe, expect, it } from 'bun:test'
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import workspaceCatalog from '../../../toolings/catalog/workspace-catalog.json' with { type: 'json' }
 import { createProject } from '../src/lib/create'
 import type { ProjectConfig } from '../src/types/schemas'
 
@@ -68,10 +69,11 @@ describe('fullstack workspace output', () => {
 
       expect(root.packageManager).toStartWith('bun@')
       expect(root.workspaces.packages).toContain('apps/*')
-      expect(root.workspaces.catalog.typescript).toBe('^6.0.3')
-      expect(root.workspaces.catalog.turbo).toBe('^2.9.14')
-      expect(root.workspaces.catalog.redis).toBeDefined()
-      expect(root.workspaces.catalog.ioredis).toBeDefined()
+      expect(root.workspaces.catalog).toEqual(workspaceCatalog)
+      const turbo = JSON.parse(readFileSync(join(destinationDir, 'turbo.json'), 'utf8'))
+      expect(turbo.tasks.transit.dependsOn).toEqual(['^transit'])
+      expect(turbo.tasks.lint.dependsOn).toEqual(['transit'])
+      expect(turbo.tasks['mdx:generate']).toBeDefined()
       expect(root.scripts['dev:web']).toStartWith('turbo run dev --filter=')
       expect(root.scripts['db:migrate']).toBe('turbo run db:migrate')
       expect(web.devDependencies.typescript).toBe('catalog:')

@@ -59,23 +59,6 @@ function rootPackageJson(config: ProjectConfig): string {
   )
 }
 
-function turboJson(): string {
-  return JSON.stringify(
-    {
-      $schema: 'https://turbo.build/schema.json',
-      tasks: {
-        dev: { cache: false, persistent: true },
-        build: { dependsOn: ['^build'], outputs: ['dist/**', '.next/**'] },
-        lint: {},
-        'check-types': { dependsOn: ['^check-types'] },
-        test: { dependsOn: ['^build'] },
-      },
-    },
-    null,
-    2,
-  )
-}
-
 function anchorToml(config: ProjectConfig): string {
   const program = `${rustName(config.projectName)}_core`
   return `[programs.localnet]
@@ -411,7 +394,6 @@ export async function applySolanaScaffoldTransform(
 
   const writes: Array<[string, string]> = [
     ['package.json', rootPackageJson(config)],
-    ['turbo.json', turboJson()],
     ['Anchor.toml', anchorToml(config)],
     ['Cargo.toml', cargoWorkspaceToml()],
     ['programs/core/Cargo.toml', programCargoToml(config)],

@@ -38,6 +38,7 @@
   },
   "files": [
     "dist",
+    "assets/icon.png",
     "README.md",
     "CHANGELOG.md",
     "CLI-SPEC.md"

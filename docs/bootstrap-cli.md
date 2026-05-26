@@ -120,6 +120,11 @@ stable default. Monorepos use native catalog output:
 - Bun: `package.json` `workspaces.catalog`.
 - pnpm: `pnpm-workspace.yaml` `catalog:`.
 
+Shared catalog versions come from `toolings/catalog/workspace-catalog.json`.
+Root `turbo.json` is rendered (not copied) with transit nodes, optional `db:*`
+tasks, and Fumadocs `mdx:generate` when the fullstack web app is included. See
+[package-managers capability](../.docs/capabilities/package-managers.md).
+
 ## Publication status
 
 The package now has local and CI package dry-run checks, but live publishing is

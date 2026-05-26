@@ -67,13 +67,26 @@ reserved for the published CLI. This makes the difference clear:
 bun toolings/scripts/rename-scope.ts --from @arche-template --to @my-app
 ```
 
+## GitHub brand uploads (one-time)
+
+After `bun run brand:export`:
+
+| File                             | GitHub setting                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------------- |
+| `docs/assets/arche-mark-512.png` | Repository → **Settings** → **General** → **Social preview** / profile image (512×512)  |
+| `docs/assets/social-preview.png` | Repository → **Settings** → **General** → **Social preview** (1280×640 Open Graph card) |
+
+The README hero uses `docs/assets/readme-banner.png` (committed; no dashboard upload).
+
+Canonical SVG: `apps/web/public/brand/arche-mark.svg` (matches navbar `BrandMark`).
+
 ## Optional follow-ups
 
 1. [x] GitHub repo renamed to `arche`; description and homepage URL set.
 2. [ ] Rename Vercel projects `template-web` → `arche`, `template-server` →
        `arche-api`; update env URLs per [deployment-vercel-arche.md](./deployment-vercel-arche.md).
-3. Replace `apps/web/public/brand/template-*` with Arche-specific mark assets.
-4. Generate or design a proper OG image and icon set for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
+3. [x] Arche mark assets in `apps/web/public/brand/` and `docs/assets/`.
+4. [x] OG + export pipeline (`bun run brand:export`).
 5. Set production `NEXT_PUBLIC_SITE_*` on Vercel for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
 6. Replace remaining `template-nextjs` strings in archive docs only when archive
    cleanup becomes worth the noise.

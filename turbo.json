@@ -3,7 +3,6 @@
   "ui": "tui",
   "globalEnv": [
     "NODE_ENV",
-    "DATABASE_URL",
     "NEXT_PUBLIC_APP_URL",
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_SITE_URL",
@@ -25,20 +24,27 @@
     "GOOGLE_CLIENT_SECRET"
   ],
   "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["DATABASE_URL"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["transit"]
     },
     "lint:fix": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["transit"]
     },
-
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["transit"],
+      "env": ["DATABASE_URL"]
+    },
+    "mdx:generate": {
+      "outputs": [".source/**"]
     },
     "dev": {
       "cache": false,

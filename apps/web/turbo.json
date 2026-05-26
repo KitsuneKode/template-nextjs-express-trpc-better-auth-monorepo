@@ -3,6 +3,12 @@
   "tasks": {
     "build": {
       "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "mdx:generate": {
+      "outputs": [".source/**"]
+    },
+    "check-types": {
+      "dependsOn": ["mdx:generate", "transit"]
     }
   }
 }
