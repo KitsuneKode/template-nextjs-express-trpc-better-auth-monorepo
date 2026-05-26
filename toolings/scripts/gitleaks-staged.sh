@@ -6,6 +6,12 @@ if [ "${SKIP_GITLEAKS:-}" = "1" ]; then
   exit 0
 fi
 
+# Automated git commits (e.g. changesets release) run in CI without gitleaks installed.
+# Full-repo scanning still runs via .github/workflows/gitleaks.yml on push.
+if [ "${CI:-}" = "true" ] || [ "${GITHUB_ACTIONS:-}" = "true" ]; then
+  exit 0
+fi
+
 if ! command -v gitleaks >/dev/null 2>&1; then
   echo "gitleaks is required for pre-commit secret scanning."
   echo "Install: https://github.com/gitleaks/gitleaks#installing"

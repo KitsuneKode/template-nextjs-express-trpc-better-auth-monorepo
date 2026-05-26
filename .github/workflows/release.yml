@@ -59,3 +59,5 @@ jobs:
           commit: 'chore: version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # changesets commits from CI; gitleaks workflow already scanned the push.
+          HUSKY: '0'

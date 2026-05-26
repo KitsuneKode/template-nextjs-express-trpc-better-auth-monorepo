@@ -16,7 +16,7 @@ Runs on `push` to `main`, `prod`, and `develop`, and on pull requests. One job i
 
 Turbo uses `TURBO_SCM_BASE` (PR base SHA, previous push SHA, or `git rev-parse HEAD^1`) for `--affected`. On **push to `main` or `prod`**, lint/types/build run on the **full workspace** (no `--affected`).
 
-Release ([`.github/workflows/release.yml`](../.github/workflows/release.yml)) runs only after CI succeeds on a **`push` to `main`** (`head_branch == main`, `event == push`). No manual dispatch.
+Release ([`.github/workflows/release.yml`](../.github/workflows/release.yml)) runs only after CI succeeds on a **`push` to `main`** (`head_branch == main`, `event == push`). No manual dispatch. Changesets commits set `HUSKY=0` and skip staged gitleaks in CI (full-repo gitleaks already ran on the push).
 
 Weekly generated verification: [`.github/workflows/verify-generated-weekly.yml`](../.github/workflows/verify-generated-weekly.yml).
 
