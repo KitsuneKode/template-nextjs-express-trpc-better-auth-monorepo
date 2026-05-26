@@ -1,0 +1,26 @@
+---
+title: Verification and presets
+description: How support labels map to evidence in the CLI registry.
+---
+
+Public preset labels mirror the CLI registry—not marketing adjectives.
+
+## Status vocabulary
+
+| Label | Meaning |
+| --- | --- |
+| **Requires validation** | The route generates and documents the expected shape; full install/build proof may still be pending. |
+| **Experimental** | Explicit opt-in for unstable or proof-gated generators. |
+| **Stable** | Only when the verification matrix records green evidence for that preset. |
+
+## Compare presets
+
+Use [/families](/families) for a tabular view, then scaffold:
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+```
+
+## Source of truth
+
+The internal matrix lives in `.docs/product/verification-matrix.md` in the Arche repository. The website must never outpace that evidence.

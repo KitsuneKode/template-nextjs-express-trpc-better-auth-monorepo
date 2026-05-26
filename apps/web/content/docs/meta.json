@@ -1,37 +1,10 @@
-[
-  {
-    "type": "page",
-    "title": "Home",
-    "icon": "home",
-    "root": true,
-    "pages": ["index"]
-  },
-  {
-    "type": "separator",
-    "title": "Guides"
-  },
-  {
-    "type": "page",
-    "title": "Getting Started",
-    "pages": ["getting-started"]
-  },
-  {
-    "type": "page",
-    "title": "Architecture",
-    "pages": ["architecture"]
-  },
-  {
-    "type": "separator",
-    "title": "Reference"
-  },
-  {
-    "type": "page",
-    "title": "API Reference",
-    "pages": ["api-reference"]
-  },
-  {
-    "type": "page",
-    "title": "Configuration",
-    "pages": ["configuration"]
-  }
-]
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "guides/first-hour",
+    "guides/agent-context",
+    "guides/verification-and-presets",
+    "guides/package-managers"
+  ]
+}

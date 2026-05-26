@@ -1,0 +1,34 @@
+---
+title: First hour
+description: Generate, enter, install, and verify a new workspace.
+---
+
+## 1. Scaffold
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+```
+
+## 2. Enter
+
+```bash
+cd my-app
+```
+
+## 3. Install and verify
+
+```bash
+bun install
+bun run ci
+```
+
+## If something fails
+
+- Re-read the generated root `AGENTS.md` for preset-specific commands.
+- Confirm environment variables using the `.env.example` files shipped with the preset.
+- Check database and Redis URLs before running migrations or the API.
+
+## Next
+
+- [Deployment paths](/docs/deploy) for Vercel + Docker + Neon/Upstash
+- [Choosing a preset](/blog/choosing-a-preset)

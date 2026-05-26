@@ -1,0 +1,27 @@
+---
+title: Agent context
+description: Canonical AGENTS.md, .docs, .plans, and arche.json in generated projects.
+---
+
+Arche generates a **small map** so coding agents load the right context without stuffing the entire repository into a prompt.
+
+## Canonical files
+
+- **`AGENTS.md`** — entry map; other agent files should point here.
+- **`CLAUDE.md`** — symlink to `AGENTS.md` when the preset enables it.
+- **`.docs/`** — internal topics (architecture, deployment, features).
+- **`.plans/active/`** — one approved in-flight plan at a time.
+- **`arche.json`** — machine-readable metadata about the scaffold.
+
+## What is not generated
+
+- `.cursor/rules/` or `.claude/rules/` duplicate trees
+- Stale “production ready” claims without verification evidence
+
+## Agent workflow
+
+1. Read root `AGENTS.md`.
+2. Read the nearest workspace `AGENTS.md` for the package you touch.
+3. Load one matching `.plans/active/` file only for approved work.
+
+When commands or env names change, update the nearest `AGENTS.md` and the owning `.docs/` topic.

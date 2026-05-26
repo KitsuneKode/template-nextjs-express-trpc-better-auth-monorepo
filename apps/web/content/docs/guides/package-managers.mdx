@@ -1,0 +1,23 @@
+---
+title: Package managers
+description: Bun as default with first-class pnpm support in generated workspaces.
+---
+
+Arche defaults to **Bun** for installs and scripts. **pnpm** is supported where the preset and verification matrix document it.
+
+## During scaffold
+
+The CLI records your package manager choice in workspace metadata. Catalogs and lockfile strategy follow that choice.
+
+## After scaffold
+
+```bash
+bun install
+bun run ci
+```
+
+For pnpm-enabled presets, use the commands documented in the generated `AGENTS.md`—do not assume every preset enables both managers interchangeably without checking.
+
+## This source repository
+
+Developing Arche itself uses Bun at the repo root. Commands on the docs hub labeled **This source template** apply here—not inside every generated app.

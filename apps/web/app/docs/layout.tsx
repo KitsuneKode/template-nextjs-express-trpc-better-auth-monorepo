@@ -17,6 +17,46 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             <nav className="space-y-8">
               <div>
                 <h4 className="mb-3 text-xs font-bold tracking-widest text-zinc-400 uppercase">
+                  Guides
+                </h4>
+                <ul className="space-y-2 text-sm font-medium">
+                  <li>
+                    <a
+                      href="/docs/guides/first-hour"
+                      className="text-zinc-300 transition-colors hover:text-white"
+                    >
+                      First hour
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/docs/guides/agent-context"
+                      className="text-zinc-300 transition-colors hover:text-white"
+                    >
+                      Agent context
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/docs/guides/verification-and-presets"
+                      className="text-zinc-300 transition-colors hover:text-white"
+                    >
+                      Verification
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/docs/guides/package-managers"
+                      className="text-zinc-300 transition-colors hover:text-white"
+                    >
+                      Package managers
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="mb-3 text-xs font-bold tracking-widest text-zinc-400 uppercase">
                   Core Concepts
                 </h4>
                 <ul className="space-y-2 text-sm font-medium">
