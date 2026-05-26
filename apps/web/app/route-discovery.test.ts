@@ -20,5 +20,6 @@ describe('route discovery controls', () => {
     )
 
     expect(sitemap().map((entry) => entry.url)).not.toContain('https://arche.test/__design-lab')
+    expect(sitemap().map((entry) => entry.url)).not.toContain('https://arche.test/showcase')
   })
 })

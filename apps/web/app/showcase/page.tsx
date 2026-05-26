@@ -10,6 +10,8 @@ import {
 } from '@arche-template/ui/components/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@arche-template/ui/components/tabs'
 import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+
 import { Navbar } from '@/components/arche/navbar'
 
 export const metadata: Metadata = {
@@ -18,6 +20,10 @@ export const metadata: Metadata = {
 }
 
 export default function ShowcasePage() {
+  if (process.env.NODE_ENV === 'production') {
+    notFound()
+  }
+
   return (
     <main className="min-h-screen bg-black font-sans text-white selection:bg-white selection:text-black">
       <Navbar />
@@ -72,7 +78,7 @@ export default function ShowcasePage() {
                   variant="outline"
                   className="rounded-none border-zinc-800 font-mono text-zinc-400"
                 >
-                  STABLE
+                  DEV ONLY
                 </Badge>
                 <Badge className="rounded-none border-amber-500 bg-amber-500 font-bold tracking-tighter text-black uppercase">
                   BETA
