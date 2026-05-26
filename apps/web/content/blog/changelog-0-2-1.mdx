@@ -1,6 +1,6 @@
 ---
-title: Arche CLI 0.2.1 — registry and verification language
-description: Release notes for the guarded CLI track and public preset vocabulary.
+title: 'Arche CLI 0.2.1 — registry honesty'
+description: 'Preset labels, verification matrix in code, and docs that distinguish CLI vs generated vs source repo.'
 date: '2026-05-20'
 category: changelog
 author: KitsuneKode
@@ -10,21 +10,44 @@ tags:
   - presets
 ---
 
-Arche `0.2.1` tightens how presets describe support status on the website and in generated projects.
+This release is mostly about **saying the right thing in public**: the CLI registry, the website, and generated `AGENTS.md` files now share one vocabulary for preset support.
 
-## Highlights
+## What changed
 
-- Preset registry exposes `Requires validation` and `Experimental` labels aligned with the verification matrix.
-- Public site copy no longer implies production-ready presets without evidence.
-- Documentation distinguishes **Arche CLI**, **generated project**, and **source template** commands.
+### Registry-driven labels
 
-## Verification
+Presets expose **Requires validation**, **Experimental**, or **Stable** from `packages/registry`. The [/families](/families) page and [/docs/presets](/docs/presets) catalog read the same rows the CLI uses—no hand-maintained status badges on the site.
 
-Generated-project checks remain the source of truth. A preset only graduates to `Stable` when install, lint, typecheck, test, and build evidence exists for that route.
+### Verification matrix in code
+
+`PRESET_VERIFICATION_MATRIX` drives both docs and tests. A preset cannot be labeled Stable until `presetHasStableEvidence` passes for its route (structure, package managers, generated CI steps, route-specific gates like Cargo or Anchor).
+
+### Documentation split
+
+We finally stopped mixing three different command lists in one paragraph:
+
+| Context           | Example                           |
+| ----------------- | --------------------------------- |
+| Arche CLI         | `bun run dev:cli -- my-app --yes` |
+| Generated project | `bun install && bun run ci`       |
+| Source template   | `bun run repo:doctor`             |
+
+The new [Getting started](/docs/getting-started) page is the hub.
+
+### Convex preset in registry
+
+`convex-product` is listed alongside TypeScript and Solana routes with its own capability set (web, convex, auth, deployment).
+
+## What did not change
+
+- **npm publish** is still guarded. Use source checkout commands until release gates clear.
+- No preset was promoted to **Stable** without new green columns—check the matrix on [Verification](/docs/guides/verification-and-presets).
 
 ## Try it
 
 ```bash
-bun run dev:cli -- my-app --yes --preset=typescript-fullstack
-cd my-app && bun install && bun run ci
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects
+cd ../projects/my-app && bun install && bun run ci
 ```
+
+If CI fails, read root `AGENTS.md` before blaming the template—env URLs are the usual culprit.

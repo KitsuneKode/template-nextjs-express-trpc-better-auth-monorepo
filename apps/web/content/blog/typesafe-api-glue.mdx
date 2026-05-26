@@ -1,34 +1,73 @@
 ---
-title: The Typesafe API Glue
-description: How Prisma, server modules, and tRPC contracts connect database models to the UI.
+title: Prisma → tRPC → UI without hand-waved types
+description: How server modules, the client package, and the web app share one contract.
 date: '2026-05-05'
 category: technical
 ---
 
-Type safety should not stop at your database or your frontend. It should be the connective tissue across the stack.
+The TypeScript fullstack preset’s superpower is not “full stack”—it is **one type graph** from the database outward. Arche wires the folders so you do not accidentally put routers in the wrong package.
 
 ## The pipeline
 
-1. **Prisma** in `packages/store` defines models.
-2. **Procedures** in `apps/server/src/modules/<feature>/*.trpc.ts` expose validated operations.
-3. **`packages/trpc`** re-exports `AppRouter` and `createCaller` for the web client.
-4. **Next.js** consumes the API with full autocomplete via `trpc` or `trpcCaller`.
-
-```typescript
-// apps/server — procedure definition
-export const userRouter = router({
-  me: protectedProcedure.query(({ ctx }) => ctx.db.user.findUnique({ where: { id: ctx.user.id } })),
-})
-
-// apps/web — typed consumer
-const user = await trpcCaller.user.me()
+```text
+packages/store     Prisma schema + client
+       ↓
+apps/server        modules/*/*.trpc.ts (procedures)
+       ↓
+packages/trpc      AppRouter types + createCaller (client-only)
+       ↓
+apps/web           trpc client + trpcCaller (RSC)
 ```
 
-## Why this matters
+## Common mistake: routers in packages/trpc
 
-You eliminate an entire class of client/server drift bugs that appear when OpenAPI or hand-written DTOs lag behind the database.
+`packages/trpc` **re-exports** types. Procedures live in:
 
-## Learn more
+```text
+apps/server/src/modules/<feature>/*.trpc.ts
+```
 
-- [tRPC guide](/docs/trpc)
-- [Architecture](/docs/architecture)
+composed in `apps/server/src/modules/trpc/app.router.ts`.
+
+If you define routers in `packages/trpc`, you pull server dependencies into the wrong layer and fight the bundle. The [tRPC package doc](/docs/packages/trpc) states this loudly for a reason.
+
+## Server-side data fetching (no HTTP loopback)
+
+```ts
+const api = await trpcCaller()
+const posts = await api.posts.list()
+```
+
+`trpcCaller` uses `createCaller` in-process—good for RSC and server actions.
+
+## Client-side fetching
+
+```ts
+trpc.posts.list.useQuery()
+```
+
+HTTP to `NEXT_PUBLIC_API_URL` with the shared `AppRouter` type.
+
+## Validation lives with procedures
+
+Zod (or shared validators) at procedure boundaries. Services hold business logic; repositories touch Prisma; policies answer authorization. The [Architecture](/docs/architecture) page describes module layout.
+
+## When types lie
+
+Types are only honest if you:
+
+- Run `db:generate` after schema changes
+- Rebuild server before trusting web types in CI
+- Do not cast around `AppRouter` with `any`
+
+Arche gives you the graph—you still have to run the tasks.
+
+## Beyond TypeScript
+
+Rust fullstack uses explicit API boundaries instead of tRPC. Convex uses its client. The “glue” idea transfers: **one contract surface, thin apps**.
+
+Start here: [Getting started](/docs/getting-started) and scaffold:
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+```

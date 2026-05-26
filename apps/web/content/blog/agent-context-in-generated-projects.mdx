@@ -1,30 +1,60 @@
 ---
-title: Agent context in generated projects
-description: What Arche writes for coding agents and how to keep it accurate.
+title: What lands in a generated repo for agents
+description: AGENTS.md, .docs, .plans, and arche.json—and how to keep them honest after you ship.
 date: '2026-05-15'
 category: guide
 ---
 
-Every serious Arche preset can emit a compact context map so agents load the right files—not the entire repository.
+Every serious Arche preset aims to leave you with a repo that explains **how to work on itself**. This is the file-level checklist.
 
-## Files you should expect
+## Canonical files
 
-| File         | Role                                |
-| ------------ | ----------------------------------- |
-| `AGENTS.md`  | Canonical map for humans and agents |
-| `CLAUDE.md`  | Symlink to `AGENTS.md` when enabled |
-| `.docs/`     | Internal architecture topics        |
-| `.plans/`    | Approved in-flight work only        |
-| `arche.json` | Machine-readable scaffold metadata  |
+### `AGENTS.md`
 
-## How agents should navigate
+The entry map. Lists:
 
-1. Read root `AGENTS.md`.
-2. Open the nearest workspace `AGENTS.md` for the package being edited.
-3. Load **one** matching `.plans/active/` file when executing approved work.
+- Stack and package manager for **this** tree
+- Commands that actually exist in `package.json`
+- Pointers to `.docs/` topics and deployment notes
+- What not to load (archived plans, unrelated apps)
 
-## Maintenance rule
+Other agent instruction files should symlink or point here—not fork the content.
 
-When you change commands, env names, or preset behavior, update the nearest `AGENTS.md` and the owning doc topic. The public site must never claim features the generator does not produce.
+### `.docs/`
 
-See the full guide: [/docs/guides/agent-context](/docs/guides/agent-context).
+Internal topics—architecture, deployment, feature notes. Structured for agents and maintainers, not for marketing. When you change how auth or deploy works, update the **nearest** topic and the root map.
+
+### `.plans/active/`
+
+One approved in-flight plan. Arche does not generate a pile of stale roadmaps. If you use plans, archive completed work to `.plans/archive/` and keep a single active file.
+
+### `arche.json`
+
+Machine-readable record of the scaffold command and options. Useful when you ask “how was this repo produced?” six months later.
+
+## What is intentionally missing
+
+- `.cursor/rules/` / `.claude/rules/` duplication
+- Claims like “production ready” without verification evidence
+- Commands from the **source template** mixed into generated scripts
+
+## Keeping context accurate
+
+| You changed…         | Update…                                                     |
+| -------------------- | ----------------------------------------------------------- |
+| Env var names        | `.env.example`, `AGENTS.md`, relevant `.docs/` deploy topic |
+| Package scope rename | Root `AGENTS.md` + workspace maps                           |
+| New app in monorepo  | Nearest workspace `AGENTS.md`                               |
+| Deployment host      | `.docs/` deploy topic + web/API env examples                |
+
+Or run:
+
+```bash
+bun run dev:cli -- add agent-docs ./my-app
+```
+
+## Verify against the preset
+
+Support labels (**Requires validation**, etc.) describe the **generator**, not your fork. After heavy customization, your repo is yours—treat `AGENTS.md` as living documentation.
+
+Deep dive: [Agent context guide](/docs/guides/agent-context) and [CLI generated output](/docs/cli/generated-output).

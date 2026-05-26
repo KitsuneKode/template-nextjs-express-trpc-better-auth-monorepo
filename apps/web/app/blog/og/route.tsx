@@ -4,7 +4,7 @@ import { getArcheMarkDataUri } from '@/lib/brand/mark-data-uri'
 
 export function GET(request: Request) {
   const { searchParams } = new URL(request.url)
-  const title = searchParams.get('title')?.slice(0, 120) ?? 'Arche journal'
+  const title = searchParams.get('title')?.slice(0, 120) ?? 'Arche blog'
 
   return new ImageResponse(
     <div
@@ -23,7 +23,7 @@ export function GET(request: Request) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
         <img src={getArcheMarkDataUri()} alt="" width={48} height={48} />
         <span style={{ fontSize: 20, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-          Arche journal
+          Arche blog
         </span>
       </div>
       <h1

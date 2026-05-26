@@ -1,25 +1,61 @@
 ---
-title: The Agent-First Philosophy
-description: Why Arche generates agent context files alongside human-oriented docs.
+title: Why agent context ships with the scaffold
+description: Humans read READMEs; agents need a map. Arche generates both on purpose.
 date: '2026-05-18'
 category: technical
 ---
 
-In 2026, we are no longer just writing code for other humans to read. We are writing code to be co-authored by AI agents. That shift requires a fundamental change in how we structure repositories.
+If you use coding agents, the repository is part of the user interface. A 200-file monorepo dumped into a context window is not documentation—it is noise with good intentions.
 
-## Beyond standard templates
+Arche generates a **small map** so agents know where to look next.
 
-Most templates focus on human developer experience. Arche also optimizes for **agent experience**: one canonical `AGENTS.md` map, scoped `.docs/` topics, and `.plans/` for approved in-flight work.
+## The problem with “just read the codebase”
 
-## Strict boundaries for clear reasoning
+Agents are good at local edits and bad at global orientation when every session starts cold. Teams responded with:
 
-AI models reason better when context is bounded. Generated monorepos keep feature logic in explicit workspaces so an agent working in `packages/auth` is not forced to load unrelated UI code.
+- Giant `README.md` files nobody maintains
+- Duplicate `.cursor/rules` and `.claude/rules` trees that contradict each other
+- Copy-pasted “production ready” claims with no verification path
 
-## What we do not generate
+Arche’s answer is boring on purpose: **one canonical `AGENTS.md`**, scoped `.docs/` topics, and `.plans/active/` for approved work.
 
-Arche does not ship duplicate `.cursor/rules/` or `.claude/rules/` trees. The canonical map stays in `AGENTS.md` so prompts stay small and truthful.
+## What gets generated
 
-## Next steps
+```text
+AGENTS.md              # Start here — other agent files point here
+CLAUDE.md -> AGENTS.md # When the preset enables it
+.docs/                 # Architecture, deploy, features (internal)
+.plans/active/         # One in-flight plan at a time
+arche.json             # Reproducibility metadata (command + choices)
+```
 
-- Read the [agent context guide](/docs/guides/agent-context)
-- Compare presets on [/families](/families)
+We explicitly **do not** generate duplicate rule forests. If your team wants Cursor rules, add them as a conscious choice—not as hidden template bloat.
+
+## How agents should work
+
+1. Read root `AGENTS.md`
+2. Read the nearest workspace `AGENTS.md` when touching a package
+3. Load **one** matching `.plans/active/` file for approved work
+4. Pull a single `.docs/` topic when the task needs depth
+
+That workflow is documented on [Agent context](/docs/guides/agent-context) with a visual map.
+
+## Humans still matter
+
+Agent context does not replace:
+
+- Code review
+- Your deployment env matrix
+- Deciding whether a preset is appropriate
+
+It reduces **repeated orientation cost** at the start of a session. The [Philosophy](/docs/philosophy) page explains what Arche refuses to claim—agents should inherit that honesty.
+
+## Repair path
+
+Renamed packages or changed deploy conventions? Regenerate context:
+
+```bash
+bun run dev:cli -- add agent-docs ./my-app
+```
+
+Same CLI, no mystery side channel.

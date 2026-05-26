@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'Arche journal',
+    title: 'Arche blog',
     description: 'Changelog, guides, and technical notes from the Arche project.',
     url: '/blog',
   },
@@ -36,13 +36,13 @@ export default async function BlogPage({ searchParams }: Props) {
       <Navbar />
       <SiteFrame>
         <HeroBlock
-          eyebrow={<StatusPill tone="muted">Writing</StatusPill>}
-          title="Arche"
-          outline="journal."
-          className="md:p-12"
+          eyebrow={<StatusPill tone="muted">Notes</StatusPill>}
+          title="Writing"
+          accent="about the vault."
+          size="md"
         >
-          Changelog entries, functional guides, and technical deep dives—one feed, filtered by
-          intent.
+          Changelog entries when something ships, guides when you need a path, technical posts when
+          the implementation is the story. Filter by intent—not hype.
         </HeroBlock>
 
         <section className="border-b border-zinc-800 bg-black px-6 py-6 md:px-12">

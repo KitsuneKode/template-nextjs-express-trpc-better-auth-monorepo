@@ -1,24 +1,58 @@
 ---
-title: Monorepo vs Polyrepo in 2026
-description: How Turborepo task graphs and shared contracts keep mid-size teams fast.
+title: When a monorepo is worth the overhead
+description: Turborepo graphs, shared packages, and the point where splitting repos hurts more than it helps.
 date: '2026-05-10'
 category: technical
 ---
 
-For high-velocity teams, the monorepo has won—when task orchestration and boundaries are explicit.
+Monorepos are not a moral good. They are a **coordination technology**: one graph of tasks, shared types, and atomic changes across apps. Arche defaults to a monorepo for TypeScript fullstack because the product shape is inherently multi-surface (web, API, worker, packages).
 
-## Scaling without friction
+## When a monorepo wins
 
-Arche uses Turborepo pipelines so a change in `packages/auth` only rebuilds and retests direct dependents. Remote cache is optional and must be configured deliberately; it is not enabled by default in generated projects.
+- **Shared contracts** — `packages/trpc` and `packages/store` change with `apps/server` and `apps/web` in one commit
+- **One CI graph** — Turborepo runs lint/typecheck/test/build in dependency order
+- **One catalog** — Bun or pnpm workspace catalogs keep versions aligned
+- **Agent context** — a single `AGENTS.md` map with workspace children
 
-## Shared types, shared success
+That is the TypeScript fullstack preset in one sentence.
 
-The TypeScript fullstack preset shares API contracts through `packages/trpc`, which re-exports `AppRouter` from the server. The web app imports **types only**, avoiding duplicated router logic.
+## When to split repos
 
-```typescript
-import type { AppRouter } from '@arche-template/trpc'
+Consider separate repositories when:
+
+- Release cadences are completely independent **and** you accept manual contract versioning
+- Teams have hard legal/security boundaries between artifacts
+- The “shared” code is tiny relative to coordination tax
+
+Arche does not forbid polyrepo workflows—it simply optimizes for the case where you are building a product, not publishing a library in isolation.
+
+## Turborepo in generated projects
+
+Root `turbo.json` is **rendered**, not copied blindly:
+
+- Transit nodes for dev servers
+- `db:*` when Prisma exists
+- `mdx:generate` when the web app ships Fumadocs content
+
+Remote cache is **not** promised by default. You can wire CI credentials later; the template does not claim remote cache is on.
+
+## Boundaries that matter
+
+```text
+apps/*     → compose features, stay thin
+packages/* → domain logic, no UI imports
 ```
 
-## Conclusion
+The [Architecture](/docs/architecture) page shows the TypeScript layout. Breaking the rule (“just this once import Prisma in a component”) is how monorepos become mud.
 
-A monorepo is not “all code in one folder.” It is one engineering system: boundaries, verification, and docs that stay aligned.
+## Package managers
+
+Bun default, pnpm where verified. See [Package managers](/docs/guides/package-managers). Mixing lockfiles after scaffold is self-inflicted pain.
+
+## Solana and Rust presets
+
+Not every preset is a JS monorepo—Rust uses Cargo workspaces; Solana splits program/client/mobile. The monorepo lesson still applies: **one graph, explicit boundaries**, different manifests.
+
+## Practical takeaway
+
+If you are building a fullstack product with shared types, start monorepo. If you are publishing a single npm package, use a library preset or another tool. Arche’s [`typescript-fullstack`](/docs/presets) is aimed squarely at the first case.
