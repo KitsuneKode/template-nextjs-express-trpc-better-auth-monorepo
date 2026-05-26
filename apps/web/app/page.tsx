@@ -1,8 +1,19 @@
+import { Metadata } from 'next'
+
 import { AnimatedTerminal } from '@/components/arche/animated-terminal'
 import { ArchitectureGraph } from '@/components/arche/architecture-graph'
 import { FeatureGrid } from '@/components/arche/feature-grid'
 import { Navbar } from '@/components/arche/navbar'
 import { PrimaryLink, SiteFrame, SiteShell, StatusPill } from '@/components/arche/site-primitives'
+import { buildPageMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Scaffold the boring parts',
+  description:
+    'A personal vault for serious starts—TypeScript fullstack, Convex + Next.js, Rust, and Solana—with deployment notes and agent context that still makes sense after the first commit.',
+  path: '/',
+  ogImagePath: '/opengraph-image',
+})
 
 export default function LandingPage() {
   return (

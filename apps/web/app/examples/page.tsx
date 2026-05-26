@@ -1,15 +1,16 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { CodeExample } from '@/components/arche/code-example'
 import { Navbar } from '@/components/arche/navbar'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: 'Code examples',
   description:
     'Generated wiring snippets for TypeScript, Convex, Rust, Solana, and CLI automation.',
-}
+  path: '/examples',
+})
 
 export default function ExamplesPage() {
   return (

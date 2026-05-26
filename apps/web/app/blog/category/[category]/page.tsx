@@ -9,6 +9,7 @@ import {
   getPublishedBlogSummaries,
 } from '@/lib/blog'
 import { isBlogCategory, type BlogCategory } from '@/lib/blog-source'
+import { buildPageMetadata } from '@/lib/seo'
 
 const CATEGORY_META: Record<BlogCategory, { title: string; description: string }> = {
   changelog: {
@@ -42,18 +43,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const meta = CATEGORY_META[category]
-  const canonical = `/blog/category/${category}`
+  const path = `/blog/category/${category}`
 
-  return {
+  return buildPageMetadata({
     title: meta.title,
     description: meta.description,
-    alternates: { canonical },
-    openGraph: {
-      title: `${meta.title} | Arche blog`,
-      description: meta.description,
-      url: canonical,
-    },
-  }
+    path,
+  })
 }
 
 export default async function BlogCategoryPage({ params }: Props) {

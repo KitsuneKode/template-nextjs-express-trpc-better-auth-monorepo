@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 
 import { FamilyTable } from '@/components/arche/family-table'
@@ -11,11 +10,13 @@ import {
   StatusPill,
 } from '@/components/arche/site-primitives'
 import { VerificationMatrixTable } from '@/components/arche/verification-matrix-table'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = buildPageMetadata({
   title: 'Architecture Families',
   description: 'Compare Arche presets, capabilities, and verification evidence before scaffolding.',
-}
+  path: '/families',
+})
 
 export default function FamiliesPage() {
   return (

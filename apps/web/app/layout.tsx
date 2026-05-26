@@ -1,12 +1,12 @@
-import type { Metadata } from 'next'
 import { Fira_Code, Oxanium } from 'next/font/google'
 import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 import '@arche-template/ui/globals.css'
 import '@/styles/docs-prose.css'
 import { Providers } from '@/components/providers'
+import { SiteJsonLd } from '@/components/seo/site-json-ld'
 import { RouteTopLoaderClient } from '@/components/shell/route-top-loader-client'
-import { env } from '@/env'
+import { buildRootLayoutMetadata } from '@/lib/seo'
 
 const oxanium = Oxanium({
   subsets: ['latin'],
@@ -20,24 +20,7 @@ const firaCode = Fira_Code({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
-  title: {
-    default: 'Arche — scaffold CLI & docs',
-    template: '%s | Arche',
-  },
-  description:
-    'Personal scaffolding vault for TypeScript, Rust, and Solana—with deployment notes and agent context that stays accurate.',
-  openGraph: {
-    title: 'Arche — scaffold CLI',
-    description:
-      'Generate workspaces with typed boundaries, optional Rust and Solana routes, and agent-readable project maps.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-  },
-  robots: { index: true, follow: true },
-}
+export const metadata = buildRootLayoutMetadata()
 
 export default function RootLayout({
   children,
@@ -51,6 +34,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="bg-black font-sans text-white antialiased">
+        <SiteJsonLd />
         <Suspense fallback={null}>
           <RouteTopLoaderClient />
         </Suspense>

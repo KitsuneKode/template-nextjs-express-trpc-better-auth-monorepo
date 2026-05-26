@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { cacheLife } from 'next/cache'
 
-import { env } from '@/env'
 import { blogSource, isBlogCategory, type BlogCategory } from '@/lib/blog-source'
+import { absoluteSiteUrl, buildPageMetadata, routeOgImagePath } from '@/lib/seo'
 
 export type BlogPage = ReturnType<typeof blogSource.getPages>[number]
 
@@ -85,8 +85,7 @@ export function blogPostPath(slug: string): string {
 }
 
 export function blogPostAbsoluteUrl(slug: string): string {
-  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
-  return `${base}${blogPostPath(slug)}`
+  return absoluteSiteUrl(blogPostPath(slug))
 }
 
 export function blogPostOgImagePath(slug: string, image?: string): string {
@@ -96,7 +95,7 @@ export function blogPostOgImagePath(slug: string, image?: string): string {
   if (image?.startsWith('/')) {
     return image
   }
-  return blogPostPath(slug) + '/opengraph-image'
+  return routeOgImagePath(blogPostPath(slug))
 }
 
 /** @deprecated Prefer blogPostOgImagePath(slug) for per-post build-time OG images. */
@@ -110,12 +109,7 @@ export function blogOgImagePath(title: string, image?: string): string {
   return `/blog/og?title=${encodeURIComponent(title)}`
 }
 
-export function absoluteSiteUrl(path: string): string {
-  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
-  return path.startsWith('http://') || path.startsWith('https://')
-    ? path
-    : `${base}${path.startsWith('/') ? path : `/${path}`}`
-}
+export { absoluteSiteUrl } from '@/lib/seo'
 
 export function blogPostOgAbsoluteUrl(slug: string, image?: string): string {
   return absoluteSiteUrl(blogPostOgImagePath(slug, image))
@@ -150,32 +144,15 @@ export function formatBlogDate(date: string, options?: { includeRelative?: boole
 export function buildBlogPostMetadata(page: BlogPage): Metadata {
   const data = getBlogFrontmatter(page)
   const slug = page.slugs[0] ?? ''
-  const title = data.title
-  const description = data.description
-  const canonicalPath = blogPostPath(slug)
-  const canonical = absoluteSiteUrl(canonicalPath)
-  const ogImagePath = blogPostOgImagePath(slug, data.image)
-  const ogImage = absoluteSiteUrl(ogImagePath)
-
-  return {
-    title,
-    description,
-    alternates: { canonical },
-    authors: data.author ? [{ name: data.author }] : [{ name: 'KitsuneKode' }],
+  const path = blogPostPath(slug)
+  return buildPageMetadata({
+    title: data.title,
+    description: data.description,
+    path,
+    ogImagePath: blogPostOgImagePath(slug, data.image),
+    ogType: 'article',
+    publishedTime: data.date,
     keywords: data.tags,
-    openGraph: {
-      title,
-      description,
-      type: 'article',
-      publishedTime: data.date,
-      url: canonical,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: [ogImage],
-    },
-  }
+    authors: data.author ? [{ name: data.author }] : [{ name: 'KitsuneKode' }],
+  })
 }
