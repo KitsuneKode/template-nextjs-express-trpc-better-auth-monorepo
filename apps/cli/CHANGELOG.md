@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2
+
+### Patch Changes
+
+- 2e2410f: Add generated-project verification, Solana preset foundations, shell completions,
+  and release-readiness scaffolding for the Arche CLI.
+
 ## 0.2.0 (unreleased)
 
 ### Added
