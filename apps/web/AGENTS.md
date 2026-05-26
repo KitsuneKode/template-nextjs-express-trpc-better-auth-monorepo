@@ -52,7 +52,7 @@ If you touched `packages/registry`, `packages/ui`, or shared toolings, run step 
 ## Public content map
 
 - **Docs (Fumadocs MDX):** All public docs live in `content/docs/**` (~34 pages), rendered at `/docs/*` via `app/docs/[[...slug]]/page.tsx`, `lib/source.ts`, and `.source/server.ts` (run `bun run mdx:generate` / `postinstall` before `check-types`). IA in `content/docs/meta.json` + `components/docs/docs-sidebar.tsx` (walkthroughs, polyglot architecture, operations depth). Reading UX: `DocsTocRail`, `PackageManagerTabs`, `Mermaid` MDX component. `/docs` redirects to `/docs/getting-started` in `next.config.js`. Legacy paths (`/docs/auth`, `/docs/deploy`, …) redirect to `packages/*` and `operations/*` MDX routes. Tests: `app/docs-links.test.ts`.
-- **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; static index at `/blog` and `/blog/category/[category]`; per-post OG at `/blog/[slug]/opengraph-image`; favicon `app/icon.svg` must match `public/brand/arche-mark.svg`. Tests: `app/blog-seo.test.ts`.
+- **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO in `lib/seo.ts` + cached indexes in `lib/content-cache.ts`; docs OG at `/docs/og/[...slug]` (catch-all pages cannot use `opengraph-image.tsx`); RSS at `/rss.xml`; per-post OG at `/blog/[slug]/opengraph-image`. Tests: `app/seo.test.ts`.
 - **Presets table:** `lib/presets-public.ts` (re-exports `packages/registry` display data).
 - **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).
 - **Showcase:** `/showcase` returns 404 in production (`NODE_ENV === 'production'`).

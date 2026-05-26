@@ -1,9 +1,11 @@
-import { getPublishedBlogSummaries } from '@/lib/blog'
+import type { BlogPostSummary } from '@/lib/blog'
 import { absoluteSiteUrl, defaultOgImageAbsoluteUrl, SITE_DESCRIPTION, SITE_NAME } from '@/lib/seo'
 
-export async function BlogJsonLd() {
-  const posts = await getPublishedBlogSummaries()
+type Props = {
+  posts: BlogPostSummary[]
+}
 
+export function BlogJsonLd({ posts }: Props) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Blog',

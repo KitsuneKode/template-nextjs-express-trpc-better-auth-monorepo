@@ -7,9 +7,9 @@ process.env.NEXT_PUBLIC_API_URL = 'https://api.arche.test'
 
 describe('route discovery controls', () => {
   it('keeps design lab out of public discovery routes', async () => {
-    const [{ default: robots }, { default: sitemap }] = await Promise.all([
+    const [{ default: robots }, { buildSitemapEntries }] = await Promise.all([
       import('./robots'),
-      import('./sitemap'),
+      import('@/lib/sitemap-data'),
     ])
 
     const rules = robots().rules
@@ -19,7 +19,8 @@ describe('route discovery controls', () => {
       }),
     )
 
-    expect(sitemap().map((entry) => entry.url)).not.toContain('https://arche.test/__design-lab')
-    expect(sitemap().map((entry) => entry.url)).not.toContain('https://arche.test/showcase')
+    const urls = buildSitemapEntries('https://arche.test').map((entry) => entry.url)
+    expect(urls).not.toContain('https://arche.test/__design-lab')
+    expect(urls).not.toContain('https://arche.test/showcase')
   })
 })

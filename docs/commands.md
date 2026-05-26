@@ -33,7 +33,9 @@
 
 ## Build and checks
 
-- `bun run ci` - Full local CI ladder (format, turbo lint/types, test, build, docs, pkg:check, repo doctor).
+- `bun run ci:min` - Minimum pre-push ladder: format, lint/types, test, **build** (all packages).
+- `bun run ci:min:affected` - Same minimum ladder with Turbo `--affected` (needs a valid merge base).
+- `bun run ci` - Full local CI ladder (format, turbo lint/types, test, build, pkg:check, repo doctor).
 - `bun run ci:affected` - Same ladder with Turbo `--affected` (needs a valid merge base).
 - `bun run secret-scan` - Full-repo gitleaks scan (requires gitleaks CLI).
 - `bun run secret-scan:staged` - Scan staged files only (same as pre-commit).

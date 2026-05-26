@@ -33,6 +33,16 @@ export function routeOgImageAbsoluteUrl(routePath: string): string {
   return absoluteSiteUrl(routeOgImagePath(routePath))
 }
 
+/** Docs use `/docs/og/[...slug]` — catch-all pages cannot host `opengraph-image.tsx`. */
+export function docsOgImagePath(docPath: string): string {
+  const slug = docPath.replace(/^\/docs\/?/, '')
+  return slug ? `/docs/og/${slug}` : '/docs/og/getting-started'
+}
+
+export function docsOgImageAbsoluteUrl(docPath: string): string {
+  return absoluteSiteUrl(docsOgImagePath(docPath))
+}
+
 type BuildPageMetadataOptions = {
   title: string
   description?: string
@@ -151,6 +161,6 @@ export function buildDocsPageMetadata(page: DocsPage): Metadata {
     title: page.data.title,
     description: page.data.description,
     path: page.url,
-    ogImagePath: routeOgImagePath(page.url),
+    ogImagePath: docsOgImagePath(page.url),
   })
 }

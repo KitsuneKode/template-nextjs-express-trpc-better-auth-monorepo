@@ -20,7 +20,7 @@ export default async function BlogPage() {
 
   return (
     <BlogIndexShell activeCategory="all">
-      <BlogJsonLd />
+      <BlogJsonLd posts={posts} />
       <BlogPostFeed posts={posts} />
     </BlogIndexShell>
   )

@@ -1,12 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { cacheLife } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 
 import { countWords, formatReadingTime } from '@/lib/reading-time'
 
 export async function readingTimeForBlogSlug(slug: string): Promise<string> {
   'use cache'
   cacheLife('max')
+  cacheTag('site-content', 'blog', slug)
 
   const filePath = path.join(process.cwd(), 'content/blog', `${slug}.mdx`)
   try {

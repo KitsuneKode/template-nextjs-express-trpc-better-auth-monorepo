@@ -1,5 +1,5 @@
 import { breadcrumbListJsonLd, buildDocsBreadcrumbs } from '@/lib/docs-breadcrumbs'
-import { absoluteSiteUrl, routeOgImageAbsoluteUrl } from '@/lib/seo'
+import { absoluteSiteUrl, docsOgImageAbsoluteUrl } from '@/lib/seo'
 
 type Props = {
   title: string
@@ -10,7 +10,7 @@ type Props = {
 
 export function DocsPageJsonLd({ title, description, path, slug }: Props) {
   const url = absoluteSiteUrl(path)
-  const image = routeOgImageAbsoluteUrl(path)
+  const image = docsOgImageAbsoluteUrl(path)
   const breadcrumbs = breadcrumbListJsonLd(buildDocsBreadcrumbs(slug, title))
 
   const jsonLd = {

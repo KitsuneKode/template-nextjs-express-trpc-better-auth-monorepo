@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og'
 
-import { getBlogCategory, getBlogFrontmatter } from '@/lib/blog'
+import { getBlogFrontmatter } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
+import { getCachedBlogOgFields } from '@/lib/content-cache'
 import { OgShell, ogImageContentType, ogImageSize } from '@/lib/og/shell'
 
 export const alt = 'Arche blog post'
@@ -26,10 +27,7 @@ export function generateStaticParams() {
 
 export default async function Image({ params }: Props) {
   const { slug } = await params
-  const page = blogSource.getPage([slug])
-  const title = page ? getBlogFrontmatter(page).title : 'Arche blog'
-  const category = page ? getBlogCategory(page) : 'technical'
-  const description = page ? getBlogFrontmatter(page).description : undefined
+  const { title, description, category } = await getCachedBlogOgFields(slug)
 
   return new ImageResponse(
     <OgShell

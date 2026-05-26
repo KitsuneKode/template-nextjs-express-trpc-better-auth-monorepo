@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { cacheLife } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 
 import { blogSource, isBlogCategory, type BlogCategory } from '@/lib/blog-source'
 import { absoluteSiteUrl, buildPageMetadata, routeOgImagePath } from '@/lib/seo'
@@ -64,6 +64,7 @@ function toBlogPostSummary(page: BlogPage): BlogPostSummary {
 export async function getPublishedBlogSummaries(): Promise<BlogPostSummary[]> {
   'use cache'
   cacheLife('max')
+  cacheTag('site-content', 'blog')
 
   return blogSource
     .getPages()
