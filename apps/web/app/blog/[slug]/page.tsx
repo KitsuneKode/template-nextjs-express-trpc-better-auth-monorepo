@@ -29,9 +29,12 @@ export async function generateMetadata({ params }: Props) {
 export function generateStaticParams() {
   return blogSource
     .getPages()
-    .filter((page) => !getBlogFrontmatter(page).draft)
+    .filter((page) => {
+      const slug = page.slugs[0]
+      return Boolean(slug) && !getBlogFrontmatter(page).draft
+    })
     .map((page) => ({
-      slug: page.slugs[0],
+      slug: page.slugs[0] as string,
     }))
 }
 
@@ -43,6 +46,7 @@ export default async function BlogPostPage({ params }: Props) {
   const data = getBlogFrontmatter(page)
   const MDX = page.data.body
   const category = getBlogCategory(page)
+  const readingTime = await readingTimeForBlogSlug(slug)
 
   const meta = (
     <>
@@ -60,7 +64,7 @@ export default async function BlogPostPage({ params }: Props) {
       </span>
       <span className="size-1 rounded-full bg-zinc-700" aria-hidden />
       <span className="font-mono text-[10px] tracking-[0.18em] text-zinc-600 uppercase tabular-nums">
-        {readingTimeForBlogSlug(slug)}
+        {readingTime}
       </span>
       {data.tags?.map((tag) => (
         <span

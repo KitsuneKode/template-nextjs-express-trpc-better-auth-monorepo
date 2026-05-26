@@ -5,7 +5,7 @@ import { Toaster } from 'sonner'
 import '@arche-template/ui/globals.css'
 import '@/styles/docs-prose.css'
 import { Providers } from '@/components/providers'
-import { RouteTopLoader } from '@/components/shell/route-top-loader'
+import { RouteTopLoaderClient } from '@/components/shell/route-top-loader-client'
 import { env } from '@/env'
 
 const oxanium = Oxanium({
@@ -52,7 +52,7 @@ export default function RootLayout({
     >
       <body className="bg-black font-sans text-white antialiased">
         <Suspense fallback={null}>
-          <RouteTopLoader />
+          <RouteTopLoaderClient />
         </Suspense>
         <Providers>{children}</Providers>
         <Toaster theme="dark" position="bottom-right" className="font-sans" />

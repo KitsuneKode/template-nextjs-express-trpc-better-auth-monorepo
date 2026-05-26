@@ -14,7 +14,7 @@ export function BlogCategoryNav({ activeCategory }: Props) {
       {BLOG_CATEGORIES.map((cat) => (
         <Link
           key={cat.id}
-          href={cat.id === 'all' ? '/blog' : `/blog?category=${cat.id}`}
+          href={cat.id === 'all' ? '/blog' : `/blog/category/${cat.id}`}
           className={cn(
             'inline-flex min-h-10 items-center border px-4 py-2 font-mono text-[10px] tracking-widest uppercase transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]',
             activeCategory === cat.id

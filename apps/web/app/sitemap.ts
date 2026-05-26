@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 
 import { env } from '@/env'
-import { getBlogFrontmatter } from '@/lib/blog'
+import { BLOG_CATEGORIES, getBlogFrontmatter } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
 import { source } from '@/lib/source'
 
@@ -42,5 +42,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }
     })
 
-  return [...staticEntries, ...docsEntries, ...blogEntries]
+  const blogCategoryEntries: MetadataRoute.Sitemap = BLOG_CATEGORIES.filter(
+    (cat) => cat.id !== 'all',
+  ).map((cat) => ({
+    url: `${base}/blog/category/${cat.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
+  return [...staticEntries, ...docsEntries, ...blogEntries, ...blogCategoryEntries]
 }

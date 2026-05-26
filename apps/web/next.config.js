@@ -13,6 +13,24 @@ const config = {
       { source: '/docs/deploy', destination: '/docs/operations/deploy', permanent: false },
       { source: '/docs/scaling', destination: '/docs/operations/scaling', permanent: false },
       { source: '/docs/security', destination: '/docs/operations/security', permanent: false },
+      {
+        source: '/blog',
+        has: [{ type: 'query', key: 'category', value: 'changelog' }],
+        destination: '/blog/category/changelog',
+        permanent: true,
+      },
+      {
+        source: '/blog',
+        has: [{ type: 'query', key: 'category', value: 'guide' }],
+        destination: '/blog/category/guide',
+        permanent: true,
+      },
+      {
+        source: '/blog',
+        has: [{ type: 'query', key: 'category', value: 'technical' }],
+        destination: '/blog/category/technical',
+        permanent: true,
+      },
     ]
   },
   turbopack: {

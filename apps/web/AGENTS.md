@@ -16,7 +16,7 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 - `app/layout.tsx` — metadata (`metadataBase` from `NEXT_PUBLIC_SITE_URL`)
 - `trpc/server.tsx` — `trpcCaller` for RSC; HTTP `trpc` proxy for client components
 - `trpc/client.tsx` — browser client
-- `components/providers.tsx`
+- `components/providers.tsx` — theme only (no root `TRPCReactProvider`; use `trpc/client` when a route needs hooks)
 - `env.ts`
 
 ## Data fetching (tRPC)
@@ -32,7 +32,7 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 ## Public content map
 
 - **Docs (Fumadocs MDX):** All public docs live in `content/docs/**` (~34 pages), rendered at `/docs/*` via `app/docs/[[...slug]]/page.tsx`, `lib/source.ts`, and `.source/server.ts` (run `bun run mdx:generate` / `postinstall` before `check-types`). IA in `content/docs/meta.json` + `components/docs/docs-sidebar.tsx` (walkthroughs, polyglot architecture, operations depth). Reading UX: `DocsTocRail`, `PackageManagerTabs`, `Mermaid` MDX component. `/docs` redirects to `/docs/getting-started` in `next.config.js`. Legacy paths (`/docs/auth`, `/docs/deploy`, …) redirect to `packages/*` and `operations/*` MDX routes. Tests: `app/docs-links.test.ts`.
-- **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; post OG at `/blog/og?title=…`; list uses Suspense for `?category=` (Cache Components).
+- **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; static index at `/blog` and `/blog/category/[category]`; per-post OG at `/blog/[slug]/opengraph-image`; favicon `app/icon.svg` must match `public/brand/arche-mark.svg`. Tests: `app/blog-seo.test.ts`.
 - **Presets table:** `lib/presets-public.ts` (re-exports `packages/registry` display data).
 - **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).
 - **Showcase:** `/showcase` returns 404 in production (`NODE_ENV === 'production'`).

@@ -89,6 +89,17 @@ export function blogPostAbsoluteUrl(slug: string): string {
   return `${base}${blogPostPath(slug)}`
 }
 
+export function blogPostOgImagePath(slug: string, image?: string): string {
+  if (image?.startsWith('http://') || image?.startsWith('https://')) {
+    return image
+  }
+  if (image?.startsWith('/')) {
+    return image
+  }
+  return blogPostPath(slug) + '/opengraph-image'
+}
+
+/** @deprecated Prefer blogPostOgImagePath(slug) for per-post build-time OG images. */
 export function blogOgImagePath(title: string, image?: string): string {
   if (image?.startsWith('http://') || image?.startsWith('https://')) {
     return image
@@ -97,6 +108,17 @@ export function blogOgImagePath(title: string, image?: string): string {
     return image
   }
   return `/blog/og?title=${encodeURIComponent(title)}`
+}
+
+export function absoluteSiteUrl(path: string): string {
+  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
+  return path.startsWith('http://') || path.startsWith('https://')
+    ? path
+    : `${base}${path.startsWith('/') ? path : `/${path}`}`
+}
+
+export function blogPostOgAbsoluteUrl(slug: string, image?: string): string {
+  return absoluteSiteUrl(blogPostOgImagePath(slug, image))
 }
 
 export function formatBlogDate(date: string, options?: { includeRelative?: boolean }): string {
@@ -130,8 +152,10 @@ export function buildBlogPostMetadata(page: BlogPage): Metadata {
   const slug = page.slugs[0] ?? ''
   const title = data.title
   const description = data.description
-  const canonical = blogPostPath(slug)
-  const ogImage = blogOgImagePath(title, data.image)
+  const canonicalPath = blogPostPath(slug)
+  const canonical = absoluteSiteUrl(canonicalPath)
+  const ogImagePath = blogPostOgImagePath(slug, data.image)
+  const ogImage = absoluteSiteUrl(ogImagePath)
 
   return {
     title,

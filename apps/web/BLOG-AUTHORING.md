@@ -12,7 +12,7 @@ date: '2026-05-26'
 category: guide # changelog | guide | technical
 draft: false # optional — hidden from index, RSS, and sitemap
 author: KitsuneKode # optional
-image: /brand/og-image.png # optional — absolute URL or site path; else /blog/og?title=…
+image: /brand/og-image.png # optional — absolute URL or site path; else /blog/[slug]/opengraph-image
 tags: # optional
   - presets
   - cli
@@ -36,7 +36,10 @@ bun run --cwd apps/web check-types
 
 ## Routes
 
-- Index: `/blog` (optional filter `?category=guide`)
-- Post: `/blog/[slug]`
+- Index: `/blog` (all posts, static)
+- Category: `/blog/category/changelog` | `guide` | `technical` (static)
+- Post: `/blog/[slug]` (e.g. `/blog/changelog-0-2-1`)
 - RSS: `/rss.xml`
-- OG fallback: `/blog/og?title=…`
+- OG image: `/blog/[slug]/opengraph-image` (build-time PNG; legacy fallback `/blog/og?title=…`)
+
+Old `?category=` URLs redirect to `/blog/category/…` via `next.config.js`.

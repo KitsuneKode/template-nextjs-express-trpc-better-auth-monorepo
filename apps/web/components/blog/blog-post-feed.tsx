@@ -1,20 +1,12 @@
 import Link from 'next/link'
 
-import {
-  filterBlogSummariesByCategory,
-  formatBlogDate,
-  getPublishedBlogSummaries,
-} from '@/lib/blog'
-import { isBlogCategory } from '@/lib/blog-source'
+import { formatBlogDate, type BlogPostSummary } from '@/lib/blog'
 
 type Props = {
-  category?: string
+  posts: BlogPostSummary[]
 }
 
-export async function BlogPostFeed({ category: categoryParam }: Props) {
-  const activeCategory = isBlogCategory(categoryParam) ? categoryParam : 'all'
-  const posts = filterBlogSummariesByCategory(await getPublishedBlogSummaries(), activeCategory)
-
+export function BlogPostFeed({ posts }: Props) {
   if (posts.length === 0) {
     return (
       <p className="p-6 font-mono text-sm tracking-wide text-zinc-500 uppercase md:p-12">
@@ -57,20 +49,6 @@ export async function BlogPostFeed({ category: categoryParam }: Props) {
             {post.description}
           </p>
         </Link>
-      ))}
-    </div>
-  )
-}
-
-export function BlogPostFeedSkeleton() {
-  return (
-    <div className="divide-y divide-zinc-800 border-b border-zinc-800" aria-busy="true">
-      {[0, 1, 2].map((key) => (
-        <div key={key} className="animate-pulse space-y-4 p-6 md:p-12">
-          <div className="h-3 w-32 rounded bg-zinc-900" />
-          <div className="h-8 w-3/4 max-w-lg rounded bg-zinc-900" />
-          <div className="h-4 w-full max-w-md rounded bg-zinc-900" />
-        </div>
       ))}
     </div>
   )
