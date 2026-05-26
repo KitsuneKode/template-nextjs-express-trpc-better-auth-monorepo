@@ -33,7 +33,7 @@ Legend: **R** = required, **O** = optional, **—** = do not set, **auto** = pla
 
 ## Local development
 
-- `apps/web/.env.example` → `apps/web/.env.local`
-- `apps/server/.env.example` → `apps/server/.env`
+Copy each app's env template locally (gitignored targets — see [env.md](./env.md)):
 
-See [env.md](./env.md).
+- Web: `apps/web/.env.example`
+- API: `apps/server/.env.example`
