@@ -49,8 +49,8 @@ function toBlogPostSummary(page: BlogPage): BlogPostSummary {
   return {
     slug: page.slugs[0] ?? '',
     url: page.url,
-    title: data.title,
-    description: data.description,
+    title: data.title ?? 'Untitled',
+    description: data.description ?? '',
     date: data.date,
     category: getBlogCategory(page),
     draft: data.draft,

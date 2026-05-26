@@ -9,6 +9,11 @@
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
+function vercelWebOrigin(): string | undefined {
+  const host = process.env.VERCEL_URL?.trim()
+  return host ? `https://${host}` : undefined
+}
+
 export const clientEnv = createEnv({
   server: {},
   client: {
@@ -17,10 +22,11 @@ export const clientEnv = createEnv({
   },
   clientPrefix: 'NEXT_PUBLIC_',
   runtimeEnvStrict: {
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? vercelWebOrigin(),
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   emptyStringAsUndefined: true,
+  skipValidation: !!process.env.CI,
 })
 
 export type ClientEnv = typeof clientEnv

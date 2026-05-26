@@ -1,8 +1,8 @@
 import { env } from '@/env'
 import { blogPostAbsoluteUrl, getPublishedBlogSummaries } from '@/lib/blog'
 
-function escapeXml(value: string): string {
-  return value
+function escapeXml(value: string | undefined | null): string {
+  return String(value ?? '')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')

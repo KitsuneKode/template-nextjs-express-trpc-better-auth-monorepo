@@ -11,6 +11,11 @@ Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **exte
 - Cause: `NEXT_PUBLIC_SITE_URL` missing or set to a placeholder, and `skipValidation` on Vercel skipped Zod defaults.
 - Fix: set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_APP_URL` to your production web URL, or rely on the template’s `VERCEL_URL` fallback (see `apps/web/env.ts`). Do not set env values to the literal string `undefined`.
 
+**`/rss.xml` prerender: `Cannot read properties of undefined (reading 'replaceAll')`**
+
+- Cause: optional `NEXT_PUBLIC_SITE_NAME` / `NEXT_PUBLIC_SITE_DESCRIPTION` unset while `CI=1` skips Zod defaults.
+- Fix: set those keys on the web project (recommended), or redeploy after `apps/web/env.ts` runtime fallbacks (template main ≥ 2026-05-26).
+
 ## Project 1 — Web (`apps/web`)
 
 | Setting        | Value                                        |
