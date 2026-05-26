@@ -83,8 +83,11 @@ describe('template stub file integrity', () => {
   it('convex has app/ and convex/ directories', () => {
     expect(existsSync(join(TEMPLATES_DIR, 'convex', 'app', 'layout.tsx'))).toBe(true)
     expect(existsSync(join(TEMPLATES_DIR, 'convex', 'app', 'page.tsx'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'app', 'providers.tsx'))).toBe(true)
     expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex', 'auth.ts'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex', 'posts.ts'))).toBe(true)
     expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex', 'schema.ts'))).toBe(true)
+    expect(existsSync(join(TEMPLATES_DIR, 'convex', 'convex.json'))).toBe(true)
   })
 
   it('rust has src/ with main.rs', () => {

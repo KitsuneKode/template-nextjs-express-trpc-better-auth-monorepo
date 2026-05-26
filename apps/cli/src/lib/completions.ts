@@ -16,6 +16,7 @@ const PRESETS = [
   'typescript-fullstack',
   'rust-api',
   'rust-fullstack',
+  'convex-product',
   'solana-program',
   'solana-web',
   'solana-mobile',

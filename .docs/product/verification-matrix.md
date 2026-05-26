@@ -5,7 +5,7 @@ called `Stable` after its advertised package-manager/runtime routes pass the
 relevant generated-project checks.
 
 The code-level guard lives in
-`apps/cli/src/registry/verification-matrix.ts`.
+`packages/registry/src/verification-matrix.ts` (re-exported by `apps/cli`).
 The generated-output harness lives in
 `apps/cli/src/lib/generated-project-verifier.ts` and is exposed through
 `bun run verify:generated`.
@@ -18,17 +18,18 @@ The generated-output harness lives in
 
 ## Current evidence
 
-| Preset                 | Structure | Bun | pnpm | Install | Lint | Typecheck | Test | Build | Docs/agent | Rust gates | Solana gates | Deploy |
-| ---------------------- | --------- | --- | ---- | ------- | ---- | --------- | ---- | ----- | ---------- | ---------- | ------------ | ------ |
-| `typescript-fullstack` | yes       | yes | yes  | no      | no   | no        | no   | no    | yes        | n/a        | n/a          | no     |
-| `rust-api`             | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
-| `rust-fullstack`       | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | no     |
-| `solana-program`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
-| `solana-web`           | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
-| `solana-mobile`        | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
-| `solana-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | no     |
-| `customize`            | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
-| `experiments`          | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | no     |
+| Preset                 | Structure | Bun | pnpm | Install | Lint | Typecheck | Test | Build | Docs/agent | Rust gates | Solana gates | Convex | Deploy |
+| ---------------------- | --------- | --- | ---- | ------- | ---- | --------- | ---- | ----- | ---------- | ---------- | ------------ | ------ | ------ |
+| `typescript-fullstack` | yes       | yes | yes  | no      | no   | no        | no   | no    | yes        | n/a        | n/a          | n/a    | no     |
+| `rust-api`             | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | n/a    | no     |
+| `rust-fullstack`       | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | no         | n/a          | n/a    | no     |
+| `convex-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | yes        | n/a        | n/a          | yes    | no     |
+| `solana-program`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | n/a    | no     |
+| `solana-web`           | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | n/a    | no     |
+| `solana-mobile`        | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | n/a    | no     |
+| `solana-product`       | yes       | yes | no   | no      | no   | no        | no   | no    | no         | n/a        | yes          | n/a    | no     |
+| `customize`            | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | n/a    | no     |
+| `experiments`          | no        | no  | no   | no      | no   | no        | no   | no    | no         | n/a        | n/a          | n/a    | no     |
 
 ## Current proof sources
 
@@ -42,6 +43,8 @@ The generated-output harness lives in
   `apps/cli/tests/preset-scaffold.test.ts`.
 - Rust generated Cargo workspace check:
   `bun run verify:generated -- --preset=rust-api,rust-fullstack --run=cargo-check`.
+- Convex product structure and agent context:
+  `apps/cli/tests/convex-preset.test.ts`.
 - Solana program/web/mobile/product structure and Bun workspace output:
   `apps/cli/tests/solana-preset.test.ts`.
 - Solana generated Anchor build:
@@ -66,5 +69,7 @@ Before any preset becomes `Stable`, add generated-project checks that prove:
 - Rust routes pass Cargo workspace checks and Rust quality gates;
 - Solana routes generate the expected Anchor/client/mobile/web boundaries and
   pass available local Solana/Anchor checks;
+- Convex routes generate Next.js + `convex/` boundaries and pass Convex dev/deploy
+  checks where advertised;
 - deployment docs/config match the generated shape;
 - generated `AGENTS.md`, `.docs`, `.plans`, and `arche.json` remain accurate.

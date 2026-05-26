@@ -1,11 +1,20 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+
 import { FamilyTable } from '@/components/arche/family-table'
 import { Navbar } from '@/components/arche/navbar'
-import { HeroBlock, SiteFrame, SiteShell, StatusPill } from '@/components/arche/site-primitives'
+import {
+  HeroBlock,
+  SectionHeading,
+  SiteFrame,
+  SiteShell,
+  StatusPill,
+} from '@/components/arche/site-primitives'
+import { VerificationMatrixTable } from '@/components/arche/verification-matrix-table'
 
 export const metadata: Metadata = {
   title: 'Architecture Families',
-  description: 'Compare and choose the best starter template for your next project.',
+  description: 'Compare Arche presets, capabilities, and verification evidence before scaffolding.',
 }
 
 export default function FamiliesPage() {
@@ -15,16 +24,34 @@ export default function FamiliesPage() {
 
       <SiteFrame>
         <HeroBlock
-          eyebrow={<StatusPill tone="muted">Preset families</StatusPill>}
-          title="Pick your"
-          outline="foundation."
+          eyebrow={<StatusPill tone="muted">Presets</StatusPill>}
+          title="Choose a route,"
+          accent="not a vibe."
+          size="md"
         >
-          Choose the architecture route first, then let the CLI generate only the workspaces,
-          package scopes, docs, and verification hooks that belong to that route.
+          Pick the architecture first—TypeScript fullstack, Convex + Next.js, Rust API, Solana web,
+          and others. The CLI generates scopes, docs, and verification hooks that match that route.
+          No preset is marked Stable until the verification matrix proves it.
         </HeroBlock>
 
-        <section className="flex-1 bg-black p-6 md:p-16">
+        <section className="flex-1 space-y-16 bg-black p-6 md:p-16">
           <FamilyTable />
+
+          <div>
+            <SectionHeading eyebrow="Evidence" title="Verification matrix">
+              <p className="max-w-2xl text-sm text-zinc-500">
+                Code guard in <code className="text-zinc-400">packages/registry</code>. Guide:{' '}
+                <Link
+                  href="/docs/guides/verification-and-presets"
+                  className="text-sky-400 underline"
+                >
+                  verification and presets
+                </Link>
+                .
+              </p>
+            </SectionHeading>
+            <VerificationMatrixTable />
+          </div>
         </section>
       </SiteFrame>
     </SiteShell>

@@ -57,6 +57,7 @@ bun run dev:cli -- my-app --yes --dry-run --dir=../projects
 | `typescript-fullstack` | Requires validation | TypeScript monorepo foundation       |
 | `rust-api`             | Requires validation | Axum API scaffold                    |
 | `rust-fullstack`       | Requires validation | Web app plus `services/api`          |
+| `convex-product`       | Requires validation | Next.js + Convex (no Express/Prisma) |
 | `solana-program`       | Requires validation | Planned `programs/core` route        |
 | `solana-web`           | Requires validation | Planned web dApp route               |
 | `solana-mobile`        | Requires validation | Planned mobile dApp route            |
@@ -66,22 +67,22 @@ bun run dev:cli -- my-app --yes --dry-run --dir=../projects
 
 ## Common flags
 
-| Flag                                           | Description                                                      |
-| ---------------------------------------------- | ---------------------------------------------------------------- |
-| `--yes`                                        | Use non-interactive defaults                                     |
-| `--dir=<path>`                                 | Output parent directory or exact project path                    |
-| `--family=<name>`                              | Legacy family selection                                          |
-| `--preset=<id>`                                | Preset starting point                                            |
-| `--pm=bun\|pnpm\|npm`                          | Package manager: Bun default, pnpm first-class, npm experimental |
-| `--backend=<name>`                             | Backend override for fullstack-capable routes                    |
-| `--database=<postgres\|sqlite\|mongodb\|none>` | Database selection                                               |
-| `--orm=<prisma\|drizzle\|none>`                | ORM selection                                                    |
-| `--showcase` / `--no-showcase`                 | Keep or remove showcase content                                  |
-| `--worker` / `--no-worker`                     | Keep or remove worker workspace                                  |
-| `--docker` / `--no-docker`                     | Generate or skip Docker files                                    |
-| `--ci` / `--no-ci`                             | Generate or skip GitHub Actions CI                               |
-| `--deployment=<mode>`                          | Deployment docs mode                                             |
-| `--dry-run`                                    | Preview planned files                                            |
+| Flag                                           | Description                                                        |
+| ---------------------------------------------- | ------------------------------------------------------------------ |
+| `--yes`                                        | Use non-interactive defaults                                       |
+| `--dir=<path>`                                 | Output parent directory or exact project path                      |
+| `--family=<name>`                              | Legacy family selection                                            |
+| `--preset=<id>`                                | Preset starting point                                              |
+| `--pm=bun\|pnpm\|npm`                          | Package manager: Bun default, pnpm first-class, npm experimental   |
+| `--backend=<name>`                             | Backend override for fullstack only (ignored for `convex-product`) |
+| `--database=<postgres\|sqlite\|mongodb\|none>` | Database selection                                                 |
+| `--orm=<prisma\|drizzle\|none>`                | ORM selection                                                      |
+| `--showcase` / `--no-showcase`                 | Keep or remove showcase content                                    |
+| `--worker` / `--no-worker`                     | Keep or remove worker workspace                                    |
+| `--docker` / `--no-docker`                     | Generate or skip Docker files                                      |
+| `--ci` / `--no-ci`                             | Generate or skip GitHub Actions CI                                 |
+| `--deployment=<mode>`                          | Deployment docs mode                                               |
+| `--dry-run`                                    | Preview planned files                                              |
 
 ## Subcommands
 

@@ -1,0 +1,22 @@
+{
+  "name": "@arche-template/registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./display": "./src/display.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@arche-template/typescript-config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

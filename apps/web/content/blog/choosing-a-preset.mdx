@@ -1,33 +1,66 @@
 ---
-title: Choosing a preset
-description: Pick TypeScript fullstack, Rust, or Solana foundations without over-committing.
+title: Choosing a preset without over-committing
+description: TypeScript fullstack, Rust API, Solana web—how to pick a route before you generate.
 date: '2026-05-12'
 category: guide
 ---
 
-Arche is a preset-led scaffold. Start with the product shape, then let the CLI generate only the workspaces that belong to that route.
+A preset is a **commitment to a shape**, not a lifetime prison. Arche makes the shape explicit so you can choose once, generate, and verify—instead of cargo-culting a mega-template.
 
-## Decision guide
+## Decision flow
 
-| If you need…                           | Start with             |
-| -------------------------------------- | ---------------------- |
-| Next.js + Express + tRPC + Better Auth | `typescript-fullstack` |
-| Axum API only                          | `rust-api`             |
-| Next.js + Axum API                     | `rust-fullstack`       |
-| Anchor program                         | `solana-program`       |
-| Web dApp + program                     | `solana-web`           |
-| Mobile + program                       | `solana-mobile`        |
-| Web + mobile + program                 | `solana-product`       |
+1. **What runtime owns your core logic?**
+   - TypeScript/Node → `typescript-fullstack` or `convex-product`
+   - Rust services → `rust-api` or `rust-fullstack`
+   - On-chain → Solana family
+2. **What surfaces do you ship?**
+   - Web only, API only, web+API, mobile, or chain+clients
+3. **What does evidence say?**
+   - Read [Preset catalog](/docs/presets) and the verification matrix
 
-## Status vocabulary
+When in doubt, start with **`typescript-fullstack`** if you want the best-documented path (Better Auth, Prisma, tRPC, deployment notes). Pivot later—you are generating a repo, not marrying a vendor.
 
-- **Requires validation** — structure exists; full install/build evidence may still be pending.
-- **Experimental** — explicit opt-in for unstable generators.
+## Preset cheat sheet
 
-Compare rows on [/families](/families) before you scaffold.
+| Preset | Pick when… |
+| ------ | ----------- |
+| `typescript-fullstack` | Default SaaS / product API + Next.js |
+| `rust-api` | Service-first backend, minimal web |
+| `rust-fullstack` | Next.js UI + Axum API, Rust on the server |
+| `convex-product` | Convex backend, realtime, less Prisma/Neon ops |
+| `solana-program` | Anchor program + client boundaries |
+| `solana-web` | Web dApp + program |
+| `solana-mobile` | Expo + program |
+| `solana-product` | Web + mobile + program together |
+| `customize` | You need a validated capability mix |
+| `experiments` | You accept instability for a prototype |
 
-## Command
+Full table: [/docs/presets](/docs/presets) and [/families](/families).
+
+## Package manager at generate time
 
 ```bash
-bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=pnpm
 ```
+
+Only choose pnpm when the matrix shows support for your preset. Otherwise default Bun.
+
+## After generate: verify, don’t assume
+
+```bash
+cd my-app
+bun install
+bun run ci
+```
+
+If CI fails, check `AGENTS.md` and `.env.example` before switching presets. The preset is probably fine; env URLs often are not.
+
+## Customize without chaos
+
+`customize` runs compatibility validation in the registry—unsupported combinations fail early instead of halfway through a transform.
+
+## Status labels are honesty, not insult
+
+**Requires validation** means “we will not lie and call this Stable yet.” Use the preset anyway if the shape matches your work—just read the matrix and file issues when evidence is wrong.
+
+Next: [First hour](/docs/guides/first-hour).

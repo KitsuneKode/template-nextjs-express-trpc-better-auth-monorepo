@@ -1,26 +1,41 @@
 ---
 title: Verification and presets
-description: How support labels map to evidence in the CLI registry.
+description: Support labels, evidence columns, and how presets graduate to Stable.
 ---
 
-Public preset labels mirror the CLI registry—not marketing adjectives.
+Public preset labels mirror the CLI registry in `packages/registry`—not marketing adjectives. If the site says **Requires validation**, the CLI will say the same until evidence improves.
 
 ## Status vocabulary
 
-| Label                   | Meaning                                                                                              |
-| ----------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Requires validation** | The route generates and documents the expected shape; full install/build proof may still be pending. |
-| **Experimental**        | Explicit opt-in for unstable or proof-gated generators.                                              |
-| **Stable**              | Only when the verification matrix records green evidence for that preset.                            |
+| Label | Meaning |
+| ----- | ------- |
+| **Requires validation** | Structure and docs may be proven; full install/lint/test/build proof may still be pending |
+| **Experimental** | Opt-in unstable generators (`experiments` preset or proof-gated routes) |
+| **Stable** | Only when `presetHasStableEvidence` passes for that id |
 
-## Compare presets
+## Full catalog
 
-Use [/families](/families) for a tabular view, then scaffold:
+See [Preset catalog](/docs/presets) for every id, shape, and scaffold command.
+
+## Evidence matrix
+
+<VerificationMatrixTable />
+
+## Maintainer commands
 
 ```bash
-bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+# From template repo root
+bun run verify:generated -- --preset=typescript-fullstack --run=structure
+bun run verify:generated -- --preset=rust-api,rust-fullstack --run=cargo-check
+bun run verify:generated -- --preset=solana-program,solana-web --run=anchor-build
 ```
 
-## Source of truth
+## Source of truth files
 
-The internal matrix lives in `.docs/product/verification-matrix.md` in the Arche repository. The website must never outpace that evidence.
+| File | Role |
+| ---- | ---- |
+| `packages/registry/src/verification-matrix.ts` | Code guard used in tests |
+| `.docs/product/verification-matrix.md` | Human-oriented matrix in template repo |
+| `apps/cli/tests/registry.test.ts` | Prevents support label drift |
+
+The website must never claim **Stable** ahead of this evidence.

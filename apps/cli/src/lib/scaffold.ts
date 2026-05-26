@@ -555,7 +555,11 @@ export async function scaffoldProject(
   generatedFiles.push('.gitignore')
 
   // Deployment guide (config-aware: adapts to backend/database/docker)
-  if (options.deployment !== 'none') {
+  const includeDeploymentGuide =
+    options.deployment !== 'none' ||
+    options.family === 'convex' ||
+    options.preset === 'convex-product'
+  if (includeDeploymentGuide) {
     await writeGeneratedFile(destinationDir, 'docs/deployment.md', renderDeploymentGuide(options))
     generatedFiles.push('docs/deployment.md')
   }

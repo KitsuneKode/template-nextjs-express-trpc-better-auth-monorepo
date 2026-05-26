@@ -31,9 +31,9 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 
 ## Public content map
 
-- **Hybrid docs:** TSX hubs under `app/docs/*`; MDX guides under `content/docs/guides/` rendered at `/docs/guides/*` via `lib/source.ts` + `.source/server.ts` (generated: `bun run mdx:generate` / `postinstall`; required before `check-types` in CI).
+- **Docs (Fumadocs MDX):** All public docs live in `content/docs/**`, rendered at `/docs/*` via `app/docs/[[...slug]]/page.tsx`, `lib/source.ts`, and `.source/server.ts` (run `bun run mdx:generate` / `postinstall` before `check-types`). `/docs` redirects to `/docs/getting-started` in `next.config.js`. Legacy paths (`/docs/auth`, `/docs/deploy`, …) redirect to `packages/*` and `operations/*` MDX routes.
 - **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; post OG at `/blog/og?title=…`; list uses Suspense for `?category=` (Cache Components).
-- **Presets table:** `lib/presets-public.ts` (keep aligned with `apps/cli/src/registry/presets.ts`).
+- **Presets table:** `lib/presets-public.ts` (re-exports `packages/registry` display data).
 - **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).
 - **Showcase:** `/showcase` returns 404 in production (`NODE_ENV === 'production'`).
 - **Design lab:** `/__design-lab` stays noindex; reference mockups 1, 5, 7, 10, 14 for brand direction.

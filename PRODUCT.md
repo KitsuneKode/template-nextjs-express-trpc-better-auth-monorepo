@@ -7,7 +7,7 @@ brand
 ## Users
 
 Arche is for KitsuneKode and developers with similar habits: people starting
-real TypeScript, Rust, or Solana projects who want dependable foundations and
+real TypeScript, Convex, Rust, or Solana projects who want dependable foundations and
 use coding agents as part of daily implementation.
 
 They arrive wanting to understand what can be generated today, select a

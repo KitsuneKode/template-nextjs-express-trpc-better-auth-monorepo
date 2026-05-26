@@ -2,6 +2,8 @@
 
 import { motion } from 'motion/react'
 
+import { devScaffoldCommand } from '@/lib/presets-public'
+
 type CommandRow = { cmd: string; desc: string }
 
 function CommandTableSection({
@@ -27,13 +29,15 @@ function CommandTableSection({
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.03, duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-            className="flex flex-col gap-4 px-6 py-4 transition-colors hover:bg-zinc-900/30 sm:flex-row sm:items-center"
+            className="flex flex-col gap-4 px-6 py-4 transition-colors hover:bg-zinc-900/30 lg:flex-row lg:items-start"
           >
-            <div className="w-fit border border-zinc-800 bg-zinc-900 px-3 py-1.5 font-mono text-sm text-white">
+            <div className="min-w-0 flex-1 border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs leading-relaxed break-all text-white sm:text-sm">
               <span className="mr-2 text-zinc-500">$</span>
               {c.cmd}
             </div>
-            <div className="text-sm font-medium text-pretty text-zinc-400">{c.desc}</div>
+            <div className="shrink-0 text-sm font-medium text-pretty text-zinc-400 lg:max-w-[14rem]">
+              {c.desc}
+            </div>
           </motion.div>
         ))}
       </div>
@@ -41,44 +45,109 @@ function CommandTableSection({
   )
 }
 
-const archeCliCommands: CommandRow[] = [
+const devCliCommands: CommandRow[] = [
   {
-    cmd: 'bun run dev:cli -- my-app --yes --preset=typescript-fullstack',
-    desc: 'Scaffold from this repo (source CLI today).',
+    cmd: devScaffoldCommand('typescript-fullstack'),
+    desc: 'TypeScript monorepo (Next + Express + tRPC + Prisma).',
   },
   {
-    cmd: 'bun run dev:cli -- my-app --preset=rust-api',
-    desc: 'Generate a Rust API workspace foundation.',
+    cmd: devScaffoldCommand('rust-api'),
+    desc: 'Rust API workspace with Cargo and SQLx-ready layout.',
   },
   {
-    cmd: 'bun run dev:cli -- my-app --preset=solana-web',
-    desc: 'Generate a Solana web dApp shape.',
+    cmd: devScaffoldCommand('convex-product'),
+    desc: 'Next.js + Convex (no Express/Prisma monorepo).',
   },
+  {
+    cmd: devScaffoldCommand('solana-web'),
+    desc: 'Solana web dApp with program and client boundaries.',
+  },
+  {
+    cmd: 'bun run dev:cli -- my-app --family=convex --yes',
+    desc: 'Legacy family flag (same template as convex-product).',
+  },
+  {
+    cmd: 'bun run dev:cli -- validate \'{"projectName":"x",...}\'',
+    desc: 'Validate a JSON config without writing files.',
+  },
+  {
+    cmd: 'bun run dev:cli -- create-json \'{"projectName":"x",...}\'',
+    desc: 'Non-interactive scaffold from JSON.',
+  },
+  {
+    cmd: 'bun run dev:cli -- mcp',
+    desc: 'stdio MCP server (plan, create, schema introspection).',
+  },
+]
+
+const publishedCliCommands: CommandRow[] = [
+  {
+    cmd: 'npx @arche/create my-app --preset=typescript-fullstack --yes',
+    desc: 'Published CLI when release track is available (verify before teaching).',
+  },
+  {
+    cmd: 'npx arche create my-app convex',
+    desc: 'Family positional form (convex template).',
+  },
+]
+
+const cliFlags: CommandRow[] = [
+  {
+    cmd: '--preset=<id>',
+    desc: 'Starting point (typescript-fullstack, convex-product, solana-*, rust-*, customize, experiments).',
+  },
+  { cmd: '--family=<id>', desc: 'Template family when not using a preset default.' },
+  { cmd: '--package-manager=bun|pnpm|npm', desc: 'Bun default; pnpm first-class.' },
+  {
+    cmd: '--backend=express-bun|hono-bun|...',
+    desc: 'Fullstack only — ignored for convex, solana, rust (non-framework).',
+  },
+  { cmd: '--database=postgres|...', desc: 'Fullstack only — ignored for convex (Convex storage).' },
+  { cmd: '--orm=prisma|drizzle|...', desc: 'Fullstack only — ignored for convex.' },
+  { cmd: '--worker / --no-worker', desc: 'BullMQ worker (fullstack only).' },
+  { cmd: '--docker / --no-docker', desc: 'Docker Compose (not generated for convex-product).' },
 ]
 
 const generatedProjectCommands: CommandRow[] = [
   { cmd: 'bun install', desc: 'Install dependencies in the generated workspace.' },
-  { cmd: 'bun run ci', desc: 'Run the verification harness advertised by the preset.' },
-  { cmd: 'bun run build', desc: 'Production build across workspaces.' },
-  { cmd: 'bun run db:migrate', desc: 'When the preset includes a database package.' },
+  { cmd: 'bun run dev', desc: 'Start dev servers (shape depends on preset).' },
+  { cmd: 'bun run check-types', desc: 'Typecheck when the preset advertises it.' },
+  { cmd: 'bunx convex dev', desc: 'Convex routes: link deployment and run functions locally.' },
 ]
 
 const sourceTemplateCommands: CommandRow[] = [
   { cmd: 'bun dev', desc: 'Start all workspaces in this template monorepo.' },
   { cmd: 'bun run build', desc: 'Production build for this template monorepo.' },
-  { cmd: 'bun run lint', desc: 'Lint all packages in this template monorepo.' },
-  { cmd: 'bun run check-types', desc: 'Typecheck across this template monorepo.' },
-  { cmd: 'bun run db:generate', desc: 'Generate Prisma client in packages/store.' },
-  { cmd: 'bun run db:migrate', desc: 'Run migrations for the template database.' },
+  { cmd: 'bun run verify:generated', desc: 'Run generated-project verification matrix cases.' },
   { cmd: 'bun run repo:doctor', desc: 'Audit this source repo health and stale scaffolding.' },
 ]
 
-export function ArcheCliCommandTable() {
+export function DevArcheCliCommandTable() {
   return (
     <CommandTableSection
-      title="Arche CLI"
-      subtitle="Run from the Arche source checkout until the published CLI is explicitly trusted."
-      commands={archeCliCommands}
+      title="Develop from this repo"
+      subtitle="Use dev:cli until the published @arche/create release is explicitly trusted."
+      commands={devCliCommands}
+    />
+  )
+}
+
+export function PublishedArcheCliCommandTable() {
+  return (
+    <CommandTableSection
+      title="Published CLI (future / verify first)"
+      subtitle="Documented distribution path — confirm release notes before external docs rely on it."
+      commands={publishedCliCommands}
+    />
+  )
+}
+
+export function CliFlagsTable() {
+  return (
+    <CommandTableSection
+      title="Common flags"
+      subtitle="Fullstack-only flags are ignored or warned for convex, solana, and standalone families."
+      commands={cliFlags}
     />
   )
 }
@@ -103,7 +172,12 @@ export function SourceTemplateCommandTable() {
   )
 }
 
-/** @deprecated Use the named tables above for clearer context labels. */
+/** @deprecated Use DevArcheCliCommandTable */
+export function ArcheCliCommandTable() {
+  return <DevArcheCliCommandTable />
+}
+
+/** @deprecated Use SourceTemplateCommandTable */
 export function CommandTable() {
   return <SourceTemplateCommandTable />
 }

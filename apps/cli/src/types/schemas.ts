@@ -29,6 +29,7 @@ export const PresetSchema = z.enum([
   'typescript-fullstack',
   'rust-api',
   'rust-fullstack',
+  'convex-product',
   'solana-program',
   'solana-web',
   'solana-mobile',
@@ -361,6 +362,29 @@ export function checkCompatibility(config: Partial<ProjectConfig>): {
   // Family-specific validation
   if (config.family === 'solana' && config.backend !== 'none' && config.backend !== undefined) {
     warnings.push('Solana programs do not use a backend server. Backend will be ignored.')
+  }
+
+  if (config.preset === 'convex-product' || config.family === 'convex') {
+    if (config.backend && config.backend !== 'none') {
+      warnings.push('Convex routes do not use Express/Hono. Backend will be ignored.')
+    }
+    if (config.database && config.database !== 'none') {
+      warnings.push('Convex routes use Convex storage. Database selection will be ignored.')
+    }
+    if (config.orm && config.orm !== 'none') {
+      warnings.push('Convex routes do not use Prisma/Drizzle. ORM selection will be ignored.')
+    }
+    if (config.bundles && config.bundles.length > 0) {
+      warnings.push('Monorepo bundles apply to fullstack only. Bundles will be ignored for Convex.')
+    }
+    if (config.includeWorker) {
+      warnings.push('Convex routes do not include a BullMQ worker. Worker will be omitted.')
+    }
+    if (config.includeDocker) {
+      warnings.push(
+        'Convex routes do not ship Docker Compose for Postgres. Docker will be omitted.',
+      )
+    }
   }
   if (
     config.family === 'rust' &&

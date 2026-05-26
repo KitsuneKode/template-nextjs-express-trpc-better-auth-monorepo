@@ -33,6 +33,18 @@ describe('preset verification matrix', () => {
     expect(presetHasStableEvidence('rust-fullstack')).toBe(false)
   })
 
+  it('records completed Convex structure proof without calling convex-product stable', () => {
+    expect(PRESET_VERIFICATION_MATRIX['convex-product']).toMatchObject({
+      structure: true,
+      bun: true,
+      convexBackend: true,
+      generatedBuild: false,
+      docs: true,
+      agentContext: true,
+    })
+    expect(presetHasStableEvidence('convex-product')).toBe(false)
+  })
+
   it('records completed Solana structure proof without calling Solana presets stable', () => {
     for (const preset of [
       'solana-program',

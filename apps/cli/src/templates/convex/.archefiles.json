@@ -6,7 +6,11 @@
     "AGENTS.md",
     "app/layout.tsx",
     "app/page.tsx",
+    "app/providers.tsx",
+    "convex.json",
+    "convex/auth.config.ts",
     "convex/auth.ts",
+    "convex/posts.ts",
     "convex/schema.ts",
     "package.json",
     "tsconfig.json"

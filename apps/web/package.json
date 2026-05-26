@@ -16,6 +16,7 @@
   "dependencies": {
     "@arche-template/auth": "workspace:*",
     "@arche-template/common": "workspace:*",
+    "@arche-template/registry": "workspace:*",
     "@arche-template/store": "workspace:*",
     "@arche-template/trpc": "workspace:*",
     "@arche-template/ui": "workspace:*",
@@ -43,6 +44,7 @@
     "shiki": "^4.0.2",
     "sonner": "^2.0.7",
     "streamdown": "^2.5.0",
+    "sugar-high": "^1.2.0",
     "superjson": "^2.2.6",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.1.11"

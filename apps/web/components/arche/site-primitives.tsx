@@ -72,32 +72,51 @@ export function StatusPill({
 export function HeroBlock({
   eyebrow,
   title,
+  accent,
+  /** @deprecated Use `accent` — kept for gradual migration */
   outline,
   children,
   className,
+  size = 'lg',
 }: {
   eyebrow: ReactNode
   title: string
-  outline: string
+  accent?: string
+  outline?: string
   children: ReactNode
   className?: string
+  size?: 'lg' | 'md'
 }) {
+  const stroke = accent ?? outline
+
   return (
     <section
       className={cn(
-        'relative overflow-hidden border-b border-zinc-800 bg-black p-6 md:p-16',
+        'relative overflow-hidden border-b border-zinc-800 bg-black p-6 md:p-12',
+        size === 'lg' && 'md:p-16',
         className,
       )}
     >
       <GridBackdrop />
-      <div className="relative z-10 flex max-w-4xl flex-col items-start">
-        <div className="mb-8">{eyebrow}</div>
-        <h1 className="mb-8 text-5xl leading-[0.9] font-black tracking-tighter text-balance text-white uppercase md:text-7xl">
+      <div className="relative z-10 flex max-w-3xl flex-col items-start">
+        <div className="mb-6">{eyebrow}</div>
+        <h1
+          className={cn(
+            'mb-6 font-bold tracking-tight text-balance text-white',
+            size === 'lg'
+              ? 'text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05]'
+              : 'text-[clamp(1.75rem,4vw,3rem)] leading-[1.1]',
+          )}
+        >
           {title}
-          <br />
-          <span className="text-stroke-white text-transparent">{outline}</span>
+          {stroke ? (
+            <>
+              {' '}
+              <span className="text-stroke-white text-transparent">{stroke}</span>
+            </>
+          ) : null}
         </h1>
-        <div className="max-w-2xl text-lg leading-snug font-medium text-pretty text-zinc-400 md:text-xl">
+        <div className="max-w-2xl text-base leading-relaxed font-medium text-pretty text-zinc-400 md:text-lg">
           {children}
         </div>
       </div>
@@ -121,7 +140,7 @@ export function SectionHeading({
           <span className="block size-2 border border-zinc-500" />
           {eyebrow}
         </div>
-        <h2 className="text-4xl leading-none font-black tracking-tighter text-balance text-white uppercase md:text-5xl">
+        <h2 className="text-2xl leading-tight font-bold tracking-tight text-balance text-white md:text-3xl">
           {title}
         </h2>
       </div>
@@ -164,7 +183,9 @@ export function CodePanel({ children, title }: { children: ReactNode; title: str
         <span>{title}</span>
         <span aria-hidden="true">•••</span>
       </div>
-      <div className="overflow-x-auto p-4 font-mono text-sm text-zinc-200">{children}</div>
+      <div className="overflow-x-auto p-4 font-mono text-sm leading-relaxed break-all whitespace-pre-wrap text-zinc-200 sm:break-normal sm:whitespace-pre">
+        {children}
+      </div>
     </div>
   )
 }

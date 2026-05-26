@@ -18,7 +18,12 @@ const terminalSteps = [
   { text: '❯ Yes, cargo workspace + service slot', type: 'select', delay: 300 },
   { text: '✔ AGENTS.md, .docs, .plans, CI, and env examples written', type: 'success', delay: 300 },
   { text: '⠋ Validating generated project...', type: 'loading', delay: 800 },
-  { text: '✔ Scaffold ready for review gates', type: 'success', delay: 0 },
+  { text: '✔ Scaffold ready for review gates', type: 'success', delay: 400 },
+  {
+    text: 'Tip: --preset=convex-product for Next.js + Convex (no Express/Prisma)',
+    type: 'prompt',
+    delay: 0,
+  },
 ]
 
 export function AnimatedTerminal() {
@@ -122,7 +127,7 @@ export function AnimatedTerminal() {
       </div>
 
       <div className="flex shrink-0 gap-2 sm:flex-col">
-        <PrimaryLink href="/docs/cli">CLI docs</PrimaryLink>
+        <PrimaryLink href="/docs/getting-started">Docs</PrimaryLink>
         <PrimaryLink href="/docs" variant="outline">
           Runbook
         </PrimaryLink>

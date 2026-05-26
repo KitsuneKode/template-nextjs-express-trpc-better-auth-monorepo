@@ -8,9 +8,45 @@ import type { ProjectConfig } from '../../types/schemas'
 
 import { renderRustCi } from './rust'
 
+function renderConvexCi(): string {
+  return `name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck
+        run: bun run check-types
+`.trimEnd()
+}
+
 export function renderGithubActionsWorkflow(config: ProjectConfig): string {
   if (config.family === 'rust') {
     return renderRustCi(config)
+  }
+
+  if (config.family === 'convex') {
+    return `${renderConvexCi()}\n`
   }
 
   const testStep =

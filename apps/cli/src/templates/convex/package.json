@@ -2,14 +2,24 @@
   "name": "@acme/convex-app",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "convex dev --run 'next dev'",
+    "dev:web": "next dev",
+    "dev:convex": "convex dev",
     "build": "next build",
-    "convex:dev": "convex dev"
+    "start": "next start",
+    "lint": "oxlint",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "convex": "^1",
-    "next": "^16",
-    "react": "^19",
-    "react-dom": "^19"
+    "convex": "^1.32.0",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
   }
 }

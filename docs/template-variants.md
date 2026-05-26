@@ -49,9 +49,12 @@ API-first service family.
 
 ## `convex`
 
-Next.js + Convex family.
+Next.js + Convex family. Prefer preset **`convex-product`** in the CLI menu.
 
-- Default: Next.js + Convex + auth
+- Default: Next.js + Convex functions, schema, Better Auth stubs
+- No `apps/server`, Prisma, or tRPC monorepo
+- Deploy: Vercel (web) + Convex Cloud — see generated `docs/deployment.md`
+- When to choose: realtime queries, serverless backend, no SQL migrations
 
 ## `rust`
 

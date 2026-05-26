@@ -51,6 +51,7 @@ const DEFAULT_CASES: GeneratedProjectCase[] = [
   { preset: 'solana-web', packageManager: 'bun' },
   { preset: 'solana-mobile', packageManager: 'bun' },
   { preset: 'solana-product', packageManager: 'bun' },
+  { preset: 'convex-product', packageManager: 'bun' },
 ]
 
 const EXPECTED_FILES: Record<Preset, string[]> = {
@@ -104,6 +105,16 @@ const EXPECTED_FILES: Record<Preset, string[]> = {
     'apps/mobile/App.tsx',
     'packages/solana-client/src/index.ts',
     'AGENTS.md',
+  ],
+  'convex-product': [
+    'package.json',
+    'convex.json',
+    'convex/schema.ts',
+    'convex/posts.ts',
+    'app/page.tsx',
+    'app/providers.tsx',
+    'AGENTS.md',
+    '.docs/architecture/generated-project.md',
   ],
   customize: [],
   experiments: [],

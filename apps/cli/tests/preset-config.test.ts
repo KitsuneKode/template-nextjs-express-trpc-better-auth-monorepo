@@ -24,6 +24,18 @@ describe('preset config defaults', () => {
     })
   })
 
+  it('maps convex-product to the convex family without monorepo database options', () => {
+    expect(projectDefaultsForPreset('convex-product')).toMatchObject({
+      family: 'convex',
+      backend: 'none',
+      database: 'none',
+      orm: 'none',
+      bundles: [],
+      includeDocker: false,
+      includeWorker: false,
+    })
+  })
+
   it('maps Rust fullstack to a fullstack monorepo with Rust API ownership', () => {
     expect(projectDefaultsForPreset('rust-fullstack')).toMatchObject({
       family: 'fullstack',

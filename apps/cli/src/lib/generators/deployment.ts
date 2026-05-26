@@ -29,6 +29,34 @@ function backendLabel(backend: ProjectConfig['backend']): string {
 }
 
 export function renderDeploymentGuide(config: ProjectConfig): string {
+  if (config.family === 'convex' || config.preset === 'convex-product') {
+    return `# Deployment Guide
+
+Generated for **${config.projectName}** (Next.js + Convex).
+
+## Stack
+
+- **Frontend**: Next.js on Vercel (recommended)
+- **Backend**: Convex Cloud (\`convex deploy\`)
+- **Database**: Convex tables in \`convex/schema.ts\`
+- **Auth**: Better Auth stubs in \`convex/auth.ts\` — complete wiring per template \`docs/convex-integration.md\`
+
+## Rollout order
+
+1. Create a Convex project: \`bunx convex dev\` (links deployment, writes \`.env.local\`).
+2. Deploy Convex functions: \`bunx convex deploy\`.
+3. Deploy Next.js to Vercel; set \`NEXT_PUBLIC_CONVEX_URL\` from the Convex dashboard.
+4. Configure Better Auth secrets on Vercel and Convex HTTP routes when auth is enabled.
+
+## Environment variables
+
+- **Local / Vercel**: \`NEXT_PUBLIC_CONVEX_URL\`
+- **Better Auth** (optional): \`BETTER_AUTH_SECRET\`, \`BETTER_AUTH_URL\`
+
+No Render/Railway API host or external Postgres is required for this route.
+`
+  }
+
   const workerLine = config.includeWorker
     ? '- **Path B / C:** deploy `apps/worker` on Render or Railway with `REDIS_URL` (external Upstash).'
     : '- Worker optional unless you enable background jobs.'
