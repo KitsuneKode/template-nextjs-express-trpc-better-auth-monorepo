@@ -21,6 +21,54 @@ If a tradeoff is required, choose **correctness and robustness** over short-term
 
 Run `bun run repo:doctor` before release or after large cleanup passes.
 
+## Before push (required)
+
+**Do not push to `main`, `prod`, or `develop` until local checks pass.** GitHub Actions [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the same ladder; failed pushes block the branch and waste review time.
+
+### Match CI exactly
+
+From the repo root:
+
+```bash
+bun run ci
+```
+
+That runs, in order: `format:check` → `turbo lint check-types` ( **all packages** ) → `bun test` → `turbo build` (all) → `pkg:check` → `repo:doctor:strict`.
+
+On **push to `main` or `prod`**, CI does **not** use Turbo `--affected` — it typechecks and lints the **entire monorepo**. A change that only typechecks `apps/web` locally can still fail on `packages/registry`, `apps/cli`, etc. Always run full `bun run ci` before pushing to those branches.
+
+For **feature branches / pull requests**, CI may use `--affected`, but full `bun run ci` is still safer before you ask for review:
+
+```bash
+bun run ci:affected   # faster when merge base is correct; optional substitute on branches
+```
+
+### Minimum manual ladder (if not using `bun run ci`)
+
+Run from the repo root in this order; fix failures before continuing:
+
+| Step | Command                           | What CI enforces                                                  |
+| ---- | --------------------------------- | ----------------------------------------------------------------- |
+| 1    | `bun run format:check`            | Oxfmt (use `bun run format` to fix)                               |
+| 2    | `bunx turbo run lint check-types` | Oxlint + `tsc --noEmit` in every package with those tasks         |
+| 3    | `bun test`                        | All Bun tests (web, cli, packages, …)                             |
+| 4    | `bunx turbo run build`            | Production builds (includes `apps/web` MDX generate + Next build) |
+| 5    | `bun run pkg:check`               | CLI typecheck, lint, tests, pack dry-run                          |
+| 6    | `bun run repo:doctor:strict`      | Repo hygiene and doc drift                                        |
+
+Pre-commit hooks run **lint-staged** (format + oxlint on staged files) and **gitleaks** on staged paths. They do **not** replace full typecheck, test, or build — commit hooks passing is necessary but not sufficient.
+
+### Workspace-specific notes
+
+- **`apps/web`:** After editing `content/docs/**` or `content/blog/**`, run `bun run --cwd apps/web mdx:generate` if `check-types` complains about `.source/`. Web tests: `bun test apps/web`.
+- **`apps/cli`:** Covered by `pkg:check`; also `bun test apps/cli/tests` when touching CLI only.
+- **`packages/*`:** Any new package dependency (e.g. web importing `@arche-template/registry`) must pass that package’s `check-types` in the full turbo graph.
+
+### When to run doctor
+
+- Before push to protected branches: included in `bun run ci`.
+- After large cleanup, renames, or doc moves: `bun run repo:doctor` (warnings OK locally); use `repo:doctor:strict` before merge.
+
 Prefer `AGENTS.md` over package `README.md` files for agent context. When behavior or commands change, update the nearest `AGENTS.md` and the owning public `docs/` or internal `.docs/` topic. Never treat `.plans/archive/` as current behavior.
 
 ## Stack map
@@ -53,7 +101,7 @@ Postgres and Redis are always URL-based on the API host (Neon + Upstash recommen
 
 ## Commands
 
-See [docs/commands.md](docs/commands.md). Common: `bun dev`, `bun run build`, `bun run db:migrate`, `bun test`.
+See [docs/commands.md](docs/commands.md). Common: `bun dev`, `bun run build`, `bun run db:migrate`, `bun test`. **Pre-push:** `bun run ci` (see [Before push (required)](#before-push-required)).
 
 ## Do not load by default
 

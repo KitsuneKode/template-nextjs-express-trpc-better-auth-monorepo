@@ -8,6 +8,26 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 - Deploy hub: [docs/deployment.md](../../docs/deployment.md)
 - Build: `bun run build --filter=@arche-template/web` (Vercel uses app root `apps/web`)
 
+## Before push (web changes)
+
+Web-only shortcuts are **not** enough for pushes to `main` / `prod` — CI runs **full-monorepo** `lint` and `check-types`. From repo root, always run:
+
+```bash
+bun run ci
+```
+
+When iterating on `apps/web` only, use this **fast loop** (then still run full `bun run ci` before push):
+
+```bash
+bun run format:check          # or bun run format to fix
+bun run --cwd apps/web mdx:generate   # after content/docs or content/blog MDX edits
+bunx turbo run lint check-types --filter=@arche-template/web
+bun test apps/web
+bun run build --filter=@arche-template/web
+```
+
+If you touched `packages/registry`, `packages/ui`, or shared toolings, run step 2 **without** `--filter` (or use full `bun run ci`).
+
 ## Read first
 
 - [`../../PRODUCT.md`](../../PRODUCT.md) - product voice, truthful-claim rules, and accessibility bar
