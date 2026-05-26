@@ -4,18 +4,20 @@ Use this when aligning display branding without breaking workspace package names
 
 ## Brand (canonical)
 
-| Item        | Value                                                  |
-| ----------- | ------------------------------------------------------ |
-| Product     | **Arche** — "The beginning of every project"           |
-| CLI         | `npx arche create` / `@arche/create`                   |
-| Site        | [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz) |
-| Portfolio   | [kitsunekode.in](https://kitsunekode.in)               |
-| GitHub repo | Recommended rename: `arche` or `arche-cli`             |
+| Item        | Value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| Product     | **Arche** — "The beginning of every project"                         |
+| CLI         | `npx arche create` / `@arche/create`                                 |
+| Site        | [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz)               |
+| Portfolio   | [kitsunekode.in](https://kitsunekode.in)                             |
+| GitHub repo | [github.com/KitsuneKode/arche](https://github.com/KitsuneKode/arche) |
+| Vercel web  | `arche` → `https://arche-kitsunekode.vercel.app`                     |
+| Vercel API  | `arche-api` → `https://arche-api-kitsunekode.vercel.app`             |
 
 ## Recommendation
 
-Rename the repository to **`arche`** if it will be the canonical product home.
-Use **`arche-cli`** only if the web/docs app later moves into a separate repo.
+Repository is **`KitsuneKode/arche`**. Use **`arche-cli`** only if the web/docs
+app later moves into a separate repo.
 
 Suggested GitHub description:
 
@@ -67,12 +69,13 @@ bun toolings/scripts/rename-scope.ts --from @arche-template --to @my-app
 
 ## Optional follow-ups
 
-1. Rename GitHub repo to `arche` when ready, then update GitHub description,
-   topics, homepage URL, and npm trusted-publisher config.
-2. Replace `apps/web/public/brand/template-*` with Arche-specific mark assets.
-3. Generate or design a proper OG image and icon set for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
-4. Set production `NEXT_PUBLIC_SITE_*` on Vercel for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
-5. Replace remaining `template-nextjs` strings in archive docs only when archive
+1. [x] GitHub repo renamed to `arche`; description and homepage URL set.
+2. [ ] Rename Vercel projects `template-web` → `arche`, `template-server` →
+       `arche-api`; update env URLs per [deployment-vercel-arche.md](./deployment-vercel-arche.md).
+3. Replace `apps/web/public/brand/template-*` with Arche-specific mark assets.
+4. Generate or design a proper OG image and icon set for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
+5. Set production `NEXT_PUBLIC_SITE_*` on Vercel for [arche.kitsunelabs.xyz](https://arche.kitsunelabs.xyz).
+6. Replace remaining `template-nextjs` strings in archive docs only when archive
    cleanup becomes worth the noise.
 
 ## Verify after edits

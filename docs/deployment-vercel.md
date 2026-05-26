@@ -4,7 +4,7 @@ Hub: [deployment.md](./deployment.md). Env matrix: [deployment-env.md](./deploym
 
 Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **external** (Neon, Vercel Postgres, Upstash, etc.) — paste URLs on the **server** project.
 
-**KitsuneKode reference deploys:** [deployment-vercel-kitsunekode.md](./deployment-vercel-kitsunekode.md) (`template-web` + `template-server` dashboards, env copy/paste, live URLs).
+**KitsuneKode reference deploys:** [deployment-vercel-arche.md](./deployment-vercel-arche.md) (`arche` + `arche-api` dashboards, env copy/paste, live URLs).
 
 ## Troubleshooting (web build)
 
