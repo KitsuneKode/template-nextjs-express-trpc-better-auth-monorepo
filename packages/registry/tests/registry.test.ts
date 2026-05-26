@@ -19,10 +19,11 @@ describe('@arche-template/registry', () => {
     for (const row of PUBLIC_PRESET_ROWS) {
       const preset = PRESETS.find((candidate) => candidate.id === row.id)
       expect(preset).toBeDefined()
-      expect(row.label).toBe(preset?.label)
-      expect(row.status).toBe(preset?.status)
-      expect(row.description).toBe(preset?.description)
-      expect(row.capabilities).toEqual(preset?.capabilities)
+      if (!preset) continue
+      expect(row.label).toBe(preset.label)
+      expect(row.status).toBe(preset.status)
+      expect(row.description).toBe(preset.description)
+      expect(row.capabilities).toEqual(preset.capabilities)
     }
   })
 
