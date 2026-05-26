@@ -31,7 +31,7 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 
 ## Public content map
 
-- **Docs (Fumadocs MDX):** All public docs live in `content/docs/**`, rendered at `/docs/*` via `app/docs/[[...slug]]/page.tsx`, `lib/source.ts`, and `.source/server.ts` (run `bun run mdx:generate` / `postinstall` before `check-types`). `/docs` redirects to `/docs/getting-started` in `next.config.js`. Legacy paths (`/docs/auth`, `/docs/deploy`, …) redirect to `packages/*` and `operations/*` MDX routes.
+- **Docs (Fumadocs MDX):** All public docs live in `content/docs/**` (~34 pages), rendered at `/docs/*` via `app/docs/[[...slug]]/page.tsx`, `lib/source.ts`, and `.source/server.ts` (run `bun run mdx:generate` / `postinstall` before `check-types`). IA in `content/docs/meta.json` + `components/docs/docs-sidebar.tsx` (walkthroughs, polyglot architecture, operations depth). Reading UX: `DocsTocRail`, `PackageManagerTabs`, `Mermaid` MDX component. `/docs` redirects to `/docs/getting-started` in `next.config.js`. Legacy paths (`/docs/auth`, `/docs/deploy`, …) redirect to `packages/*` and `operations/*` MDX routes. Tests: `app/docs-links.test.ts`.
 - **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; post OG at `/blog/og?title=…`; list uses Suspense for `?category=` (Cache Components).
 - **Presets table:** `lib/presets-public.ts` (re-exports `packages/registry` display data).
 - **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).

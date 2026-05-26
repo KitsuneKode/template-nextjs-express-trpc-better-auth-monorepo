@@ -18,7 +18,7 @@ export default function LandingPage() {
             <div className="flex flex-col items-start">
               <div className="mb-8 flex flex-wrap gap-3">
                 <StatusPill tone="watch" pulse>
-                  Release guarded
+                  CLI release guarded
                 </StatusPill>
                 <StatusPill tone="muted">Bun first, pnpm supported</StatusPill>
               </div>
@@ -27,17 +27,17 @@ export default function LandingPage() {
                 <span className="mb-3 inline-block bg-white px-4 py-2 text-black shadow-[8px_8px_0_0_rgba(255,255,255,0.1)]">
                   Arche
                 </span>
-                <span className="block text-white">Project origin system.</span>
+                <span className="block text-white">Scaffold the boring parts.</span>
               </h1>
 
               <p className="mb-10 max-w-3xl text-xl leading-snug font-medium text-pretty text-zinc-400 md:text-2xl">
-                A personal scaffolding vault for serious starts: typed app stacks, Rust-ready
-                services, Solana foundations, deployment paths, and agent context that stays useful
-                after the first commit.
+                A personal vault for serious starts—TypeScript fullstack, Convex + Next.js, Rust,
+                and Solana—with deployment notes and agent context that still makes sense after the
+                first commit.
               </p>
 
               <div className="flex flex-wrap gap-3">
-                <PrimaryLink href="/docs/cli">Use the CLI</PrimaryLink>
+                <PrimaryLink href="/docs/getting-started">Read the docs</PrimaryLink>
                 <PrimaryLink href="/families" variant="outline">
                   Compare presets
                 </PrimaryLink>
@@ -54,16 +54,16 @@ export default function LandingPage() {
         <section className="border-t border-zinc-800 bg-black px-6 py-16 md:px-16 md:py-24">
           <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
             <div className="max-w-2xl">
-              <h2 className="mb-4 text-3xl leading-none font-black tracking-tighter text-balance text-white uppercase md:text-4xl">
-                Start with evidence.
+              <h2 className="mb-4 text-2xl leading-tight font-bold tracking-tight text-balance text-white md:text-3xl">
+                Verify the preset, then commit
               </h2>
-              <p className="text-lg leading-snug font-medium text-pretty text-zinc-400">
+              <p className="text-lg leading-relaxed font-medium text-pretty text-zinc-400">
                 Generate a workspace, read the verification labels, and follow the docs that match
-                your preset—changelog and guides live on the blog.
+                your route. Changelog and longer notes live on the blog.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <PrimaryLink href="/docs/guides/first-hour">First hour guide</PrimaryLink>
+              <PrimaryLink href="/docs/guides/first-hour">First hour</PrimaryLink>
               <PrimaryLink href="/blog" variant="outline">
                 Read the blog
               </PrimaryLink>
@@ -75,6 +75,7 @@ export default function LandingPage() {
           <div>Next.js 16</div>
           <div>TypeScript</div>
           <div className="hidden sm:block">tRPC</div>
+          <div className="hidden md:block">Convex</div>
           <div className="hidden md:block">Rust</div>
           <div className="hidden md:block">Solana</div>
         </div>

@@ -3,6 +3,7 @@ import { Fira_Code, Oxanium } from 'next/font/google'
 import { Suspense } from 'react'
 import { Toaster } from 'sonner'
 import '@arche-template/ui/globals.css'
+import '@/styles/docs-prose.css'
 import { Providers } from '@/components/providers'
 import { RouteTopLoader } from '@/components/shell/route-top-loader'
 import { env } from '@/env'
@@ -22,15 +23,15 @@ const firaCode = Fira_Code({
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: 'Arche — The beginning of every project',
+    default: 'Arche — scaffold CLI & docs',
     template: '%s | Arche',
   },
   description:
-    'A personal project origin system for TypeScript, Rust, Solana, workers, deployments, and agent-readable scaffolds.',
+    'Personal scaffolding vault for TypeScript, Rust, and Solana—with deployment notes and agent context that stays accurate.',
   openGraph: {
-    title: 'Arche — Project origin system',
+    title: 'Arche — scaffold CLI',
     description:
-      'Scaffold serious workspaces with typed boundaries, Rust-ready services, deployment paths, and useful agent context.',
+      'Generate workspaces with typed boundaries, optional Rust and Solana routes, and agent-readable project maps.',
   },
   twitter: {
     card: 'summary_large_image',
@@ -49,7 +50,7 @@ export default function RootLayout({
       className={`dark ${oxanium.variable} ${firaCode.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased">
+      <body className="bg-black font-sans text-white antialiased">
         <Suspense fallback={null}>
           <RouteTopLoader />
         </Suspense>

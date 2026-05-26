@@ -7,9 +7,6 @@ const appRoot = import.meta.dir
 const publicCopyFiles = [
   'layout.tsx',
   'page.tsx',
-  'docs/page.tsx',
-  'docs/cli/page.tsx',
-  'docs/trpc/page.tsx',
   'families/page.tsx',
   '../components/arche/animated-terminal.tsx',
   '../components/arche/architecture-graph.tsx',

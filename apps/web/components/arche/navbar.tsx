@@ -10,10 +10,15 @@ import { BrandMark } from '@/components/arche/brand-mark'
 
 const links = [
   { href: '/families', label: 'Families' },
-  { href: '/docs', label: 'Docs' },
+  { href: '/docs/getting-started', label: 'Docs', matchPrefix: '/docs' },
   { href: '/examples', label: 'Examples' },
   { href: '/blog', label: 'Blog' },
 ]
+
+function isNavActive(pathname: string, href: string, matchPrefix?: string) {
+  const base = matchPrefix ?? href
+  return pathname === href || pathname.startsWith(`${base}/`) || pathname === base
+}
 
 export function Navbar() {
   const pathname = usePathname()
@@ -40,7 +45,11 @@ export function Navbar() {
                 transitionTypes={['route-soft']}
                 className={cn(
                   'inline-flex min-h-10 items-center px-2 transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.96]',
-                  pathname.startsWith(link.href)
+                  isNavActive(
+                    pathname,
+                    link.href,
+                    'matchPrefix' in link ? link.matchPrefix : undefined,
+                  )
                     ? 'bg-white text-black'
                     : 'text-zinc-500 hover:text-white',
                 )}
@@ -79,7 +88,11 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className={cn(
                   'inline-flex min-h-10 items-center px-3 font-mono text-xs tracking-widest uppercase transition-colors',
-                  pathname.startsWith(link.href)
+                  isNavActive(
+                    pathname,
+                    link.href,
+                    'matchPrefix' in link ? link.matchPrefix : undefined,
+                  )
                     ? 'bg-white text-black'
                     : 'text-zinc-400 hover:text-white',
                 )}
