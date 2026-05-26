@@ -3,27 +3,9 @@ import type { MetadataRoute } from 'next'
 import { env } from '@/env'
 import { getBlogFrontmatter } from '@/lib/blog'
 import { blogSource } from '@/lib/blog-source'
+import { source } from '@/lib/source'
 
-const PUBLIC_ROUTES = [
-  '',
-  '/families',
-  '/docs',
-  '/docs/deploy',
-  '/docs/architecture',
-  '/docs/auth',
-  '/docs/cli',
-  '/docs/security',
-  '/docs/trpc',
-  '/docs/store',
-  '/docs/scaling',
-  '/docs/guides/first-hour',
-  '/docs/guides/agent-context',
-  '/docs/guides/verification-and-presets',
-  '/docs/guides/package-managers',
-  '/examples',
-  '/blog',
-  '/rss.xml',
-] as const
+const PUBLIC_ROUTES = ['', '/families', '/examples', '/blog', '/rss.xml'] as const
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
@@ -32,7 +14,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${base}${path}`,
     lastModified: new Date(),
     changeFrequency: path === '' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path.startsWith('/docs') ? 0.7 : 0.8,
+    priority: path === '' ? 1 : 0.8,
+  }))
+
+  const docsEntries: MetadataRoute.Sitemap = source.getPages().map((page) => ({
+    url: `${base}${page.url}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: page.url === '/docs/getting-started' ? 0.85 : 0.7,
   }))
 
   const blogEntries: MetadataRoute.Sitemap = blogSource
@@ -53,5 +42,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }
     })
 
-  return [...staticEntries, ...blogEntries]
+  return [...staticEntries, ...docsEntries, ...blogEntries]
 }
