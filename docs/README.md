@@ -19,20 +19,21 @@ internal architecture context.
 
 ## App template operations
 
-| Need                | Doc                                                |
-| ------------------- | -------------------------------------------------- |
-| Deployment hub      | [deployment.md](./deployment.md)                   |
-| Production playbook | [production-playbook.md](./production-playbook.md) |
-| Environment matrix  | [deployment-env.md](./deployment-env.md)           |
-| CI                  | [ci.md](./ci.md)                                   |
-| CI coverage gaps    | [ci-gaps.md](./ci-gaps.md)                         |
-| Secrets hygiene     | [security-secrets.md](./security-secrets.md)       |
-| Vercel              | [deployment-vercel.md](./deployment-vercel.md)     |
-| Render              | [deployment-render.md](./deployment-render.md)     |
-| Railway             | [deployment-railway.md](./deployment-railway.md)   |
-| Local env           | [env.md](./env.md)                                 |
-| Architecture        | [architecture.md](./architecture.md)               |
-| Troubleshooting     | [troubleshooting.md](./troubleshooting.md)         |
+| Need                 | Doc                                                                    |
+| -------------------- | ---------------------------------------------------------------------- |
+| Deployment hub       | [deployment.md](./deployment.md)                                       |
+| Production playbook  | [production-playbook.md](./production-playbook.md)                     |
+| Environment matrix   | [deployment-env.md](./deployment-env.md)                               |
+| CI                   | [ci.md](./ci.md)                                                       |
+| CI coverage gaps     | [ci-gaps.md](./ci-gaps.md)                                             |
+| Secrets hygiene      | [security-secrets.md](./security-secrets.md)                           |
+| Vercel               | [deployment-vercel.md](./deployment-vercel.md)                         |
+| Vercel (KitsuneKode) | [deployment-vercel-kitsunekode.md](./deployment-vercel-kitsunekode.md) |
+| Render               | [deployment-render.md](./deployment-render.md)                         |
+| Railway              | [deployment-railway.md](./deployment-railway.md)                       |
+| Local env            | [env.md](./env.md)                                                     |
+| Architecture         | [architecture.md](./architecture.md)                                   |
+| Troubleshooting      | [troubleshooting.md](./troubleshooting.md)                             |
 
 Historical docs live in [archive/](./archive/). Planning-era docs are not
 current implementation sources.

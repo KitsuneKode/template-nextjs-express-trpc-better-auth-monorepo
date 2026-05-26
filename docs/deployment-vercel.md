@@ -4,6 +4,8 @@ Hub: [deployment.md](./deployment.md). Env matrix: [deployment-env.md](./deploym
 
 Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **external** (Neon, Vercel Postgres, Upstash, etc.) — paste URLs on the **server** project.
 
+**KitsuneKode reference deploys:** [deployment-vercel-kitsunekode.md](./deployment-vercel-kitsunekode.md) (`template-web` + `template-server` dashboards, env copy/paste, live URLs).
+
 ## Troubleshooting (web build)
 
 **`Invalid URL` / `input: 'undefined'` in `app/layout.tsx` during build**
@@ -18,12 +20,12 @@ Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **exte
 
 ## Project 1 — Web (`apps/web`)
 
-| Setting        | Value                                        |
-| -------------- | -------------------------------------------- |
-| Root Directory | `apps/web` (or monorepo preset with web app) |
-| Framework      | Next.js                                      |
-| Build Command  | `bun run build` (or default)                 |
-| Install        | `bun install` at repo root if using monorepo |
+| Setting        | Value                                                                    |
+| -------------- | ------------------------------------------------------------------------ |
+| Root Directory | `apps/web`                                                               |
+| Framework      | Next.js                                                                  |
+| Build Command  | `bun run build` (in app dir; see [vercel.json](../apps/web/vercel.json)) |
+| Install        | `cd ../.. && bun install --frozen-lockfile` (monorepo root)              |
 
 ### Environment (web project)
 
@@ -37,23 +39,18 @@ Deploy **two Vercel projects** from this monorepo. Postgres and Redis are **exte
 
 ## Project 2 — API (`apps/server`)
 
-| Setting                                   | Value                                                                                                              |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Root Directory                            | `apps/server`                                                                                                      |
-| Entry                                     | [vercel-handler.ts](../apps/server/src/vercel-handler.ts) (see [package.json](../apps/server/package.json) `main`) |
-| [vercel.json](../apps/server/vercel.json) | Bun runtime                                                                                                        |
+| Setting        | Value                                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Root Directory | `apps/server`                                                                                                      |
+| Runtime        | Bun 1.x ([vercel.json](../apps/server/vercel.json))                                                                |
+| Entry          | [vercel-handler.ts](../apps/server/src/vercel-handler.ts) (see [package.json](../apps/server/package.json) `main`) |
 
-Build uses `build:vercel` via monorepo:
+Install/build are defined in `apps/server/vercel.json` (monorepo root install, then `turbo run build:vercel --filter=@arche-template/server`).
+
+Local check:
 
 ```bash
-# From repo root (CI / local check)
 bun run build:vercel --filter=@arche-template/server
-```
-
-In Vercel project settings, if you set a custom build from monorepo root:
-
-```bash
-cd ../.. && bun install && bun run build:vercel --filter=@arche-template/server
 ```
 
 ### Environment (server project)

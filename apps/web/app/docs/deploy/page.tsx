@@ -8,6 +8,11 @@ export const metadata: Metadata = {
 
 const referenceHosts = [
   {
+    path: 'Path A — Vercel web',
+    url: 'https://template-web-kitsunekode.vercel.app',
+    note: 'Dashboard: vercel.com/kitsunekode/template-web',
+  },
+  {
     path: 'Path A — Vercel API',
     url: 'https://template-server-kitsunekode.vercel.app',
     note: 'May require VERCEL_PROTECTION_BYPASS for automated smoke (deployment protection on *.vercel.app).',
