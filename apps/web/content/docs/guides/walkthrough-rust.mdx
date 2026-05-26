@@ -1,0 +1,57 @@
+---
+title: Rust walkthrough
+description: Scaffold rust-api or rust-fullstack presets with Axum, Cargo workspaces, and quality gates.
+---
+
+Arche ships two Rust routes:
+
+| Preset           | Shape                                       |
+| ---------------- | ------------------------------------------- |
+| `rust-api`       | Axum API + Cargo workspace, SQLx-ready      |
+| `rust-fullstack` | Next.js + Axum API, Clerk/JWT auth boundary |
+
+Both are **Requires validation** in the registry.
+
+## Scaffold API-only
+
+<PackageManagerTabs
+  bun="bun run dev:cli -- my-api --yes --preset=rust-api --dir=../projects"
+  pnpm="bun run dev:cli -- my-api --yes --preset=rust-api --pm=pnpm --dir=../projects"
+/>
+
+## Scaffold fullstack
+
+```bash
+bun run dev:cli -- my-product --yes --preset=rust-fullstack --dir=../projects
+```
+
+## Verify
+
+```bash
+cd ../projects/my-api
+cargo check
+cargo test
+# or monorepo scripts from generated package.json / AGENTS.md
+```
+
+Generated trees include `rustfmt` / `clippy` hooks when CI is enabled (`--ci`).
+
+## Architecture
+
+Read [Rust architecture](/docs/architecture/rust) for how the web and API boundaries connect in `rust-fullstack`.
+
+## Common failures
+
+| Symptom                        | Fix                                                              |
+| ------------------------------ | ---------------------------------------------------------------- |
+| SQLx compile errors without DB | Use offline `sqlx-data.json` or set `DATABASE_URL` for prepare   |
+| Wrong auth package             | Fullstack uses JWT/Clerk boundary—not Better Auth from TS preset |
+| Missing toolchain              | Install stable Rust via `rustup`                                 |
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/architecture/rust', label: 'Rust architecture' },
+    { href: '/docs/reference/links', label: 'Rust & Axum docs' },
+    { href: '/docs/presets', label: 'Preset catalog' },
+  ]}
+/>

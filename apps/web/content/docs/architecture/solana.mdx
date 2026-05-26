@@ -1,0 +1,39 @@
+---
+title: Solana architecture
+description: Anchor programs, IDL generation, and web/mobile clients in the Solana preset family.
+---
+
+## Product topology
+
+<Mermaid
+  chart={`flowchart TB
+  Anchor["Anchor program"]
+  IDL["IDL"]
+  Client["Generated TS client"]
+  Web["Next.js optional"]
+  Mobile["Expo optional"]
+  Anchor --> IDL --> Client
+  Client --> Web
+  Client --> Mobile
+`}
+/>
+
+## Preset shapes
+
+| Preset           | Apps                                   |
+| ---------------- | -------------------------------------- |
+| `solana-program` | Program workspace only                 |
+| `solana-web`     | Program + Next.js                      |
+| `solana-mobile`  | Program + Expo                         |
+| `solana-product` | Program + web + mobile + shared config |
+
+## Boundaries
+
+- **Program** — on-chain logic, tested with Anchor
+- **Client** — generated from IDL; regenerate after program changes
+- **Wallets** — adapter config differs for web vs mobile; do not share secrets across surfaces
+
+## Further reading
+
+- [Solana walkthrough](/docs/guides/walkthrough-solana)
+- [Anchor](https://www.anchor-lang.com/docs) · [Solana docs](https://solana.com/docs)

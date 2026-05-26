@@ -1,0 +1,46 @@
+---
+title: Security
+description: Validation, secrets, and defaults in generated TypeScript projects.
+---
+
+Security here means **baseline hygiene** the scaffold encodes—not a certification.
+
+<Mermaid
+  chart={`flowchart TD
+  Req["Request"]
+  Zod["Zod validation"]
+  Policy["policy.ts"]
+  Data["service / repository"]
+  Req --> Zod --> Policy --> Data
+`}
+/>
+
+## Input and API
+
+- tRPC procedures use **Zod** (or shared validators) at boundaries
+- Prefer policy checks for authorization—not “security by obscurity” routes
+- Keep server-only code out of client bundles via package exports
+
+## Secrets and env
+
+- `.env.example` lists required keys; `serverEnv` validates at boot in `packages/backend-common`
+- Never commit `.env` with production secrets
+- Rotate `BETTER_AUTH_SECRET` if leaked
+
+## Transport
+
+- Production: HTTPS everywhere; align `FRONTEND_URL` and `BETTER_AUTH_URL` with real origins
+- CORS is configured on the API for the web origin—update when adding staging domains
+
+## Dependencies
+
+- Run your package manager’s audit in CI (`bun run ci` includes lint/typecheck; add audit if your team requires it)
+- Pin catalogs via workspace catalog files when using Bun/pnpm
+
+## Agents
+
+Generated repos include agent maps—not extra attack surface, but **do not paste production secrets** into agent chats. Use `.env` locally and platform secret stores in deploy hosts.
+
+## Reporting
+
+This is a personal/template project. For production apps you ship, follow your own disclosure process.

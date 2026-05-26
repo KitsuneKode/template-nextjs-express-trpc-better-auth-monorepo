@@ -1,0 +1,43 @@
+---
+title: Rust architecture
+description: Cargo workspaces, Axum APIs, and the Next.js + JWT boundary in rust-fullstack.
+---
+
+## `rust-api`
+
+Single API surface:
+
+```text
+apps/api/           Axum server
+crates/*            shared Rust libraries
+```
+
+SQLx-ready persistence when enabled. Quality gates: `cargo check`, `clippy`, `fmt`.
+
+## `rust-fullstack`
+
+<Mermaid
+  chart={`flowchart LR
+  Web["apps/web Next.js"]
+  API["apps/api Axum"]
+  Auth["Clerk or JWT boundary"]
+  Web -->|"API calls"| API
+  Web --> Auth
+  API --> Auth
+`}
+/>
+
+The web app does **not** use Better Auth from the TypeScript fullstack preset. Read generated `AGENTS.md` for the configured auth mode (`rustAuth` in scaffold JSON).
+
+## TypeScript comparison
+
+| Concern | TypeScript fullstack | Rust fullstack      |
+| ------- | -------------------- | ------------------- |
+| API     | Express + tRPC       | Axum                |
+| Data    | Prisma               | SQLx (when enabled) |
+| Auth    | Better Auth          | Clerk/JWT boundary  |
+
+## Further reading
+
+- [Rust walkthrough](/docs/guides/walkthrough-rust)
+- [Axum docs](https://docs.rs/axum/latest/axum/)

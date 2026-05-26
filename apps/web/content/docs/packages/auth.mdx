@@ -1,0 +1,49 @@
+---
+title: Authentication
+description: Better Auth in packages/auth and how web + server share sessions.
+---
+
+The TypeScript fullstack preset uses **[Better Auth](https://www.better-auth.com/)**—sessions, plugins, and env validation wired the same way on Express and Next.js.
+
+## Session flow
+
+<Mermaid
+  chart={`sequenceDiagram
+  participant Web as apps/web
+  participant API as apps/server
+  participant Auth as packages/auth
+  Web->>API: sign-in request
+  API->>Auth: Better Auth handler
+  Auth-->>Web: session cookie
+`}
+/>
+
+## Layout
+
+| Piece                | Path                                                           |
+| -------------------- | -------------------------------------------------------------- |
+| Server auth instance | `packages/auth` (consumed by `apps/server`)                    |
+| HTTP routes          | `apps/server` mounts Better Auth under `/api/auth/*`           |
+| Web client           | `apps/web` uses the shared client helpers from `packages/auth` |
+
+## Environment variables
+
+Generated `.env.example` files document the required URLs and secrets. Typical production set:
+
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL` (API public URL)
+- `FRONTEND_URL` (web origin for CORS/cookies)
+
+See the template repo [deployment env matrix](https://github.com/KitsuneKode/arche/blob/main/docs/deployment-env.md) — paths may differ if your remote URL changes.
+
+## Rust presets
+
+`rust-fullstack` documents a **Clerk/JWT boundary** instead of Better Auth in-process. TypeScript auth docs do not automatically apply—read generated `AGENTS.md` for the Rust route.
+
+## Security notes
+
+- Validate env at boot (`packages/backend-common`)
+- Keep cookies/session config aligned between web and API hosts
+- Do not expose admin routes without procedure-level auth checks
+
+Related: [Security](/docs/operations/security)

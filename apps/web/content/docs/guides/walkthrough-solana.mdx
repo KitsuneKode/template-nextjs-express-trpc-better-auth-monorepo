@@ -1,0 +1,73 @@
+---
+title: Solana family walkthrough
+description: Choose solana-program, solana-web, solana-mobile, or solana-product and verify Anchor + client generation.
+---
+
+The Solana family shares Anchor program scaffolding and generated client contracts. Pick the preset that matches your surface area.
+
+## Preset comparison
+
+| Preset           | You get                                        |
+| ---------------- | ---------------------------------------------- |
+| `solana-program` | Anchor program + IDL/client contract           |
+| `solana-web`     | Next.js dApp + program + generated client      |
+| `solana-mobile`  | Expo Router + program + mobile wallet boundary |
+| `solana-product` | Web + mobile + program + shared Solana config  |
+
+All Solana presets are **Requires validation** unless the matrix shows more evidence on [/families](/families).
+
+## Scaffold examples
+
+```bash
+# Program only
+bun run dev:cli -- my-program --yes --preset=solana-program --dir=../projects
+
+# Web dApp
+bun run dev:cli -- my-dapp --yes --preset=solana-web --dir=../projects
+
+# Mobile
+bun run dev:cli -- my-mobile --yes --preset=solana-mobile --dir=../projects
+
+# Full product
+bun run dev:cli -- my-product --yes --preset=solana-product --dir=../projects
+```
+
+## Topology
+
+<Mermaid
+  chart={`flowchart TB
+  Program["Anchor program"]
+  IDL["IDL + client gen"]
+  Web["Next.js dApp"]
+  Mobile["Expo app"]
+  Program --> IDL
+  IDL --> Web
+  IDL --> Mobile
+`}
+/>
+
+See [Solana architecture](/docs/architecture/solana).
+
+## Verify
+
+Follow generated `AGENTS.md`:
+
+- `anchor build` / `anchor test` where the program workspace exists
+- Client generation scripts after IDL changes
+- Web/mobile env for cluster RPC and wallet adapter
+
+## Common failures
+
+| Symptom                 | Fix                                          |
+| ----------------------- | -------------------------------------------- |
+| Anchor version mismatch | Use toolchain versions from generated README |
+| Client out of sync      | Regenerate client after `anchor build`       |
+| Wallet not connecting   | Check devnet/mainnet RPC and adapter config  |
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/architecture/solana', label: 'Solana architecture' },
+    { href: '/docs/presets', label: 'Preset catalog' },
+    { href: '/docs/reference/links', label: 'Solana & Anchor docs' },
+  ]}
+/>

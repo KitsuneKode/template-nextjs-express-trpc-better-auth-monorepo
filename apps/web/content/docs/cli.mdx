@@ -1,0 +1,61 @@
+---
+title: CLI overview
+description: How to run the Arche scaffold CLI today, and how it relates to the published package.
+---
+
+The CLI lives in `apps/cli`, publishes as **`@arche/create`**, and exposes binaries `arche` and `create-arche`. Publication is **guarded**—use the development command until release gates clear.
+
+## Run today (source checkout)
+
+```bash
+bun run dev:cli -- <project-name> [flags]
+```
+
+Common non-interactive example:
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects
+```
+
+| Route                     | Command                     |
+| ------------------------- | --------------------------- |
+| Published (after release) | `npx arche create my-app`   |
+| Published (alternate)     | `bunx arche create my-app`  |
+| Development               | `bun run dev:cli -- my-app` |
+
+## What the CLI does
+
+<Mermaid
+  chart={`flowchart TD
+  Start["arche create"]
+  Copy["Copy template"]
+  Transform["Family transforms"]
+  Cleanup["template-cleanup"]
+  Agent["Agent context"]
+  Install["git + install"]
+  Start --> Copy --> Transform --> Cleanup --> Agent --> Install
+`}
+/>
+
+1. Copies and transforms template material for the chosen **preset**
+2. Applies **package manager** catalogs (Bun / pnpm / experimental npm)
+3. Renames scopes from `@arche-template/*` to your project identity
+4. Writes **agent context** (`AGENTS.md`, `.docs/`, `.plans/`, `arche.json`)
+5. Optionally adds Docker, CI, deployment docs, showcase routes, worker workspace
+6. Initializes git and runs install when configured
+
+## Preset vs family
+
+- **`--preset=<id>`** — current registry route (typescript-fullstack, rust-api, solana-web, …)
+- **`--family=<name>`** — legacy selector kept for older scripts; prefer presets for new work
+
+## Interactive flow
+
+Without `--yes`, the CLI prompts for starting point, package manager, database/ORM where applicable, showcase/worker toggles, and output directory.
+
+## Next pages
+
+- [Flags](/docs/cli/flags) — every CLI switch
+- [Subcommands](/docs/cli/subcommands) — `create-json`, `validate`, `add`, `mcp`
+- [Generated output](/docs/cli/generated-output) — files you should expect in a new repo
+- [Preset catalog](/docs/presets) — all `--preset=` values

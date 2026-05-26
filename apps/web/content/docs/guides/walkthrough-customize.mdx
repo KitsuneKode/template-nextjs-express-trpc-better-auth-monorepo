@@ -1,0 +1,47 @@
+---
+title: Customize and experiments walkthrough
+description: Build from capabilities with compatibility validation, or opt into experimental generators.
+---
+
+## `customize` preset
+
+**Goal:** Pick capabilities (database, ORM, bundles, addons) and let the registry reject incompatible combinations before files are written.
+
+```bash
+bun run dev:cli -- my-app --yes --preset=customize --dir=../projects
+```
+
+Without `--yes`, the CLI walks capability groups interactively. With `--yes`, defaults apply—review `arche.json` after generate.
+
+<CapabilityMatrixTable />
+
+Full matrix reference: [Capabilities](/docs/reference/capabilities).
+
+## `experiments` preset
+
+**Goal:** Explicit opt-in for proof-gated or unstable generators. Read prompts carefully—outputs may not match stable presets.
+
+```bash
+bun run dev:cli -- my-lab --yes --preset=experiments --dir=../projects
+```
+
+<DocsCallout tone="warn" title="Honesty">
+  Experiments are labeled **Experimental** in the registry. Do not ship to production without your
+  own verification harness.
+</DocsCallout>
+
+## Validate before write
+
+```bash
+bun run dev:cli -- validate '{"projectName":"my-app","preset":"customize","database":"postgres","orm":"prisma"}'
+```
+
+Pair with [Automation walkthrough](/docs/guides/walkthrough-automation) for CI and agent loops.
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/reference/capabilities', label: 'Capabilities reference' },
+    { href: '/docs/guides/verification-and-presets', label: 'Verification labels' },
+    { href: '/docs/cli/flags', label: 'CLI flags' },
+  ]}
+/>

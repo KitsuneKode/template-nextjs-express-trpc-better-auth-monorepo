@@ -1,0 +1,64 @@
+---
+title: tRPC
+description: How procedures, the client package, and Next.js data fetching connect.
+---
+
+tRPC is the **typed API layer** between `apps/server` and `apps/web`. The contract package is intentionally thin.
+
+## Call paths
+
+<Mermaid
+  chart={`flowchart TB
+  RSC["Server Component trpcCaller"]
+  Client["Client trpc.useQuery"]
+  HTTP["HTTP /trpc"]
+  Server["apps/server procedures"]
+  RSC --> Server
+  Client --> HTTP --> Server
+`}
+/>
+
+## Where code lives
+
+| What                 | Where                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| Procedures           | `apps/server/src/modules/<feature>/*.trpc.ts`              |
+| Router composition   | `apps/server/src/modules/trpc/app.router.ts`               |
+| Client types         | `packages/trpc` re-exports `AppRouter`, `createCaller`     |
+| Browser client       | `apps/web` → `@/trpc/client`                               |
+| RSC / server actions | `apps/web` → `trpcCaller()` (in-process, no HTTP loopback) |
+
+<DocsCallout tone="info" title="packages/trpc is not the server">
+  Routers are **not** defined in `packages/trpc`. That package exists so the web app imports types
+  without pulling server-only dependencies into the bundle.
+</DocsCallout>
+
+## Data fetching patterns
+
+**Server Components / server actions**
+
+```ts
+const api = await trpcCaller()
+await api.posts.list()
+```
+
+**Client components**
+
+```ts
+const { data } = trpc.posts.list.useQuery()
+```
+
+Use prefetch + `HydrateClient` when a client boundary needs the same query on first paint.
+
+## Adding a feature
+
+1. Create `apps/server/src/modules/<feature>/`
+2. Add `*.trpc.ts`, service, repository as needed
+3. Register router in `app.router.ts`
+4. Consume from web via `trpc` or `trpcCaller`
+
+## Errors and auth
+
+Procedures use shared context for session/user. Enforce authorization in procedures or policies—do not rely on “hidden” routes.
+
+Related: [Architecture](/docs/architecture)

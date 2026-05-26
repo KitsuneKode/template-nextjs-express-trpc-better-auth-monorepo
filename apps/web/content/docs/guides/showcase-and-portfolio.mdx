@@ -1,0 +1,44 @@
+---
+title: Showcase and portfolio
+description: '--showcase, SHOWCASE.mdx, and package.json portfolio metadata for demos and kitsunekode.in sync.'
+---
+
+## `--showcase` (TypeScript fullstack)
+
+When enabled on `typescript-fullstack`, the CLI **keeps** demo-oriented routes and writes **`SHOWCASE.mdx`** at the project root for portfolio sync.
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --showcase --dir=../projects
+```
+
+Use `--no-showcase` for a lean product tree—`template-cleanup` removes demo apps, landing pages, and related components (see `toolings/scripts/template-cleanup.ts`).
+
+<DocsCallout tone="info" title="This marketing site">
+  `/showcase` on arche.dev is a **dev-only** component gallery in the template repo—not the same as
+  generated demo routes. Production builds return 404 for `/showcase`.
+</DocsCallout>
+
+## Portfolio metadata
+
+Every serious monorepo scaffold updates root `package.json`:
+
+```json
+"portfolio": {
+  "slug": "my-app",
+  "title": "My App"
+}
+```
+
+Sync workflow: template repo [`docs/portfolio-sync.md`](https://github.com/KitsuneKode/arche/blob/main/docs/portfolio-sync.md) and `apps/cli/CLI-SPEC.md`.
+
+## Examples on the website
+
+Static snippets that mirror generated wiring live at [/examples](/examples)—useful before you scaffold.
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/guides/walkthrough-typescript-fullstack', label: 'TypeScript walkthrough' },
+    { href: '/examples', label: 'Code examples' },
+    { href: '/docs/cli/flags', label: 'CLI flags' },
+  ]}
+/>

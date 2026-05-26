@@ -3,7 +3,11 @@ title: Agent context
 description: Canonical AGENTS.md, .docs, .plans, and arche.json in generated projects.
 ---
 
+import { AgentContextMap } from '@/components/docs/agent-context-map'
+
 Arche generates a **small map** so coding agents load the right context without stuffing the entire repository into a prompt.
+
+<AgentContextMap />
 
 ## Canonical files
 
@@ -15,10 +19,26 @@ Arche generates a **small map** so coding agents load the right context without 
 
 ## What is not generated
 
+<DocsCallout tone="tip" title="Context budget">
+  Arche does not generate duplicate rule trees or unverified production claims.
+</DocsCallout>
+
 - `.cursor/rules/` or `.claude/rules/` duplicate trees
 - Stale “production ready” claims without verification evidence
 
 ## Agent workflow
+
+<Mermaid
+  chart={`flowchart TD
+  Start["New session"]
+  Root["Read AGENTS.md"]
+  Local["Nearest workspace AGENTS.md"]
+  Docs["One .docs topic"]
+  Plan["One .plans/active file"]
+  Start --> Root --> Local --> Docs
+  Root --> Plan
+`}
+/>
 
 1. Read root `AGENTS.md`.
 2. Read the nearest workspace `AGENTS.md` for the package you touch.

@@ -1,0 +1,92 @@
+---
+title: TypeScript fullstack walkthrough
+description: Scaffold, verify, and operate the default Next.js + Express + tRPC + Better Auth + Prisma preset.
+---
+
+**Goal:** Generate a monorepo with `typescript-fullstack`, install dependencies, and pass the preset verification harness.
+
+**Support label:** Requires validation — see [/families](/families) and [Verification](/docs/guides/verification-and-presets).
+
+## Prerequisites
+
+- Bun installed (pnpm optional via `--pm=pnpm` when matrix shows support)
+- Arche source checkout (this repo or a fork)
+- Empty parent directory for output (`--dir=../projects`)
+
+## Scaffold
+
+<PackageManagerTabs
+  bun="bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects"
+  pnpm="bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=pnpm --dir=../projects"
+/>
+
+Common toggles:
+
+| Flag                  | Effect                                     |
+| --------------------- | ------------------------------------------ |
+| `--worker`            | Adds `apps/worker` + BullMQ (needs Redis)  |
+| `--no-showcase`       | Strips demo routes; skips `SHOWCASE.mdx`   |
+| `--ci`                | GitHub Actions workflow                    |
+| `--docker`            | Compose files for local Postgres/Redis     |
+| `--bundle=product,ai` | Capability bundles (validated by registry) |
+
+## Generated shape
+
+```text
+apps/web          Next.js App Router
+apps/server       Express + tRPC + Better Auth
+apps/worker       optional BullMQ
+packages/trpc     client contract only
+packages/store    Prisma
+packages/auth     Better Auth
+```
+
+Read [Architecture](/docs/architecture) for boundaries and [Generated output](/docs/cli/generated-output) for agent files.
+
+## Verify
+
+```bash
+cd ../projects/my-app
+bun install
+bun run ci
+```
+
+`ci` runs lint, typecheck, and tests defined for the preset. If a step fails, open root `AGENTS.md` — it lists the exact scripts and env files.
+
+Local dev (after copying `.env.example`):
+
+```bash
+bun run db:migrate
+bun dev
+```
+
+## Common failures
+
+| Symptom                | Fix                                                       |
+| ---------------------- | --------------------------------------------------------- |
+| `DATABASE_URL` missing | Copy `.env.example`; use Neon or local Postgres           |
+| tRPC errors in browser | Set `NEXT_PUBLIC_API_URL` to the API origin               |
+| Turbo cache confusion  | Run `bun run build` once clean; check `turbo.json` exists |
+| Mixed lockfiles        | Pick Bun or pnpm; do not commit both lockfiles            |
+
+## Next
+
+<DocsNextSteps
+  links={[
+    {
+      href: '/docs/operations/deploy',
+      label: 'Deployment paths',
+      description: 'Vercel web + API on Vercel, Render, or Railway.',
+    },
+    {
+      href: '/examples',
+      label: 'Code examples',
+      description: 'tRPC, auth, and Prisma snippets from this stack.',
+    },
+    {
+      href: '/docs/guides/agent-context',
+      label: 'Agent context',
+      description: 'How AGENTS.md and .docs/ are laid out.',
+    },
+  ]}
+/>

@@ -1,0 +1,60 @@
+---
+title: Convex product walkthrough
+description: Scaffold Next.js + Convex with Better Auth stubs and the Convex dev loop.
+---
+
+**Goal:** Generate `convex-product` and run the Convex + Next.js development loop.
+
+**Preset:** `convex-product` — Next.js + Convex functions, schema samples, Better Auth integration stubs. **No Express, no Prisma** in this shape.
+
+## Scaffold
+
+<PackageManagerTabs
+  bun="bun run dev:cli -- my-convex-app --yes --preset=convex-product --dir=../projects"
+  pnpm="bun run dev:cli -- my-convex-app --yes --preset=convex-product --pm=pnpm --dir=../projects"
+/>
+
+## Layout
+
+See [Convex architecture](/docs/architecture/convex) for the request path. Typical tree:
+
+```text
+apps/web/
+  convex/           functions, schema, http routes
+  app/              Next.js routes
+```
+
+## After scaffold
+
+```bash
+cd ../projects/my-convex-app
+bun install
+cd apps/web
+npx convex dev
+```
+
+In another terminal, run the web app per generated `AGENTS.md` (usually `bun dev` from the app or monorepo root).
+
+## Auth note
+
+Better Auth stubs point at Convex HTTP routes. Finish provider keys in `.env` before claiming production auth is done. Deep integration notes live in the template repo [`docs/convex-integration.md`](https://github.com/KitsuneKode/arche/blob/main/docs/convex-integration.md).
+
+## Verify
+
+Run the preset’s documented `ci` or lint scripts from generated `package.json`. Convex presets record partial verification columns—treat green CI in **your** environment as the bar.
+
+## Common failures
+
+| Symptom                | Fix                                                     |
+| ---------------------- | ------------------------------------------------------- |
+| Convex CLI not found   | `bun add convex` in `apps/web` or use `bunx convex dev` |
+| Schema push errors     | Check `convex/schema.ts` and deployment selection       |
+| Auth redirect mismatch | Align `SITE_URL` / Better Auth URLs with dev ports      |
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/architecture/convex', label: 'Convex architecture' },
+    { href: '/docs/reference/links', label: 'Stack links' },
+    { href: '/docs/presets', label: 'Preset catalog' },
+  ]}
+/>

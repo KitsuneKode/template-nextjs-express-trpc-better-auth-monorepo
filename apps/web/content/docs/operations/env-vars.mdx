@@ -1,0 +1,44 @@
+---
+title: Environment variables
+description: Grouped env vars for web, API, database, Redis, and auth—with a link to the full matrix.
+---
+
+Generated projects ship `.env.example` files per app. This page summarizes **groups**—not every key for every preset.
+
+## Web (`apps/web`)
+
+| Variable               | Purpose                             |
+| ---------------------- | ----------------------------------- |
+| `NEXT_PUBLIC_API_URL`  | tRPC / API origin for browser calls |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for metadata     |
+
+## API (`apps/server`)
+
+| Variable             | Purpose                                 |
+| -------------------- | --------------------------------------- |
+| `DATABASE_URL`       | Postgres (Prisma)                       |
+| `REDIS_URL`          | App Redis + BullMQ when enabled         |
+| `ENABLE_REDIS`       | `false` for API-only (no worker queues) |
+| `BETTER_AUTH_SECRET` | Auth signing                            |
+| `BETTER_AUTH_URL`    | Public API URL for auth routes          |
+| `FRONTEND_URL`       | Web origin for cookies/CORS             |
+
+## Convex preset
+
+Convex and Better Auth stubs use Convex-specific keys in `apps/web/.env.example`—no `DATABASE_URL` on Express.
+
+## Full matrix
+
+The canonical list for TypeScript fullstack production paths lives in the template repository:
+
+**[`docs/deployment-env.md`](https://github.com/KitsuneKode/arche/blob/main/docs/deployment-env.md)**
+
+Generated `.docs/` topics repeat host-specific values after you choose Path A, B, or C on [Deployment](/docs/operations/deploy).
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/operations/deploy', label: 'Deployment paths' },
+    { href: '/docs/packages/auth', label: 'Authentication' },
+    { href: '/docs/operations/troubleshooting', label: 'Troubleshooting' },
+  ]}
+/>

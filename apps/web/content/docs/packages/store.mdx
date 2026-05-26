@@ -1,0 +1,42 @@
+---
+title: Prisma store
+description: Database schema, client, and migrations in packages/store.
+---
+
+`packages/store` owns the **Prisma schema** and generated client for the TypeScript fullstack preset.
+
+<Mermaid
+  chart={`flowchart LR
+  Schema["schema.prisma"]
+  Migrate["db:migrate"]
+  Client["Prisma client"]
+  Repo["repositories"]
+  TRPC["tRPC procedures"]
+  Schema --> Migrate --> Client --> Repo --> TRPC
+`}
+/>
+
+## Commands (generated project)
+
+```bash
+bun run db:generate   # prisma generate
+bun run db:migrate    # migrate dev / deploy per your workflow
+```
+
+Exact script names are in the generated root `package.json` and `AGENTS.md`.
+
+## Architecture rules
+
+- All database access goes through repositories/services—avoid importing Prisma in React components
+- Server-only: package exports prevent accidental browser bundles
+- Migrations live with the schema; run them against `DATABASE_URL` for the target environment
+
+## Providers
+
+Scaffold flags support Postgres (default), SQLite, MongoDB, or none depending on preset and `--database`. The generated schema and docs match your selection—do not assume Neon unless `DATABASE_URL` points there.
+
+## Production
+
+Use a managed Postgres URL (Neon recommended in Arche deployment docs). Connection pooling and migration strategy are your ops concern; Arche documents the wiring, not SLAs.
+
+Related: [Deployment](/docs/operations/deploy)

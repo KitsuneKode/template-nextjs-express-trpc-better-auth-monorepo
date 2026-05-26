@@ -7,11 +7,11 @@ Public preset labels mirror the CLI registry in `packages/registry`—not market
 
 ## Status vocabulary
 
-| Label | Meaning |
-| ----- | ------- |
+| Label                   | Meaning                                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
 | **Requires validation** | Structure and docs may be proven; full install/lint/test/build proof may still be pending |
-| **Experimental** | Opt-in unstable generators (`experiments` preset or proof-gated routes) |
-| **Stable** | Only when `presetHasStableEvidence` passes for that id |
+| **Experimental**        | Opt-in unstable generators (`experiments` preset or proof-gated routes)                   |
+| **Stable**              | Only when `presetHasStableEvidence` passes for that id                                    |
 
 ## Full catalog
 
@@ -32,10 +32,10 @@ bun run verify:generated -- --preset=solana-program,solana-web --run=anchor-buil
 
 ## Source of truth files
 
-| File | Role |
-| ---- | ---- |
-| `packages/registry/src/verification-matrix.ts` | Code guard used in tests |
-| `.docs/product/verification-matrix.md` | Human-oriented matrix in template repo |
-| `apps/cli/tests/registry.test.ts` | Prevents support label drift |
+| File                                           | Role                                   |
+| ---------------------------------------------- | -------------------------------------- |
+| `packages/registry/src/verification-matrix.ts` | Code guard used in tests               |
+| `.docs/product/verification-matrix.md`         | Human-oriented matrix in template repo |
+| `apps/cli/tests/registry.test.ts`              | Prevents support label drift           |
 
 The website must never claim **Stable** ahead of this evidence.

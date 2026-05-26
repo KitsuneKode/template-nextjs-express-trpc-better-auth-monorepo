@@ -1,0 +1,44 @@
+---
+title: Philosophy
+description: What Arche optimizes for, what it refuses to claim, and how that shows up in generated repos.
+---
+
+Arche is a **personal project vault** first and a product second. It exists because the same decisions kept appearing at the start of every serious repo: package manager policy, monorepo boundaries, auth wiring, deployment notes, and—now—**agent-readable maps** so coding assistants do not have to ingest the entire tree to do useful work.
+
+## What you get
+
+- **Repeatable structure** — apps, packages, and tooling arranged the same way across presets so you can switch contexts without relearning layout.
+- **Honest labels** — presets say **Requires validation** or **Experimental** until the verification matrix proves more. The site does not call anything production-ready without evidence.
+- **Agent context by default** — `AGENTS.md`, `.docs/`, `.plans/`, and `arche.json` in generated projects. Not duplicate Cursor/Claude rule forests.
+- **Deployment as documentation** — paths for Vercel web, Docker API hosts, Neon Postgres, and Upstash Redis are written down, not implied.
+
+## What Arche is not
+
+- A hosted platform or a runtime you deploy alongside your app.
+- A guarantee that every preset passes install, lint, test, and build in your environment today—check the [verification matrix](/docs/guides/verification-and-presets).
+- A replacement for reading generated `AGENTS.md` after you change env vars or add features.
+
+## Design principles (practical)
+
+1. **Evidence over adjectives** — If the CLI cannot verify it, the website does not oversell it.
+2. **Thin entrypoints** — `apps/*` compose; `packages/*` own domains (auth, store, tRPC contract).
+3. **One canonical agent map** — Root `AGENTS.md` wins; other agent files point there.
+4. **Bun first, pnpm supported** — Catalogs and workspace metadata follow the package manager you chose at scaffold time.
+5. **Polyglot where it matters** — TypeScript fullstack, Rust API/fullstack, Convex product shape, and Solana routes are separate presets—not one template pretending to be all stacks.
+
+## Relationship to this template repo
+
+The repository you are reading is both **the CLI implementation** (`apps/cli`) and **the reference TypeScript fullstack template** (`apps/web`, `apps/server`, `packages/*`). Generated projects are copies/transforms of that material—not a live dependency on this repo.
+
+When docs say **source template**, they mean commands like `bun dev` and `bun run repo:doctor` here. When they say **generated project**, they mean inside the folder you scaffolded.
+
+## KitsuneKode default production shape
+
+For the TypeScript fullstack preset, the documented happy path is:
+
+- **Web** on Vercel
+- **API** on Render or Railway (Docker) or Vercel (Path A)
+- **Postgres** on Neon (`DATABASE_URL`)
+- **Redis** on Upstash (`REDIS_URL`) when workers or queues are enabled
+
+Details: [Deployment](/docs/operations/deploy). Env matrix lives in the template repo under `docs/deployment-env.md` (also linked from generated `.docs/` topics).

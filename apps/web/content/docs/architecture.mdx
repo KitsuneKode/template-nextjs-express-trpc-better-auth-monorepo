@@ -1,0 +1,73 @@
+---
+title: Architecture
+description: Package boundaries, type flow, and how the TypeScript fullstack preset is layered.
+---
+
+This page describes the **TypeScript fullstack** shape—the reference template in this repository. For other presets, see [Convex](/docs/architecture/convex), [Rust](/docs/architecture/rust), and [Solana](/docs/architecture/solana).
+
+## Layer diagram
+
+<StackDiagram />
+
+## Request flow
+
+<Mermaid
+  chart={`flowchart LR
+  Browser["Next.js app"]
+  TRPC["tRPC HTTP"]
+  Express["Express server"]
+  Modules["modules/*.trpc.ts"]
+  Prisma["packages/store"]
+  Browser --> TRPC --> Express --> Modules --> Prisma
+`}
+/>
+
+## Package boundaries
+
+| Area     | Location                  | Responsibility                                                   |
+| -------- | ------------------------- | ---------------------------------------------------------------- |
+| Web      | `apps/web`                | Next.js App Router, tRPC client, Better Auth client              |
+| API      | `apps/server`             | Express, Better Auth handler, tRPC procedures in `src/modules/*` |
+| Worker   | `apps/worker`             | BullMQ jobs when `--worker` is enabled                           |
+| Contract | `packages/trpc`           | **Client-only** re-export of `AppRouter` / `createCaller`        |
+| Data     | `packages/store`          | Prisma schema + client                                           |
+| Auth     | `packages/auth`           | Better Auth server + shared client config                        |
+| Shared   | `packages/backend-common` | `serverEnv`, Redis, logging, env validation                      |
+
+**Rule:** `packages/trpc` does not define routers. Procedures live in `apps/server/src/modules/<feature>/*.trpc.ts` and compose in `app.router.ts`.
+
+## Type flow
+
+```text
+Prisma schema → Prisma client → tRPC procedures → Next.js UI
+```
+
+A schema change propagates through TypeScript types—there is no separate OpenAPI sync step for the default stack.
+
+## Module-first API
+
+Features are folders under `apps/server/src/modules/<name>/`:
+
+- `*.trpc.ts` — procedures
+- `*.service.ts` — business logic (framework-agnostic where possible)
+- `*.repository.ts` — persistence
+- `*.policy.ts` — authorization decisions
+
+Keep transport (tRPC), validation (Zod), and persistence separate so Rust or other clients can share boundaries later.
+
+## Turborepo
+
+Root `turbo.json` is **rendered** at scaffold time with:
+
+- Transit nodes for dev
+- `db:*` tasks when a database package exists
+- `mdx:generate` when the web app includes Fumadocs content
+
+Remote cache is **not** promised by default—CI may wire credentials, but generated docs do not claim remote cache is on.
+
+## Further reading
+
+- [tRPC](/docs/packages/trpc) — client vs server responsibilities
+- [Store](/docs/packages/store) — Prisma package
+- [Auth](/docs/packages/auth) — Better Auth integration
+- [TypeScript walkthrough](/docs/guides/walkthrough-typescript-fullstack) — scaffold and verify loop

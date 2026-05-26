@@ -1,0 +1,82 @@
+---
+title: Getting started
+description: Run the CLI from source, pick a preset, and verify a generated workspace.
+---
+
+Arche is a **scaffold CLI** and this repository is its source of truth. The public npm package (`@arche/create`) is still on a guarded release track—until it ships, every command on this site assumes you are in the Arche monorepo (or a fork) and use `bun run dev:cli`.
+
+<DocsQuickLinks />
+
+<DocsCallout tone="tip" title="Three command contexts">
+  **Arche CLI** — run from this repo to generate a project. **Generated project** — commands inside
+  the folder you scaffolded. **Source template** — commands for developing Arche itself (this
+  monorepo).
+</DocsCallout>
+
+## Quick loop
+
+<WorkflowSteps
+  steps={[
+    {
+      title: 'Generate',
+      command: 'bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects',
+      note: 'Use --dir to write outside this template repo.',
+    },
+    {
+      title: 'Enter',
+      command: 'cd ../projects/my-app',
+    },
+    {
+      title: 'Verify',
+      command: 'bun install\nbun run ci',
+      note: 'CI is the preset verification harness—read AGENTS.md if a step fails.',
+    },
+  ]}
+/>
+
+## Preset catalog
+
+Every public preset, its support label, and what it generates:
+
+<PresetRegistryTable />
+
+## CLI from source (today)
+
+<ArcheCliCommandTable />
+
+## After you scaffold
+
+<GeneratedProjectCommandTable />
+
+## Architecture snapshot
+
+<StackDiagram />
+
+## Where to go next
+
+- [First hour](/docs/guides/first-hour) — expanded walkthrough
+- [Preset catalog](/docs/presets) — every `--preset=` id
+- [CLI flags](/docs/cli/flags) — non-interactive and CI-friendly options
+- [Deployment](/docs/operations/deploy) — Vercel, Render, Railway, Neon, Upstash
+- [Philosophy](/docs/philosophy) — why Arche exists and what it refuses to claim
+- [Code examples](/examples) — generated wiring snippets by stack
+
+<DocsNextSteps
+  links={[
+    {
+      href: '/docs/guides/walkthrough-typescript-fullstack',
+      label: 'TypeScript fullstack walkthrough',
+      description: 'Preset commands, verify loop, and common failures.',
+    },
+    {
+      href: '/docs/presets',
+      label: 'Preset catalog',
+      description: 'Every id, support label, and scaffold shape.',
+    },
+    {
+      href: '/docs/cli/flags',
+      label: 'CLI flags',
+      description: 'Non-interactive and CI-friendly options.',
+    },
+  ]}
+/>

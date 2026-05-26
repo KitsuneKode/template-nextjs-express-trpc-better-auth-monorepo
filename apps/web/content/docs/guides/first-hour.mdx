@@ -3,26 +3,33 @@ title: First hour
 description: Generate, enter, install, and verify a new workspace.
 ---
 
-## 1. Scaffold
+import { WorkflowSteps } from '@/components/docs/workflow-steps'
 
-```bash
-bun run dev:cli -- my-app --yes --preset=typescript-fullstack
-```
-
-## 2. Enter
-
-```bash
-cd my-app
-```
-
-## 3. Install and verify
-
-```bash
-bun install
-bun run ci
-```
+<WorkflowSteps
+  steps={[
+    {
+      title: 'Scaffold',
+      command: 'bun run dev:cli -- my-app --yes --preset=typescript-fullstack',
+      note: 'Run from the Arche source checkout until the published CLI is trusted.',
+    },
+    {
+      title: 'Enter',
+      command: 'cd my-app',
+    },
+    {
+      title: 'Install and verify',
+      command: 'bun install\nbun run ci',
+      note: 'CI is the preset verification harness—fix env URLs before blaming the scaffold.',
+    },
+  ]}
+/>
 
 ## If something fails
+
+<DocsCallout tone="warning" title="When CI fails">
+  Re-read the generated root `AGENTS.md`, confirm `.env.example` values, then check database and
+  Redis URLs before migrations or API startup.
+</DocsCallout>
 
 - Re-read the generated root `AGENTS.md` for preset-specific commands.
 - Confirm environment variables using the `.env.example` files shipped with the preset.
@@ -30,5 +37,5 @@ bun run ci
 
 ## Next
 
-- [Deployment paths](/docs/deploy) for Vercel + Docker + Neon/Upstash
+- [Deployment paths](/docs/operations/deploy) for Vercel + Docker + Neon/Upstash
 - [Choosing a preset](/blog/choosing-a-preset)

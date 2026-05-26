@@ -1,0 +1,45 @@
+---
+title: CI and testing
+description: --ci, --tests, generated GitHub Actions, and verification harness expectations.
+---
+
+## Scaffold toggles
+
+| Flag           | Effect                                                      |
+| -------------- | ----------------------------------------------------------- |
+| `--ci`         | Adds GitHub Actions workflow(s)                             |
+| `--no-ci`      | Skips CI generators                                         |
+| `--tests=bun`  | Keeps tests workspace (default where preset includes tests) |
+| `--tests=none` | Strips test packages                                        |
+
+## Generated verify loop
+
+TypeScript fullstack projects expose a root script such as:
+
+```bash
+bun run ci
+```
+
+Typically includes lint, typecheck, and unit tests. Exact steps are in generated `AGENTS.md`—do not assume remote Turbo cache is configured.
+
+## Template repo harness
+
+Maintainers run curated checks on generated fixtures:
+
+```bash
+bun run verify:generated
+```
+
+Preset **Stable** labels require matrix evidence—see [Verification](/docs/guides/verification-and-presets).
+
+## Deeper testing docs
+
+| Topic     | Template repo          |
+| --------- | ---------------------- |
+| CI layout | `docs/ci.md`           |
+| E2E       | `docs/e2e-testing.md`  |
+| Load      | `docs/load-testing.md` |
+
+## Automation
+
+Use `create-json` + `validate` in pipelines—[Automation walkthrough](/docs/guides/walkthrough-automation).

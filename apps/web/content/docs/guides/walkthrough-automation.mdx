@@ -1,0 +1,81 @@
+---
+title: Automation walkthrough
+description: create-json, validate, MCP, history, and shell completions for agents and CI.
+---
+
+**Goal:** Scaffold or validate projects without interactive prompts—same registry rules as `arche create`.
+
+## `create-json`
+
+```bash
+bun run dev:cli -- create-json '{
+  "projectName": "my-app",
+  "destinationDir": "/tmp/my-app",
+  "preset": "typescript-fullstack",
+  "packageManager": "bun",
+  "initializeGit": false,
+  "installDependencies": false
+}'
+```
+
+Add `--dry-run` to preview transforms without writing.
+
+## `validate`
+
+```bash
+bun run dev:cli -- validate '{"projectName":"my-app","preset":"typescript-fullstack","database":"postgres","orm":"prisma"}'
+```
+
+Exit non-zero on incompatible options—use in agent tool loops before `create-json`.
+
+## MCP server
+
+<Mermaid
+  chart={`flowchart LR
+  Host["Agent host"]
+  MCP["arche mcp"]
+  Plan["arche_plan_project"]
+  Create["arche_create_project"]
+  Host --> MCP --> Plan
+  MCP --> Create
+`}
+/>
+
+```bash
+bun run dev:cli -- mcp
+```
+
+Tools expose schema and guidance from the same CLI sources—no parallel capability story.
+
+## `add` repairs
+
+```bash
+bun run dev:cli -- add agent-docs ./my-app
+bun run dev:cli -- add docker ./my-app
+bun run dev:cli -- add ci ./my-app
+```
+
+Use when an existing tree drifted from Arche conventions.
+
+## History and completions
+
+```bash
+bun run dev:cli -- history
+bun run dev:cli -- completion zsh >> ~/.zshrc
+```
+
+## CI pattern
+
+1. `validate` JSON config in PR
+2. `create-json` into a temp dir on main merges (optional)
+3. Run generated `bun run ci` in the target repo
+
+See [CI & testing](/docs/operations/ci-and-testing).
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/cli/subcommands', label: 'Subcommands reference' },
+    { href: '/docs/cli/generated-output', label: 'Generated output' },
+    { href: '/docs/guides/walkthrough-typescript-fullstack', label: 'TypeScript walkthrough' },
+  ]}
+/>

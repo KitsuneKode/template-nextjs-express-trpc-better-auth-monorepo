@@ -1,0 +1,44 @@
+---
+title: This source repository
+description: Commands for developing the Arche template monorepo—not your generated app.
+---
+
+If you cloned **this** repository to work on Arche itself, these commands apply. They are **not** automatically copied into every generated preset.
+
+<SourceTemplateCommandTable />
+
+## Health check
+
+```bash
+bun run repo:doctor
+```
+
+Audits repo hygiene and stale scaffolding references—run after large doc or CLI changes.
+
+## CLI development
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects
+```
+
+Runs the CLI from `apps/cli` without publishing to npm.
+
+## Verify generated output (maintainers)
+
+```bash
+bun run verify:generated -- --preset=typescript-fullstack,rust-api --run=structure
+```
+
+See `apps/cli` tests and `.docs/product/verification-matrix.md` for harness details.
+
+## Web app (this site)
+
+```bash
+bun dev --filter=@arche-template/web
+```
+
+Docs content lives in `apps/web/content/docs` (Fumadocs MDX). After editing MDX:
+
+```bash
+cd apps/web && bun run mdx:generate
+```

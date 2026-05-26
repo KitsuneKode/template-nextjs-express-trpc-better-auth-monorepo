@@ -1,0 +1,48 @@
+---
+title: Generated output
+description: Canonical files and folders Arche writes into every serious preset.
+---
+
+## Agent context (TypeScript routes with agent support)
+
+```text
+AGENTS.md              # Entry map — start here
+CLAUDE.md -> AGENTS.md # Symlink when enabled
+.docs/                 # Internal topics (architecture, deploy, features)
+.plans/                # Approved in-flight work (one active plan)
+arche.json             # Machine-readable scaffold metadata
+```
+
+Arche does **not** generate `.cursor/rules/` or `.claude/rules/` trees. Those duplicate context and drift quickly.
+
+See [Agent context](/docs/guides/agent-context) for how agents should walk the map.
+
+## Workspace metadata
+
+- Root `package.json` with workspaces and scripts
+- **Bun** `workspaces.catalog` or **pnpm** `catalog:` from `toolings/catalog/workspace-catalog.json`
+- Rendered root `turbo.json` (not a static copy)—tasks match included apps
+- Per-app `package.json` files with scoped names derived from your project name
+
+## Optional bundles
+
+| Toggle         | Output                                                                    |
+| -------------- | ------------------------------------------------------------------------- |
+| `--docker`     | Dockerfiles / compose stubs for API and related services                  |
+| `--ci`         | GitHub Actions workflows aligned with the preset                          |
+| `--deployment` | `.docs/` deployment topics pointing at Vercel / Render / Railway patterns |
+| `--showcase`   | Demo routes + `SHOWCASE.mdx` for portfolio sync                           |
+| `--worker`     | `apps/worker` BullMQ workspace (requires Redis in env)                    |
+
+## Portfolio / showcase
+
+With `--showcase`, fullstack presets may include:
+
+- `SHOWCASE.mdx` — frontmatter for kitsunekode.in sync
+- `package.json#portfolio` — tags and featured flags
+
+See `docs/portfolio-sync.md` in the template repository.
+
+## `arche.json`
+
+Records the exact command and choices used to produce the tree—treat it as reproducibility metadata, not runtime config.

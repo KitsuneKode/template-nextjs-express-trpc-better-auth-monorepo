@@ -1,0 +1,63 @@
+---
+title: Deployment
+description: Vercel, Render, Railway, Neon, and Upstash—the documented production paths.
+---
+
+Generated TypeScript fullstack projects include `.docs/` deployment topics. This page is the **website summary**; the template repo holds the full env matrix and playbooks.
+
+## Architecture
+
+<Mermaid
+  chart={`flowchart TB
+  Web["apps/web on Vercel"]
+  API["apps/server Path A/B/C"]
+  Neon["Neon Postgres"]
+  Redis["Upstash Redis"]
+  Worker["apps/worker optional"]
+  Web -->|"NEXT_PUBLIC_API_URL"| API
+  API --> Neon
+  API --> Redis
+  Worker --> Redis
+`}
+/>
+
+Optional `apps/worker` on Render/Railway when BullMQ is enabled (`REDIS_URL` required). See [Workers & queues](/docs/operations/workers-and-queues).
+
+## Choose a path
+
+| Path  | Web    | API                       | When                                            |
+| ----- | ------ | ------------------------- | ----------------------------------------------- |
+| **A** | Vercel | Vercel (`vercel-handler`) | Minimal hosts; accept serverless limits         |
+| **B** | Vercel | Render Docker             | KitsuneKode default; blueprint in `render.yaml` |
+| **C** | Vercel | Railway Docker            | `railway.toml` deploy                           |
+
+**Postgres and Redis are always URL-based** on the API host. Do not use Render Postgres/Key Value for this template—use [Neon](https://neon.tech) and [Upstash](https://upstash.com) (or any compatible URL provider).
+
+## Rollout order
+
+1. Provision Postgres + Redis (or `ENABLE_REDIS=false` for API-only)
+2. Deploy API; set `DATABASE_URL`, auth URLs, secrets
+3. `bun run db:migrate` with production `DATABASE_URL`
+4. `curl https://<api>/health`
+5. Deploy web; set `NEXT_PUBLIC_API_URL`
+6. Smoke: sign-in, one tRPC call, check browser CORS
+
+## Deep docs (template repository)
+
+| Topic               | Location                      |
+| ------------------- | ----------------------------- |
+| Hub                 | `docs/deployment.md`          |
+| Env matrix          | `docs/deployment-env.md`      |
+| Production playbook | `docs/production-playbook.md` |
+| Vercel path         | `docs/deployment-vercel.md`   |
+| Render path         | `docs/deployment-render.md`   |
+| Railway path        | `docs/deployment-railway.md`  |
+
+Generated projects link to equivalent `.docs/` files with your hostnames filled in where possible.
+
+## Entrypoints
+
+| Host                      | Server entry                                      |
+| ------------------------- | ------------------------------------------------- |
+| Vercel                    | `apps/server/src/vercel-handler.ts` (no `listen`) |
+| Docker / Render / Railway | `apps/server/src/server.ts`                       |

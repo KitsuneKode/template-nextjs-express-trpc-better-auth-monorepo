@@ -1,0 +1,46 @@
+---
+title: Workers and queues
+description: BullMQ worker workspace, Redis, and admin queue routes when --worker is enabled.
+---
+
+## Enable at scaffold
+
+```bash
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --worker --dir=../projects
+```
+
+`--no-worker` removes `apps/worker` and related admin UI routes during cleanup.
+
+## Runtime
+
+<Mermaid
+  chart={`flowchart LR
+  API["apps/server"]
+  Redis["REDIS_URL"]
+  Worker["apps/worker"]
+  Admin["/admin/queues"]
+  API --> Redis
+  Worker --> Redis
+  API --> Admin
+`}
+/>
+
+- **API** enqueues jobs when Redis is enabled
+- **Worker** consumes BullMQ queues
+- **`/admin/queues`** exists when Redis is on (protect in production)
+
+## API-only mode
+
+Set `ENABLE_REDIS=false` on the API host when you do not need workers or queue admin—documented on [Deployment](/docs/operations/deploy).
+
+## Env
+
+| Variable       | Required when                            |
+| -------------- | ---------------------------------------- |
+| `REDIS_URL`    | Worker or app Redis features             |
+| `ENABLE_REDIS` | Explicitly disable Redis-backed features |
+
+## Further reading
+
+- [Scaling](/docs/operations/scaling)
+- Generated `.docs/` queue topics after scaffold

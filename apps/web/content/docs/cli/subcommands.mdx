@@ -1,0 +1,57 @@
+---
+title: CLI subcommands
+description: JSON create, validate, agent-docs repair, history, and MCP for automation.
+---
+
+## `create-json`
+
+Machine-readable create for agents and CI:
+
+```bash
+bun run dev:cli -- create-json '{"projectName":"my-app","destinationDir":"/tmp/my-app","preset":"typescript-fullstack"}'
+```
+
+Use when a human prompt is not available. Pair with `validate` before writing to disk in sensitive environments.
+
+## `validate`
+
+Check compatibility of options without scaffolding:
+
+```bash
+bun run dev:cli -- validate '{"projectName":"my-app","database":"mongodb","orm":"prisma"}'
+```
+
+Returns validation errors from the registry—useful in pre-commit or agent tool loops.
+
+## `add agent-docs`
+
+Regenerate or repair agent context in an existing tree:
+
+```bash
+bun run dev:cli -- add agent-docs ./my-app
+```
+
+Use after you rename packages or change deployment/env conventions and need `.docs/` + `AGENTS.md` brought back in sync.
+
+## `history`
+
+Shows recent scaffold operations recorded by the CLI (local developer aid).
+
+## `mcp`
+
+<Mermaid
+  chart={`flowchart LR
+  Agent["External agent"]
+  MCP["arche mcp"]
+  Tools["create-json / validate / schema"]
+  Agent --> MCP --> Tools
+`}
+/>
+
+Starts the **stdio MCP server** so external agents can call Arche tools without shelling to `create` manually:
+
+```bash
+bun run dev:cli -- mcp
+```
+
+Wire this into agent hosts that support MCP tool discovery. Same truth as the CLI—no separate capability story.

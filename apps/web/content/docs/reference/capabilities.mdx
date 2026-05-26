@@ -1,0 +1,33 @@
+---
+title: Capabilities
+description: Customize preset options, compatibility rules, and support labels from the registry.
+---
+
+The **`customize`** preset builds projects from capability groups below. The CLI validates combinations before writing files—conflicts surface as errors from `validate` or interactive create.
+
+<CapabilityMatrixTable />
+
+## Related presets
+
+| Preset        | Use when                                            |
+| ------------- | --------------------------------------------------- |
+| `customize`   | You need specific database, ORM, bundles, or addons |
+| `experiments` | You accept unstable or proof-gated generators       |
+
+Walkthrough: [Customize & experiments](/docs/guides/walkthrough-customize).
+
+## Bundles (TypeScript fullstack)
+
+Common bundle ids passed via `--bundle=`:
+
+- `product`, `realtime`, `growth`, `infra`, `ai`
+
+Exact compatibility is enforced in `packages/registry`—do not assume a bundle works on every preset.
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/presets', label: 'Preset catalog' },
+    { href: '/docs/cli/flags', label: 'CLI flags' },
+    { href: '/docs/guides/walkthrough-customize', label: 'Customize walkthrough' },
+  ]}
+/>

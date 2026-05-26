@@ -1,0 +1,49 @@
+---
+title: Scaling
+description: Stateless API, external data stores, and workers—boring patterns that actually scale.
+---
+
+Arche’s TypeScript preset is shaped for **horizontal scaling** without pretending you get infinite scale from a template.
+
+<Mermaid
+  chart={`flowchart TB
+  LB["Load balancer"]
+  API1["API replica"]
+  API2["API replica"]
+  PG["Postgres"]
+  Redis["Redis"]
+  Worker["Worker"]
+  LB --> API1
+  LB --> API2
+  API1 --> PG
+  API2 --> PG
+  API1 --> Redis
+  Worker --> Redis
+`}
+/>
+
+## API tier
+
+- Express app is **stateless**—session data lives in the database (Better Auth) or Redis when configured
+- Scale API replicas behind a load balancer; no sticky sessions required for the default auth model
+- Use external **Postgres** (Neon, etc.)—do not colocate production DB on the API VM
+
+## Redis
+
+- **Upstash** (or similar) for Redis URL—used for BullMQ and optional app Redis
+- Worker (`apps/worker`) is a separate deployable when enabled; API-only mode sets `ENABLE_REDIS=false` and skips queues
+
+## Web tier
+
+- Next.js on **Vercel** (or static/edge strategy per your fork)
+- `NEXT_PUBLIC_API_URL` points at the API cluster—no server-side coupling to a single API instance
+
+## What the template does not solve
+
+- CDN strategy for assets (use Vercel defaults or your provider)
+- Read replicas, caching layers, or search—add deliberately
+- Cost controls and autoscaling policies on Render/Railway
+
+## Rust and Solana presets
+
+Rust API presets document Cargo workspace and service boundaries; Solana presets focus on program/client/mobile splits—read generated architecture topics for those shapes.

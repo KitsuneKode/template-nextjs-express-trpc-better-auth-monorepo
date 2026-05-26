@@ -1,0 +1,57 @@
+---
+title: Preset catalog
+description: Every scaffold starting point, support label, and typical generated shape.
+---
+
+Presets are the **supported starting points** in the CLI registry (`packages/registry`). The website, CLI menu, and [/families](/families) page all read from the same data—if this table disagrees with your local CLI, update the registry, not the marketing copy.
+
+<PresetRegistryTable />
+
+## Scaffold commands
+
+```bash
+# TypeScript monorepo (Next + Express + tRPC + Better Auth + Prisma)
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack
+
+# Rust API (Axum, Cargo workspace)
+bun run dev:cli -- my-api --yes --preset=rust-api
+
+# Next.js + Axum API
+bun run dev:cli -- my-product --yes --preset=rust-fullstack
+
+# Convex + Next.js product shape
+bun run dev:cli -- my-app --yes --preset=convex-product
+
+# Solana routes
+bun run dev:cli -- my-program --yes --preset=solana-program
+bun run dev:cli -- my-dapp --yes --preset=solana-web
+bun run dev:cli -- my-mobile --yes --preset=solana-mobile
+bun run dev:cli -- my-product --yes --preset=solana-product
+```
+
+## Customize and experiments
+
+| Preset        | Role                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| `customize`   | Pick capabilities; registry validates compatibility before generate |
+| `experiments` | Explicit opt-in for unstable generators—read prompts carefully      |
+
+## Verification evidence
+
+Labels describe **marketing/CLI honesty**, not your laptop’s last run. The matrix below is what must turn green before a preset becomes **Stable**:
+
+<VerificationMatrixTable />
+
+Maintainers: run `bun run verify:generated` from the template repo for curated harness checks.
+
+## Walkthroughs by preset
+
+| Preset family                | Guide                                                         |
+| ---------------------------- | ------------------------------------------------------------- |
+| `typescript-fullstack`       | [Walkthrough](/docs/guides/walkthrough-typescript-fullstack)  |
+| `convex-product`             | [Convex walkthrough](/docs/guides/walkthrough-convex-product) |
+| `rust-api`, `rust-fullstack` | [Rust walkthrough](/docs/guides/walkthrough-rust)             |
+| `solana-*`                   | [Solana walkthrough](/docs/guides/walkthrough-solana)         |
+| `customize`, `experiments`   | [Customize walkthrough](/docs/guides/walkthrough-customize)   |
+
+See also [/examples](/examples) and [/families](/families).

@@ -1,0 +1,51 @@
+---
+title: Scaffold lifecycle
+description: How arche create copies, transforms, cleans up, and writes agent context—maintainer view.
+---
+
+This page describes what happens inside **`apps/cli/src/lib/scaffold.ts`** when you run `arche create`. Generated users rarely need it; contributors and advanced automators do.
+
+## Pipeline
+
+<Mermaid
+  chart={`flowchart TD
+  A["Resolve preset + config"]
+  B["Copy template tree"]
+  C["Family transforms"]
+  D["Rename scopes"]
+  E["template-cleanup"]
+  F["arche.json + bundles"]
+  G["env / docker / CI / deploy docs"]
+  H["Agent context + SHOWCASE"]
+  I["git init + install"]
+  A --> B --> C --> D --> E --> F --> G --> H --> I
+`}
+/>
+
+## Key stages
+
+| Stage         | What changes                                                                   |
+| ------------- | ------------------------------------------------------------------------------ |
+| Copy          | Polyglot or family stub from `apps/cli/src/templates/`                         |
+| Transforms    | Rust, Solana, Convex, ORM/database rewrites                                    |
+| Cleanup       | Removes demo, worker, tests per flags (`toolings/scripts/template-cleanup.ts`) |
+| Agent context | `AGENTS.md`, `.docs/`, `.plans/`, symlinks                                     |
+| Portfolio     | `package.json#portfolio`, optional `SHOWCASE.mdx`                              |
+
+## Flags that affect output
+
+- `--no-showcase` — skip demo surfaces and `SHOWCASE.mdx`
+- `--no-worker` — drop worker workspace and queue admin routes
+- `--no-ci` / `--no-docker` — skip those generators
+- `--dry-run` — plan only
+
+## Maintainer commands
+
+Develop the CLI from this repo:
+
+```bash
+bun run dev:cli -- --help
+bun test apps/cli
+```
+
+See [This source repository](/docs/reference/source-template) and repo `docs/cli-development.md`.

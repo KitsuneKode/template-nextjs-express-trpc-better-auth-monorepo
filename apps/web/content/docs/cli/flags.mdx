@@ -1,0 +1,43 @@
+---
+title: CLI flags
+description: Non-interactive and power-user flags for arche create.
+---
+
+Flags apply to the main scaffold command (`bun run dev:cli -- …` from source).
+
+<CliFlagsTable />
+
+## By concern
+
+| Group           | Flags                                                                  |
+| --------------- | ---------------------------------------------------------------------- |
+| Output          | `--dir`, `--output`, `--dry-run`, `--yes`                              |
+| Stack           | `--preset`, `--family`, `--bundle`, `--backend`, `--database`, `--orm` |
+| Package manager | `--pm`, `--package-manager`                                            |
+| Infra           | `--worker`, `--docker`, `--ci`, `--deployment`, `--tests`              |
+| Product         | `--showcase`, `--install`, `--git`                                     |
+| Agent / UX      | `--help`, `--version`                                                  |
+
+Walkthroughs: [TypeScript](/docs/guides/walkthrough-typescript-fullstack) · [Automation](/docs/guides/walkthrough-automation)
+
+## Examples
+
+```bash
+# TypeScript fullstack with pnpm catalogs
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=pnpm --dir=../projects
+
+# Rust API only
+bun run dev:cli -- my-api --yes --preset=rust-api --dir=../projects
+
+# Preview without writing files
+bun run dev:cli -- my-app --yes --dry-run
+
+# API-only shape without worker
+bun run dev:cli -- my-app --yes --preset=typescript-fullstack --no-worker
+```
+
+<DocsCallout tone="warning" title="npm">
+  `--pm=npm` exists for compatibility experiments. Bun is the default; pnpm is first-class on routes
+  where the verification matrix records pnpm support. Prefer those unless you are explicitly testing
+  npm output.
+</DocsCallout>

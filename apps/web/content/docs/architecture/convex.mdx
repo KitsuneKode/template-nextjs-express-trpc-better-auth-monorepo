@@ -1,0 +1,41 @@
+---
+title: Convex architecture
+description: Next.js + Convex functions, schema, and auth stubs—no Express or Prisma layer.
+---
+
+The `convex-product` preset replaces the Express + Prisma spine with **Convex** as the backend.
+
+## Request path
+
+<Mermaid
+  chart={`flowchart LR
+  Browser["Next.js"]
+  Convex["Convex functions"]
+  DB["Convex storage"]
+  Browser -->|"useQuery / useMutation"| Convex --> DB
+`}
+/>
+
+HTTP routes under `convex/http.ts` handle webhooks and Better Auth integration stubs.
+
+## Layout
+
+| Area               | Location                           |
+| ------------------ | ---------------------------------- |
+| Functions & schema | `apps/web/convex/`                 |
+| UI                 | `apps/web/app/`                    |
+| Auth stubs         | `convex/auth.ts`, `convex/http.ts` |
+
+There is no `apps/server` or `packages/store` in this preset.
+
+## Dev loop
+
+1. `npx convex dev` (or `bunx`) from the web app workspace
+2. Run Next.js dev server per generated scripts
+3. Push schema changes through Convex tooling
+
+## Further reading
+
+- [Convex walkthrough](/docs/guides/walkthrough-convex-product)
+- [Convex docs](https://docs.convex.dev/)
+- Template repo [`docs/convex-integration.md`](https://github.com/KitsuneKode/arche/blob/main/docs/convex-integration.md)

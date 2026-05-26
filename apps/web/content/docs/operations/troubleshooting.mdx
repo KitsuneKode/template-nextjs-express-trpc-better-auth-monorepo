@@ -1,0 +1,50 @@
+---
+title: Troubleshooting
+description: Common scaffold, dev, and deploy failures—and where to look next.
+---
+
+## Scaffold / install
+
+| Problem                     | Check                                                                     |
+| --------------------------- | ------------------------------------------------------------------------- |
+| CLI not found               | Run from Arche repo: `bun run dev:cli --`                                 |
+| Invalid preset combo        | `bun run dev:cli -- validate '<json>'`                                    |
+| Mixed lockfiles             | One of Bun or pnpm; see [Package managers](/docs/guides/package-managers) |
+| Output inside template repo | Use `--dir=../projects`                                                   |
+
+## Local dev (TypeScript fullstack)
+
+| Problem              | Check                                            |
+| -------------------- | ------------------------------------------------ |
+| Prisma errors        | `DATABASE_URL`, `bun run db:migrate`             |
+| tRPC failed to fetch | `NEXT_PUBLIC_API_URL`, API running, CORS         |
+| Auth redirect loop   | `BETTER_AUTH_URL`, `FRONTEND_URL` alignment      |
+| Turbo task missing   | Regenerate `turbo.json` or run from package root |
+
+## Convex
+
+| Problem                  | Check                                       |
+| ------------------------ | ------------------------------------------- |
+| Convex dev not connected | `npx convex dev` in `apps/web`              |
+| Stale functions          | Deploy or push schema per Convex CLI output |
+
+## Deploy
+
+| Problem            | Check                                        |
+| ------------------ | -------------------------------------------- |
+| 502 on API         | Health route, `DATABASE_URL`, container logs |
+| Web works, API 401 | Cookie domain, HTTPS, auth env on both hosts |
+
+## Canonical deep guide
+
+Template repository: [`docs/troubleshooting.md`](https://github.com/KitsuneKode/arche/blob/main/docs/troubleshooting.md)
+
+Generated `.docs/` may add host-specific notes after `--deployment=...`.
+
+<DocsNextSteps
+  links={[
+    { href: '/docs/operations/env-vars', label: 'Environment variables' },
+    { href: '/docs/operations/deploy', label: 'Deployment' },
+    { href: '/docs/guides/first-hour', label: 'First hour' },
+  ]}
+/>

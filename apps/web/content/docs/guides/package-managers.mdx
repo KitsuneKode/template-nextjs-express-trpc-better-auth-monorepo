@@ -1,23 +1,53 @@
 ---
 title: Package managers
-description: Bun as default with first-class pnpm support in generated workspaces.
+description: Bun default, pnpm first-class, catalogs, and what each preset supports.
 ---
 
-Arche defaults to **Bun** for installs and scripts. **pnpm** is supported where the preset and verification matrix document it.
+Arche defaults to **Bun** for installs and scripts. **pnpm** is first-class on routes where the verification matrix records `pnpm: yes` (today: `typescript-fullstack`). **npm** is experimental—use only when testing compatibility.
 
-## During scaffold
+## At scaffold time
 
-The CLI records your package manager choice in workspace metadata. Catalogs and lockfile strategy follow that choice.
+<PackageManagerTabs
+  bun="bun run dev:cli -- my-app --yes --preset=typescript-fullstack --dir=../projects"
+  pnpm="bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=pnpm --dir=../projects"
+  npm="bun run dev:cli -- my-app --yes --preset=typescript-fullstack --pm=npm --dir=../projects"
+/>
+
+The CLI writes:
+
+- Bun: `package.json` → `workspaces.catalog`
+- pnpm: `pnpm-workspace.yaml` → `catalog:`
+
+Shared versions come from `toolings/catalog/workspace-catalog.json` in the template and are replayed into generated repos.
 
 ## After scaffold
 
+Use the package manager you selected—do not mix lockfiles without intent.
+
 ```bash
+# Bun generated project
 bun install
 bun run ci
+
+# pnpm generated project (when enabled)
+pnpm install
+pnpm run ci
 ```
 
-For pnpm-enabled presets, use the commands documented in the generated `AGENTS.md`—do not assume every preset enables both managers interchangeably without checking.
+Generated `AGENTS.md` lists the exact scripts for that tree.
+
+## Preset support
+
+Check the [verification matrix](/docs/guides/verification-and-presets)—if `pnpm` is `—` for your preset, assume Bun unless you have verified output yourself.
 
 ## This source repository
 
-Developing Arche itself uses Bun at the repo root. Commands on the docs hub labeled **This source template** apply here—not inside every generated app.
+Developing Arche itself always uses **Bun** at the repo root. Commands on [This source repository](/docs/reference/source-template) apply here—not inside every generated app.
+
+## Policy summary
+
+| Manager | Role                                                   |
+| ------- | ------------------------------------------------------ |
+| Bun     | Default for new scaffolds and this template repo       |
+| pnpm    | Supported on verified presets; catalog parity with Bun |
+| npm     | Experimental; not the stability target                 |
