@@ -32,7 +32,7 @@ Next.js App Router frontend: runtime wiring + template showcase UI. Deploy on Ve
 ## Public content map
 
 - **Hybrid docs:** TSX hubs under `app/docs/*`; MDX guides under `content/docs/guides/` rendered at `/docs/guides/*` via `lib/source.ts` + `.source/server.ts` (generated: `bun run mdx:generate` / `postinstall`; required before `check-types` in CI).
-- **Blog:** MDX in `content/blog/` with categories `changelog` | `guide` | `technical`; list at `/blog` (filter via `?category=`).
+- **Blog:** MDX in `content/blog/` (author template: `BLOG-AUTHORING.md`); Fumadocs via `lib/blog-source.ts`; SEO helpers in `lib/blog.ts`; RSS at `/rss.xml`; post OG at `/blog/og?title=…`; list uses Suspense for `?category=` (Cache Components).
 - **Presets table:** `lib/presets-public.ts` (keep aligned with `apps/cli/src/registry/presets.ts`).
 - **Syntax highlighting:** `lib/highlight.ts` + Shiki; examples page calls `connection()` before highlight (Cache Components).
 - **Showcase:** `/showcase` returns 404 in production (`NODE_ENV === 'production'`).

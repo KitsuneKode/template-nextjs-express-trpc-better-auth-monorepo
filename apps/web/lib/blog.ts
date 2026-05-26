@@ -1,0 +1,157 @@
+import type { Metadata } from 'next'
+import { cacheLife } from 'next/cache'
+
+import { env } from '@/env'
+import { blogSource, isBlogCategory, type BlogCategory } from '@/lib/blog-source'
+
+export type BlogPage = ReturnType<typeof blogSource.getPages>[number]
+
+export type BlogPostSummary = {
+  slug: string
+  url: string
+  title: string
+  description?: string
+  date?: string
+  category: BlogCategory
+  draft?: boolean
+  author?: string
+  tags?: string[]
+  image?: string
+}
+
+export type BlogFrontmatter = BlogPage['data'] & {
+  date?: string
+  category?: BlogCategory
+  draft?: boolean
+  image?: string
+  author?: string
+  tags?: string[]
+}
+
+export const BLOG_CATEGORIES = [
+  { id: 'all' as const, label: 'All' },
+  { id: 'changelog' as const, label: 'Changelog' },
+  { id: 'guide' as const, label: 'Guides' },
+  { id: 'technical' as const, label: 'Technical' },
+]
+
+export function getBlogFrontmatter(page: BlogPage): BlogFrontmatter {
+  return page.data as BlogFrontmatter
+}
+
+export function getBlogCategory(page: BlogPage): BlogCategory {
+  const value = getBlogFrontmatter(page).category
+  return isBlogCategory(value) ? value : 'technical'
+}
+
+function toBlogPostSummary(page: BlogPage): BlogPostSummary {
+  const data = getBlogFrontmatter(page)
+  return {
+    slug: page.slugs[0] ?? '',
+    url: page.url,
+    title: data.title,
+    description: data.description,
+    date: data.date,
+    category: getBlogCategory(page),
+    draft: data.draft,
+    author: data.author,
+    tags: data.tags,
+    image: data.image,
+  }
+}
+
+/** Cached published post metadata — serializable for RSS and list shells. */
+export async function getPublishedBlogSummaries(): Promise<BlogPostSummary[]> {
+  'use cache'
+  cacheLife('max')
+
+  return blogSource
+    .getPages()
+    .filter((page) => !getBlogFrontmatter(page).draft)
+    .map(toBlogPostSummary)
+    .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+}
+
+export function filterBlogSummariesByCategory(
+  posts: BlogPostSummary[],
+  category: BlogCategory | 'all',
+): BlogPostSummary[] {
+  if (category === 'all') return posts
+  return posts.filter((post) => post.category === category)
+}
+
+export function blogPostPath(slug: string): string {
+  return `/blog/${slug}`
+}
+
+export function blogPostAbsoluteUrl(slug: string): string {
+  const base = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
+  return `${base}${blogPostPath(slug)}`
+}
+
+export function blogOgImagePath(title: string, image?: string): string {
+  if (image?.startsWith('http://') || image?.startsWith('https://')) {
+    return image
+  }
+  if (image?.startsWith('/')) {
+    return image
+  }
+  return `/blog/og?title=${encodeURIComponent(title)}`
+}
+
+export function formatBlogDate(date: string, options?: { includeRelative?: boolean }): string {
+  const iso = date.includes('T') ? date : `${date}T00:00:00`
+  const target = new Date(iso)
+  const full = target.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+  if (!options?.includeRelative) {
+    return full
+  }
+
+  const now = new Date()
+  const years = now.getFullYear() - target.getFullYear()
+  const months = now.getMonth() - target.getMonth()
+  const days = now.getDate() - target.getDate()
+
+  let relative = 'Today'
+  if (years > 0) relative = `${years}y ago`
+  else if (months > 0) relative = `${months}mo ago`
+  else if (days > 0) relative = `${days}d ago`
+
+  return `${full} (${relative})`
+}
+
+export function buildBlogPostMetadata(page: BlogPage): Metadata {
+  const data = getBlogFrontmatter(page)
+  const slug = page.slugs[0] ?? ''
+  const title = data.title
+  const description = data.description
+  const canonical = blogPostPath(slug)
+  const ogImage = blogOgImagePath(title, data.image)
+
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    authors: data.author ? [{ name: data.author }] : [{ name: 'KitsuneKode' }],
+    keywords: data.tags,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: data.date,
+      url: canonical,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
+  }
+}

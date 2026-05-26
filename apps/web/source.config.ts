@@ -9,6 +9,9 @@ export const blog = defineCollections({
     date: z.string(),
     category: z.enum(['changelog', 'guide', 'technical']),
     draft: z.boolean().optional(),
+    image: z.string().optional(),
+    author: z.string().optional(),
+    tags: z.array(z.string()).optional(),
   }),
 })
 
